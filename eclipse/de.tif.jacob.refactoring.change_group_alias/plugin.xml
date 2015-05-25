@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+<extension point="org.eclipse.ui.popupMenus">
+
+  <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.GroupEditPart"  
+  					 id="de.tif.jacob.designer.groupeditpartcontribution_refactoring">
+
+	 		<menu
+	         id="groupSubMenu"
+	         label="Refactor"
+	         path="groupAdditions">
+	      <separator name="refactor"/>
+    	</menu>
+
+      <action
+            label="Change Table Alias"
+            class="de.tif.jacob.refactoring.actions.ChangeGroupTableAliasAction"
+            menubarPath="groupSubMenu/refactor"
+            id="de.tif.jacob.refactoring.actions.ChangeGroupTableAliasAction">
+      </action>
+   </objectContribution>
+</extension>
+
+</plugin>

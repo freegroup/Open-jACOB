@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+<rule posX="117" posY="233" ruleId="start">
+<businessObjectMethod nextRuleId="3oFLgkyU2L" businessClass="unused" methodName="unused" xmlns="">
+</businessObjectMethod>
+</rule>
+<rule posX="293" posY="233" ruleId="3oFLgkyU2L">
+<businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.UserInformation" methodName="send" xmlns="">
+<parameter>before commit</parameter>
+</businessObjectMethod>
+</rule>
+<annotation x="181" y="74" height="200" width="250" data="insert here your comment" color="F1F179"/>
+</ruleset>

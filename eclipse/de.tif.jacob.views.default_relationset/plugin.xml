@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Open-jACOB"
+            id="de.tif.jacob.views.default_relationset">
+      </category>
+      <view
+            name="Open-jACOB Default Relationset View"
+            icon="icons/sample.gif"
+            category="de.tif.jacob.views.default_relationset"
+            class="de.tif.jacob.views.default_relationset.views.RelationsetView"
+            id="de.tif.jacob.views.default_relationset.views.RelationsetView">
+      </view>
+   </extension>
+
+</plugin>

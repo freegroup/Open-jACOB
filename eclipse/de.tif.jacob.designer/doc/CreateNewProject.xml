@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_createNewProject" label="1">
+    <title id="title_createNewProject">Create a new Eclipse project for happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>First of all we have to create a new Eclipse project for our example
+                            <trademark>jACOB</trademark> application happyHome.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> To do this perform the following steps: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Open Eclipse.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Change to the <guilabel> jACOB Programming
+                                                  perspective</guilabel> by clicking the Tab
+                                                  <guilabel> jACOB Programming
+                                                  perspective</guilabel> in the upper right area. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select <guilabel>File - New -
+                                                  Project...</guilabel> from the menu bar.</para>
+                                                <para>After this a dialog box will pop up asking you
+                                                  to select a project wizard.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the wizard <guilabel>jACOB - Empty
+                                                  project</guilabel> and continue by pressing the
+                                                  <guibutton>Next &gt;</guibutton> button.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/CreateNewProject.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Then you will be prompted to enter a
+                                                  <guilabel>Project name</guilabel>. </para>
+                                                <para>Enter "happyHome" into the text field and
+                                                  confirm by pressing the button <guilabel>Finish</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Impact</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Hereafter, the <trademark>jACOB</trademark> wizard will create the
+                            empty project "jacob.happyHome".</para>
+                        <para>The project structure can be viewed in the <guilabel>Package
+                            explorer</guilabel> situated in the upper left screen area:</para>
+                        <para>
+                            <figure id="fig_projectStructure">
+                                <title>
+                                    <trademark>jACOB</trademark> project structure</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/ProjectStructure.jpg"
+                                                format="JPEG" scalefit="1" width="200" depth="113"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>In the project structure we can find the file "application.jad". This
+                            file contains the <trademark>jACOB</trademark> application design of
+                            happyHome. The structure of the application design can be viewed in the
+                                <guilabel>Application Outline</guilabel> view located in the lower
+                            left area by clicking on "application.jad":</para>
+                        <para>
+                            <figure id="fig_applicationDesign">
+                                <title>
+                                    <trademark>jACOB</trademark> application design</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/ApplicationDesign.jpg"
+                                                format="JPEG" scalefit="1" width="200" depth="180"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The next step will be to:</para>
+                        <para>
+                            <xref linkend="sect_defineApplicationDesign" endterm="title_defineApplicationDesign"/>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <!--    <xi:include href="DefineApplicationDesign.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+-->
+</sect1>

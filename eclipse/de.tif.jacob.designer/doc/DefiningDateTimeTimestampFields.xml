@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_definingDateTimeTimestampFields" label="6">
+    <title id="title_definingDateTimeTimestampFields">Defining date, time and timestamp fields</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Table fields of the type <guimenuitem>DATE</guimenuitem>,
+                            <guilabel>TIME</guilabel> or <guimenuitem>TIMESTAMP</guimenuitem> are
+                            used to save data in a data and time format.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Type specific field details</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <figure id="fig_TimestampFieldDetails">
+                                <title> Timestamp field details</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/TimestampFieldDetails.jpg"
+                                                format="JPEG" scalefit="1" width="233" depth="53"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Date fields and time fields have no type specific details. Country
+                            specific data and time formats are not defined here, but are retrieved
+                            from the internationalization properties configured for the <trademark>jACOB</trademark>  application server.
+                        </para>
+                        <para>For timestamp fields you can specify the following
+                        field details:</para>
+                        <itemizedlist>
+                            <listitem><para>the <guilabel>Resolution</guilabel> and</para></listitem>
+                            <listitem><para>with the aid of the <guilabel>Initialize with
+                            now</guilabel> checkbox you can initialize the timestamp field of a new record with the current date and time.</para></listitem>
+                        </itemizedlist>
+                        
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Resolution</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The resolution of the timestamp can be specified via the
+                            <guilabel>Resolution</guilabel> parameter. It can be set to:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Milliseconds</guimenuitem>,</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Seconds</guimenuitem> or</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Minutes</guimenuitem>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.tif.jacob.feature_0.0.0.jar" id="de.tif.jacob.feature" version="0.0.0">
+      <category name="jacob designer"/>
+   </feature>
+   <category-def name="jacob designer" label="Designer"/>
+</site>

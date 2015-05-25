@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ensure Visible
+Bundle-SymbolicName: de.tif.jacob.properties.ensure_visible;singleton:=true
+Bundle-Version: 2.10.0
+Bundle-Activator: de.tif.jacob.properties.ensure_visible.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle:  org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.designer,
+ de.tif.jacob.common,
+ org.eclipse.ui.views
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: library.jar

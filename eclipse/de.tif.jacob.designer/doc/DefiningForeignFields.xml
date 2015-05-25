@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingForeignFields" label="3">
+    <title id="title_definingForeignFields">Defining foreign fields in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A <glossterm linkend="foreignField">foreign field</glossterm> shows
+                            data from a "foreign" <glossterm linkend="tableAlias">table
+                            alias</glossterm>. E.g. an order form shows the fullname of the
+                            receptionist who has registered the order.</para>
+                        <para>
+                            <figure id="fig_foreignFieldInForm">
+                                <title> Foreign field in a form</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ForeignFieldInForm.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The foreign <glossterm linkend="tableAlias">table alias</glossterm>
+                            must thereby stand in a one-to-many or zero-to-many relation to the
+                            ancor <glossterm linkend="tableAlias">table alias</glossterm> of the
+                            group the field is contained in. To be more precise the ancor <glossterm
+                                linkend="tableAlias">table alias</glossterm> must be on the
+                            many-side of the one-to-many or zero-to-many relation.</para>
+                        <para>
+                            <glossterm linkend="foreignField">Foreign fields</glossterm> are
+                            displayed like text fields but are decorated with a magnifying-glass.
+                            When a user clicks on the magnifying-glass a <glossterm
+                                linkend="searchBrowser">search browser</glossterm> will appear
+                            enabeling the selection of a foreign record.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Properties of a foreign field</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In comparison to ordinary <glossterm linkend="DBElement">DB
+                            elements</glossterm> it is necessary to specify the properties of a
+                                <glossterm linkend="foreignField">foreign field</glossterm>
+                            particularly the <guilabel>Database</guilabel> properties.</para>
+                        <para>
+                            <figure id="fig_foreignFieldProperties">
+                                <title> Foreign field properties</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ForeignFieldProperties.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The <guilabel>Database</guilabel> properties define:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>the <guilabel>Fill direction</guilabel>,</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Foreign field to display</guilabel>,</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Foreign table alias</guilabel>,</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Relation set</guilabel> to use and</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Search browser</guilabel> to display when a user
+                                    clicks on the <glossterm linkend="foreignField">foreign
+                                    field's</glossterm> magnifying-glass.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>A detailed description of the properties <guilabel>Fill
+                            direction</guilabel> and <guilabel>Relation set</guilabel> can be found
+                            in the section <link linkend="sect_definingBrowsers"
+                            endterm="title_definingBrowsers"/>. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a <glossterm
+                                linkend="foreignField">foreign field</glossterm> in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select <guimenuitem>Foreign
+                                                  field</guimenuitem> from the <guibutton>DB
+                                                  Elements</guibutton> menu in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the foreign field at the desired
+                                                  position in the group by pressing the left mouse button.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Specify the foreign table column and confirm
+                                                  your input.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Define the <guilabel>Database</guilabel>
+                                                  properties of the foreign field.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

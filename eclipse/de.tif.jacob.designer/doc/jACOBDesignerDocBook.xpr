@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <lastOpenedFiles>
+            <file name="jACOBDesignerDocBook.xml"/>
+            <file name="GUIModelling.xml"/>
+            <file name="DefiningIntegerLongFields.xml"/>
+            <file focused="true" name="DefiningCharts.xml"/>
+            <file name="DefiningNormalElements.xml"/>
+            <file name="DefiningBinaryDocumentFields.xml"/>
+        </lastOpenedFiles>
+    </meta>
+    <projectTree name="jACOBDesignerDocBook.xpr">
+        <file name="AddUserManagement.xml"/>
+        <file name="BuildApplication.xml"/>
+        <file name="CodeForUserManagement.xml"/>
+        <file name="CreateNewProject.xml"/>
+        <file name="DataModelling.xml"/>
+        <file name="DefineApplicationDesign.xml"/>
+        <file name="DefineBrowsers.xml"/>
+        <file name="DefineDomains.xml"/>
+        <file name="DefineFormEmployee.xml"/>
+        <file name="DefineFormRealEstateObject.xml"/>
+        <file name="DefineFormRequest.xml"/>
+        <file name="DefineForms.xml"/>
+        <file name="DefineGUIHooks.xml"/>
+        <file name="DefineRelationSets.xml"/>
+        <file name="DefineTableAliases.xml"/>
+        <file name="DefineTableHooks.xml"/>
+        <file name="DefineTablePerson.xml"/>
+        <file name="DefineTableRealEstateObject.xml"/>
+        <file name="DefineTableRequest.xml"/>
+        <file name="DefineTables.xml"/>
+        <file name="DefiningBinaryDocumentFields.xml"/>
+        <file name="DefiningBrowsers.xml"/>
+        <file name="DefiningButtons.xml"/>
+        <file name="DefiningDBElements.xml"/>
+        <file name="DefiningDateTimeTimestampFields.xml"/>
+        <file name="DefiningDecimalFields.xml"/>
+        <file name="DefiningEnumFields.xml"/>
+        <file name="DefiningFields.xml"/>
+        <file name="DefiningFloatDoubleFields.xml"/>
+        <file name="DefiningForeignColumns.xml"/>
+        <file name="DefiningForeignFields.xml"/>
+        <file name="DefiningForms.xml"/>
+        <file name="DefiningGroups.xml"/>
+        <file name="DefiningIntegerLongFields.xml"/>
+        <file name="DefiningKeysIndexes.xml"/>
+        <file name="DefiningLocalColumns.xml"/>
+        <file name="DefiningNormalElements.xml"/>
+        <file name="DefiningRelationSets.xml"/>
+        <file name="DefiningTableAliases.xml"/>
+        <file name="DefiningTableHooks.xml"/>
+        <file name="DefiningTableViews.xml"/>
+        <file name="DefiningTables.xml"/>
+        <file name="DefiningTextLongtextFields.xml"/>
+        <file name="GUIModelling.xml"/>
+        <file name="GetStarted.xml"/>
+        <file name="Preface.xml"/>
+        <file name="TablePerson.xml"/>
+        <file name="TablePersonWithUserManagement.xml"/>
+        <file name="TableRealEstateObject.xml"/>
+        <file name="TableRequest.xml"/>
+        <file name="jACOBDesignerDocBook.xml"/>
+        <file name="jACOBDesignerDocGlossary.xml"/>
+    </projectTree>
+</project>

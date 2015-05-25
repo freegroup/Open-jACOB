@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_defineTables" label="1">
+    <title id="title_defineTables">Define the tables of happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In this section we want to define the data tables for our example
+                            application happyHome. We will do this with the aid of the object
+                            relationship model illustrated in figure <link
+                                linkend="fig_objectRelationModel" endterm="title_fig_objectRelationModel"/>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Tables</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Defining one table for each object of the object relationship model
+                            would be the first approach. However, contemplating the object
+                            relationship model we can see that the objects Landlord, Interested
+                            person, Receptionist and Agent are all persons. Therefore, these objects
+                            can be combined in one table: person.</para>
+                        <para>The remaining objects Real estate object and Request cannot be
+                            combined in one table. Thus, we can derive the following tables from the
+                            object relationship model:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>person</para>
+                            </listitem>
+                            <listitem>
+                                <para>realEstateObject</para>
+                            </listitem>
+                            <listitem>
+                                <para>request</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>Now we have to consider the table structures such as columns, column
+                            types, column lengths, etc.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table person</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A person will be identified by an unique id.</para>
+                        <para>Each person has a first name, a surname and a composed fullname.
+                            Furthermore he/she has an address, a phone number and optionally an
+                            e-mail address.</para>
+                        <para>A person is either an internal employee of Happy Home or an external
+                            person. If the person is an internal employee, he/she is a receptionist,
+                            an agent or both.</para>
+                        <para>An external person is a landlord, an interested person or both. An
+                            interested person is assigned to an agent with a unique id.</para>
+                        <para>This information leads to the following table structure:</para>
+                        <xi:include href="TablePerson.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table realEstateObject</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A real estate object will be identified by an unique id.</para>
+                        <para>Each real estate object has an address and a description illustrating
+                            the object itself and its location.</para>
+                        <para>A real estate object is either an apartment, a one-family house, an
+                            apartment house or a piece of land. </para>
+                        <para>It can be for sale, for rent or even for both. Therefore, a real estate object
+                            has a purchase price and a rental fee.</para>
+                        <para>Each real estate object is assigned to a landlord with a unique id.</para>
+                        <para>This information leads to the following table structure:</para>
+                        <xi:include href="TableRealEstateObject.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table request</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A request will be identified by an unique id.</para>
+                        <para>Each request is characterized by a short description and a long description.</para>
+                        <para>A request has a registration date and is uniquely assigned to a
+                            receptionist and an interested person.</para>
+                        <para>This information leads to the following table structure:</para>
+                        <xi:include href="TableRequest.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Define data source</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Before we can define the tables we will have to define a data source
+                            for these tables:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the folder <guilabel>Physical Data
+                                                  Models</guilabel> in the <guilabel>Application
+                                                  Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the menu item <guimenuitem>New physical
+                                                  data model</guimenuitem> from the right
+                                                  mouse button menu.</para>
+                                                <para>After this a dialog window will pop up asking
+                                                  you to specify a symbolic name for the data
+                                                  source containing the tables. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Enter "happyHomeDataSource" into the text
+                                                  field and confirm your input.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer will create the folder
+                                                  <guilabel>happyHomeDataSource</guilabel> within
+                                                  the folder <guilabel>Physical Data Models</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Define Tables</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the next sections we will:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTablePerson" endterm="title_defineTablePerson"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTableRealEstateObject" endterm="title_defineTableRealEstateObject"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTableRequest" endterm="title_defineTableRequest"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefineTablePerson.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineTableRealEstateObject.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineTableRequest.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect2>

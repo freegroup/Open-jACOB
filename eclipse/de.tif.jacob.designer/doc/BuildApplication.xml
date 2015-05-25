@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_buildApplication" label="3">
+    <title id="title_buildApplication">Build the <trademark>jACOB</trademark> application happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>With the completion of the <trademark>jACOB</trademark> application
+                            design we are ready for a first built of our example application happyHome.</para>
+                        <para>The creation of a <trademark>jACOB</trademark> project implies the
+                            generation of a <guilabel>build.xml</guilabel> file. This file is
+                            located in the project's root directory:</para>
+                        <para>
+                            <figure id="fig_buildXML">
+                                <title id="title_fig_buildXML"> build.xml file</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/ProjectStructure.jpg"
+                                                format="JPEG" scalefit="1" width="200" depth="100"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The file <guilabel>build.xml</guilabel> is an Ant file which contains
+                            the target <guilabel>all</guilabel>. With the aid of this target we will
+                            create a deployable <trademark>jACOB</trademark> application file.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> To do this perform the following steps: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the file <guilabel>build.xml</guilabel>
+                                                  in the <guilabel>Package Explorer</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Choose <guimenuitem>Run</guimenuitem> -
+                                                  <guimenuitem>Ant Build...</guimenuitem> from
+                                                  the right mouse button menu.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the target <guilabel>all</guilabel> in
+                                                  the dialog window and initiate the built by
+                                                  pressing the button <guibutton>Run</guibutton>.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Impact</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Hereafter, the <trademark>jACOB</trademark> application file
+                            <guilabel>happyHome-0.1.jacapp</guilabel> is generated in the newly
+                            created directory <guilabel>dist</guilabel>:</para>
+                        <para>
+                            <figure id="fig_projectStructureAfterBuild">
+                                <title>
+                                    <trademark>jACOB</trademark> project structure after the built
+                                    of the application</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ProjectStructureAfterBuilt.jpg"
+                                                format="JPEG" scalefit="1" width="200" depth="143"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The file <guilabel>happyHome-0.1.jacapp</guilabel> can be deployed
+                            with help of the <trademark>jACOB</trademark> Admin application now (see
+                            <trademark>jACOB</trademark> Admin Manual).</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The next step will be to:</para>
+                        <para>
+                                                        <xref linkend="sect_defineTableHooks" endterm="title_defineTableHooks"/>
+
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <!--    <xi:include href="DefineApplicationDesign.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+-->
+</sect1>

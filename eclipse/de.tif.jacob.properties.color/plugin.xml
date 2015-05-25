@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.tif.jacob.designer.jacobObjectModelPropertyPlugin">
+      <property_provider
+            class="de.tif.jacob.properties.color.LabelColorPropertyPlugin"
+            modelClass="de.tif.jacob.designer.model.UILabelModel">
+      </property_provider>
+   </extension>
+
+   <extension
+         point="de.tif.jacob.designer.jacobObjectModelPropertyPlugin">
+      <property_provider
+            class="de.tif.jacob.properties.color.CaptionColorPropertyPlugin"
+            modelClass="de.tif.jacob.designer.model.UICaptionModel">
+      </property_provider>
+   </extension>
+   <extension
+         point="de.tif.jacob.designer.jacobObjectModelPropertyPlugin">
+      <property_provider
+            class="de.tif.jacob.properties.color.BreadCrumbColorPropertyPlugin"
+            modelClass="de.tif.jacob.designer.model.UIBreadCrumbModel">
+      </property_provider>
+   </extension>
+   <extension
+         point="de.tif.jacob.designer.jacobObjectModelPropertyPlugin">
+      <property_provider
+            class="de.tif.jacob.properties.color.GroupColorsPropertyPlugin"
+            modelClass="de.tif.jacob.designer.model.UIGroupModel">
+      </property_provider>
+   </extension>
+
+   <extension
+         point="de.tif.jacob.designer.jacobObjectModelPropertyPlugin">
+      <property_provider
+            class="de.tif.jacob.properties.color.StackContainerColorsPropertyPlugin"
+            modelClass="de.tif.jacob.designer.model.UIStackContainerModel">
+      </property_provider>
+   </extension>
+   </plugin>

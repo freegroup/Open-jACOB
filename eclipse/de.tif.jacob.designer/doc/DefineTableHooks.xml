@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_defineTableHooks" label="5">
+    <title id="title_defineTableHooks">Define table hooks for happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the previous section we have built the application happy home. This
+                            application is deployable now. Nevertheless, we cannot register any data
+                            with this application.</para>
+                        <para>The reason is that the fullname is defined as readonly and required in
+                            the table person. Therefore, we cannot register any employees, landlords
+                            or interested persons with our current application. To solve this
+                            problem we will have to define so called <glossterm linkend="tableHook">table
+                            hooks</glossterm> composing the fullname by the first name and the
+                            surname of a person.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>What is a table hook?</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A table hook is a user-defined call-back method which is called by the
+                            <trademark>jACOB</trademark> application server while accessing the
+                            database. We can add business logic to our application by means of table hooks.</para>
+                        <para>
+                            <glossterm linkend="tableHook">Table hooks</glossterm> are always
+                            assigned to a <glossterm linkend="tableAlias">table alias</glossterm>.</para>
+                        <para>
+                            <trademark>jACOB</trademark> offers four different <glossterm
+                                linkend="tableHook">table hooks</glossterm> to implement business
+                            logic: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>beforeCommitAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterCommitAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterNewAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterDeleteAction</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Event handler</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>These four <glossterm linkend="tableHook">table hooks</glossterm> are
+                            combined in an event handler. An event handler class can be generated for each
+                                <glossterm linkend="tableAlias">table alias</glossterm>. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table hook beforeCommitAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm>
+                            beforeCommitAction is called by the <trademark>jACOB</trademark>
+                            application server during the save process of a data record entered into
+                            a form. This is exactly done before the database action commit is performed.</para>
+                        <para>We will generate an event handler and define this <glossterm
+                            linkend="tableHook">tableHook</glossterm> for our table aliases
+                            <guilabel>employee</guilabel>, <guilabel>landlord</guilabel> and
+                            <guilabel>interestedPerson</guilabel>. We will implement the composition
+                            of the fullname within these <glossterm linkend="tableHook">table hooks</glossterm>.</para>
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm>
+                            beforeCommitAction is also the right place for validity checks and
+                            assigning default values to the data record.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table hook for table alias employee</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> In the <glossterm linkend="tableHook">table hook</glossterm>
+                            beforeCommitAction of the <glossterm linkend="tableAlias">table alias</glossterm>
+                            <guilabel>employee</guilabel> we will first of all perform a validity
+                            check for the <guilabel>agent</guilabel> and
+                            <guilabel>receptionist</guilabel> flags. Then we will compose the
+                            fullname by the <guilabel>firstName</guilabel> and the
+                            <guilabel/>surname. Finally we will set the
+                            <guilabel>personType</guilabel> to "internal".</para>
+                        <para>This leads to the following Java code:</para>
+                        <programlisting><![CDATA[
+public void beforeCommitAction(
+  IDataTableRecord tableRecord, 
+  IDataTransaction transaction) throws Exception
+{
+  // check agent and receptionist flags
+  boolean isAgent =
+    tableRecord.getintValue("agent") != 0;
+  boolean isReceptionist = 
+    tableRecord.getintValue("receptionist") != 0;
+                                
+  if (!isAgent && !isReceptionist)
+    throw new UserException(
+      "The employee must be an agent or a receptionist");
+    
+  // compose full name
+  String fullname = tableRecord.getStringValue("firstName") +
+    " " + tableRecord.getStringValue("surname");
+  tableRecord.setValue(transaction, "fullname", fullname);
+    
+  // enforce the person to be an employee, i.e. internal flag
+  tableRecord.setValue(transaction, "personType", "internal");
+ }]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table hooks for the table aliases landlord and interestedPerson</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> In the <glossterm linkend="tableHook">table hook</glossterm>
+                            beforeCommitAction of the <glossterm linkend="tableAlias">table alias</glossterm>
+                            <guilabel>landlord</guilabel> we will compose the fullname and set the
+                            <guilabel>personType</guilabel> to "external".</para>
+                        <para>We will define the <glossterm linkend="tableHook">table
+                            hook</glossterm> for the <glossterm linkend="tableAlias">table alias</glossterm>
+                            <guilabel>interestedPerson</guilabel> in the same way. </para>
+                        <para>So we will have to define the table hooks as follows:</para>
+                        <programlisting><![CDATA[
+public void beforeCommitAction(
+  IDataTableRecord tableRecord, 
+  IDataTransaction transaction) throws Exception
+{
+  // compose full name
+  String fullname = tableRecord.getStringValue("firstName") +
+    " " + tableRecord.getStringValue("surname");
+  tableRecord.setValue(transaction, "fullname", fullname);
+    
+  // set the personType to external
+  tableRecord.setValue(transaction, "personType", "external");
+ }]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to generate the event handlers and to
+                            define the <glossterm linkend="tableHook">table hooks</glossterm>: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the table alias
+                                                  <guilabel>employee</guilabel> in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Choose <guimenuitem>Edit event
+                                                  handler</guimenuitem> from the right mouse
+                                                  button menu.</para>
+                                                <para>Hereupon, <trademark>jACOB</trademark>
+                                                  Designer will ask you to confirm the generation
+                                                  of the event handler.</para>
+                                                <para> After confirming <trademark>jACOB</trademark>
+                                                  Designer will generate the event handler class for the
+                                                  table alias <guilabel>employee</guilabel> and
+                                                  open it in the Java editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>In the Java editor scroll down to the table
+                                                  hook beforeCommitAction and insert the code
+                                                  listed above. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Generate the event handlers and define the
+                                                  table hooks for the table aliases
+                                                  <guilabel>landlord</guilabel> and
+                                                  <guilabel>interestedPerson</guilabel> in the
+                                                  same way. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes by clicking on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The next step will be to:</para>
+                        <para>
+                                                        <xref linkend="sect_defineGUIHooks" endterm="title_defineGUIHooks"/>
+
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect1>

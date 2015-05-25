@@ -1,0 +1,177 @@
+/**************************************************************************
+ * Project  : jacob.$application.name
+ * 
+ * THIS IS A GENERATED FILE - DO NOT CHANGE!
+ *
+ *************************************************************************/
+package $package;
+
+import de.tif.jacob.core.Context;
+import de.tif.jacob.core.data.IDataAccessor;
+import de.tif.jacob.core.data.IDataTableRecord;
+import de.tif.jacob.core.data.IDataTransaction;
+
+/**
+ * $alias.description
+ *
+ * Condition: <b>$alias.condition</b>
+ * DB table: <b>$alias.tableModel.name</b>
+ *
+ **/
+public final class $StringUtils.capitalise($alias.name)
+{
+   private $StringUtils.capitalise($alias.name)(){}
+
+   // the name of the table alias    
+   public final static String NAME = "$alias.name";
+     
+   // All field names of the table alias "$alias.name"
+#foreach( $field in $alias.fieldModels )
+   /** 
+    * $field.description<br>
+    * <br>
+    * required: <b>$field.required</b><br>
+    * type:     <b>$field.type</b><br>
+    **/
+   public final static String  $field.name.toLowerCase() = "$field.name";
+   
+#end
+     
+#foreach( $field in $alias.fieldModels )
+   #if ($field.type == "ENUM")
+     #set ($tmp = "_ENUM")
+     #set ($className= "$field.name$tmp")
+     
+   public final static class $className
+   {
+      private $className(){};
+#foreach($enum in $field.enumFieldType.enumValues)
+#set ($value = $enum)
+#if (!$Character.isJavaLetter($enum.charAt(0)))
+    #set ($enum = "_$enum")
+#end    
+#set ($enum = $StringUtils.replace($enum," ","_"))
+#set ($enum = $StringUtils.replace($enum,"°","_grad_"))
+#set ($enum = $StringUtils.replace($enum,"-","_minus_"))
+#set ($enum = $StringUtils.replace($enum,"+","_plus_"))
+#set ($enum = $StringUtils.replace($enum,"%","_percent_"))
+#set ($enum = $StringUtils.replace($enum,".","_"))
+#set ($enum = $StringUtils.replace($enum,":","_colon_"))
+#set ($enum = $StringUtils.replace($enum,"#","_hash_"))
+#set ($enum = $StringUtils.replace($enum,">","_gt_"))
+#set ($enum = $StringUtils.replace($enum,"<","_lt_"))
+#set ($enum = $StringUtils.replace($enum,"!","_ex_"))
+#set ($enum = $StringUtils.replace($enum,",","_"))
+#set ($enum = $StringUtils.replace($enum,";","_"))
+#set ($enum = $StringUtils.replace($enum,"/","_"))
+#set ($enum = $StringUtils.replace($enum,"ä","ae"))
+#set ($enum = $StringUtils.replace($enum,"ö","oe"))
+#set ($enum = $StringUtils.replace($enum,"ü","ue"))
+#set ($enum = $StringUtils.replace($enum,"Ä","Ae"))
+#set ($enum = $StringUtils.replace($enum,"Ö","Oe"))
+#set ($enum = $StringUtils.replace($enum,"Ü","Ue"))
+#set ($enum = $StringUtils.replace($enum,"*","_"))
+#set ($enum = $StringUtils.replace($enum,"~","_"))
+#set ($enum = $StringUtils.replace($enum,"?","_"))
+#set ($enum = $StringUtils.replace($enum,"&","_"))
+#set ($enum = $StringUtils.replace($enum,"\"","_"))
+#set ($enum = $StringUtils.replace($enum,"(","_"))
+#set ($enum = $StringUtils.replace($enum,")","_"))
+      public final static String $enum = "$value";
+#end
+   }
+#set($i18ncounter=0)
+#foreach($i18nkey in $field.enumFieldType.labels)
+#if ($i18nkey.substring(0,1) == "%")
+#set ($i18ncounter=1)
+#end
+#end
+#if($i18ncounter > 0)
+     #set ($index=0)
+     #set ($tmp = "_I18NKEY")
+     #set ($className= "$field.name$tmp")
+
+   /** This class contains the I18N Key of your Enum Value.<br>
+    *  Usefull to translate the enum to the locale version.<br>
+    * Usage:
+    * <pre>
+    *  String i18nLabel = jacob.resources.I18N.get(context, jacob.model.$StringUtils.capitalise($alias.name).$className._XYZ);
+    * </pre>
+    * replace _XYZ with your required enum key.
+    **/
+   public final static class $className
+   {
+      private $className(){};
+#foreach($i18nkey in $field.enumFieldType.labels)
+    #set ($enum = $field.enumFieldType.getEnumValue($index))
+    #set ($index2 = $index)
+    #set ($index = $index2 + 1)
+#if (!$Character.isJavaLetter($enum.charAt(0)))
+    #set ($enum = "_$enum")
+#end    
+#set ($enum = $StringUtils.replace($enum," ","_"))
+#set ($enum = $StringUtils.replace($enum,"°","_grad_"))
+#set ($enum = $StringUtils.replace($enum,"-","_minus_"))
+#set ($enum = $StringUtils.replace($enum,"%","_percent_"))
+#set ($enum = $StringUtils.replace($enum,".","_"))
+#set ($enum = $StringUtils.replace($enum,",","_"))
+#set ($enum = $StringUtils.replace($enum,";","_"))
+#set ($enum = $StringUtils.replace($enum,"/","_"))
+#set ($enum = $StringUtils.replace($enum,"ä","ae"))
+#set ($enum = $StringUtils.replace($enum,"ö","oe"))
+#set ($enum = $StringUtils.replace($enum,"ü","ue"))
+#set ($enum = $StringUtils.replace($enum,"Ä","Ae"))
+#set ($enum = $StringUtils.replace($enum,"Ö","Oe"))
+#set ($enum = $StringUtils.replace($enum,"Ü","Ue"))
+#set ($enum = $StringUtils.replace($enum,"+","_plus_"))
+#set ($enum = $StringUtils.replace($enum,"*","_"))
+#set ($enum = $StringUtils.replace($enum,"~","_"))
+#set ($enum = $StringUtils.replace($enum,"?","_"))
+#set ($enum = $StringUtils.replace($enum,"&","_"))
+#set ($enum = $StringUtils.replace($enum,">","_gt_"))
+#set ($enum = $StringUtils.replace($enum,"<","_lt_"))
+#set ($enum = $StringUtils.replace($enum,"#","_hash_"))
+#set ($enum = $StringUtils.replace($enum,"!","_ex_"))
+#set ($enum = $StringUtils.replace($enum,"\"","_"))
+#set ($enum = $StringUtils.replace($enum,"(","_"))
+#set ($enum = $StringUtils.replace($enum,")","_"))
+      public final static String $enum = "$i18nkey";
+#end
+   }
+#end
+   #end
+#end
+
+  /**
+   * Create a new Record within the current DataAccessor of the Context with a new transaction
+   **/
+  public static IDataTableRecord newRecord(Context context) throws Exception
+  {
+    return newRecord(context,context.getDataAccessor().newTransaction());
+  }
+
+  /**
+   * Create a new Record within the current DataAccessor of the Context and the handsover
+   * transaction.
+   **/
+  public static IDataTableRecord newRecord(Context context, IDataTransaction trans) throws Exception
+  {
+    return newRecord(context.getDataAccessor(),trans);
+  }
+
+  /**
+   * Create a new Record within the hands over DataAccessor and a new transaction.
+   **/
+  public static IDataTableRecord newRecord(IDataAccessor acc) throws Exception
+  {
+    return acc.getTable(NAME).newRecord(acc.newTransaction());
+  }
+
+  /**
+   * Create a new Record within the hands over DataAccessor and transaction.
+   **/
+  public static IDataTableRecord newRecord(IDataAccessor acc, IDataTransaction trans) throws Exception
+  {
+    return acc.getTable(NAME).newRecord(trans);
+  }
+}

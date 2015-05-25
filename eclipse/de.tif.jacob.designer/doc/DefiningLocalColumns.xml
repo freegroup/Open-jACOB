@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_definingLocalColumns" label="1">
+    <title id="title_definingLocalColumns">Defining local columns</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Local columns of a <glossterm linkend="browser">browser</glossterm>
+                            show fields of the anchor table.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Attributes of local columns</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <figure id="fig_localColumnAttributes">
+                                <title> Local column attributes</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/LocalColumnAttributes.jpg"
+                                                format="JPEG" scalefit="1" width="240" depth="90"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para> For local columns you have to define the following attributes:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>the unique <guilabel>Name</guilabel> of the browser column,</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Label</guilabel> of the browser column displayed
+                                    in the <glossterm linkend="browser">browsers</glossterm> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>the name of the anchor table's <guilabel>Column</guilabel>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

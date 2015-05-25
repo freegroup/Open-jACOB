@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_definingBrowsers" label="4">
+    <title id="title_definingBrowsers">Defining browsers</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <glossterm linkend="browser">Browsers</glossterm> list data records in a
+                            tabular form. The browser definition determines which table columns are
+                            displayed in which order. Thus <glossterm
+                            linkend="browser">browsers</glossterm> represent particular views on a
+                                table/<glossterm linkend="tableAlias">table alias</glossterm>.</para>
+                        <para>
+                            <glossterm linkend="browser">Browsers</glossterm> will appear all along
+                            in an application in form of <glossterm linkend="searchBrowser">search
+                            browsers</glossterm>, <glossterm linkend="informBrowser">inform
+                            browsers</glossterm> and <glossterm
+                                linkend="foreignFieldBrowser">foreign field browsers</glossterm>.</para>
+                        <para>A browser is uniquely assigned to a <glossterm
+                                linkend="tableAlias">table alias</glossterm>. Therefore, the
+                            <trademark>jACOB</trademark> designer automatically creates for each new
+                                <glossterm linkend="tableAlias">table alias</glossterm> a <glossterm
+                            linkend="browser">browser</glossterm>. These can be found in the folder
+                            <guilabel>Browsers</guilabel> in the <guilabel>Application
+                            Outline</guilabel> view. </para>
+                        <para>You can define more than one browsers on one <glossterm
+                                linkend="tableAlias">table alias</glossterm>. Thus you can create
+                            different views on one <glossterm linkend="tableAlias">table
+                            alias</glossterm> for e.g. different forms.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Local and foreign columns</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> A browser can show local columns and foreign columns.</para>
+                        <para>Local columns are columns of the anchor <glossterm
+                                linkend="tableAlias">table alias</glossterm>, i.e. the <glossterm
+                                linkend="tableAlias">table alias</glossterm> assigned to the browser.</para>
+                        <para>Foreign columns are columns of a foreign <glossterm
+                                linkend="tableAlias">table alias</glossterm> related to the anchor
+                                <glossterm linkend="tableAlias">table alias</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Editor</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <glossterm linkend="browser">Browsers</glossterm> are defined with the
+                            aid of the browser editor:</para>
+                        <para>
+                            <figure id="fig_browserEditor">
+                                <title> Browser editor</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/BrowserEditor.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para> The editor lists the columns displayed by the browser in the listbox
+                                <guilabel>Column list</guilabel> in the editor's left area.</para>
+                        <para>By the aid of the GUI buttons in the middle area you can add and
+                            remove columns from the browser or change the order in which the columns
+                            will be displayed.</para>
+                        <para>The editor's right area shows the attributes of the column selected in
+                            the listbox. The attributes of local columns differ from the attributes
+                            of foreign columns. The column type specific attributes will be
+                            explained in the following sections:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingLocalColumns" endterm="title_definingLocalColumns"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingForeignColumns" endterm="title_definingForeignColumns"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> There are two entry points for the creation of a <glossterm
+                            linkend="browser">browser</glossterm>. A new <glossterm
+                            linkend="browser">browser</glossterm> can be created via the anchor
+                                <glossterm linkend="tableAlias">table alias</glossterm> or via the
+                            <guilabel>Browsers</guilabel> folder in the <guilabel>Application
+                            Outline</guilabel> view. The following procedure describes the first alternative:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the anchor table alias in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the new browser by selecting
+                                                  <guimenuitem>New browser</guimenuitem> from
+                                                  the right mouse button menu of the table alias. </para>
+                                                <para>Specify a name for your browser and confirm.</para>
+                                                <para> Hereupon, <trademark>jACOB</trademark>
+                                                  Designer creates the browser and opens the
+                                                  <guilabel>Browser</guilabel> editor. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the to be displayed local columns from the
+                                                  anchor table alias to the <guilabel>Column list</guilabel>.</para>
+                                                <para>Therefor, press the button <guibutton>Add
+                                                  column</guibutton> and select a column from the
+                                                  dialog window.</para>
+                                                <para>Specify the attributes as explained in <link
+                                                  linkend="sect_definingLocalColumns" endterm="title_definingLocalColumns"/>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the to be displayed foreign columns from
+                                                  the foreign table alias to the <guilabel>Column list</guilabel>.</para>
+                                                <para>Therefor, press the button <guibutton>Add
+                                                  table</guibutton> and select the foreign table
+                                                  containing the column to be displayed.</para>
+                                                <para>Specify the attributes as explained in <link
+                                                  linkend="sect_definingForeignColumns" endterm="title_definingForeignColumns"/>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Bring the columns into the order you want them displayed.</para>
+                                                <para>Therefor select the appropriate column and use
+                                                  the buttons <guibutton>Up</guibutton> and
+                                                  <guibutton>Down</guibutton> to move it's
+                                                  position within the listbox <guilabel>Column list</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningLocalColumns.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningForeignColumns.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect1>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile de.tif.jacob.feature" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../de.tif.jacob.common" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.blooper" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.designer" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.project" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.module" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.module.email" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.spotlightsearch" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.module.wiki" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.module.reportdesigner" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.docgen" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.blank" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.tutorial" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.address" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.herb" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.pms" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.email" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.verside" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.blooper" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.quintus" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.projectbuilder.docfinder" target="build.jars"/>
+	</target>
+</project>

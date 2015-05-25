@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd" [
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<book>
+
+    <title><trademark>jACOB</trademark> Designer</title>
+    <subtitle>Manual</subtitle>
+    <xi:include href="GetStarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DataModelling.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="CodeForUserManagement.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="jACOBDesignerDocGlossary.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</book>

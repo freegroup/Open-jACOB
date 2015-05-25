@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="application.jad"
+            id="de.tif.jacob.docgen.contribution1">
+         <menu
+               label="jACOB"
+               path="additions"
+               id="de.tif.jacob.docgen.menu1">
+            <separator name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Create DB documentation for Wiki"
+               class="de.tif.jacob.docgen.popup.actions.CreateWikiTableDocumentationAction"
+               menubarPath="de.tif.jacob.docgen.menu1/group1"
+               enablesFor="1"
+               id="de.tif.jacob.docgen.newAction">
+         </action>
+         <action
+               label="Create DB documentation"
+               class="de.tif.jacob.docgen.popup.actions.CreateTableDocumentationAction"
+               menubarPath="de.tif.jacob.docgen.menu1/group1"
+               enablesFor="1"
+               id="de.tif.jacob.docgen.popup.actions.CreateTableDocumentationAction">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

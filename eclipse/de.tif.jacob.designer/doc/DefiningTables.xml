@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_definingTables" label="1">
+    <title id="title_definingTables">Defining tables</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Tables contain the actual physical data. In order that a
+                            <trademark>jACOB</trademark> application can access these data the
+                            structures of the tables has to be known by the application. Therefore,
+                            the table structures have to be defined in the application design of the
+                            <trademark>jACOB</trademark> application.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Editor</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Table structures are defined with the aid of the table editor. The
+                            table structure is spread over three different tabs:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guilabel>Common</guilabel>, </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Fields</guilabel> and </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Keys</guilabel>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Common table properties</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <figure id="fig_tableEditorCommon">
+                                <title> Common properties of a table</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/TableEditorCommon.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para> The tab <guilabel>Common</guilabel> comprises the common properties
+                            of a table such as:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para> the <guilabel>Table name</guilabel> within the
+                                    <trademark>jACOB</trademark> application design; </para>
+                            </listitem>
+                            <listitem>
+                                <para> the <guilabel>Physical table name</guilabel> within the data
+                                    source; </para>
+                            </listitem>
+                            <listitem>
+                                <para> a short <guilabel>Description</guilabel> of the table;</para>
+                            </listitem>
+                            <listitem>
+                                <para> eventually a <guilabel>Representative field</guilabel>
+                                    denoting a record of the table in a human understandable manner and</para>
+                            </listitem>
+                            <listitem>
+                                <para> eventually a longtext <guilabel>History field</guilabel>
+                                    recording the modifications on fields with an activated history flag.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table fields</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> The table's fields are listed on the tab <guilabel>Fields</guilabel>.
+                            A detailed description of this tab can be found in the section <link
+                                linkend="sect_definingFields" endterm="title_definingFields"/>. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Keys and indexes</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Keys and <glossterm linkend="index">indexes</glossterm> defined on
+                            the table are listed on the tab <guilabel>Keys</guilabel>. A detailed
+                            description of this tab can be found in the section <link
+                                linkend="sect_definingKeysIndexes"
+                            endterm="title_definingKeysIndexes"/>. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the data source containing the table to
+                                                  be defined in the <guilabel>Application
+                                                  Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the menu item <guimenuitem>New
+                                                  table</guimenuitem> from the right mouse button menu.</para>
+                                                <para>After this a dialog window will pop up asking
+                                                  you to specify the table name. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Enter the table name into the text field and
+                                                  confirm your input.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer will create a table object within the
+                                                  data source and open the table editor in the
+                                                  right upper screen area.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Define the common properties of the table
+                                                  within the table editor's
+                                                  <guilabel>Common</guilabel> tab.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the fields of the table as explained in
+                                                  <link linkend="sect_definingFields" endterm="title_definingFields"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Define the table's keys and indexes as
+                                                  described in <link
+                                                  linkend="sect_definingKeysIndexes" endterm="title_definingKeysIndexes"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Impacts</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <trademark>jACOB</trademark> designer automatically creates for
+                            each new table one <glossterm linkend="tableAlias">table
+                            alias</glossterm> and <glossterm linkend="browser">browser</glossterm>. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningKeysIndexes.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect1>

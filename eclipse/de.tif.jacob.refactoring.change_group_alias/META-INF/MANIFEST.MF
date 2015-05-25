@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Group Table Alias Refactoring
+Bundle-SymbolicName: de.tif.jacob.refactoring.change_group_alias;singleton:=true
+Bundle-Version: 2.10.0
+Bundle-Activator: de.tif.jacob.refactoring.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.common,
+ de.tif.jacob.designer,
+ org.eclipse.gef;bundle-version="3.5.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

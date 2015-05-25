@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+<rule posX="110" posY="205" ruleId="start">
+<businessObjectMethod nextRuleId="py0u5bUxGr" businessClass="unused" methodName="unused" xmlns="">
+</businessObjectMethod>
+</rule>
+<rule posX="243" posY="204" ruleId="py0u5bUxGr">
+<businessObjectMethod nextRuleId="vz2r5ktZuh" businessClass="de.tif.jacob.ruleengine.bo.FieldModifier" methodName="setLinkedRecord" xmlns="">
+<parameter>bug</parameter>
+<parameter>creator</parameter>
+<parameter>{USERID}</parameter>
+</businessObjectMethod>
+</rule>
+<rule posX="507" posY="204" ruleId="vz2r5ktZuh">
+<businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.End" methodName="nop" xmlns="">
+</businessObjectMethod>
+</rule>
+</ruleset>

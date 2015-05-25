@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+<rule posX="114" posY="227" ruleId="start">
+<businessObjectMethod nextRuleId="5rV2b6eRpT" businessClass="unused" methodName="unused" xmlns="">
+</businessObjectMethod>
+</rule>
+<rule posX="609" posY="227" ruleId="ka5oNEQuoQ">
+<businessObjectMethod nextRuleId="QSa1TmCJiB" businessClass="de.tif.jacob.ruleengine.bo.Email" methodName="send" xmlns="">
+<parameter>db_field(owner.email)</parameter>
+<parameter>Bug has been assigned to you</parameter>
+<parameter>Dear db_field(owner.fullname)
+
+the bug with the id [db_field(bug.pkey)] has been assigned to
+you.
+
+Greetings
+
+         jACOB
+
+</parameter>
+</businessObjectMethod>
+</rule>
+<rule posX="263" posY="227" ruleId="5rV2b6eRpT">
+<decision decisionClass="de.tif.jacob.ruleengine.decision.FieldDecision" methodName="fieldHasChanged" signature="undefined" type="boolean" xmlns="">
+<conditionalExit value="false" ruleId="QSa1TmCJiB"/>
+<conditionalExit value="true" ruleId="scm8nNB6mm"/>
+<parameter>bug.owner_key</parameter>
+</decision>
+</rule>
+<rule posX="468" posY="227" ruleId="scm8nNB6mm">
+<decision decisionClass="de.tif.jacob.ruleengine.decision.FieldDecision" methodName="fieldIsSet" signature="undefined" type="boolean" xmlns="">
+<conditionalExit value="false" ruleId="QSa1TmCJiB"/>
+<conditionalExit value="true" ruleId="ka5oNEQuoQ"/>
+<parameter>owner.email</parameter>
+</decision>
+</rule>
+<rule posX="795" posY="297" ruleId="QSa1TmCJiB">
+<businessObjectMethod nextRuleId="Bns7wyprln" businessClass="de.tif.jacob.ruleengine.bo.Funnel" methodName="nop" xmlns="">
+</businessObjectMethod>
+</rule>
+<annotation>
+<x>193</x>
+<y>176</y>
+<width>577</width>
+<height>180</height>
+<data>Send a notification if the owner of a bug has been changed</data>
+<color>00FFAE</color>
+</annotation>
+<rule posX="1062" posY="297" ruleId="5A85dcRaG9">
+<decision decisionClass="de.tif.jacob.ruleengine.decision.EnumDecision" methodName="getValue" signature="undefined" type="enum" xmlns="">
+<conditionalExit value="open"/>
+<conditionalExit value="verified"/>
+<conditionalExit value="closed" ruleId="VfOTgNkz3X"/>
+<parameter>bug</parameter>
+<parameter>state</parameter>
+</decision>
+</rule>
+<rule posX="1277" posY="347" ruleId="VfOTgNkz3X">
+<businessObjectMethod nextRuleId="HLgXdt2QAz" businessClass="de.tif.jacob.ruleengine.bo.Email" methodName="send" xmlns="">
+<parameter>db_field(creator.email)</parameter>
+<parameter>Your bug has been closed</parameter>
+<parameter>Dear db_field(creator.fullname)
+
+your bug with the id [db_field(bug.pkey)] has been closed
+today.
+
+
+Greetings
+
+        jACOB
+
+Bug Information:
+------------------------------------------------------------------
+Bug Id: db_field(bug.pkey)
+State: db_field(bug.state)
+Grade: db_field(bug.grade)
+Subject db_field(bug.title)
+
+db_field(bug.description)</parameter>
+</businessObjectMethod>
+</rule>
+<rule posX="1502" posY="432" ruleId="HLgXdt2QAz">
+<businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.End" methodName="nop" xmlns="">
+</businessObjectMethod>
+</rule>
+<rule posX="909" posY="297" ruleId="Bns7wyprln">
+<decision decisionClass="de.tif.jacob.ruleengine.decision.FieldDecision" methodName="fieldIsSet" signature="undefined" type="boolean" xmlns="">
+<conditionalExit value="false" ruleId="WsaceIpPOM"/>
+<conditionalExit value="true" ruleId="5A85dcRaG9"/>
+<parameter>creator.email</parameter>
+</decision>
+</rule>
+<rule posX="1306" posY="432" ruleId="WsaceIpPOM">
+<businessObjectMethod nextRuleId="HLgXdt2QAz" businessClass="de.tif.jacob.ruleengine.bo.Funnel" methodName="nop" xmlns="">
+</businessObjectMethod>
+</rule>
+</ruleset>

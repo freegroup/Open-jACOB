@@ -1,0 +1,6 @@
+A scheduled job which scannes a well defined directory
+and create a record in the database.
+
+This is a template for automatic call/task creation via
+filesystem interface.
+

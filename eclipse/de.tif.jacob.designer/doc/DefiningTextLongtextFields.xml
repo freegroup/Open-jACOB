@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_definingTextLongtextFields" label="1">
+    <title id="title_definingTextLongtextFields">Defining text and longtext fields</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Table fields of the type <guimenuitem>TEXT</guimenuitem> are compared
+                            to fields of the type <guimenuitem>LONGTEXT</guimenuitem> limited in
+                            their length. However, it is possible to search for strings in text
+                            fields but not in longtext fields. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Type specific field details</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <figure id="fig_textFieldDetails">
+                                <title> Text field details</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/TextFieldDetails.jpg"
+                                                format="JPEG" scalefit="1" width="237" depth="107"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Therefore, you have to define the following type specific details when
+                            creating a text field:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>a <guilabel>Default value</guilabel> can be declared;</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Search mode</guilabel> has to be defined;</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Max length</guilabel> of the text has to be specified;</para>
+                            </listitem>
+                            <listitem>
+                                <para>enabling the <guilabel>Fix length</guilabel> check box
+                                    implicates that the text field will be set up as CHAR field in a
+                                    relational data base instead as VARCHAR field and</para>
+                            </listitem>
+                            <listitem>
+                                <para>activating the <guilabel>Case sensitive</guilabel> check box
+                                    enables a case sensitive search.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Search mode</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The search mode defines how character strings are searched in a text
+                            field during a query. The search mode can be:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>unbound</guimenuitem>, i.e. it will be searched for
+                                    entries containing the search string in the appropriate text
+                                    field; </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>leftbound</guimenuitem>, i.e. it will be searched
+                                    for entries beginning with the search string; </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>rightbound</guimenuitem>, i.e. it will be searched
+                                    for entries ending with the search string. </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

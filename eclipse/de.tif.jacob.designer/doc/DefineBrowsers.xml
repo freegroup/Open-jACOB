@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_defineBrowsers" label="4">
+    <title id="title_defineBrowsers">Define the browsers of happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In this section we want to define the <glossterm
+                            linkend="browser">browsers</glossterm> for our example application happyHome.</para>
+                        <para>A <glossterm linkend="browser">browser</glossterm> lists data records
+                            in a tabular form. The browser definition determines which table columns
+                            are displayed in which order.</para>
+                        <para>
+                            <glossterm linkend="browser">Browsers</glossterm> will appear all along
+                            in an application in form of <glossterm linkend="searchBrowser">search
+                            browsers</glossterm>, <glossterm linkend="informBrowser">inform
+                            browsers</glossterm> and <glossterm
+                                linkend="foreignFieldBrowser">foreign field browsers</glossterm>.</para>
+                        <para>A browser is uniquely assigned to a <glossterm
+                                linkend="tableAlias">table alias</glossterm>. Therefore, the
+                            <trademark>jACOB</trademark> designer automatically creates for each new
+                                <glossterm linkend="tableAlias">table alias</glossterm> a <glossterm
+                            linkend="browser">browser</glossterm>. These can be found in the folder
+                            <guilabel>Browsers</guilabel> in the <guilabel>Application
+                            Outline</guilabel> view. </para>
+                        <para>
+                            <figure id="fig_browsers">
+                                <title id="title_fig_browsers"> Browsers of happyHome</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/DefineBrowsers.jpg"
+                                                format="JPEG" scalefit="1" width="220" depth="240"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Initially, these browsers display only one column, the <glossterm
+                                linkend="primaryKey">primary key</glossterm> of the appropriate
+                            table. In the following we will extend the definitions of these
+                                <glossterm linkend="browser">browsers</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Definition of browsers on the table person</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>We want to give a unique look to all browsers which are assigned to a
+                            table alias on the table person. These are the browsers:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>agentBrowser</para>
+                            </listitem>
+                            <listitem>
+                                <para>landlordBrowser</para>
+                            </listitem>
+                            <listitem>
+                                <para>personBrowser</para>
+                            </listitem>
+                            <listitem>
+                                <para>receptionistBrowser</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>They should show the following table columns in the following order:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>surname</para>
+                            </listitem>
+                            <listitem>
+                                <para>firstName</para>
+                            </listitem>
+                            <listitem>
+                                <para>address</para>
+                            </listitem>
+                            <listitem>
+                                <para>phone</para>
+                            </listitem>
+                            <listitem>
+                                <para>id</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Definition of the browser on the table realEstateObject</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The browser on the table realEstateObject should show the following
+                            table columns in the following order:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>objectType</para>
+                            </listitem>
+                            <listitem>
+                                <para>saleOrRent</para>
+                            </listitem>
+                            <listitem>
+                                <para>purchasePrice</para>
+                            </listitem>
+                            <listitem>
+                                <para>rentalFee</para>
+                            </listitem>
+                            <listitem>
+                                <para>fullname of the landlord (retrieved from the related table
+                                    alias landlord)</para>
+                            </listitem>
+                            <listitem>
+                                <para>address</para>
+                            </listitem>
+                            <listitem>
+                                <para>id</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Definition of the browser on the table request</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The browser on the table request should show the following table
+                            columns in the following order:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>fullname of the receptionist (retrieved from the related table
+                                    alias receptionist)</para>
+                            </listitem>
+                            <listitem>
+                                <para>registrationDate</para>
+                            </listitem>
+                            <listitem>
+                                <para>shortDescription</para>
+                            </listitem>
+                            <listitem>
+                                <para>fullname of the interested person (retrieved from the related
+                                    table alias interestedPerson)</para>
+                            </listitem>
+                            <listitem>
+                                <para>id</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to obtain these browser definitions:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the <guilabel>agentBrowser</guilabel>
+                                                  in the <guilabel>Application Outline</guilabel>
+                                                  view by double clicking the browser icon.</para>
+                                                <para>The browser definition will be opened in the
+                                                  <guilabel>Browser</guilabel> editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Press the button <guibutton>Add
+                                                  column</guibutton> and select the table column
+                                                  <guilabel>surname</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>To position <guilabel>surname</guilabel>
+                                                  before <guilabel>id</guilabel> press the button
+                                                  <guibutton>Up</guibutton>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add and position the columns
+                                                  <guilabel>firstName</guilabel>,
+                                                  <guilabel>address</guilabel> and
+                                                  <guilabel>phone</guilabel> in the same way. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Edit the browser definitions of the
+                                                  <guilabel>landlordBrowser</guilabel>,
+                                                  <guilabel>personBrowser</guilabel> and
+                                                  <guilabel>receptionistBrowser</guilabel> like
+                                                  the <guilabel>agentBrowser</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Edit the
+                                                  <guilabel>realEstateObjectBrowser</guilabel> as
+                                                  defined above.</para>
+                                                <para>However, add the table column
+                                                  <guilabel>fullname</guilabel> as foreign browser column.</para>
+                                                <para>Therefor press the button <guibutton>Add
+                                                  table</guibutton> instead of the button
+                                                  <guibutton>Add column</guibutton> and select
+                                                  the table alias <guilabel>landlord</guilabel>.</para>
+                                                <para>Set the foreign browser column
+                                                  <guilabel>Name</guilabel> to "browserLandlord",
+                                                  the <guilabel>Label</guilabel> to "Landlord",
+                                                  the <guilabel>Relationset to use</guilabel> to
+                                                  "requestRelations" and the <guilabel>Display
+                                                  column</guilabel> to "fullname". </para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineBrowsers1.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Edit the <guilabel>requestBrowser</guilabel>
+                                                  as defined above.</para>
+                                                <para>Add the table columns
+                                                  <guilabel>fullname</guilabel> as foreign browser
+                                                  columns of the table aliases receptionist and
+                                                  interestedPerson respectively. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>8</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we have defined the <glossterm
+                            linkend="browser">browsers</glossterm> of happy home.</para>
+                        <para>The next step will be to:</para>
+                        <para>
+                            <xref linkend="sect_defineForms" endterm="title_defineForms"/>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

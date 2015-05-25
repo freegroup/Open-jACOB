@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Spotlight Search Configuration
+Bundle-SymbolicName: de.tif.jacob.properties.spotlightsearch;singleton:=true
+Bundle-Version: 1.0.5
+Bundle-Activator: de.tif.jacob.properties.spotlightsearch.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.designer,
+ de.tif.jacob.common,
+ org.eclipse.ui.views
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: library.jar

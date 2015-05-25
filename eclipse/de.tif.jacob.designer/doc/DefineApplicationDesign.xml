@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_defineApplicationDesign" label="2">
+    <title id="title_defineApplicationDesign">Define the <trademark>jACOB</trademark> application
+        design of happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the next sections we want to develop a <trademark>jACOB</trademark>
+                            application design for our example application happyHome.</para>
+                        <para>As already stated in the chapter
+
+                            <!--<link linkend="chap_preface"
+                            endterm="title_chap_preface"/>-->
+                            the <trademark>jACOB</trademark> application design defines the data
+                            model, forms, domains, etc. of a <trademark>jACOB</trademark> application.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Data model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> The first thing we will have to do is to define the data model. We
+                            will do this with the aid of an object relationship model.</para>
+                        <para>By means of the process model illustrated in figure <link
+                                linkend="fig_processModel" endterm="title_fig_processModel"/> we can
+                            easily derive the appropriate object relationship model.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Objects</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>We are dealing with six different objects:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>Landlord</para>
+                            </listitem>
+                            <listitem>
+                                <para>Real estate object</para>
+                            </listitem>
+                            <listitem>
+                                <para>Interested person</para>
+                            </listitem>
+                            <listitem>
+                                <para>Receptionist</para>
+                            </listitem>
+                            <listitem>
+                                <para>Agent</para>
+                            </listitem>
+                            <listitem>
+                                <para>Request</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Relationships</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>These objects are standing in relation to each other:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>Landlord - Real estate object:</para>
+                                <para>A landlord offers one or more real estate objects for sale. But one
+                                    real estate object uniquely belongs to one landlord.</para>
+                            </listitem>
+                            <listitem>
+                                <para>Interested person - Agent:</para>
+                                <para>An interested person has one agent as contact person. But one agent can
+                                    be in charge for one or more interested persons.</para>
+                            </listitem>
+                            <listitem>
+                                <para>Interested person - Request:</para>
+                                <para>An interested person can make one or more requests. But a request is
+                                    uniquely assigned to one interested person.</para>
+                            </listitem>
+                            <listitem>
+                                <para>Request - Real estate object:</para>
+                                <para>A request is uniquely assigned to one real estate object.
+                                    However, one real estate object can be the subject of one or
+                                    more requests.</para>
+                            </listitem>
+                            <listitem>
+                                <para>Request - Receptionist</para>
+                                <para>A request has been registered by one receptionist. But one
+                                    receptionist can register multiple requests.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Object relationship model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>We can illustrate these object relationships as follows:</para>
+                        <para>
+                            <figure id="fig_objectRelationModel">
+                                <title id="title_fig_objectRelationModel"> Object relationship model
+                                    of happyHome</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ObjectRelationModel.jpg"
+                                                format="JPEG" scalefit="1" width="340" depth="248"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> In the next sections we will define step by step the data model:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTables" endterm="title_defineTables"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTableAliases" endterm="title_defineTableAliases"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineRelationSets" endterm="title_defineRelationSets"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineBrowsers" endterm="title_defineBrowsers"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>After this we will:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineForms" endterm="title_defineForms"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineDomains" endterm="title_defineDomains"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefineTables.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineTableAliases.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineRelationSets.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineBrowsers.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineForms.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineDomains.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect1>

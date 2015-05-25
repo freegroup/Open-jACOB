@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Copy Style
+Bundle-SymbolicName: de.tif.jacob.properties.copy_style;singleton:=true
+Bundle-Version: 2.10.0
+Bundle-Activator: de.tif.jacob.properties.copy_style.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.common;bundle-version="2.9.6",
+ de.tif.jacob.designer;bundle-version="2.9.10"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

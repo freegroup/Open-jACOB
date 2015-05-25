@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile de.tif.jacob.properties.feature" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.defaultJavaPackage" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.tablealias" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.informbrowser_actionrepresentation" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.copy_style" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.breadcrumb_decoration" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.ensure_visible" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.buttonbar" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.properties.color" target="build.jars"/>
+	</target>
+</project>

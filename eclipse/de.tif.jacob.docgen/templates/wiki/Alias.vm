@@ -1,0 +1,37 @@
+=='' '''$table.name''' ''==
+$description
+
+'''Table alias used in the application'''
+#foreach( $alias in $aliases )
+* $alias.name
+#end
+
+'''Table Definition'''
+{| cellpadding="5" cellspacing="0"  style="border:1px solid #efefef;"
+|+
+| style="background:#efefef;" | '''Field name'''
+| style="background:#efefef;" | '''Type'''
+| style="background:#efefef;" | '''Required'''
+| style="background:#efefef;" | '''Description'''
+|-
+#foreach( $field in $table.fieldModels )
+| $field.name
+| $field.type
+| $field.required
+| $field.description
+|-
+#end
+|}
+
+#foreach( $field in $table.fieldModels )
+#if($field.type == "ENUM")
+'''Constraint for Enum Field ''$field.name'' '''
+
+#foreach( $enum in $field.getEnumFieldType().getEnumValues() )
+* $enum
+#end
+#end
+#end
+
+<hr>
+

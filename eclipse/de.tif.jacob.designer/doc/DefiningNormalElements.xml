@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingNormalElements" label="5">
+    <title id="title_definingNormalElements">Defining normal elements in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In comparison to <glossterm linkend="DBElement">DB
+                            elements</glossterm> normal Elements are GUI elements that are not
+                            directly tied to a table field, but encapsulate a certain business logic.</para>
+                        <para>They can show e.g. calculated values and are normally controlled by
+                                <glossterm linkend="GUIHook">GUI hooks</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Normal elements</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The following <guibutton>Normal Elements</guibutton> exist: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Text</guimenuitem> and <guimenuitem>Long
+                                    text</guimenuitem> fields: </para>
+                                <para>can display e.g. the calculated total price of an order.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Checkboxes</guimenuitem>:</para>
+                                <para>can show e.g. a calculated state.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Comboboxes</guimenuitem>:</para>
+                                <para>can e.g. restrict the selection of enum values due to the
+                                    values of other fields in the form.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Time</guimenuitem>, <guimenuitem>Date</guimenuitem>
+                                    and <guimenuitem>Timestamp</guimenuitem> fields:</para>
+                                <para>can e.g. display calculated delivery dates.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Labels</guimenuitem>:</para>
+                                <para>give you the possibility to define captions somewhere in a
+                                    group, e.g. an &#8364; sign behind a text field containing a price.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Own Draw</guimenuitem> elements:</para>
+                                <para>make it possible to draw your own images, symbols in a group,
+                                    e.g. a progress bar.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a <glossterm
+                                linkend=" normalElement">normal element</glossterm> in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the desired normal element from the
+                                                  <guibutton>Normal Elements</guibutton> menu
+                                                  in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the normal element at the desired
+                                                  position in the group edited by pressing the
+                                                  left mouse button.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the appropriate business logic to the
+                                                  normal element by creating and editing the event
+                                                  handler of the GUI element as described in the
+                                                  section ....ADD link to section!!!</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

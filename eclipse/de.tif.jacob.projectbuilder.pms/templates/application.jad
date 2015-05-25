@@ -1,0 +1,1450 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.7" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="account" historyField="history" name="account" representativeField="loginname">
+      <Field dbName="pkey" history="false" label="%ACCOUNT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="true" label="%ACCOUNT.LOGINNAME" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="true" label="%ACCOUNT.FULLNAME" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="%ACCOUNT.PASSWORD" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="foto" history="true" label="%ACCOUNT.FOTO" name="foto" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="email" history="true" label="%ACCOUNT.EMAIL" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="history" history="false" label="%ACCOUNT.HISTORY" name="history" readonly="true" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="comment" history="false" label="%ACCOUNT.COMMENT" name="comment" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="process" historyField="history" name="process" representativeField="title">
+      <Field dbName="pkey" history="false" label="%PROCESS.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="valid_from" history="true" label="%PROCESS.VALID_FROM" name="valid_from" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="valid_to" history="true" label="%PROCESS.VALID_TO" name="valid_to" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="title" history="true" label="%PROCESS.TITLE" name="title" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="tags" history="true" label="%PROCESS.TAGS" name="tags" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Suchbegriff in dem der Prozess sich einordnen l�t</Value>
+        </Property>
+      </Field>
+      <Field dbName="remark" history="true" label="%PROCESS.REMARK" name="remark" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Aufz�lung und Besonderheiten oder bemerkenswerte Vorkommnisse</Value>
+        </Property>
+      </Field>
+      <Field dbName="responsible_remark" history="true" label="%PROCESS.RESPONSIBLE_REMARK" name="responsible_remark" readonly="false" required="false">
+        <LongText/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Bemerkung ber den Verantwortlichen</Value>
+        </Property>
+      </Field>
+      <Field dbName="aspect" history="true" label="%PROCESS.ASPECT" name="aspect" readonly="false" required="false">
+        <LongText/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Aufz�lungund Zusammenfassung der Hauptt�igkeit und Schwerpunkte des Prozesses</Value>
+        </Property>
+      </Field>
+      <Field dbName="description" history="true" label="%PROCESS.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Die in dem Prozess angewandten Verfahren und durchgefhrten T�igkeiten werden ausfhrlich und hinreichen beschrieben</Value>
+        </Property>
+      </Field>
+      <Field dbName="process_responsible_key" history="true" label="%PROCESS.PROCESS_RESPONSIBLE_KEY" name="process_responsible_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="process_owner_key" history="true" label="%PROCESS.PROCESS_OWNER_KEY" name="process_owner_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="process_owner_substitute_key" history="true" label="%PROCESS.PROCESS_OWNER_SUBSTITUTE_KEY" name="process_owner_substitute_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="parent_process_key" history="true" label="%PROCESS.PARENT_PROCESS_KEY" name="parent_process_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="guideline" history="true" label="%PROCESS.GUIDELINE" name="guideline" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="risk_evaluation" history="true" label="%PROCESS.RISK_EVALUATION" name="risk_evaluation" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="case_of_need" history="true" label="%PROCESS.CASE_OF_NEED" name="case_of_need" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="history" history="false" label="%PROCESS.HISTORY" name="history" readonly="true" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="process_responsible_FKey">
+        <Field>process_responsible_key</Field>
+      </ForeignKey>
+      <ForeignKey name="process_owner_FKey">
+        <Field>process_owner_key</Field>
+      </ForeignKey>
+      <ForeignKey name="process_owner_substitute_FKey">
+        <Field>process_owner_substitute_key</Field>
+      </ForeignKey>
+      <ForeignKey name="parent_process_FKey">
+        <Field>parent_process_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="workgroup" historyField="history" name="workgroup" representativeField="name">
+      <Field dbName="pkey" history="false" label="%WORKGROUP.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="true" label="%WORKGROUP.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="phone" history="true" label="%WORKGROUP.PHONE" name="phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="history" history="false" label="%WORKGROUP.HISTORY" name="history" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="comment" history="false" label="%WORKGROUP.COMMENT" name="comment" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="workgroup_process" name="workgroup_process" representativeField="workgroup_name">
+      <Field dbName="pkey" history="false" label="%WORKGROUP_PROCESS.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="process_key" history="false" label="%WORKGROUP_PROCESS.PROCESS_KEY" name="process_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="workgroup_key" history="false" label="%WORKGROUP_PROCESS.WORKGROUP_KEY" name="workgroup_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="workgroup_name" history="false" label="%WORKGROUP_PROCESS.WORKGROUP_NAME" name="workgroup_name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="process_FKey">
+        <Field>process_key</Field>
+      </ForeignKey>
+      <ForeignKey name="workgroup_FKey">
+        <Field>workgroup_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="person" historyField="history" name="person" representativeField="name">
+      <Field dbName="pkey" history="false" label="%PERSON.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="true" label="%PERSON.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="phone" history="true" label="%PERSON.PHONE" name="phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="history" history="false" label="%PERSON.HISTORY" name="history" readonly="true" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="comment" history="false" label="%PERSON.COMMENT" name="comment" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="email" history="false" label="%PERSON.EMAIL" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="audit" historyField="history" name="audit" representativeField="name">
+      <Field dbName="pkey" history="false" label="%AUDIT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="comment" history="true" label="%AUDIT.COMMENT" name="comment" readonly="false" required="true">
+        <LongText/>
+      </Field>
+      <Field dbName="date" history="true" label="%AUDIT.DATE" name="date" readonly="true" required="true">
+        <Timestamp resolution="minbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="name" history="true" label="%AUDIT.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="date_note" history="true" label="%AUDIT.DATE_NOTE" name="date_note" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="audit_co_moderator_key" history="true" label="%AUDIT.AUDIT_CO_MODERATOR_KEY" name="audit_co_moderator_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="audit_moderator_key" history="true" label="%AUDIT.AUDIT_MODERATOR_KEY" name="audit_moderator_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="state" history="true" label="%AUDIT.STATE" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>Geplant</Default>
+          <Value>Geplant</Value>
+          <Value>Abgesagt</Value>
+          <Value>Abgeschlossen</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="history" history="false" label="%AUDIT.HISTORY" name="history" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="protocol" history="true" label="%AUDIT.PROTOCOL" name="protocol" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="audit_co_moderator_FKey">
+        <Field>audit_co_moderator_key</Field>
+      </ForeignKey>
+      <ForeignKey name="audit_moderator_FKey">
+        <Field>audit_moderator_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="defect" historyField="history" name="defect" representativeField="pkey">
+      <Field dbName="pkey" history="false" label="%DEFECT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="subject" history="true" label="%DEFECT.SUBJECT" name="subject" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="true" label="%DEFECT.DESCRIPTION" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%DEFECT.CREATE_DATE" name="create_date" readonly="true" required="false">
+        <Timestamp resolution="minbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="state" history="true" label="%DEFECT.STATE" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>new</Default>
+          <Value>new</Value>
+          <Value>open</Value>
+          <Value>closed</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="resolve_date" history="false" label="%DEFECT.RESOLVE_DATE" name="resolve_date" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="process_key" history="false" label="%DEFECT.PROCESS_KEY" name="process_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="history" history="false" label="%DEFECT.HISTORY" name="history" readonly="true" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="audit_key" history="false" label="%DEFECT.AUDIT_KEY" name="audit_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="process_FKey">
+        <Field>process_key</Field>
+      </ForeignKey>
+      <ForeignKey name="audit_FKey">
+        <Field>audit_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="process" table="process"/>
+    <TableAlias name="workgroup" table="workgroup"/>
+    <TableAlias name="workgroup_process" table="workgroup_process"/>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="process_owner" table="person"/>
+    <TableAlias name="process_owner_substitute" table="person"/>
+    <TableAlias name="process_responsible" table="person"/>
+    <TableAlias name="process_stackeholder" table="person"/>
+    <TableAlias name="parent_process" table="process"/>
+    <TableAlias name="audit" table="audit"/>
+    <TableAlias name="defect" table="defect"/>
+    <TableAlias name="audit_moderator" table="person"/>
+    <TableAlias name="audit_co_moderator" table="person"/>
+    <TableAlias name="audit_participant" table="person"/>
+    <TableAlias name="audit_related_defect" table="defect"/>
+    <TableAlias name="open_defect" table="defect">
+      <Condition>open_defect.state='open' OR open_defect.state='new'</Condition>
+    </TableAlias>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="%ACCOUNT.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%ACCOUNT.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="process" name="processBrowser" type="inform">
+      <Field label="%PROCESS.TITLE" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+    </Browser>
+    <Browser alias="workgroup" name="workgroupBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%WORKGROUP.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="workgroup_process" name="workgroup_processBrowser" type="inform">
+      <Field label="%WORKGROUP" name="browserWorkgroup" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="workgroupBrowser" filldirection="both" foreignAlias="workgroup" relationToUse="workgroup_workgroup_process" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="%PERSON.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%PERSON.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="process_owner" name="process_ownerBrowser" type="inform">
+      <Field label="%PERSON.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%PERSON.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="process_owner_substitute" name="process_owner_substituteBrowser" type="inform">
+      <Field label="%PERSON.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%PERSON.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="process_responsible" name="process_responsibleBrowser" type="inform">
+      <Field label="%PERSON.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%PERSON.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="process_stackeholder" name="process_stackeholderBrowser" type="inform">
+      <Field label="%PERSON.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%PERSON.PHONE" name="browserPhone" visible="true">
+        <TableField tableField="phone"/>
+      </Field>
+    </Browser>
+    <Browser alias="parent_process" name="parent_processBrowser" type="inform">
+      <Field label="%PROCESS.TITLE" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+    </Browser>
+    <Browser alias="audit" name="auditBrowser" type="inform">
+      <Field label="%AUDIT.DATE" name="browserDate" visible="true">
+        <TableField tableField="date"/>
+      </Field>
+      <Field label="%AUDIT.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="defect" name="defectBrowser" type="inform">
+      <Field label="%DEFECT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%DEFECT.STATE" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="%DEFECT.SUBJECT" name="browserSubject" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+    </Browser>
+    <Browser alias="audit_moderator" name="audit_moderatorBrowser" type="inform">
+      <Field label="%PERSON.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="audit_co_moderator" name="audit_co_moderatorBrowser" type="inform">
+      <Field label="%PERSON.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="audit_participant" name="audit_participantBrowser" type="inform">
+      <Field label="%PERSON.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="open_defect" name="open_defectBrowser" type="inform">
+      <Field label="%DEFECT.STATE" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="%DEFECT.SUBJECT" name="browserSubject" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="process_workgroup_process">
+      <OneToMany fromAlias="process" toAlias="workgroup_process" toKey="process_FKey"/>
+    </Relation>
+    <Relation name="workgroup_workgroup_process">
+      <OneToMany fromAlias="workgroup" toAlias="workgroup_process" toKey="workgroup_FKey"/>
+    </Relation>
+    <Relation name="process_responsible_process">
+      <OneToMany fromAlias="process_responsible" toAlias="process" toKey="process_responsible_FKey"/>
+    </Relation>
+    <Relation name="process_owner_process">
+      <OneToMany fromAlias="process_owner" toAlias="process" toKey="process_owner_FKey"/>
+    </Relation>
+    <Relation name="process_owner_substitute_process">
+      <OneToMany fromAlias="process_owner_substitute" toAlias="process" toKey="process_owner_substitute_FKey"/>
+    </Relation>
+    <Relation name="parent_process_process">
+      <OneToMany fromAlias="parent_process" toAlias="process" toKey="parent_process_FKey"/>
+    </Relation>
+    <Relation name="process_defect">
+      <OneToMany fromAlias="process" toAlias="defect" toKey="process_FKey"/>
+    </Relation>
+    <Relation name="audit_co_moderator_audit">
+      <OneToMany fromAlias="audit_co_moderator" toAlias="audit" toKey="audit_co_moderator_FKey"/>
+    </Relation>
+    <Relation name="audit_moderator_audit">
+      <OneToMany fromAlias="audit_moderator" toAlias="audit" toKey="audit_moderator_FKey"/>
+    </Relation>
+    <Relation name="audit_audit_related_defect">
+      <OneToMany fromAlias="audit" toAlias="audit_related_defect" toKey="audit_FKey"/>
+    </Relation>
+    <Relation name="audit_defect">
+      <OneToMany fromAlias="audit" toAlias="defect" toKey="audit_FKey"/>
+    </Relation>
+    <Relation name="process_open_defect">
+      <OneToMany fromAlias="process" toAlias="open_defect" toKey="process_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="process">
+      <Relation>process_workgroup_process</Relation>
+      <Relation>workgroup_workgroup_process</Relation>
+      <Relation>process_responsible_process</Relation>
+      <Relation>process_owner_process</Relation>
+      <Relation>process_owner_substitute_process</Relation>
+      <Relation>parent_process_process</Relation>
+      <Relation>process_defect</Relation>
+      <Relation>process_open_defect</Relation>
+      <Property>
+        <Name>process.x</Name>
+        <Value>420</Value>
+      </Property>
+      <Property>
+        <Name>process.y</Name>
+        <Value>154</Value>
+      </Property>
+      <Property>
+        <Name>process.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>workgroup_process.x</Name>
+        <Value>270</Value>
+      </Property>
+      <Property>
+        <Name>workgroup_process.y</Name>
+        <Value>391</Value>
+      </Property>
+      <Property>
+        <Name>workgroup.x</Name>
+        <Value>303</Value>
+      </Property>
+      <Property>
+        <Name>workgroup.y</Name>
+        <Value>581</Value>
+      </Property>
+      <Property>
+        <Name>workgroup_process.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>workgroup.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>process_owner.x</Name>
+        <Value>579</Value>
+      </Property>
+      <Property>
+        <Name>process_owner.y</Name>
+        <Value>394</Value>
+      </Property>
+      <Property>
+        <Name>process_owner_substitute.x</Name>
+        <Value>786</Value>
+      </Property>
+      <Property>
+        <Name>process_owner_substitute.y</Name>
+        <Value>394</Value>
+      </Property>
+      <Property>
+        <Name>process_responsible.x</Name>
+        <Value>21</Value>
+      </Property>
+      <Property>
+        <Name>process_responsible.y</Name>
+        <Value>394</Value>
+      </Property>
+      <Property>
+        <Name>process_owner.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>process_responsible.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>process_owner_substitute.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>parent_process.x</Name>
+        <Value>420</Value>
+      </Property>
+      <Property>
+        <Name>parent_process.y</Name>
+        <Value>16</Value>
+      </Property>
+      <Property>
+        <Name>parent_process.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>audit.x</Name>
+        <Value>79</Value>
+      </Property>
+      <Property>
+        <Name>audit.y</Name>
+        <Value>75</Value>
+      </Property>
+      <Property>
+        <Name>audit.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>defect.x</Name>
+        <Value>729</Value>
+      </Property>
+      <Property>
+        <Name>defect.y</Name>
+        <Value>158</Value>
+      </Property>
+      <Property>
+        <Name>audit_related_defect.x</Name>
+        <Value>0</Value>
+      </Property>
+      <Property>
+        <Name>audit_related_defect.y</Name>
+        <Value>0</Value>
+      </Property>
+      <Property>
+        <Name>open_defect.x</Name>
+        <Value>124</Value>
+      </Property>
+      <Property>
+        <Name>open_defect.y</Name>
+        <Value>153</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="audit">
+      <Relation>audit_co_moderator_audit</Relation>
+      <Relation>audit_moderator_audit</Relation>
+      <Relation>audit_defect</Relation>
+      <Property>
+        <Name>audit.x</Name>
+        <Value>369</Value>
+      </Property>
+      <Property>
+        <Name>audit.y</Name>
+        <Value>204</Value>
+      </Property>
+      <Property>
+        <Name>audit_related_defect.x</Name>
+        <Value>59</Value>
+      </Property>
+      <Property>
+        <Name>audit_related_defect.y</Name>
+        <Value>412</Value>
+      </Property>
+      <Property>
+        <Name>audit_participant.x</Name>
+        <Value>42</Value>
+      </Property>
+      <Property>
+        <Name>audit_participant.y</Name>
+        <Value>30</Value>
+      </Property>
+      <Property>
+        <Name>audit_moderator.x</Name>
+        <Value>56</Value>
+      </Property>
+      <Property>
+        <Name>audit_moderator.y</Name>
+        <Value>417</Value>
+      </Property>
+      <Property>
+        <Name>audit_co_moderator.x</Name>
+        <Value>339</Value>
+      </Property>
+      <Property>
+        <Name>audit_co_moderator.y</Name>
+        <Value>53</Value>
+      </Property>
+      <Property>
+        <Name>audit.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>defect.x</Name>
+        <Value>538</Value>
+      </Property>
+      <Property>
+        <Name>defect.y</Name>
+        <Value>413</Value>
+      </Property>
+      <Property>
+        <Name>defect.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>audit_moderator.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>audit_related_defect.expanded</Name>
+        <Value>false</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="%FORM.ACCOUNT" name="account">
+      <Group alias="account" border="false" browser="accountBrowser" label="%GROUP.ACCOUNTGROUP" name="accountGroup">
+        <Dimension height="350" width="521" x="5" y="5"/>
+        <GuiElement name="accountClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="87" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="6" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="166" y="0"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="246" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="186" x="95" y="75"/>
+              <Caption halign="left" label="%ACCOUNT.LOGINNAME" valign="top">
+                <Dimension height="20" width="85" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountFullname" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="186" x="95" y="50"/>
+              <Caption halign="left" label="%ACCOUNT.FULLNAME" valign="top">
+                <Dimension height="20" width="85" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="186" x="95" y="100"/>
+              <Caption halign="left" label="%ACCOUNT.PASSWORD" valign="top">
+                <Dimension height="20" width="85" x="5" y="100"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountFoto" visible="true">
+          <LocalInputField tableField="foto">
+            <Image inForm="true">
+              <Dimension height="266" width="200" x="300" y="50"/>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="186" x="95" y="125"/>
+              <Caption halign="left" label="%ACCOUNT.EMAIL" valign="top">
+                <Dimension height="20" width="85" x="5" y="125"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="readonly">
+              <Dimension height="20" width="20" x="336" y="0"/>
+              <Caption halign="left" label="%ACCOUNT.HISTORY" valign="top">
+                <Dimension height="20" width="116" x="361" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountComment" visible="true">
+          <LocalInputField tableField="comment">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="141" width="276" x="5" y="175"/>
+              <Caption halign="left" label="%ACCOUNT.COMMENT" valign="top">
+                <Dimension height="15" width="176" x="5" y="160"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.PROCESS" name="process">
+      <Group alias="process" border="false" browser="processBrowser" label="%GROUP.PROCESSGROUP" name="processGroup">
+        <Dimension height="821" width="821" x="5" y="5"/>
+        <GuiElement name="processClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="91" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="processSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="11" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="processDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="171" y="0"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="processNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="251" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="processTitle" visible="true">
+          <LocalInputField tableField="title">
+            <TextInput>
+              <Dimension height="20" width="527" x="149" y="30"/>
+              <Caption halign="left" label="%PROCESS.TITLE" valign="top">
+                <Dimension height="20" width="133" x="11" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="processTags" visible="true">
+          <LocalInputField tableField="tags">
+            <TextInput>
+              <Dimension height="20" width="527" x="149" y="55"/>
+              <Caption halign="left" label="%PROCESS.TAGS" valign="top">
+                <Dimension height="20" width="133" x="11" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="processProcess_owner" visible="true">
+          <ForeignInputField browserToUse="process_ownerBrowser" filldirection="both" foreignAlias="process_owner" foreignTableField="name" relationToUse="process_owner_process" relationset="local">
+            <Dimension height="20" width="186" x="149" y="80"/>
+            <Caption halign="left" label="%PROCESS_OWNER" valign="top">
+              <Dimension height="20" width="133" x="11" y="80"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="processProcess_owner_substitute" visible="true">
+          <ForeignInputField browserToUse="process_owner_substituteBrowser" filldirection="both" foreignAlias="process_owner_substitute" foreignTableField="name"
+            relationToUse="process_owner_substitute_process" relationset="local">
+            <Dimension height="20" width="186" x="149" y="105"/>
+            <Caption halign="left" label="%PROCESS_OWNER_SUBSTITUTE" valign="top">
+              <Dimension height="20" width="133" x="11" y="105"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="processProcess_responsible" visible="true">
+          <ForeignInputField browserToUse="process_responsibleBrowser" filldirection="both" foreignAlias="process_responsible" foreignTableField="name" relationToUse="process_responsible_process" relationset="local">
+            <Dimension height="20" width="186" x="149" y="130"/>
+            <Caption halign="left" label="%PROCESS_RESPONSIBLE" valign="top">
+              <Dimension height="20" width="133" x="11" y="130"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="processContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="501" width="801" x="11" y="315"/>
+            <Pane alias="process" browser="processBrowser" label="%TAB.ASPECT" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processAspect" visible="true">
+                <LocalInputField tableField="aspect">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.REMARK" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processRemark" visible="true">
+                <LocalInputField tableField="remark">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.DESCRIPTION" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processDescription" visible="true">
+                <LocalInputField tableField="description">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.RES_REMARK" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processResponsible_remark" visible="true">
+                <LocalInputField tableField="responsible_remark">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.GUIDELINE" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processGuidelines" visible="true">
+                <LocalInputField tableField="guideline">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.CASE_OF_NEED" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processCase_of_need" visible="true">
+                <LocalInputField tableField="case_of_need">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="process" browser="processBrowser" label="%TAB.RISK" name="processGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="processRisk_evaluation" visible="true">
+                <LocalInputField tableField="risk_evaluation">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="466" width="786" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="processValid_from" visible="true">
+          <LocalInputField tableField="valid_from">
+            <DateInput>
+              <Dimension height="20" width="176" x="500" y="80"/>
+              <Caption halign="left" label="%PROCESS.VALID_FROM" valign="top">
+                <Dimension height="20" width="135" x="360" y="80"/>
+              </Caption>
+            </DateInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="processValid_to" visible="true">
+          <LocalInputField tableField="valid_to">
+            <DateInput>
+              <Dimension height="20" width="176" x="500" y="105"/>
+              <Caption halign="left" label="%PROCESS.VALID_TO" valign="top">
+                <Dimension height="20" width="135" x="360" y="105"/>
+              </Caption>
+            </DateInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="processParent_process" visible="true">
+          <ForeignInputField browserToUse="parent_processBrowser" filldirection="both" foreignAlias="parent_process" foreignTableField="title" relationToUse="parent_process_process" relationset="local">
+            <Dimension height="20" width="176" x="500" y="130"/>
+            <Caption halign="left" label="%PARENT_PROCESS" valign="top">
+              <Dimension height="20" width="135" x="360" y="130"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="processWorkgroup_processBrowser" visible="true">
+          <InFormBrowser browserToUse="workgroup_processBrowser" deleteMode="true" newMode="true" relationToUse="process_workgroup_process" updateMode="true">
+            <Dimension height="141" width="401" x="411" y="165"/>
+            <Caption halign="right" label="%BROWSER.WORKGROUP_PROCESS" valign="top">
+              <Dimension height="50" width="200" x="-67" y="-16"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement name="processHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="readonly">
+              <Dimension height="20" width="20" x="411" y="0"/>
+              <Caption halign="left" label="%PROCESS.HISTORY" valign="top">
+                <Dimension height="20" width="151" x="441" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.process.PrintProcessButton" name="printProcessButton" visible="true">
+          <Button label="%BUTTON.PDF">
+            <Dimension height="20" width="70" x="331" y="0"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="processOpen_defectBrowser" visible="true">
+          <InFormBrowser browserToUse="open_defectBrowser" deleteMode="false" newMode="false" relationToUse="process_open_defect" updateMode="false">
+            <Dimension height="141" width="390" x="11" y="165"/>
+            <Caption halign="left" label="%BROWSER.OPEN_DEFECT" valign="top">
+              <Dimension height="50" width="200" x="-39" y="-23"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.PERSON" name="person">
+      <Group alias="person" border="false" browser="personBrowser" label="%GROUP.PERSONGROUP" name="personGroup">
+        <Dimension height="391" width="650" x="5" y="5"/>
+        <GuiElement name="personClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="85" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="165" y="0"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="245" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="360" x="96" y="50"/>
+              <Caption halign="left" label="%PERSON.NAME" valign="top">
+                <Dimension height="20" width="86" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPhone" visible="true">
+          <LocalInputField tableField="phone">
+            <TextInput>
+              <Dimension height="20" width="195" x="96" y="75"/>
+              <Caption halign="left" label="%PERSON.PHONE" valign="top">
+                <Dimension height="20" width="86" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="readonly">
+              <Dimension height="20" width="20" x="335" y="0"/>
+              <Caption halign="left" label="%PERSON.HISTORY" valign="top">
+                <Dimension height="20" width="122" x="354" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personComment" visible="true">
+          <LocalInputField tableField="comment">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="206" width="451" x="5" y="160"/>
+              <Caption halign="left" label="%PERSON.COMMENT" valign="top">
+                <Dimension height="15" width="140" x="5" y="145"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="195" x="96" y="100"/>
+              <Caption halign="left" label="%PERSON.EMAIL" valign="top">
+                <Dimension height="20" width="86" x="5" y="100"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.WORKGROUP" name="workgroup">
+      <Group alias="workgroup" border="false" browser="workgroupBrowser" label="%GROUP.WORKGROUPGROUP" name="workgroupGroup">
+        <Dimension height="416" width="571" x="5" y="5"/>
+        <GuiElement name="workgroupClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="85" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="165" y="0"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="245" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="261" x="100" y="55"/>
+              <Caption halign="left" label="%WORKGROUP.NAME" valign="top">
+                <Dimension height="20" width="85" x="10" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="workgroupPhone" visible="true">
+          <LocalInputField tableField="phone">
+            <TextInput>
+              <Dimension height="20" width="261" x="100" y="80"/>
+              <Caption halign="left" label="%WORKGROUP.PHONE" valign="top">
+                <Dimension height="20" width="85" x="10" y="80"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="workgroupHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="20" x="346" y="0"/>
+              <Caption halign="left" label="%WORKGROUP.HISTORY" valign="top">
+                <Dimension height="20" width="136" x="370" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="workgroupComment" visible="true">
+          <LocalInputField tableField="comment">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="135" width="351" x="10" y="135"/>
+              <Caption halign="left" label="%WORKGROUP.COMMENT" valign="top">
+                <Dimension height="15" width="231" x="10" y="120"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.DEFECT" name="defect">
+      <Group alias="defect" border="false" browser="defectBrowser" label="%GROUP.DEFECTGROUP" name="defectGroup">
+        <Dimension height="451" width="571" x="5" y="5"/>
+        <GuiElement name="defectClearGroupButton" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="85" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="defectSearchUpdateRecordButton" tabIndex="4" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="defectSubject" tabIndex="1" visible="true">
+          <LocalInputField tableField="subject">
+            <TextInput>
+              <Dimension height="20" width="503" x="4" y="141"/>
+              <Caption halign="left" label="%DEFECT.SUBJECT" valign="top">
+                <Dimension height="16" width="201" x="4" y="126"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defectResolve_date" tabIndex="10" visible="true">
+          <LocalInputField tableField="resolve_date">
+            <TimestampInput>
+              <Dimension height="20" width="130" x="379" y="41"/>
+              <Caption halign="left" label="%DEFECT.RESOLVE_DATE" valign="top">
+                <Dimension height="20" width="100" x="274" y="41"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defectCreate_date" tabIndex="10" visible="true">
+          <LocalInputField tableField="create_date">
+            <TimestampInput>
+              <Dimension height="20" width="130" x="115" y="41"/>
+              <Caption halign="left" label="%DEFECT.CREATE_DATE" valign="top">
+                <Dimension height="20" width="105" x="5" y="41"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defectDescription" tabIndex="2" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="256" width="504" x="4" y="185"/>
+              <Caption halign="left" label="%DEFECT.DESCRIPTION" valign="top">
+                <Dimension height="15" width="151" x="4" y="170"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.defect.DefectState" name="defectState" tabIndex="10" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="130" x="115" y="66"/>
+              <Value>new</Value>
+              <Value>open</Value>
+              <Value>closed</Value>
+              <Caption halign="left" label="%DEFECT.STATE" valign="top">
+                <Dimension height="20" width="105" x="5" y="66"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defectNewRecordButton" tabIndex="6" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="165" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.defect.DefectProcess" name="defectProcess" tabIndex="3" visible="true">
+          <ForeignInputField browserToUse="processBrowser" filldirection="both" foreignAlias="process" foreignTableField="title" relationToUse="process_defect" relationset="local">
+            <Dimension height="20" width="393" x="115" y="91"/>
+            <Caption halign="left" label="%DEFECT.PROCESS_KEY" valign="top">
+              <Dimension height="20" width="105" x="5" y="91"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="defectHistory" tabIndex="10" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="readonly">
+              <Dimension height="20" width="20" x="260" y="0"/>
+              <Caption halign="left" label="%DEFECT.HISTORY" valign="top">
+                <Dimension height="20" width="131" x="288" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defectAudit" visible="true">
+          <ForeignInputField browserToUse="auditBrowser" filldirection="both" foreignAlias="audit" foreignTableField="name" relationToUse="audit_defect" relationset="local">
+            <Dimension height="20" width="129" x="379" y="66"/>
+            <Caption halign="left" label="%DEFECT.AUDIT_KEY" valign="top">
+              <Dimension height="20" width="100" x="274" y="66"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.AUDIT" name="audit">
+      <Group alias="audit" border="false" browser="auditBrowser" label="%GROUP.AUDIT" name="auditGroup">
+        <Dimension height="686" width="656" x="5" y="5"/>
+        <GuiElement name="auditClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="165" y="0"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="auditSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="auditNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="85" y="0"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="auditName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="641" x="5" y="65"/>
+              <Caption halign="left" label="%AUDIT.NAME" valign="top">
+                <Dimension height="16" width="126" x="5" y="50"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="auditComment" visible="true">
+          <LocalInputField tableField="comment">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="106" width="641" x="5" y="106"/>
+              <Caption halign="left" label="%AUDIT.COMMENT" valign="top">
+                <Dimension height="14" width="186" x="5" y="92"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="auditContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="441" width="641" x="5" y="225"/>
+            <Pane alias="audit" browser="auditBrowser" label="%TAB.AUDIT_COMMON" name="auditGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="auditAudit_moderator" visible="true">
+                <ForeignInputField browserToUse="audit_moderatorBrowser" filldirection="both" foreignAlias="audit_moderator" foreignTableField="name" relationToUse="audit_moderator_audit" relationset="local">
+                  <Dimension height="20" width="161" x="120" y="53"/>
+                  <Caption halign="left" label="%AUDIT_MODERATOR" valign="top">
+                    <Dimension height="20" width="100" x="15" y="53"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="auditAudit_co_moderator" visible="true">
+                <ForeignInputField browserToUse="audit_co_moderatorBrowser" filldirection="both" foreignAlias="audit_co_moderator" foreignTableField="name" relationToUse="audit_co_moderator_audit" relationset="local">
+                  <Dimension height="20" width="161" x="120" y="88"/>
+                  <Caption halign="left" label="%AUDIT_CO_MODERATOR" valign="top">
+                    <Dimension height="20" width="100" x="15" y="88"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="auditDate" visible="true">
+                <LocalInputField tableField="date">
+                  <TimestampInput>
+                    <Dimension height="20" width="161" x="120" y="178"/>
+                    <Caption halign="left" label="%AUDIT.DATE" valign="top">
+                      <Dimension height="20" width="100" x="15" y="178"/>
+                    </Caption>
+                  </TimestampInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="auditHeading" visible="true">
+                <Heading>
+                  <Caption halign="left" label="%HEADING.RELATED_PERSON" valign="top">
+                    <Dimension height="11" width="616" x="5" y="28"/>
+                  </Caption>
+                </Heading>
+              </GuiElement>
+              <GuiElement name="auditHeading" visible="true">
+                <Heading>
+                  <Caption halign="left" label="%HEADIN.COMMON" valign="top">
+                    <Dimension height="16" width="616" x="5" y="128"/>
+                  </Caption>
+                </Heading>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.audit.AuditState" name="auditState" visible="true">
+                <LocalInputField tableField="state">
+                  <ComboBox>
+                    <Dimension height="20" width="161" x="120" y="153"/>
+                    <Value>Geplant</Value>
+                    <Value>Abgesagt</Value>
+                    <Value>Abgeschlossen</Value>
+                    <Caption halign="left" label="%AUDIT.STATE" valign="top">
+                      <Dimension height="20" width="100" x="15" y="153"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="audit" browser="auditBrowser" label="%TAB.AUDIT_DEFECT" name="auditGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="auditDefectBrowser" visible="true">
+                <InFormBrowser browserToUse="defectBrowser" deleteMode="false" newMode="false" relationToUse="audit_defect" updateMode="false">
+                  <Dimension height="411" width="586" x="5" y="3"/>
+                  <Caption halign="right" label="%BROWSER.DEFECT" valign="top">
+                    <Dimension height="50" width="200" x="-20" y="-15"/>
+                  </Caption>
+                </InFormBrowser>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.audit.AuditRecordSelectedButton" name="auditRecordSelectedButton" visible="true">
+                <Button label="+">
+                  <Dimension height="20" width="36" x="595" y="3"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.audit.AuditRemoveDefectButton" name="auditRemoveDefectButton" visible="true">
+                <Button label="-">
+                  <Dimension height="21" width="36" x="595" y="33"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+            <Pane alias="audit" browser="auditBrowser" label="%TAB_AUDIT_PROTOCOL" name="auditGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="auditProtocol" visible="true">
+                <LocalInputField tableField="protocol">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="406" width="626" x="5" y="8"/>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="auditHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="20" x="275" y="0"/>
+              <Caption halign="left" label="%AUDIT.HISTORY" valign="top">
+                <Dimension height="20" width="142" x="294" y="0"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="process" title="%DOMAIN.PROCESS" visible="true">
+      <Form>process</Form>
+      <Form>defect</Form>
+      <Form>audit</Form>
+    </Domain>
+    <Domain name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>account</Form>
+      <Form>person</Form>
+      <Form>workgroup</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>process</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

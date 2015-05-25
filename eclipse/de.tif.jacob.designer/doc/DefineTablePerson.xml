@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_defineTablePerson" label="1">
+    <title id="title_defineTablePerson">Define the table person</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we want to define the table for persons as illustrated in <link
+                                linkend="table_person" endterm="title_table_person"/>.</para>
+                        <para>The column <guilabel>agent_id</guilabel> is a <glossterm
+                                linkend="foreignKey">foreign key</glossterm> field. This column
+                            will not be created in this work step but in a later work step when we
+                            will <link linkend="sect_defineRelationSets">define the relationsets of
+                            happyHome</link>. Then this column will be added automatically to the
+                            table person as <glossterm linkend="foreignKey">foreign key</glossterm> field.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the folder
+                                                  <guilabel>happyHomeDataSource</guilabel> in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the menu item <guimenuitem>New
+                                                  table</guimenuitem> from the right mouse button menu.</para>
+                                                <para>After this a dialog window will pop up asking
+                                                  you to specify the table name. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Enter "person" into the text field and confirm
+                                                  your input.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer will create the table object
+                                                  <guilabel>person</guilabel> within the
+                                                  <guilabel>happyHomeDataSource</guilabel> and
+                                                  open the table editor in the right upper screen area.</para>
+                                                <para>The table editor displays the table structure
+                                                  of person.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>
+                                                  <trademark>jACOB</trademark> has already created
+                                                  one column object containing the primary key of
+                                                  the table "pkey". </para>
+                                                <para> Rename "pkey" as "id". </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the columns
+                                                  <guilabel>firstName</guilabel>,
+                                                  <guilabel>surname</guilabel>,
+                                                  <guilabel>fullname</guilabel>,
+                                                  <guilabel>address</guilabel>,
+                                                  <guilabel>phone</guilabel> and
+                                                  <guilabel>email</guilabel> by pressing the
+                                                  button <guibutton>Add</guibutton>. </para>
+                                                <para>Specify the lengths as defined in <link
+                                                  linkend="table_person"
+                                                  endterm="title_table_person"/> by entering the
+                                                  appropriate lengths into the field
+                                                  <guilabel>Max. length</guilabel>. </para>
+                                                <para>All columns but the column
+                                                  <guilabel>email</guilabel> are required columns.
+                                                  This can be defined by activating the check box <guilabel>Required</guilabel>.</para>
+                                                <para>The column <guilabel>fullname</guilabel> is
+                                                  composed by the <guilabel>firstName</guilabel>
+                                                  and <guilabel>surname</guilabel> and should be
+                                                  marked as read only. This can be done by
+                                                  activating the check box <guilabel>Readonly</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the required column <guilabel>personType</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>ENUM</guimenuitem> in the field <guilabel>Type</guilabel>.</para>
+                                                <para>Specify "internal" and "external" in the field
+                                                  <guilabel>Enum values</guilabel> and
+                                                  "external" in the field <guilabel>Default</guilabel>.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineTablePerson1.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the required columns
+                                                  <guilabel>receptionist</guilabel> and <guilabel>agent</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>INTEGER</guimenuitem> in the field <guilabel>Type</guilabel>.</para>
+                                                <para>The type boolean will be simulated by
+                                                  specifying "0" as <guilabel>Min value</guilabel>
+                                                  and "1" as <guilabel>Max value</guilabel>.
+                                                  Define "0" as <guilabel>Default value</guilabel>.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineTablePerson2.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

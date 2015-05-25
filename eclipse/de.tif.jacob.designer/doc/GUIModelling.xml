@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<chapter id="chap_GUIModelling" label="2">
+    <title id="title_chap_GUIModelling">GUI modeling</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The graphical presentation of a <trademark>jACOB</trademark>
+                            application is charcterized by its GUI model. The GUI model ifself is based on
+                            the data model of the application design of
+                            the <trademark>jACOB</trademark> application.</para>
+                        <para>The GUI model is composed of:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>forms,</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <glossterm linkend="domain">domains</glossterm> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <glossterm linkend="GUIHooks">GUI hooks</glossterm>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Creation of a GUI model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The creation of such a GUI model will be explained in the following sections:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingForms" endterm="title_definingForms"/>
+                                </para>
+                            </listitem>
+<!--                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingDomains" endterm="title_definingDomains"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingGUIHooks" endterm="title_definingGUIHooks"/>
+                                </para>
+                            </listitem>
+-->                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningForms.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+<!--    <xi:include href="DefiningDomains.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningGUIHooks.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+--></chapter>

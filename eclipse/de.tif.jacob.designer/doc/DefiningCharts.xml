@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingCharts" label="7">
+    <title id="title_definingCharts">Defining charts in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Additional to <glossterm linkend=" DBElement">DB elements</glossterm>,
+                                <glossterm linkend=" normalElement">normal elements</glossterm> and
+                            buttons the <trademark>jACOB</trademark> designer offers the possibility
+                            to add charts to form. </para>
+                        <para>These charts can graphically illustrate e.g. measurement readings or
+                            statistical values stored in a table field of the type binary and are
+                            like <glossterm linkend=" normalElement">normal elements</glossterm>
+                            controlled by <glossterm linkend="GUIHook">GUI hooks</glossterm>.</para>
+                        <para>You can choose between the following chart presentation types:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guilabel>Line Chart</guilabel> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Bar Chart</guilabel>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Hot spots</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In comparison to line charts bar charts enable also to define hot spots.</para>
+                        <para>ADD more information here!!!!</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a chart in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the desired chart type from the
+                                                  <guibutton>Charts</guibutton> menu in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the button at the desired position in
+                                                  the group by pressing the left mouse button.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Create an event handler and implement the
+                                                  appropriate methods as described in the section
+                                                  ....ADD link to section!!!....</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd">
+<table id="table_person" rowsep="1" colsep="1" frame="all">
+    <title id="title_table_person">Table person</title>
+    <tgroup cols="4">
+        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="2*"/>
+        <colspec align="center" colwidth="1*"/>
+        <colspec align="center" colwidth="1*"/>
+        <thead>
+            <row>
+                <entry align="center">Column Name</entry>
+                <entry align="center">Type</entry>
+                <entry align="center">Length</entry>
+                <entry align="center">Required</entry>
+            </row>
+        </thead>
+        <tbody>
+            <row>
+                <entry> id </entry>
+                <entry> LONG </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>firstName</entry>
+                <entry> TEXT</entry>
+                <entry> 40</entry>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry> surname</entry>
+                <entry> TEXT</entry>
+                <entry> 40</entry>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry> fullname</entry>
+                <entry> TEXT</entry>
+                <entry> 80</entry>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry> address</entry>
+                <entry> TEXT</entry>
+                <entry> 80</entry>
+                <entry>X</entry>
+            </row>
+            <row>
+                <entry> phone</entry>
+                <entry> TEXT </entry>
+                <entry>20</entry>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry> email</entry>
+                <entry> TEXT</entry>
+                <entry>40</entry>
+                <entry/>
+            </row>
+            <row>
+                <entry> personType</entry>
+                <entry> ENUM</entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>receptionist</entry>
+                <entry> INTEGER </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>agent</entry>
+                <entry> INTEGER </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>agent_id</entry>
+                <entry> LONG </entry>
+                <entry/>
+                <entry/>
+            </row>
+        </tbody>
+    </tgroup>
+</table>

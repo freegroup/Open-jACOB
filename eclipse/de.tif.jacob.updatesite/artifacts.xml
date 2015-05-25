@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<repository name='${p2.artifact.repo.name}' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
+  <properties size='2'>
+    <property name='p2.compressed' value='false'/>
+    <property name='p2.timestamp' value='1250442432605'/>
+  </properties>
+  <mappings size='3'>
+    <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
+    <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
+  </mappings>
+  <artifacts size='54'>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.blooper' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='218170'/>
+        <property name='download.size' value='218170'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.tutorial' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='86749'/>
+        <property name='download.size' value='86749'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.19'>
+      <properties size='2'>
+        <property name='artifact.size' value='1717'/>
+        <property name='download.size' value='1717'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.verside' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='22073'/>
+        <property name='download.size' value='22073'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.21'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='2050730'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.quintus' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='19459'/>
+        <property name='download.size' value='19459'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.email' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='90419'/>
+        <property name='download.size' value='90419'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.common' version='2.8.12'>
+      <properties size='3'>
+        <property name='artifact.size' value='11733162'/>
+        <property name='download.size' value='11733162'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='9792'/>
+        <property name='download.size' value='9792'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.common' version='2.8.18'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='11970675'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.16'>
+      <properties size='3'>
+        <property name='artifact.size' value='2027865'/>
+        <property name='download.size' value='2027865'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.herb' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='101023'/>
+        <property name='download.size' value='101023'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.pms' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='185054'/>
+        <property name='download.size' value='185054'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.17'>
+      <properties size='2'>
+        <property name='artifact.size' value='1714'/>
+        <property name='download.size' value='1714'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder' version='2.8.18'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='71496818'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.17'>
+      <properties size='3'>
+        <property name='artifact.size' value='2027987'/>
+        <property name='download.size' value='2027987'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.common' version='2.8.15'>
+      <properties size='3'>
+        <property name='artifact.size' value='11674191'/>
+        <property name='download.size' value='11674191'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.15'>
+      <properties size='2'>
+        <property name='artifact.size' value='1704'/>
+        <property name='download.size' value='1704'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.verside' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='22021'/>
+        <property name='download.size' value='22021'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.project' version='2.8.1'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='4305'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.18'>
+      <properties size='2'>
+        <property name='artifact.size' value='1719'/>
+        <property name='download.size' value='1719'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.18'>
+      <properties size='3'>
+        <property name='artifact.size' value='2029545'/>
+        <property name='download.size' value='2029545'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder' version='2.8.16'>
+      <properties size='3'>
+        <property name='artifact.size' value='71299651'/>
+        <property name='download.size' value='71299651'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module' version='2.8.3'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='14954'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder' version='2.8.12'>
+      <properties size='3'>
+        <property name='artifact.size' value='71351817'/>
+        <property name='download.size' value='71351817'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.docfinder' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='241200'/>
+        <property name='download.size' value='241200'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.blooper' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='218186'/>
+        <property name='download.size' value='218186'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.docfinder' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='241216'/>
+        <property name='download.size' value='241216'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.19'>
+      <properties size='3'>
+        <property name='artifact.size' value='2029566'/>
+        <property name='download.size' value='2029566'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module.email' version='1.0.3'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='13526'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.address' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='21953'/>
+        <property name='download.size' value='21953'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.blank' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='19774'/>
+        <property name='download.size' value='19774'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.address' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='22001'/>
+        <property name='download.size' value='22001'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.designer' version='2.8.14'>
+      <properties size='3'>
+        <property name='artifact.size' value='2024613'/>
+        <property name='download.size' value='2024613'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module.wiki' version='2.8.4'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='734931'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.common' version='2.8.16'>
+      <properties size='3'>
+        <property name='artifact.size' value='11690081'/>
+        <property name='download.size' value='11690081'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.docgen' version='2.8.2'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='8459'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module.email' version='1.0.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='11028'/>
+        <property name='download.size' value='11028'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.components.feature' version='1.0.1'>
+      <properties size='2'>
+        <property name='artifact.size' value='1085'/>
+        <property name='download.size' value='1085'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.herb' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='101036'/>
+        <property name='download.size' value='101036'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.blooper' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='49913'/>
+        <property name='download.size' value='49913'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.components.plugin.progressbar' version='1.0.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='18625'/>
+        <property name='download.size' value='18625'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.pms' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='185106'/>
+        <property name='download.size' value='185106'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.email' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='90430'/>
+        <property name='download.size' value='90430'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.blank' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='19724'/>
+        <property name='download.size' value='19724'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.project' version='2.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='4650'/>
+        <property name='download.size' value='4650'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.docgen' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='9412'/>
+        <property name='download.size' value='9412'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.16'>
+      <properties size='2'>
+        <property name='artifact.size' value='1714'/>
+        <property name='download.size' value='1714'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.tutorial' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='86798'/>
+        <property name='download.size' value='86798'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='9812'/>
+        <property name='download.size' value='9812'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder.quintus' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='18869'/>
+        <property name='download.size' value='18869'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.module.wiki' version='2.8.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='735904'/>
+        <property name='download.size' value='735904'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='de.tif.jacob.feature' version='2.8.22'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='1394'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='de.tif.jacob.projectbuilder' version='2.8.14'>
+      <properties size='3'>
+        <property name='artifact.size' value='71258044'/>
+        <property name='download.size' value='71258044'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+  </artifacts>
+</repository>

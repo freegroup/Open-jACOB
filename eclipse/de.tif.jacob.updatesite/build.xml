@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="feature_export" name="build">
+	<target name="feature_export">
+		<pde.exportFeatures destination="/Users/andherz/Downloads/jacob_updatesite_commercial" exportSource="false" exportType="directory" features="de.tif.jacob.components.button_abort.feature,de.tif.jacob.components.button_search_ext.feature,de.tif.jacob.components.candystick.feature,de.tif.jacob.components.dot_cloud_3d.feature,de.tif.jacob.components.flotr.feature,de.tif.jacob.components.groupedlist.feature,de.tif.jacob.components.leaflet.feature,de.tif.jacob.components.progressbar.feature,de.tif.jacob.components.searchbrowser_contextmenu.feature,de.tif.jacob.feature,de.tif.jacob.module.importer.feature,de.tif.jacob.properties.feature,de.tif.jacob.refactoring.change_group_alias.feature,de.tif.jacob.selectionaction.feature" useJARFormat="true"/>
+	</target>
+</project>

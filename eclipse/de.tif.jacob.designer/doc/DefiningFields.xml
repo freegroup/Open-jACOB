@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingFields" label="1">
+    <title id="title_definingFields">Defining table fields</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Tables consist of single fields reflecting the structure of the
+                            table. This section explains how you can add and define fields to an
+                            existing table.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Editor</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Table fields are defined with the aid of the table editor's
+                            <guilabel>Fields</guilabel> tab: </para>
+                        <para>
+                            <figure id="fig_tableEditorFields">
+                                <title> Fields of a table</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/TableEditorFields.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The table's fields or columns are listed in the listbox
+                                <guilabel>Field list</guilabel> in the tab's left area. The tab's
+                            right area displays the selected field's <guilabel>Common
+                            details</guilabel> and field type specific details.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Common field details</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <guilabel>Common details</guilabel> are:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para> the <guilabel>Field name</guilabel> within the
+                                    <trademark>jACOB</trademark> application design; </para>
+                            </listitem>
+                            <listitem>
+                                <para> the <guilabel>Column name</guilabel> within the physical data source; </para>
+                            </listitem>
+                            <listitem>
+                                <para> the <guilabel>Label</guilabel> used for the field in forms; </para>
+                            </listitem>
+                            <listitem>
+                                <para> whether the <guilabel>History</guilabel> of the field is recorded;</para>
+                            </listitem>
+                            <listitem>
+                                <para> whether the field is <guilabel>Readonly</guilabel> and
+                                    <guilabel>Required</guilabel> and </para>
+                            </listitem>
+                            <listitem>
+                                <para> the <guilabel>Type</guilabel> of the field.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Field type specific details</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The field type specific details depend on the
+                            <guilabel>Type</guilabel> defined for the field. The field type specific
+                            details will be explained in the following sections:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingTextLongtextFields" endterm="title_definingTextLongtextFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingIntegerLongFields" endterm="title_definingIntegerLongFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingFloatDoubleFields" endterm="title_definingFloatDoubleFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingDecimalFields" endterm="title_definingDecimalFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingEnumFields" endterm="title_definingDecimalFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingDateTimeTimestampFields" endterm="title_definingDateTimeTimestampFields"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingBinaryDocumentFields" endterm="title_definingBinaryDocumentFields"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to add a field to a table:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the table concerned in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the tab <guilabel>Fields</guilabel> in
+                                                  the table editor.</para>
+                                                <para>
+                                                  The <trademark>jACOB</trademark> designer has initially
+                                                  created the field "pkey" containing the primary
+                                                  key of the table. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the table fields by pressing the button
+                                                  <guibutton>Add</guibutton>. </para>
+                                                <para>Define the field's <guilabel>Common details</guilabel>.</para>
+                                                <para>Define the field's type specific details as
+                                                  explained in the next sections.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningTextLongtextFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningIntegerLongFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningFloatDoubleFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningDecimalFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningEnumFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningDateTimeTimestampFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningBinaryDocumentFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect2>
+ 

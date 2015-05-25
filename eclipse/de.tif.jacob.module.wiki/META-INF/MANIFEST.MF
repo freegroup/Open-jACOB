@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wiki Module
+Bundle-SymbolicName: de.tif.jacob.module.wiki; singleton:=true
+Bundle-Version: 2.8.6
+Bundle-Activator: de.tif.jacob.module.wiki.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.tif.jacob.common,
+ de.tif.jacob.designer,
+ org.eclipse.jdt,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.core,
+ de.tif.jacob.module
+Eclipse-LazyStart: true
+Bundle-ClassPath: library.jar

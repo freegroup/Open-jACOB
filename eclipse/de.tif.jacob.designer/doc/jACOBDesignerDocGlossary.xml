@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossary PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<glossary>
+    <title>Glossary of terms</title>
+    <!-- &vellip; -->
+    <glossdiv>
+        <title>B</title>
+        <glossentry id="backfill">
+            <glossterm>backfill</glossterm>
+            <glossdef>
+                <para>Activity triggered by the selection of a data record in a search browser. The
+                    record data and the data of related records is entered, i.e. "backfilled", into
+                    the groups of the forms relevant to the record.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="browser">
+            <glossterm>browser</glossterm>
+            <glossdef>
+                <para>GUI element listing data records in a tabular form. The browser definition
+                    determines which table columns are displayed in which order.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>D</title>
+        <glossentry id="DBElements">
+            <glossterm>DB Elements</glossterm>
+            <glossdef>
+                <para>DB Elements are GUI elements such as textfields, checkboxes, etc. that are
+                    directly tied to a table field.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="domain">
+            <glossterm>domain</glossterm>
+            <glossdef>
+                <para>A <trademark>jACOB</trademark> Designer domain is a folder like element
+                    grouping forms.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>F</title>
+        <glossentry id="foreignField">
+            <glossterm>foreign field</glossterm>
+            <glossdef>
+                <para>A data field in a form's group showing data from a "foreign" table alias. In
+                    <trademark>jACOB</trademark> Designer a group is always assigned to one
+                        <glossterm linkend="tableAlias">table alias</glossterm>. A foreign field
+                    shows data from a <glossterm linkend="tableAlias">table alias</glossterm>
+                    different than the <glossterm linkend="tableAlias">table alias</glossterm>
+                    assigned to the group the field is contained in.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="foreignFieldBrowser">
+            <glossterm>foreign field browser</glossterm>
+            <glossdef>
+                <para>
+                    <glossterm linkend="browser">Browser</glossterm> listing the data records found
+                    by a search on a <glossterm linkend="foreignField">foreign field</glossterm>.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="foreignKey">
+            <glossterm>foreign key</glossterm>
+            <glossdef>
+                <para>A column or combination of columns whose values match the primary key of some
+                    other table. A foreign key does not have to be unique; in fact, foreign keys are
+                    often in a many-to-one relationship to a primary key.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>G</title>
+        <glossentry id="GUIHook">
+            <glossterm>GUI hook</glossterm>
+            <glossdef>
+                <para> User-defined call-back method which is called by the
+                    <trademark>jACOB</trademark> application server due to user actions at the GUI.
+                    GUI hooks are assigned to a GUI element.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>I</title>
+        <glossentry id="index">
+            <glossterm>index</glossterm>
+            <glossdef>
+                <para> A database object that provides access to data in the rows of a table, based
+                    on key values. Indexes provide quick access to data and can enforce uniqueness
+                    on the rows in a table.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="informBrowser">
+            <glossterm>inform browser</glossterm>
+            <glossdef>
+                <para>
+                    <glossterm linkend="browser">Browser</glossterm> listing data records in a form
+                    as part of a group.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>N</title>
+        <glossentry id="normalElement">
+            <glossterm>normal element</glossterm>
+            <glossdef>
+                <para>Normal elements are GUI elements such as textfields, checkboxes, etc. that are
+                    not directly tied to a table field. They can show e.g. calculated values and are
+                    normally controlled by <glossterm linkend="GUIHook">GUI hooks</glossterm>.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>P</title>
+        <glossentry id="primaryKey">
+            <glossterm>primary key</glossterm>
+            <glossdef>
+                <para>A column or combination of columns that uniquely identifies a row in a table.
+                    It cannot allow null values and must always have a unique index. A primary key
+                    is used to relate a table to foreign keys in other tables.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>R</title>
+        <glossentry id="relationSet">
+            <glossterm>relation set</glossterm>
+            <glossdef>
+                <para>A set of relations associated to each other. A graphical presentation of a
+                    relation set (<glossterm linkend="tableAlias">table aliases</glossterm> as nodes
+                    and relations as connecting lines) normally results in a cohesive graph.</para>
+                <para>Relation sets are used for complex searches on several data tables joined to
+                    each other.</para>
+                <para>Relation sets are also used for the backfilling of data in associated forms
+                    after a record has been selected from a search browser.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>S</title>
+        <glossentry id="searchBrowser">
+            <glossterm>search browser</glossterm>
+            <glossdef>
+                <para>
+                    <glossterm linkend="browser">Browser</glossterm> listing data records found by a search.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>T</title>
+        <glossentry id="tableAlias">
+            <glossterm>table alias</glossterm>
+            <glossdef>
+                <para>Unique name for a subset of data records in a table fulfilling a certain condition.</para>
+                <para>Data with a similar data structure can be combined in one table. Table aliases
+                    make it possible to efficiently access single subsets of this table. </para>
+                <para>If no condition is defined for a table alias, the subset of the table will
+                    contain the whole table. In this case the table alias is an alternative name for
+                    the table.</para>
+            </glossdef>
+        </glossentry>
+        <glossentry id="tableHook">
+            <glossterm>table hook</glossterm>
+            <glossdef>
+                <para>User-defined call-back method which is called by the
+                    <trademark>jACOB</trademark> application server while accessing the database.
+                    Table hooks are assigned to a <glossterm linkend="tableAlias">table alias</glossterm>.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+    <glossdiv>
+        <title>U</title>
+        <glossentry id="uniqueIndex">
+            <glossterm>unique index</glossterm>
+            <glossdef>
+                <para> An <glossterm linkend="index">index</glossterm> in which no two key fields or
+                    combinations of key fields on which the index is created may have the same value.</para>
+            </glossdef>
+        </glossentry>
+    </glossdiv>
+</glossary>

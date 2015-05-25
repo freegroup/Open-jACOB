@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.tif.jacob.designer.jacobSelectionActionPlugin">
+      <action_provider
+            browser_type="informbrowser"
+            class="de.tif.jacob.selectionaction.assign_records.SelectionActionAssignRecord">
+      </action_provider>
+   </extension>
+
+</plugin>

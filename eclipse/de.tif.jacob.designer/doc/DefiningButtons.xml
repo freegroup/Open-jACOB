@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingButtons" label="6">
+    <title id="title_definingButtons">Defining buttons in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Most groups in a form already contain the four default buttons <guibutton>Search</guibutton>,
+                            <guibutton>Clear</guibutton>, <guibutton>New</guibutton> and
+                            <guibutton>Update</guibutton>. These buttons enable searches on the
+                                <glossterm linkend="tableAlias">table alias</glossterm> tied to the
+                            group and to add and update data records.</para>
+                        <para>Additional to these four default buttons <trademark>jACOB</trademark>
+                            designer offers a number of other standard buttons and application developer
+                            defined buttons.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Standard buttons</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The following predefined standard buttons exist: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guibutton>New</guibutton>: </para>
+                                <para>for the creation of new data records.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Update</guibutton>: </para>
+                                <para>for the modification of data records.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Clear</guibutton>: </para>
+                                <para>to clear the content of the fields of the group.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Delete</guibutton>: </para>
+                                <para>for the deletion of data records.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Search</guibutton>: </para>
+                                <para>to perform a conditioned search on the <glossterm
+                                        linkend="tableAlias">table alias</glossterm> tied to the group</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Application developer defined buttons</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <trademark>jACOB</trademark> designer distinguishes between the
+                            following application developer defined button types:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Selected</guimenuitem> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Generic</guimenuitem>.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>For both button types the application developer must define an event
+                            handler and a caption.</para>
+                        <para>However, buttons of the type <guimenuitem>Selected</guimenuitem> are only
+                            enabled if a data record of the associated <glossterm
+                                linkend="tableAlias">table alias</glossterm> is selected, i.e. the
+                            data of the record is backfilled to the fields of the group. Otherwise
+                            the button is disabled.</para>
+                        <para>Buttons of the type <guimenuitem>Generic</guimenuitem> are always
+                            enabled unless the application developer disables it explicitly.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a button in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the desired button type from the
+                                                  <guibutton>Buttons</guibutton> menu in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the button at the desired position in
+                                                  the group by pressing the left mouse button.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>In case of an application developer defined button type
+                                                  specify the caption of the button in the
+                                                  properties field <guilabel>Label</guilabel>.
+                                                  Furthermore add the appropriate business logic
+                                                  to the button by creating and editing the event
+                                                  handler as described in the section ....ADD link
+                                                  to section!!!</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

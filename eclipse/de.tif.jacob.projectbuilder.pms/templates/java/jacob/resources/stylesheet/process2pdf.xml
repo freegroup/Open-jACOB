@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<data>
+<process>
+<pkey>1</pkey>
+<valid_from>2006-10-23</valid_from>
+<valid_to>2006-10-27</valid_to>
+<title>Gesamt</title>
+<tags/>
+<remark>Aufzählung und Besonderheite oder bemerkenswerte Vorkommnisse.</remark>
+<responsible_remark>Besondere Bemerkungen zu der Verantwortlichkeit werden hier aufgeführt</responsible_remark>
+<aspect>Aufzählung und Zusammenfassung der Haupttätigkeit und Schwerpunkte des Prozesses.</aspect>
+<description>Die in dem Prozess angewandten Verfahren und durchgeführten Tätigkeiten werden ausführlich&#13;
+und hinreichend durch die als "Mitgeltenden Dokumente" aufgeführten Unterlagen beschrieben.&#13;
+&#13;
+Die darin aufgeführten Informationen enthalten Angaben über die im Gebrauch befindliche&#13;
+technischen Ausstattung, der Personal- und Einsatzstärke und dem Ausbildungs, Qualitäts- und &#13;
+Trainingsstand der betroffenen Mitarbeiter</description>
+<process_responsible_key/>
+<process_owner_key>1</process_owner_key>
+<process_owner_substitute_key>2</process_owner_substitute_key>
+<parent_process_key/>
+<guideline>Für den Prozess gelten die jeweils aufgeführten aktuellen, interne, nationale, europäische und internationale Dokumente.&#13;
+Des Weiteren gelten die Ausführungen aus dem aktuellen "Flughafen-Handbuch" (Airport-Manual)&#13;
+und der aktuelle Flughafenbenutzungsordnung des Flughafens.&#13;
+</guideline>
+<risk_evaluation>Hier sollten eventuelle Risken für Mann und Maschine erläutert werden.</risk_evaluation>
+<case_of_need>Im Notfall gelten die Bestimmungen und Anweisungen des aktuellen Notfallplans.&#13;
+Des Weiteren sind die ausführenden Personen des Prozesses mit den Notfallprozeduren&#13;
+und -verfahren vertraut und in Ihrer Umsetzung und Anweisung regelmäßig geschult.</case_of_need>
+<history/>
+<workgroup_process>
+<pkey>2</pkey>
+<process_key>1</process_key>
+<workgroup_key>2</workgroup_key>
+<workgroup_name>Arbeitsgruppe 2</workgroup_name>
+</workgroup_process>
+<workgroup_process>
+<pkey>3</pkey>
+<process_key>1</process_key>
+<workgroup_key>3</workgroup_key>
+<workgroup_name>Arbeitsgruppe 3</workgroup_name>
+</workgroup_process>
+<defect>
+<pkey>1</pkey>
+<subject>Dies ist ein Subject</subject>
+<description>Mit eine Beschreibung&#13;
+</description>
+<create_date>2006-10-24 17:44</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 21:45:19 Uhr CEST
+  Status:                                              ==&gt;
+                                new
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>3</pkey>
+<subject>asdf</subject>
+<description/>
+<create_date>2006-10-24 18:19</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 21:45:33 Uhr CEST
+  Status:                                              ==&gt;
+                                new
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>4</pkey>
+<subject>juhu asdf</subject>
+<description/>
+<create_date>2006-10-24 18:20</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 21:45:39 Uhr CEST
+  Status:                                              ==&gt;
+                                new
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>5</pkey>
+<subject>Wieder ein neuer Defect</subject>
+<description/>
+<create_date>2006-10-24 18:20</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 21:45:11 Uhr CEST
+  Status:                                              ==&gt;
+                                new
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>7</pkey>
+<subject>asdfsdf</subject>
+<description/>
+<create_date>2006-10-24 21:58</create_date>
+<state>open</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 21:59:11 Uhr CEST
+  Betreff:                                            asdfsdf
+  Status:                                             open
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>8</pkey>
+<subject>juhu asdf</subject>
+<description/>
+<create_date>2006-10-24 22:02</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 24.10.2006 22:02:59 Uhr CEST
+  Betreff:                                            juhu asdf
+  Status:                                             new
+</history>
+<audit_key/>
+</defect>
+<defect>
+<pkey>19</pkey>
+<subject>,,,,,,,,,,,</subject>
+<description>Mit einer Beschreibung</description>
+<create_date>2006-10-25 11:02</create_date>
+<state>new</state>
+<resolve_date/>
+<process_key>1</process_key>
+<history>
+###### admin: 25.10.2006 11:02:20 Uhr CEST
+  Betreff:                                            ,,,,,,,,,,,
+  Beschreibung:                                       Mit einer Beschreibung
+  Status:                                             new
+</history>
+<audit_key/>
+</defect>
+<audit>
+<pkey>1</pkey>
+<comment>Dies ist ein Kommentar für das Audit</comment>
+<date>2006-10-23 23:28</date>
+<process_key>1</process_key>
+<name/>
+<date_note/>
+<audit_co_moderator_key/>
+<audit_moderator_key/>
+<state>open</state>
+</audit>
+<audit>
+<pkey>2</pkey>
+<comment>Ein weiteres Audit überstanden</comment>
+<date>2006-10-23 23:43</date>
+<process_key>1</process_key>
+<name/>
+<date_note/>
+<audit_co_moderator_key/>
+<audit_moderator_key/>
+<state>open</state>
+</audit>
+<process_owner_substitute>
+<pkey>2</pkey>
+<name>Martin Müller</name>
+<phone/>
+<history/>
+</process_owner_substitute>
+<process_owner>
+<pkey>1</pkey>
+<name>Andreas Herz</name>
+<phone/>
+<history/>
+</process_owner>
+</process>
+</data>

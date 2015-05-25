@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of {applicationName} datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="firstname" history="false" label="Firstname" name="firstname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="Photo" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="nickname" history="false" label="Nickname" name="nickname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email" history="false" label="Email" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="work_phone" history="false" label="Work_phone" name="work_phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="home_phone" history="false" label="Home_phone" name="home_phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mobile_phone" history="false" label="Mobile_phone" name="mobile_phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="birthday" history="false" label="Birthday" name="birthday" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="street" history="false" label="Street" name="street" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="city" history="false" label="City" name="city" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="zipcode" history="false" label="Zipcode" name="zipcode" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="country" history="false" label="Country" name="country" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="webpage" history="false" label="Webpage" name="webpage" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="account" name="account">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="Photo" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="account" table="account"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Email" name="browserEmail" visible="true">
+        <TableField tableField="email"/>
+      </Field>
+      <Field label="Firstname" name="browserFirstname" visible="true">
+        <TableField tableField="firstname"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="City" name="browserCity" visible="true">
+        <TableField tableField="city"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations/>
+  <Relationsets/>
+  <Forms>
+    <Form label="%FORM_PERSON" name="person">
+      <Group alias="person" browser="personBrowser" label="%GROUP_PERSON" name="personGroup">
+        <Dimension height="409" width="661" x="12" y="12"/>
+        <GuiElement name="personFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="25" width="261" x="109" y="36"/>
+              <Caption halign="right" label="%FIRST_NAME" valign="top">
+                <Dimension height="25" width="89" x="13" y="36"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="72"/>
+              <Caption halign="right" label="%LAST_NAME" valign="top">
+                <Dimension height="25" width="89" x="13" y="72"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="315" y="372"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonNew" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="480" y="372"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonUpdate" visible="true">
+          <Button label="Change">
+            <Dimension height="20" width="70" x="397" y="372"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personDeleteButton" visible="true">
+          <Button label="Delete">
+            <Dimension height="20" width="70" x="564" y="372"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="289" width="202" x="432" y="36"/>
+              <Caption halign="right" label="%PHOTO" valign="top">
+                <Dimension height="15" width="55" x="372" y="41"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personCity" visible="true">
+          <LocalInputField tableField="city">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="146"/>
+              <Caption halign="right" label="%CITY" valign="top">
+                <Dimension height="25" width="89" x="13" y="146"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personCountry" visible="true">
+          <LocalInputField tableField="country">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="180"/>
+              <Caption halign="right" label="%COUNTRY" valign="top">
+                <Dimension height="25" width="89" x="13" y="180"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="108"/>
+              <Caption halign="right" label="%EMAIL" valign="top">
+                <Dimension height="25" width="89" x="13" y="108"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personZipcode" visible="true">
+          <LocalInputField tableField="zipcode">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="264"/>
+              <Caption halign="right" label="%ZIPCODE" valign="top">
+                <Dimension height="25" width="89" x="13" y="264"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personStreet" visible="true">
+          <LocalInputField tableField="street">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="221"/>
+              <Caption halign="right" label="%STREET" valign="top">
+                <Dimension height="25" width="89" x="13" y="221"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personHomePhone" visible="true">
+          <LocalInputField tableField="home_phone">
+            <TextInput>
+              <Dimension height="25" width="264" x="109" y="300"/>
+              <Caption halign="right" label="%HOME_PHONE" valign="top">
+                <Dimension height="25" width="89" x="13" y="300"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Account" name="account">
+      <Group alias="account" browser="accountBrowser" label="Account" name="accountGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="accountClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="74"/>
+              <Caption halign="left" label="Loginname" valign="top">
+                <Dimension height="20" width="70" x="5" y="74"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountFullname" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="49"/>
+              <Caption halign="left" label="Fullname" valign="top">
+                <Dimension height="20" width="70" x="5" y="49"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="80" y="99"/>
+              <Caption halign="left" label="Password" valign="top">
+                <Dimension height="20" width="70" x="5" y="99"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="246" width="251" x="300" y="50"/>
+              <Caption halign="left" label="Photo" valign="top">
+                <Dimension height="20" width="70" x="300" y="25"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="personDomain" title="%DOMAIN_ADDRESS" visible="true">
+      <Form>person</Form>
+    </Domain>
+    <Domain name="administration" title="Administration" visible="true">
+      <Form>account</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>personDomain</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

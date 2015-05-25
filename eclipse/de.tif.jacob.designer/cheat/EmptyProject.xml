@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="First Steps with an empty jACOB Project">
+  <intro>
+    <description>Follow the steps below to add required items to the new jACOb project</description>
+  </intro>
+  <item title="Step 1: Add a Physical Datasource" dialog="true">
+     <description>A Datasource contains all table definitions of a physical database.</description>
+     <action class="de.tif.jacob.designer.cheat.emptyproject.CreateDatasource" pluginId="de.tif.jacob.designer"/>
+  </item>
+  <item title="Step 2: Create a DB Table." dialog="true">
+     <description>Add a table to the datasource.</description>
+     <action class="de.tif.jacob.designer.cheat.emptyproject.CreateTable" pluginId="de.tif.jacob.designer"/>
+  </item>
+  <item title="Step 3: Create the UI Domain." dialog="true">
+     <description>Create a UI domain. A domain is a navigation container for a collection of forms</description>
+     <action class="de.tif.jacob.designer.cheat.emptyproject.CreateDomain" pluginId="de.tif.jacob.designer"/>
+  </item>
+  <item title="Step 4: Create a UI Form." dialog="true">
+     <description>Add a form to a domain.</description>
+     <action class="de.tif.jacob.designer.cheat.emptyproject.CreateForm" pluginId="de.tif.jacob.designer"/>
+  </item>
+  <item title="Done.">
+     <description>.</description>
+  </item>
+</cheatsheet>

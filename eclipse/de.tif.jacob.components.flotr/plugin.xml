@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="de.tif.jacob.designer.jacobUiPluginComponent">
+      <component
+            class="de.tif.jacob.components.flotr.impl.FlotrComponentPlugin"
+            group="chart">
+      </component>
+   </extension>
+
+</plugin>

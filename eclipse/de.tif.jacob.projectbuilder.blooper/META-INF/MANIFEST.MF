@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Open-jACOB Project Template "Blooper"
+Bundle-SymbolicName: de.tif.jacob.projectbuilder.blooper;singleton:=true
+Bundle-Version: 2.8.3
+Bundle-Activator: de.tif.jacob.projectbuilder.blooper.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.projectbuilder
+Eclipse-LazyStart: true

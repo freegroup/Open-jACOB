@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingGroups" label="1">
+    <title id="title_definingGroups">Defining Groups in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> A form of a <trademark>jACOB</trademark> application consists of one
+                            or more groups. The groups contain the actual GUI elements. </para>
+                        <para>
+                            <figure id="fig_groupsInForm">
+                                <title> Groups in a form</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/GroupsInForm.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Each group is uniquely assigned to one <glossterm
+                                linkend="tableAlias">table alias</glossterm>. In the normal case a
+                            group visually goups data of the <glossterm linkend="tableAlias">table
+                            alias</glossterm> tied to the group.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a group in a form:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the appropriate form in the folder
+                                                  <guilabel>Forms</guilabel> in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the menu item
+                                                  <guimenuitem>Group</guimenuitem> from the
+                                                  <guibutton>DB Elements</guibutton> menu in
+                                                  the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Draw a rectangle as placeholder for the group
+                                                  to be defined.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer will pop up a dialog asking to specify
+                                                  the ancor table alias for the group.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Specify the ancor table alias and confirm your input.</para>
+                                                <para>Hereupon, <trademark>jACOB</trademark>
+                                                  designer will create a group in your form
+                                                  labelled with the name of the ancor table. The
+                                                  group automatically contains the four buttons
+                                                  <guibutton>Search</guibutton>,
+                                                  <guibutton>Clear</guibutton>,
+                                                  <guibutton>New</guibutton> and
+                                                  <guibutton>Update</guibutton>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the desired GUI Elements to the form as
+                                                  explained in the next sections.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Groups without default buttons</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> You can also create groups without the four default buttons <guibutton>Search</guibutton>,
+                            <guibutton>Clear</guibutton>, <guibutton>New</guibutton> and
+                            <guibutton>Update</guibutton>. This will be achieved, if you just click at
+                            the position you want to have the group in your form instead of drawing a
+                            rectangle as a placeholder for your group.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

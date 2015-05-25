@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<chapter id="chap_getStarted" label="2">
+    <title id="title_chap_getStarted">Getting started</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Introduction by means of an example</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The development of a <trademark>jACOB</trademark> application will be
+                            explained by means of a simple example:</para>
+                        <para>The real estate agency Happy Home advertises houses, apartments and
+                            lands in newspapers and in the internet. Customer requests are accepted
+                            by telephone and by e-mail. In this chapter we want to develop a
+                            <trademark>jACOB</trademark> application that processes the customer
+                            requests of Happy Home.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Process</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Happy Home processes customer requests in the following way:</para>
+                        <orderedlist>
+                            <listitem>
+                                <para>A landlord who wants to sell his house, apartment or land
+                                    offers his real estate object for sale at Happy Home. </para>
+                            </listitem>
+                            <listitem>
+                                <para>Another person is in search of a real estate object and finds
+                                    this real estate object advertised by Happy Home interesting.</para>
+                            </listitem>
+                            <listitem>
+                                <para>The interested person phones/writes an e-mail to the agency to
+                                    show his/her interest and to gather further information about
+                                    the real estate object.</para>
+                            </listitem>
+                            <listitem>
+                                <para>The receptionist receiving the phone call/e-mail registers the
+                                    person's request.</para>
+                            </listitem>
+                            <listitem>
+                                <para> In turn he/she passes an agent as contact person to the
+                                    interested person.</para>
+                            </listitem>
+                            <listitem>
+                                <para>The agent will get in touch with the interested person. He
+                                    will give the desired information to the interested person and
+                                    arrange a date for an inspection of the real estate object.</para>
+                            </listitem>
+                        </orderedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>The process model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Out of this we can abstract the following process model:</para>
+                        <para>
+                            <figure id="fig_processModel">
+                                <title id="title_fig_processModel"> Process model of the real estate
+                                    agency Happy Home</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/ProcessModel.jpg"
+                                                format="JPEG" scalefit="1" width="263" depth="260"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>It's time to think of a name for our example
+                            <trademark>jACOB</trademark> application. Let's call it happyHome. In
+                            the next sections we will develop step by step this application:</para>
+                        <orderedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_createNewProject" endterm="title_createNewProject"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineApplicationDesign" endterm="title_defineApplicationDesign"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_buildApplication" endterm="title_buildApplication"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineTableHooks" endterm="title_defineTableHooks"/>
+                                </para>
+                            </listitem>
+                           <listitem>
+                                <para>
+                                    <xref linkend="sect_defineGUIHooks" endterm="title_defineGUIHooks"/>
+                                </para>
+                            </listitem>
+                           <listitem>
+                                <para>
+                                    <xref linkend="sect_addUserManagement" endterm="title_addUserManagement"/>
+                                </para>
+                            </listitem>
+                        </orderedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="CreateNewProject.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineApplicationDesign.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="BuildApplication.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineTableHooks.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineGUIHooks.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="AddUserManagement.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>

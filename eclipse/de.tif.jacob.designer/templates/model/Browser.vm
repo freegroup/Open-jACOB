@@ -1,0 +1,28 @@
+/**************************************************************************
+ * Project  : jacob.$application.name
+ * 
+ * THIS IS A GENERATED FILE - DO NOT CHANGE!
+ *
+ *************************************************************************/
+package $package;
+
+
+/**
+ * $browser.description
+ *
+ * DB alias: <b>$browser.tableAliasModel.name</b>
+ *
+ **/
+public final class $StringUtils.capitalise($browser.name)
+{
+   private $StringUtils.capitalise($browser.name)(){}
+
+   // the name of the table alias	 
+   public final static String NAME = "$browser.name";
+	 
+   // All field names of the browser "$browser.name"
+#foreach( $field in $browser.browserFieldModels )
+   public final static String  $field.name = "$field.name";
+#end
+
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="de.tif.jacob.designer"
+            class="de.tif.jacob.blooper.views.BugView"
+            icon="icons/qualitymaster.gif"
+            id="de.tif.jacob.blooper.views.BugView"
+            name="jACOB Bugtracker">
+      </view>
+   </extension>
+   <extension  point="org.eclipse.ui.editors">
+      <editor
+            class="de.tif.jacob.blooper.editors.bug.BugEditor"
+            default="false"
+            icon="icons/qualitymaster.gif"
+            id="de.tif.jacob.blooper.editors.defect.BugEditor"
+            name="Bugtracker Editor"/>
+   </extension>
+
+
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="de.tif.jacob.blooper.contribution1"
+					  objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true">
+    
+      <menu id="de.tif.jacob.blooper.menu1"
+               label="jACOB"
+               path="additions">
+            <separator name="group1"/>
+         </menu>
+         <action
+               class="de.tif.jacob.blooper.actions.ConnectToBugtracker"
+               enablesFor="1"
+               icon="icons/qualitymaster.gif"
+               id="de.tif.jacob.blooper.newAction"
+               label="Connect to Bugtracker"
+               menubarPath="de.tif.jacob.blooper.menu1/group1"/>
+      </objectContribution>
+   </extension>
+</plugin>

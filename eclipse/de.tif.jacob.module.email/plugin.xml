@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension point="org.eclipse.ui.popupMenus">
+	<!-- Contribution for TreeDomainObject -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeDomainObject"
+          id="de.tif.jacob.module.emailcontribution">
+
+
+       <action
+             label="%popup.applicationoutline.newEmailForm"
+             icon="icons/new_email_form.png"
+             class="de.tif.jacob.module.email.actions.CreateEMailFormAction"
+             menubarPath="subMenuModules/modules"
+             id="de.tif.jacob.module.email.actions.CreateEMailFormAction"/>
+                
+    </objectContribution>
+   </extension>
+
+</plugin>

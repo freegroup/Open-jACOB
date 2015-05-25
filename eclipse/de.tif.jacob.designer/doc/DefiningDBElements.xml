@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingDBElements" label="2">
+    <title id="title_definingDBElements">Defining DB elements in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The groups of a form visually group the data of their ancor <glossterm
+                                linkend="tableAlias">table alias</glossterm>. The data itself is
+                            displayed within <glossterm linkend="DBElement">DB elements</glossterm>
+                            such as textfields, checkboxes, etc. that are directly tied to a table
+                            field of the ancor <glossterm linkend="tableAlias">table alias</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>DB Elements</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <guibutton>DB Elements</guibutton> are GUI elements tied directly to a
+                            table field of the ancor <glossterm linkend="tableAlias">table alias</glossterm>.</para>
+                        <para>The following <guibutton>DB Elements</guibutton> exist: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Text</guimenuitem> fields:</para>
+                                <para>can show table fields of the type text, integer. long, float,
+                                    double and decimal. </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Long text</guimenuitem> fields and
+                                        <guimenuitem>Long text dialog</guimenuitem> fields:</para>
+                                <para>can display table fields of the type longtext.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Checkbox</guimenuitem> fields:</para>
+                                <para>can show table fields of the type integer and long modelled as
+                                    boolean like table fields.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Combobox</guimenuitem> fields:</para>
+                                <para>can display table fields of the type enum.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Time</guimenuitem> fields:</para>
+                                <para>can show table fields of the type time.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Date</guimenuitem> fields:</para>
+                                <para>can display table fields of the type date.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Timestamp</guimenuitem> fields:</para>
+                                <para>can show table fields of the type timestamp.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Image</guimenuitem> fields:</para>
+                                <para>can show table fields of the type binary or document.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>Document</guimenuitem> fields:</para>
+                                <para>can display table fields of the type document.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>The definition of the <glossterm linkend="DBElement">DB elements</glossterm>
+                            <guimenuitem>Foreign field</guimenuitem> and <guimenuitem>Table
+                            view</guimenuitem> will be explained in the following sections.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a <glossterm
+                                linkend="DBElement">DB element</glossterm> in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the desired DB element from the
+                                                  <guibutton>DB Elements</guibutton> menu in
+                                                  the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the DB element at the desired
+                                                  position in the group edited by pressing the
+                                                  left mouse button.</para>
+                                                <para>As already explained above, DB elements are
+                                                  always assigned to a table column. Therefore,
+                                                  <trademark>jACOB</trademark> Designer will pop
+                                                  up a dialog asking you for the appropriate table
+                                                  column. <trademark>jACOB</trademark> Designer
+                                                  lists a priori only the table columns of the
+                                                  groups ancor table alias that can be displayed
+                                                  in the DB element selected.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Specify the appropiate table column and
+                                                  confirm your input.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  Designer will automatically create the
+                                                  appropriate label. <trademark>jACOB</trademark>
+                                                  Designer retrieves the string from the column object.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

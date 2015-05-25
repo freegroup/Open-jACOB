@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.tif.jacob.feature"
+      label="Core Designer"
+      version="3.0.10"
+      provider-name="Andreas Herz | FreeGroup">
+   <install-handler/>
+
+   <description url="[Enter Feature URL here.]">
+      Open-jACOB is a Java rapid application development tool (RAD) based on Eclipse that enables the development of Rich Internet Applications (RIA) that are entirely based on Java.
+
+An Open-jACOB based application can be deployed as a stand alone application (.war) in a Web container like Jakarta-Tomcat. Alternatively, it may also be deployed as a jacapp Application within the jACOB Application server, profiting from the more advanced management features of the Open-jACOB container.
+   </description>
+
+   <copyright url="[Enter Copyright URL here.]">
+      This Eclipse plugin is part of Open-jACOB
+   </copyright>
+
+   <license>
+      This program is free software; you can redistribute it and/or
+modify
+it under the terms of the GNU General Public License as published
+by
+the Free Software Foundation; version 2 of the License.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.ant.ui"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.100" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="de.tif.jacob.designer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.blooper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.address"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.blank"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.blooper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.docfinder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.email"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.herb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.pms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.quintus"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.tutorial"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.projectbuilder.verside"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.docgen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.project"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.module.wiki"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.module"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.module.email"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.module.reportdesigner"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.tif.jacob.properties.spotlightsearch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Open-jACOB Project Template "Tutorial"
+Bundle-SymbolicName: de.tif.jacob.projectbuilder.tutorial;singleton:=true
+Bundle-Version: 2.10.0
+Bundle-Activator: de.tif.jacob.projectbuilder.tutorial.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.projectbuilder
+Eclipse-LazyStart: true

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_defineForms" label="5">
+    <title id="title_defineForms">Define the forms of happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In this section we want to define the forms for our example
+                            application happyHome. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Forms</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>First of all we will create a form for the registration of the
+                            employees of Happy Home, i.e. receptionists and agents. </para>
+                        <para>Then we will develop a form for the registration of the real estate
+                            objects. This form will also include the registration of new landlords.</para>
+                        <para>Finally we will construct a form for the registration of the requests.
+                            This form will also include the registration of new interested persons.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Define forms</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the next sections we will:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineFormEmployee" endterm="title_defineFormEmployee"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineFormRealEstateObject" endterm="title_defineFormRealEstateObject"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_defineFormRequest" endterm="title_defineFormRequest"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefineFormEmployee.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineFormRealEstateObject.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefineFormRequest.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect2>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of {applicationName} datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="bug" name="bug">
+      <Field dbName="pkey" history="false" label="%BUG.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="application" history="false" label="%BUG.APPLICATION" name="application" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="title" history="false" label="%BUG.TITLE" name="title" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="%BUG.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="state" history="false" label="%BUG.STATE" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>verified</Default>
+          <Value>verified</Value>
+          <Value>closed</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="grade" history="false" label="%BUG.GRADE" name="grade" readonly="false" required="true">
+        <Enumeration>
+          <Default>Bug</Default>
+          <Value>Missing Functionality</Value>
+          <Value>Remark</Value>
+          <Value>Cosmetic</Value>
+          <Value>Crash</Value>
+          <Value>Wrong Behaviour</Value>
+          <Value>Bug</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="reproduceabitlity" history="false" label="%BUG.REPRODUCEABITLITY" name="reproduceabitlity" readonly="false" required="true">
+        <Enumeration>
+          <Value>Once</Value>
+          <Value>Sometimes</Value>
+          <Value>Often</Value>
+          <Value>Always</Value>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="account" name="account">
+      <Field dbName="pkey" history="false" label="%ACCOUNT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="%ACCOUNT.LOGINNAME" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="%ACCOUNT.PASSWORD" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="%ACCOUNT.FULLNAME" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="%ACCOUNT.PHOTO" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="bug" table="bug"/>
+    <TableAlias name="account" table="account"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="bug" name="bugBrowser" type="inform">
+      <Field label="%BUG.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%BUG.GRADE" name="browserGrade" visible="true">
+        <TableField tableField="grade"/>
+      </Field>
+      <Field label="%BUG.STATE" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="%BUG.TITLE" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="%ACCOUNT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ACCOUNT.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%ACCOUNT.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations/>
+  <Relationsets/>
+  <Forms>
+    <Form label="%FORM.BUG" name="bug">
+      <Group alias="bug" border="false" browser="bugBrowser" label="%GROUP.BUGGROUP" name="bugGroup">
+        <Dimension height="397" width="781" x="12" y="12"/>
+        <GuiElement name="bugGrade" visible="true">
+          <LocalInputField tableField="grade">
+            <ComboBox>
+              <Dimension height="20" width="96" x="308" y="65"/>
+              <Value>Missing Functionality</Value>
+              <Value>Remark</Value>
+              <Value>Cosmetic</Value>
+              <Value>Crash</Value>
+              <Value>Wrong Behaviour</Value>
+              <Value>Bug</Value>
+              <Caption halign="left" label="%BUG.GRADE" valign="top">
+                <Dimension height="20" width="60" x="243" y="65"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugReproduceabitlity" visible="true">
+          <LocalInputField tableField="reproduceabitlity">
+            <ComboBox>
+              <Dimension height="20" width="100" x="508" y="65"/>
+              <Value>Once</Value>
+              <Value>Sometimes</Value>
+              <Value>Often</Value>
+              <Value>Always</Value>
+              <Caption halign="left" label="%BUG.REPRODUCEABITLITY" valign="top">
+                <Dimension height="20" width="81" x="422" y="65"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugGrade3" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="136" x="78" y="65"/>
+              <Value>verified</Value>
+              <Value>closed</Value>
+              <Caption halign="left" label="%BUG.STATE" valign="top">
+                <Dimension height="20" width="55" x="19" y="65"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugApplication" visible="true">
+          <LocalInputField tableField="application">
+            <TextInput>
+              <Dimension height="20" width="300" x="308" y="36"/>
+              <Caption halign="left" label="%BUG.APPLICATION" valign="top">
+                <Dimension height="20" width="60" x="243" y="36"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugApplication2" visible="true">
+          <LocalInputField tableField="title">
+            <TextInput>
+              <Dimension height="20" width="742" x="18" y="138"/>
+              <Caption halign="left" label="%BUG.TITLE" valign="top">
+                <Dimension height="20" width="81" x="18" y="119"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="191" width="742" x="18" y="193"/>
+              <Caption halign="left" label="%BUG.DESCRIPTION" valign="top">
+                <Dimension height="20" width="81" x="18" y="174"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugButton2" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="64" x="696" y="96"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="bugButton4" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="64" x="696" y="65"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="bugPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="135" x="79" y="36"/>
+              <Caption halign="left" label="%BUG.PKEY" valign="top">
+                <Dimension height="20" width="55" x="19" y="36"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="64" x="696" y="36"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.ACCOUNT" name="account">
+      <Group alias="account" border="false" browser="accountBrowser" label="%GROUP.ACCOUNTGROUP" name="accountGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="accountClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="130"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="85" y="80"/>
+              <Caption halign="left" label="%ACCOUNT.LOGINNAME" valign="top">
+                <Dimension height="20" width="70" x="10" y="80"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountFullname" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="200" x="85" y="55"/>
+              <Caption halign="left" label="%ACCOUNT.FULLNAME" valign="top">
+                <Dimension height="20" width="70" x="10" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="85" y="105"/>
+              <Caption halign="left" label="%ACCOUNT.PASSWORD" valign="top">
+                <Dimension height="20" width="70" x="10" y="105"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="226" width="200" x="330" y="55"/>
+              <Caption halign="left" label="%ACCOUNT.PHOTO" valign="top">
+                <Dimension height="20" width="70" x="330" y="36"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="tracker" title="%DOMAIN.TRACKER" visible="true">
+      <Form>bug</Form>
+      <Role>user</Role>
+      <Role>admin</Role>
+    </Domain>
+    <Domain name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>account</Form>
+      <Role>admin</Role>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>tracker</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

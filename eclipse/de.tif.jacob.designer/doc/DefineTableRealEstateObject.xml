@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_defineTableRealEstateObject" label="1">
+    <title id="title_defineTableRealEstateObject">Define the table real estate object</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we want to define the table for real estate objects as illustrated
+                            in <link linkend="table_realEstateObject" endterm="title_table_realEstateObject"/>.</para>
+                        <para>Like the column <guilabel>agent_id</guilabel> of the table person the
+                            column <guilabel>landlord_id</guilabel> is a <glossterm
+                                linkend="foreignKey">foreign key</glossterm> field. It will
+                             be automatically created in the work step <link
+                            linkend="sect_defineRelationSets" endterm="title_defineRelationSets"/>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create a new table with the name "realEstateObject" in
+                                                  the folder
+                                                  <guilabel>happyHomeDataSource</guilabel> of the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para> In the table editor, rename the primary key
+                                                  column as "id".</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the required columns
+                                                  <guilabel>address</guilabel> and <guilabel>description</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>TEXT</guimenuitem> and
+                                                  <guimenuitem>LONGTEXT</guimenuitem> respectively
+                                                  in the field <guilabel>Type</guilabel>. </para>
+                                                <para>Specify the maximum length for the column
+                                                  <guilabel>address</guilabel> in the field
+                                                  <guilabel>Max. length</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the required column <guilabel>saleOrRent</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>ENUM</guimenuitem> in the field <guilabel>Type</guilabel>.</para>
+                                                <para>Specify "sale", "rent" and "saleOrRent" in the field
+                                                  <guilabel>Enum values</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the columns <guilabel>purchasePrice</guilabel> and <guilabel>rentalFee</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>DECIMAL</guimenuitem> in the field <guilabel>Type</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the required column <guilabel>objectType</guilabel>.</para>
+                                                <para>Therefor select
+                                                  <guimenuitem>ENUM</guimenuitem> in the field <guilabel>Type</guilabel>.</para>
+                                                <para>Specify "apartment", "oneFamilyHouse",
+                                                  "apartmentHouse" and "land" in the field
+                                                  <guilabel>Enum values</guilabel>.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineTableRealEstateObject.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

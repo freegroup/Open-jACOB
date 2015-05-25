@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="plugin_export">
+	<target name="plugin_export">
+		<pde.exportPlugins plugins="de.tif.jacob.designer" destination="J:\de.tif.jacob.designer\dist" filename="jacob.designer.zip" exportType="zip" exportSource="true"/>
+	</target>
+</project>

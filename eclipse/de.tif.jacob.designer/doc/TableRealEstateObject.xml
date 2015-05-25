@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd">
+<table id="table_realEstateObject" rowsep="1" colsep="1" frame="all">
+    <title id="title_table_realEstateObject">Table realEstateObject</title>
+    <tgroup cols="4">
+        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="2*"/>
+        <colspec align="center" colwidth="1*"/>
+        <colspec align="center" colwidth="1*"/>
+        <thead>
+            <row>
+                <entry align="center">Column Name</entry>
+                <entry align="center">Type</entry>
+                <entry align="center">Length</entry>
+                <entry align="center">Required</entry>
+            </row>
+        </thead>
+        <tbody>
+            <row>
+                <entry> id </entry>
+                <entry>LONG </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry> address</entry>
+                <entry> TEXT</entry>
+                <entry>80</entry>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>description</entry>
+                <entry> LONGTEXT </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>type</entry>
+                <entry> ENUM</entry>
+                <entry/>
+                <entry>X</entry>
+            </row>
+            <row>
+                <entry>saleOrRent</entry>
+                <entry> ENUM</entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+            <row>
+                <entry>purchasePrice</entry>
+                <entry> DECIMAL</entry>
+                <entry/>
+                <entry></entry>
+            </row>
+            <row>
+                <entry>rentalFee</entry>
+                <entry> DECIMAL</entry>
+                <entry/>
+                <entry></entry>
+            </row>
+            <row>
+                <entry> landlord_id </entry>
+                <entry>LONG </entry>
+                <entry/>
+                <entry> X </entry>
+            </row>
+        </tbody>
+    </tgroup>
+</table>

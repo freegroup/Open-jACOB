@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Open-jACOB Project Template "Address"
+Bundle-SymbolicName: de.tif.jacob.projectbuilder.address;singleton:=true
+Bundle-Version: 2.8.3
+Bundle-Activator: de.tif.jacob.projectbuilder.address.Activator
+Bundle-Vendor: Andreas Herz
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.projectbuilder,
+ de.tif.jacob.designer
+Eclipse-LazyStart: true

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_definingForms" label="1">
+    <title id="title_definingForms">Defining Forms</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Forms are a central part of the GUI of a <trademark>jACOB</trademark>
+                            application. A user can access and modify data via forms.</para>
+                        <para>Forms have to be defined in the application design of the
+                            <trademark>jACOB</trademark> application.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Editor</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Forms are defined with the aid of the form editor: </para>
+                        <para>
+                            <figure id="fig_formEditor">
+                                <title> Form editor</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/FormEditor.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The form editor consits of a toolbar and a workspace. With the aid of
+                            the toolbar you can construct your form: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guibutton>DB Elements</guibutton>:
+                                </para>
+                                <para> You can add so-called <glossterm
+                                linkend="DBElement">DB elements</glossterm> to a
+                                    form. <glossterm
+                                linkend="DBElement">DB elements</glossterm> are GUI elements such
+                                    as textfields, checkboxes, etc. that are directly tied to a
+                                    table field.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Normal Elements</guibutton>:
+                                </para>
+                                <para> You can add so-called <glossterm
+                                linkend=" normalElement">normal elements</glossterm>
+                                    to a form. <glossterm
+                                linkend=" normalElement">Normal element</glossterm> are GUI
+                                    elements such as textfields, checkboxes, etc. that are not
+                                    directly tied to a table field. They can show e.g. calculated
+                                    values and are normally controlled by <glossterm
+                                        linkend="GUIHook">GUI hooks</glossterm>.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Buttons</guibutton>:
+                                </para>
+                                <para>You can add buttons to your form.
+                                    <trademark>jACOB</trademark> designer offers a set of predefined
+                                    GUI buttons. Additional you can define your own GUI buttons.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Charts</guibutton>:
+                                </para>
+                                <para>You can add line and bar charts to your form.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Select</guibutton> and <guibutton>Marquee</guibutton>:</para>
+                                <para>With the aid of the button <guibutton>Select</guibutton> you
+                                    can select single GUI elements of your form. The
+                                    <guibutton>Marquee</guibutton> button lets you select whole
+                                    areas in your form.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a new form:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the folder <guilabel>Forms</guilabel>
+                                                  in the <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the menu item <guimenuitem>New
+                                                  form</guimenuitem> from the right mouse button menu.</para>
+                                                <para>After this a dialog window will pop up asking
+                                                  you to specify the form name. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Enter the form name into the text field and
+                                                  confirm your input.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer will create an empty form and open it
+                                                  in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the desired groups to the form as
+                                                  explained in the section <link linkend="sect_definingGroups" endterm="title_definingGroups"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningGroups.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningDBElements.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningForeignFields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningTableViews.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningNormalElements.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningButtons.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningCharts.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</sect1>

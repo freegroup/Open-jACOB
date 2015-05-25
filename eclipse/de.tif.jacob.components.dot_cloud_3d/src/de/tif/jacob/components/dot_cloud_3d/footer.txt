@@ -1,0 +1,28 @@
+
+
+
+
+      </div>
+   </div>
+ </div>
+
+ <div id="left_pannel"></div>
+ <div id="top_pannel1"></div>
+ <div id="top_pannel2"></div>
+
+ <div id="track1" class="track vertical">
+    <div id="handle1" class="handle" ></div>
+ </div>
+ 
+ <div id="track2" class="track horizontal">
+    <div id="handle2" class="handle" ></div>
+ </div>
+
+ <div id="legende">
+   <a class="messpunkt" href="#">Arbeitsumfang der Schwei&szlig;zange</a><br>
+   <a class="messpunkt error" href="#">Arbeitsumfang der Schwei&szlig;zange <strong>(Zangenkraft zu klein)</strong></a><br>
+   <a class="stuetzpunkt" href="#">Fahrzeugh&uuml;lle / Kontur</a><br>
+ </div>
+ <div id="zoom_plus"></div>
+ <div id="zoom_minus"></div>
+   

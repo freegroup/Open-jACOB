@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_definingTableViews" label="4">
+    <title id="title_definingTableViews">Defining table views in a form</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Table views are compared to ordinary <glossterm linkend="DBElement">DB
+                            elements</glossterm> not tied to a single table field but to a
+                                <glossterm linkend="browser">browser</glossterm>. They list data
+                            records in a tabular form. E.g. an order form shows the positions of the
+                            order in a table view.</para>
+                        <para>
+                            <figure id="fig_groupWithTableView">
+                                <title> Group with table view</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/GroupWithTableView.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Associated browser and table alias</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The table columns displayed by a table view are defined by the
+                                <glossterm linkend="browser">browser</glossterm> assigned to the
+                            table view. </para>
+                        <para>As already stated in the section <link linkend="sect_definingBrowsers" endterm="title_definingBrowsers"/>
+                            <glossterm linkend="browser">browsers</glossterm> are again assigned to
+                            a <glossterm linkend="tableAlias">table alias</glossterm>. A table view
+                            can be only tied to <glossterm linkend="browser">browsers</glossterm>
+                            which have a parent <glossterm linkend="tableAlias">table
+                            alias</glossterm> standing in a one-to-many or zero-to-many relation to
+                            the ancor <glossterm linkend="tableAlias">table alias</glossterm> of the
+                            group the field is contained in. The ancor <glossterm
+                                linkend="tableAlias">table alias</glossterm> of the group must
+                            thereby stand on the one-side or zero-side of the relation respectively.</para>
+                        <para>
+                            <figure id="fig_conditionsForTableView">
+                                <title> Conditions for a table view</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ConditionsForTableView.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Properties of a table view</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In comparison to ordinary <glossterm linkend="DBElement">DB
+                            elements</glossterm> it is necessary to specify the properties of a
+                            table view in particular the properties <guilabel>Extended features</guilabel>.</para>
+                        <para>
+                            <figure id="fig_tableViewProperties">
+                                <title> Table view properties</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/TableViewProperties.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The properties <guilabel>Extended features</guilabel> define whether a user:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guilabel>can create records</guilabel>,</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>can delete records</guilabel> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>can update records</guilabel> displayed in the table view.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps to define a table view in a group:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Load the form containing the group to be
+                                                  edited into the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select <guimenuitem>Table view</guimenuitem>
+                                                  from the <guibutton>DB Elements</guibutton> menu
+                                                  in the form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Place the table view at the desired position
+                                                  in the group by pressing the left mouse button.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Specify the browser and confirm your input.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Define the properties <guilabel>Extended
+                                                  features</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

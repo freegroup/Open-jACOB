@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jar" default="all" basedir=".">
+
+<property name="jarName"          value="./templates/lib/de.tif.jacob.components.groupedlist.jar"/>
+<property name="packageNameJava"  value="de/tif/jacob/components/groupedlist/*"/>
+<property name="packageNameClass" value="**/de/tif/jacob/components/groupedlist/*.class"/>
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="../de.tif.jacob.common/">
+   		<include name="*.jar"/>
+   </fileset>
+</path>
+
+<target name="clean" description="remove previous build results">
+		<delete quiet="true" dir="./classes"/>
+		<delete quiet="true" file="${jarName}"/>
+		<mkdir dir="./classes"/>
+</target>
+	
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean" description="Compile Java sources">
+	<javac encoding="ISO-8859-1" 
+	       srcdir="src" 
+	       debug="on"   
+	       includes="${packageNameJava}" 
+	       destdir="./classes" >
+     <classpath refid="compile.classpath" />
+	</javac>
+</target>
+
+<target name="all" depends="compile" description="Build the modules jars">
+    <jar destfile="${jarName}" >
+		<fileset dir="./classes">
+			<include name="${packageNameClass}"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-Time" value="${build.time}"/>
+		</manifest>
+   </jar>
+</target>
+</project>

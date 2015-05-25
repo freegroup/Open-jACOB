@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.tif.jacob.feature_0.0.0.jar" id="de.tif.jacob.feature" version="0.0.0">
+      <category name="jacob designer"/>
+   </feature>
+   <feature url="features/de.tif.jacob.properties.feature_0.0.0.jar" id="de.tif.jacob.properties.feature" version="0.0.0">
+      <category name="jacob designer extensions"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.flotr.feature_0.0.0.jar" id="de.tif.jacob.components.flotr.feature" version="0.0.0">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.progressbar.feature_0.0.0.jar" id="de.tif.jacob.components.progressbar.feature" version="0.0.0">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.searchbrowser_contextmenu.feature_0.0.0.jar" id="de.tif.jacob.components.searchbrowser_contextmenu.feature" version="0.0.0">
+      <category name="jacob engine plugins searchbrowser"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.candystick.feature_0.0.0.jar" id="de.tif.jacob.components.candystick.feature" version="0.0.0">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.module.importer.feature_0.0.0.jar" id="de.tif.jacob.module.importer.feature" version="0.0.0">
+      <category name="jacob designer extensions"/>
+   </feature>
+   <feature url="features/de.tif.jacob.refactoring.change_group_alias.feature_0.0.0.jar" id="de.tif.jacob.refactoring.change_group_alias.feature" version="0.0.0">
+      <category name="jacob designer refactoring"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.groupedlist.feature_0.0.0.jar" id="de.tif.jacob.components.groupedlist.feature" version="0.0.0">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.selectionaction.feature_0.0.0.jar" id="de.tif.jacob.selectionaction.feature" version="0.0.0">
+      <category name="jacob engine plugins searchbrowser"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.button_abort.feature_1.0.1.jar" id="de.tif.jacob.components.button_abort.feature" version="1.0.1">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.button_search_ext.feature_1.0.1.jar" id="de.tif.jacob.components.button_search_ext.feature" version="1.0.1">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <feature url="features/de.tif.jacob.components.dot_cloud_3d.feature_1.0.3.jar" id="de.tif.jacob.components.dot_cloud_3d.feature" version="1.0.3">
+      <category name="jacob engine plugins ui"/>
+   </feature>
+   <category-def name="jacob designer" label="Designer"/>
+   <category-def name="jacob designer extensions" label="Designer Plugins (optional)"/>
+   <category-def name="jacob designer refactoring" label="Designer Refactoring Extension (optional)"/>
+   <category-def name="jacob engine plugins ui" label="Runtime UI Plugins (optional)"/>
+   <category-def name="jacob engine plugins searchbrowser" label="Search Browser Plugins (optional)"/>
+</site>

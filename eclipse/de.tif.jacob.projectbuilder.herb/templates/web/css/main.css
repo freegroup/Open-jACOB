@@ -1,0 +1,104 @@
+body
+{
+		font-family: verdana, sans-serif;
+		font-size: 10px;
+		margin: 0;
+		padding: 10px;
+		padding-left: 0px;
+}
+
+
+
+/* ***********************************************************************
+   Style for description/content area
+   *********************************************************************** */
+img.bar
+{
+		background: #F2F5D9;
+  	border: 1px solid #DDD;
+  	width:10px;
+  	height:10px;
+		margin-right: 10px;
+}
+
+.name
+{
+	color: #9EAD6C;
+	text-transform:uppercase;
+	font-weight: bold;
+	margin:10px;
+}
+
+.description
+{
+	color: #9EAD6C;
+	border: 1px solid #DDD;
+	margin:10px;
+	padding:10px;
+	font-family: verdana, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	width:95%;
+}
+
+.section_header
+{
+	color: black;
+	font-family: verdana, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.section_text
+{
+	color: black;
+	padding-bottom:25px;
+	margin-left:20px;
+	font-family: verdana, sans-serif;
+	font-size: 10px;
+}
+
+
+
+/* ***********************************************************************
+   Style for the left hand side navigation
+   *********************************************************************** */
+
+input
+{
+	border: 1px solid #DDD;
+}
+   
+#list ul
+{
+	margin-left: 0;
+	padding-left: 0;
+	list-style-type: none;
+	border-top: 1px solid #DDD;
+}
+
+#list li a
+{
+	display: block;
+	padding: 9px;
+	border-bottom: 1px solid #DDD;
+}
+
+#list a:link
+{
+	text-decoration: none;
+}
+
+#list a:hover
+{
+	background-color: #F2F5D9;
+	color: #999999;
+}
+
+#list a:link, a:visited 
+{
+	font-size: 10px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #9EAD6C;
+}

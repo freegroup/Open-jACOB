@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+  <rule posX="110" posY="205" ruleId="start">
+    <businessObjectMethod nextRuleId="decb6a:1083df1020e:-8000" xmlns=""/>
+  </rule>
+  <rule posX="200" posY="200" ruleId="decb6a:1083df1020e:-8000">
+    <decision decisionClass="jacob.rule.decision.TableField" methodName="isEquals" signature="(QString;QString;)Z" type="boolean" xmlns="">
+      <conditionalExit ruleId="decb6a:1083df1020e:-7ffe" value="true"/>
+      <conditionalExit ruleId="decb6a:1083df1020e:-7ffd" value="false"/>
+      <parameter>request.tester_key</parameter>
+      <parameter>request.owner_key</parameter>
+    </decision>
+  </rule>
+  <rule posX="425" posY="200" ruleId="decb6a:1083df1020e:-7ffe">
+    <businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.UserExceptionBO" methodName="send" xmlns="">
+      <parameter>Tester and Owner of a ticker must be a different Person.</parameter>
+    </businessObjectMethod>
+  </rule>
+  <rule posX="325" posY="400" ruleId="decb6a:1083df1020e:-7ffd">
+    <decision decisionClass="jacob.rule.decision.TableField" methodName="hasChanged" signature="(QString;)Z" type="boolean" xmlns="">
+      <conditionalExit ruleId="decb6a:1083df1020e:-7ffb" value="true"/>
+      <conditionalExit ruleId="decb6a:1083df1020e:-7ff9" value="false"/>
+      <parameter>request.owner_key</parameter>
+    </decision>
+  </rule>
+  <rule posX="425" posY="400" ruleId="decb6a:1083df1020e:-7ffb">
+    <businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.Email" methodName="send" nextRuleId="decb6a:1083df1020e:-7ff9" xmlns=""/>
+  </rule>
+  <rule posX="625" posY="450" ruleId="decb6a:1083df1020e:-7ff9">
+    <businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.NOP" methodName="nop" nextRuleId="5d50c4:1083dfc7684:-8000" xmlns=""/>
+  </rule>
+  <rule posX="775" posY="450" ruleId="5d50c4:1083dfc7684:-8000">
+    <decision decisionClass="jacob.rule.decision.TableField" methodName="hasChanged" signature="(QString;)Z" type="boolean" xmlns="">
+      <conditionalExit value="true"/>
+      <conditionalExit value="false"/>
+      <parameter/>
+    </decision>
+  </rule>
+  <annotation xmlns="">
+    <x>100</x>
+    <y>125</y>
+    <width>451</width>
+    <height>176</height>
+    <data>Der Tester und der Owner einer Meldung dürfen nicht die gleiche Person sein.</data>
+  </annotation>
+  <annotation xmlns="">
+    <x>250</x>
+    <y>325</y>
+    <width>351</width>
+    <height>201</height>
+    <data>Falls sich der Owner einer Meldung geändert hat, dann bekommt dieser eine eMail</data>
+  </annotation>
+  <annotation xmlns="">
+    <x>0</x>
+    <y>0</y>
+    <width>326</width>
+    <height>26</height>
+    <data>Dieser Hook wird bei BeforeCommit ausgeführt.</data>
+  </annotation>
+</ruleset>

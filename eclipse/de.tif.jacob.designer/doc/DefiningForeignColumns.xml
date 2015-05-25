@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_definingForeignColumns" label="1">
+    <title id="title_definingForeignColumns">Defining foreign columns</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Foreign columns of a <glossterm linkend="browser">browser</glossterm>
+                            show fields of a foreign table related to the anchor <glossterm
+                                linkend="tableAlias">table alias</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Attributes of foreign columns</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <figure id="fig_foreignColumnAttributes">
+                                <title> Foreign column attributes</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/ForeignColumnAttributes.jpg"
+                                                format="JPEG" scalefit="1" width="227" depth="157"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para> For foreign columns you have to define the following attributes:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>the unique <guilabel>Name</guilabel> of the browser column;</para>
+                            </listitem>
+                            <listitem>
+                                <para>the <guilabel>Label</guilabel> of the browser column displayed
+                                    in the <glossterm linkend="browser">browsers</glossterm>;</para>
+                            </listitem>
+                            <listitem>
+                                <para>the name of the <guilabel>Foreign table alias</guilabel> and
+                                    the <guilabel>Display column</guilabel> and</para>
+                            </listitem>
+                            <listitem>
+                                <para>if the <glossterm linkend="browser">browser</glossterm>
+                                    definition is used by a changeable <glossterm
+                                        linkend="informBrowser">inform browser</glossterm>, you will
+                                    have to define the <guilabel>Browser to use</guilabel>, the
+                                        <guilabel>Fill direction</guilabel> and the
+                                        <guilabel>Relation set to use</guilabel>. </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Fill direction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>REMARK!!! Is it really necessary to give an exact fill direction? Is
+                            it not sufficient to specify whether changes should be propagated to
+                            other groups, forms, etc.?</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Relation set to use</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <guilabel>Relation set to use</guilabel> determines which GUI
+                            elements would be updated, if a data set has been selected in an inform
+                            browser assigned to this browser definition.</para>
+                        <para>The combo box <guilabel>Relation set to use</guilabel> lets you choose between:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>local</guimenuitem>, REMARK!!! Explanation is missing!</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guimenuitem>default</guimenuitem>, REMARK!!! Explanation is
+                                    missing! </para>
+                            </listitem>
+                            <listitem>
+                                <para>relation sets referencing the <guilabel>Foreign table
+                                    alias</guilabel>. REMARK!!! Explanation is missing! </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

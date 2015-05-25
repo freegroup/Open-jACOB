@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Döring;Mike
+FN:Mike Döring
+TEL;WORK;VOICE:work_voice
+TEL;WORK;FAX:work_fax
+TEL;HOME;VOICE:home_voice
+TEL;HOME;FAX:home_fax
+EMAIL;PREF;INTERNET:m.doering@midor.de
+EMAIL;INTERNET:test@midor.de
+END:VCARD

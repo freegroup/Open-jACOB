@@ -1,0 +1,77 @@
+<model type="draw2d.ConverterModel">
+   <id type="string">dddddddd</id>
+   <recordSourceModels type="draw2d.ArrayList">
+      <data type="Array">
+         <element type="draw2d.ExcelSheetModel">
+            <id type="string">t1</id>
+            <name type="string">import.xls</name>
+            <pos type="draw2d.Point">
+               <x type="int">68</x>
+               <y type="int">191</y>
+            </pos>
+            <connections type="draw2d.ArrayList">
+               <data type="Array">
+               </data>
+               <increment type="int">10</increment>
+               <size type="int">0</size>
+            </connections>
+            <columns type="draw2d.ArrayList">
+               <data type="Array">
+                  <element type="draw2d.ColumnModel">
+                     <id type="string">a0116fb4-603d-7c99-05fb-7c1c537f6aa5</id>
+                     <name type="string">0</name>
+                     <typeModel type="draw2d.ColumnTypeModelText">
+                        <id type="string">a0c55af4-fe58-2ddb-4b79-7bab29bee01f</id>
+                        <name type="string">TEXT</name>
+                        <defaultValue type="string"></defaultValue>
+                        <length type="int">4000</length>
+                        <fixedLength type="boolean">true</fixedLength>
+                     </typeModel>
+                  </element>
+                  <element type="draw2d.ColumnModel">
+                     <id type="string">c6f35ec0-fb7c-c182-95ea-660823debb66</id>
+                     <name type="string">1</name>
+                     <typeModel type="draw2d.ColumnTypeModelText">
+                        <id type="string">35a907c5-4907-43db-f22e-9ccb482c8b7c</id>
+                        <name type="string">TEXT</name>
+                        <defaultValue type="string"></defaultValue>
+                        <length type="int">4000</length>
+                        <fixedLength type="boolean">true</fixedLength>
+                     </typeModel>
+                  </element>
+                  <element type="draw2d.ColumnModel">
+                     <id type="string">2de3d7e3-5133-d415-e38b-120971044378</id>
+                     <name type="string">2</name>
+                     <typeModel type="draw2d.ColumnTypeModelText">
+                        <id type="string">bfbb23ff-a739-7f73-6668-5f3a3cf77a5b</id>
+                        <name type="string">TEXT</name>
+                        <defaultValue type="string"></defaultValue>
+                        <length type="int">4000</length>
+                        <fixedLength type="boolean">true</fixedLength>
+                     </typeModel>
+                  </element>
+                  <element type="draw2d.ColumnModel">
+                     <id type="string">84d06960-c272-f2d5-d896-a07e7a8648b1</id>
+                     <name type="string">3</name>
+                     <typeModel type="draw2d.ColumnTypeModelText">
+                        <id type="string">734fc632-780a-2ee9-f63d-45581b778921</id>
+                        <name type="string">TEXT</name>
+                        <defaultValue type="string"></defaultValue>
+                        <length type="int">4000</length>
+                        <fixedLength type="boolean">true</fixedLength>
+                     </typeModel>
+                  </element>
+               </data>
+               <increment type="int">10</increment>
+               <size type="int">4</size>
+            </columns>
+            <providerType type="string">source</providerType>
+            <firstDataRow type="int">1</firstDataRow>
+            <columnCount type="int">4</columnCount>
+         </element>
+      </data>
+      <increment type="int">10</increment>
+      <size type="int">1</size>
+   </recordSourceModels>
+   <name type="string">default</name>
+</model>

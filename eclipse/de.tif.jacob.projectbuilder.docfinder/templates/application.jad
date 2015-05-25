@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="%PERSON.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="%PERSON.FULLNAME" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="%PERSON.LOGINNAME" name="loginname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="%PERSON.PASSWORD" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="%PERSON.PHOTO" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="login_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="document" name="document">
+      <Field dbName="pkey" history="false" label="%DOCUMENT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="tag" history="false" label="%DOCUMENT.TAG" name="tag" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="file" history="false" label="%DOCUMENT.FILE" name="file" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%DOCUMENT.CREATE_DATE" name="create_date" readonly="true" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="description" history="false" label="%DOCUMENT.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="file_name" history="false" label="%DOCUMENT.FILE_NAME" name="file_name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Wird fr die Browser ben�igt. Man muss so nicht das gesamte Document in den Speicher laden um den Namen des Dokumentes zu erhalten</Value>
+        </Property>
+      </Field>
+      <Field dbName="request_for_delete_date" history="false" label="%DOCUMENT.REQUEST_FOR_DELETE_DATE" name="request_for_delete_date" readonly="false" required="false">
+        <Timestamp resolution="secbase"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Das Datum an dem das Dokument als "zu l�chend" markiert wurde</Value>
+        </Property>
+      </Field>
+      <Field dbName="request_for_delete_comment" history="false" label="%DOCUMENT.REQUEST_FOR_DELETE_COMMENT" name="request_for_delete_comment" readonly="false" required="false">
+        <LongText/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Warum der Benutzer dieses Dokument l�chen m�hte</Value>
+        </Property>
+      </Field>
+      <Field dbName="owner_email" history="false" label="%DOCUMENT.OWNER_EMAIL" name="owner_email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="tagging" name="tagging">
+      <Field dbName="pkey" history="false" label="%TAGGING.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="tag" history="false" label="%TAGGING.TAG" name="tag" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="document_count" history="false" label="%TAGGING.DOCUMENT_COUNT" name="document_count" readonly="false" required="false">
+        <Long autoincrement="false">
+          <Default>1</Default>
+        </Long>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="tag_uniqueKey">
+        <Field>tag</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="configuration" name="configuration">
+      <Field dbName="pkey" history="false" label="%CONFIGURATION.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="pop3_server" history="false" label="%CONFIGURATION.POP3_SERVER" name="pop3_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pop3_user" history="false" label="%CONFIGURATION.POP3_USER" name="pop3_user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pop3_password" history="false" label="%CONFIGURATION.POP3_PASSWORD" name="pop3_password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_server" history="false" label="%CONFIGURATION.SMTP_SERVER" name="smtp_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_user" history="false" label="%CONFIGURATION.SMTP_USER" name="smtp_user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_password" history="false" label="%CONFIGURATION.SMTP_PASSWORD" name="smtp_password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="from_email" history="false" label="%CONFIGURATION.FROM_EMAIL" name="from_email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="error_email_text" history="false" label="%CONFIGURATION.ERROR_EMAIL_TEXT" name="error_email_text" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="notify_about_deletemark" history="false" label="%CONFIGURATION.NOTIFY_ABOUT_DELETEMARK" name="notify_about_deletemark" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="notify_about_delete" history="true" label="%CONFIGURATION.NOTIFY_ABOUT_DELETE" name="notify_about_delete" readonly="false" required="false">
+        <Boolean/>
+      </Field>
+      <Field dbName="notify_about_deletesubject" history="false" label="%CONFIGURATION.NOTIFY_ABOUT_DELETESUBJECT" name="notify_about_deletesubject" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="whitelist" name="whitelist">
+      <Field dbName="pkey" history="false" label="%WHITELIST.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="email" history="false" label="%WHITELIST.EMAIL" name="email" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="email_uniqueKey">
+        <Field>email</Field>
+      </UniqueIndex>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="document" table="document"/>
+    <TableAlias name="tagging" table="tagging"/>
+    <TableAlias name="configuration" table="configuration"/>
+    <TableAlias name="whitelist" table="whitelist"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="%PERSON.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%PERSON.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%PERSON.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="document" name="documentBrowser" type="inform">
+      <Field label="%DOCUMENT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%DOCUMENT.CREATE_DATE" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="%DOCUMENT.REQUEST_FOR_DELETE_DATE" name="browserRequest_for_delete_date" visible="true">
+        <TableField tableField="request_for_delete_date"/>
+      </Field>
+      <Field label="%DOCUMENT.FILE_NAME" name="browserFile_name" visible="true">
+        <TableField tableField="file_name"/>
+      </Field>
+      <Field label="%DOCUMENT.TAG" name="browserTag" visible="true">
+        <TableField tableField="tag"/>
+      </Field>
+    </Browser>
+    <Browser alias="tagging" name="taggingBrowser" type="inform">
+      <Field label="%TAGGING.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%TAGGING.DOCUMENT_COUNT" name="browserDocument_count" visible="true">
+        <TableField tableField="document_count"/>
+      </Field>
+      <Field label="%TAGGING.TAG" name="browserTag" visible="true">
+        <TableField tableField="tag"/>
+      </Field>
+    </Browser>
+    <Browser alias="document" name="documentSmallBrowser" type="inform">
+      <Field label="%DOCUMENT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="configuration" name="configurationBrowser" type="inform">
+      <Field label="%CONFIGURATION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="whitelist" name="whitelistBrowser" type="inform">
+      <Field label="%WHITELIST.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%WHITELIST.EMAIL" name="browserEmail" visible="true">
+        <TableField tableField="email"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations/>
+  <Relationsets>
+    <Relationset name="newRelationset"/>
+  </Relationsets>
+  <Forms>
+    <Form eventHandler="jacob.event.ui.User" label="%FORM.USER" name="user">
+      <Group alias="person" border="false" browser="personBrowser" label="%GROUP.PERSONGROUP" name="personGroup">
+        <Dimension height="271" width="650" x="5" y="5"/>
+        <GuiElement name="personClearGroupButton" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="550" y="44"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personSearchUpdateRecordButton" tabIndex="4" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="550" y="19"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personDeleteRecordButton" tabIndex="6" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="550" y="69"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personNewRecordButton" tabIndex="7" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="550" y="94"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personLoginname" tabIndex="2" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="100" y="69"/>
+              <Caption halign="left" label="%PERSON.LOGINNAME" valign="top">
+                <Dimension height="20" width="90" x="5" y="69"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPkey" tabIndex="8" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="200" x="100" y="19"/>
+              <Caption halign="left" label="%PERSON.PKEY" valign="top">
+                <Dimension height="20" width="90" x="5" y="19"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFullname" tabIndex="1" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="200" x="100" y="44"/>
+              <Caption halign="left" label="%PERSON.FULLNAME" valign="top">
+                <Dimension height="20" width="90" x="5" y="44"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="211" width="200" x="325" y="19"/>
+              <Caption halign="left" label="%PERSON.PHOTO" valign="top">
+                <Dimension height="20" width="70" x="325" y="0"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPassword" tabIndex="3" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="100" y="94"/>
+              <Caption halign="left" label="%PERSON.PASSWORD" valign="top">
+                <Dimension height="20" width="90" x="5" y="94"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Document" label="%FORM.DOCUMENT" name="document">
+      <Group alias="document" border="false" browser="documentBrowser" label="%GROUP.DOCUMENTGROUP" name="documentGroup">
+        <Dimension height="431" width="650" x="5" y="5"/>
+        <GuiElement name="documentClearGroupButton" tabIndex="9" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="documentSearchUpdateRecordButton" tabIndex="8" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="documentDeleteRecordButton" tabIndex="10" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="documentNewRecordButton" tabIndex="11" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="documentTag" tabIndex="1" visible="true">
+          <LocalInputField tableField="tag">
+            <TextInput>
+              <Dimension height="20" width="384" x="123" y="34"/>
+              <Caption halign="left" label="%DOCUMENT.TAG" valign="top">
+                <Dimension height="20" width="105" x="12" y="34"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentCreate_date" tabIndex="3" visible="true">
+          <LocalInputField tableField="create_date">
+            <TimestampInput>
+              <Dimension height="20" width="191" x="123" y="82"/>
+              <Caption halign="left" label="%DOCUMENT.CREATE_DATE" valign="top">
+                <Dimension height="20" width="105" x="12" y="82"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Value>
+          </Property>
+          <Property>
+            <Name>RIGHT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7a</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentDescription" tabIndex="5" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="91" width="524" x="12" y="150"/>
+              <Caption halign="left" label="%DOCUMENT.DESCRIPTION" valign="top">
+                <Dimension height="15" width="291" x="12" y="136"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f79</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentDocument" tabIndex="2" visible="true">
+          <LocalInputField tableField="file">
+            <DocumentInput>
+              <Dimension height="20" width="384" x="123" y="58"/>
+              <Caption halign="left" label="%DOCUMENT.FILE" valign="top">
+                <Dimension height="20" width="105" x="12" y="58"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="%DOCUMENT.DELETEHEADER" valign="top">
+              <Dimension height="20" width="536" x="0" y="260"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="documentRequest_for_delete_date" tabIndex="6" visible="true">
+          <LocalInputField tableField="request_for_delete_date">
+            <TimestampInput>
+              <Dimension height="20" width="191" x="123" y="295"/>
+              <Caption halign="left" label="%DOCUMENT.REQUEST_FOR_DELETE_DATE" valign="top">
+                <Dimension height="20" width="105" x="12" y="295"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Value>
+          </Property>
+          <Property>
+            <Name>RIGHT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7a</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentRequest_for_delete_comment" tabIndex="7" visible="true">
+          <LocalInputField tableField="request_for_delete_comment">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="81" width="524" x="12" y="345"/>
+              <Caption halign="left" label="%DOCUMENT.REQUEST_FOR_DELETE_COMMENT" valign="top">
+                <Dimension height="15" width="291" x="12" y="330"/>
+                <Font family="sans-serif" size="6" style="normal" weight="normal"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f79</Value>
+          </Property>
+        </GuiElement>
+        <GuiElement name="documentHeading2" visible="true">
+          <Heading>
+            <Caption halign="left" label="%DOCUMENT.COMMONHEADER" valign="top">
+              <Dimension height="20" width="536" x="0" y="0"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="documentOwner_email" tabIndex="4" visible="true">
+          <LocalInputField tableField="owner_email">
+            <TextInput>
+              <Dimension height="20" width="191" x="123" y="106"/>
+              <Caption halign="left" label="%DOCUMENT.OWNER_EMAIL" valign="top">
+                <Dimension height="20" width="105" x="12" y="106"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+          <Property>
+            <Name>LEFT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Value>
+          </Property>
+          <Property>
+            <Name>RIGHT_GUIDE</Name>
+            <Value>HGUIDE_60451bec:10eae5f9ca8:-7f7a</Value>
+          </Property>
+        </GuiElement>
+      </Group>
+      <Property>
+        <Name>VGUIDE_60451bec:10eae5f9ca8:-7fba</Name>
+        <Value>-28</Value>
+      </Property>
+      <Property>
+        <Name>HGUIDE_60451bec:10eae5f9ca8:-7f7a</Name>
+        <Value>318</Value>
+      </Property>
+      <Property>
+        <Name>HGUIDE_60451bec:10eae5f9ca8:-7f7b</Name>
+        <Value>128</Value>
+      </Property>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Tag" label="%FORM.TAG" name="tag">
+      <Group alias="tagging" border="false" browser="taggingBrowser" label="%GROUP.TAGGINGGROUP" name="taggingGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="taggingClearGroupButton" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="taggingSearchUpdateRecordButton" tabIndex="4" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="taggingDeleteRecordButton" tabIndex="6" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="taggingNewRecordButton" tabIndex="7" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="taggingTag" tabIndex="2" visible="true">
+          <LocalInputField tableField="tag">
+            <TextInput>
+              <Dimension height="20" width="301" x="140" y="50"/>
+              <Caption halign="left" label="%TAGGING.TAG" valign="top">
+                <Dimension height="20" width="125" x="10" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="taggingPkey" tabIndex="1" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="301" x="140" y="25"/>
+              <Caption halign="left" label="%TAGGING.PKEY" valign="top">
+                <Dimension height="20" width="125" x="10" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="taggingDocument_count" tabIndex="3" visible="true">
+          <LocalInputField tableField="document_count">
+            <TextInput>
+              <Dimension height="20" width="126" x="140" y="80"/>
+              <Caption halign="left" label="%TAGGING.DOCUMENT_COUNT" valign="top">
+                <Dimension height="20" width="125" x="10" y="80"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Email" label="%FORM.EMAIL" name="email">
+      <Group alias="configuration" border="false" browser="configurationBrowser" label="%GROUP.CONFIGURATION" name="configurationGroup">
+        <Dimension height="466" width="650" x="5" y="5"/>
+        <GuiElement name="configurationSearchUpdateRecordButton" tabIndex="9" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="355" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="configurationPop3_user" tabIndex="2" visible="true">
+          <LocalInputField tableField="pop3_user">
+            <TextInput>
+              <Dimension height="20" width="200" x="120" y="55"/>
+              <Caption halign="left" label="%CONFIGURATION.POP3_USER" valign="top">
+                <Dimension height="20" width="110" x="5" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationSmtp_server" tabIndex="4" visible="true">
+          <LocalInputField tableField="smtp_server">
+            <TextInput>
+              <Dimension height="20" width="200" x="120" y="171"/>
+              <Caption halign="left" label="%CONFIGURATION.SMTP_SERVER" valign="top">
+                <Dimension height="20" width="110" x="5" y="171"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationSmtp_user" tabIndex="5" visible="true">
+          <LocalInputField tableField="smtp_user">
+            <TextInput>
+              <Dimension height="20" width="200" x="120" y="196"/>
+              <Caption halign="left" label="%CONFIGURATION.SMTP_USER" valign="top">
+                <Dimension height="20" width="110" x="5" y="196"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationPop3_server" tabIndex="1" visible="true">
+          <LocalInputField tableField="pop3_server">
+            <TextInput>
+              <Dimension height="20" width="200" x="120" y="30"/>
+              <Caption halign="left" label="%CONFIGURATION.POP3_SERVER" valign="top">
+                <Dimension height="20" width="110" x="5" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationPop3_password" tabIndex="3" visible="true">
+          <LocalInputField tableField="pop3_password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="120" y="80"/>
+              <Caption halign="left" label="%CONFIGURATION.POP3_PASSWORD" valign="top">
+                <Dimension height="20" width="110" x="5" y="80"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationSmtp_password" tabIndex="6" visible="true">
+          <LocalInputField tableField="smtp_password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="120" y="221"/>
+              <Caption halign="left" label="%CONFIGURATION.SMTP_PASSWORD" valign="top">
+                <Dimension height="20" width="110" x="5" y="221"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="%CONFIGURATION.POP3HEADER" valign="top">
+              <Dimension height="20" width="320" x="0" y="0"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="configurationHeading2" visible="true">
+          <Heading>
+            <Caption halign="left" label="%CONFIGURATION.SMTPHEADER" valign="top">
+              <Dimension height="20" width="320" x="0" y="140"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="configurationFrom_email" tabIndex="7" visible="true">
+          <LocalInputField tableField="from_email">
+            <TextInput>
+              <Dimension height="20" width="200" x="120" y="246"/>
+              <Caption halign="left" label="%CONFIGURATION.FROM_EMAIL" valign="top">
+                <Dimension height="20" width="110" x="5" y="246"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationError_email_text" tabIndex="8" visible="true">
+          <LocalInputField tableField="error_email_text">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="135" width="471" x="5" y="325"/>
+              <Caption halign="left" label="%CONFIGURATION.ERROR_EMAIL_TEXT" valign="top">
+                <Dimension height="20" width="246" x="5" y="305"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.configuration.ConfigurationRecordSelectedButton" name="configurationRecordSelectedButton" tabIndex="10" visible="true">
+          <Button label="%BUTTON_TEST">
+            <Dimension height="20" width="70" x="355" y="246"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Whitelist" label="%FORM.WHITELIST" name="whitelist">
+      <Group alias="whitelist" border="false" browser="whitelistBrowser" label="%GROUP.WHITELIST" name="whitelistGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="whitelistClearGroupButton" tabIndex="3" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="425" y="50"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="whitelistSearchUpdateRecordButton" tabIndex="2" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="425" y="25"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="whitelistDeleteRecordButton" tabIndex="4" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="425" y="75"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="whitelistNewRecordButton" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="425" y="100"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="whitelistPkey" tabIndex="6" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="161" x="75" y="25"/>
+              <Caption halign="left" label="%WHITELIST.PKEY" valign="top">
+                <Dimension height="20" width="70" x="0" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="whitelistEmail" tabIndex="1" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="316" x="75" y="55"/>
+              <Caption halign="left" label="%WHITELIST.EMAIL" valign="top">
+                <Dimension height="20" width="70" x="0" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Notification" label="%FORM.NOTIFICATION" name="notification">
+      <Group alias="configuration" border="false" browser="configurationBrowser" label="%GROUP.CONFIGURATION" name="configurationGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="configurationSearchUpdateRecordButton" tabIndex="3" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="491" y="34"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.configuration.ConfigurationNotify_about_delete" name="configurationNotify_about_delete" tabIndex="4" visible="true">
+          <LocalInputField tableField="notify_about_delete">
+            <CheckBox>
+              <Dimension height="16" width="16" x="15" y="36"/>
+              <Caption halign="left" label="%CONFIGURATION.NOTIFY_ABOUT_DELETE" valign="top">
+                <Dimension height="16" width="231" x="40" y="36"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="%HEADING.NOTIFICATION" valign="top">
+              <Dimension height="20" width="561" x="0" y="5"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="configurationNotify_about_deletemark" tabIndex="2" visible="true">
+          <LocalInputField tableField="notify_about_deletemark">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="201" width="546" x="15" y="140"/>
+              <Caption halign="left" label="%CONFIGURATION.NOTIFY_ABOUT_DELETEMARK" valign="top">
+                <Dimension height="20" width="261" x="15" y="120"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationNotify_about_deletesubject" tabIndex="1" visible="true">
+          <LocalInputField tableField="notify_about_deletesubject">
+            <TextInput>
+              <Dimension height="20" width="546" x="15" y="88"/>
+              <Caption halign="left" label="%CONFIGURATION.NOTIFY_ABOUT_DELETESUBJECT" valign="top">
+                <Dimension height="20" width="261" x="15" y="69"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>user</Form>
+      <Form>email</Form>
+      <Form>whitelist</Form>
+      <Form>notification</Form>
+    </Domain>
+    <Domain name="common" title="%DOMAIN.COMMON" visible="true">
+      <Form>document</Form>
+      <Form>tag</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>common</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

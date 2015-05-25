@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_defineGUIHooks" label="5">
+    <title id="title_defineGUIHooks">Define GUI hooks for happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the previous section we have added business logic to our
+                            application via <glossterm linkend="tableHook">table hooks</glossterm>.
+                            In this section we want to add more business logic to our application:</para>
+                        <para>In our form <guilabel>realEstateObject</guilabel> we have the combox
+                                <guilabel>Sale or rent</guilabel>. Subject to the value selected the
+                            text fields <guilabel>Purchase price</guilabel> and <guilabel>Rental
+                            fee</guilabel> should be enabled and disabled respectively. </para>
+                        <para>
+                            <trademark>jACOB</trademark> offers a mechanism to add such business
+                            logic to applications. This can be done via so called GUI hooks.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>What is a GUI hook?</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Similar to <glossterm linkend="tableHook">table hooks</glossterm> a
+                            GUI hook is a user-defined call-back method which is called by the
+                            <trademark>jACOB</trademark> application server. However, GUI hooks are
+                            called due to user actions at the GUI.</para>
+                        <para>
+                            <glossterm linkend="GUIHook">GUI hooks</glossterm> are always assigned
+                            to a GUI element.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Event handler</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Like <glossterm linkend="tableHook">table hooks</glossterm> also
+                                <glossterm linkend="GUIHook">GUI hooks</glossterm> are combined in
+                            an event handler. An event handler class can be generated for each GUI
+                            element. </para>
+                        <para>To enable the behavior of the combox <guilabel>Sale or rent</guilabel>
+                            and the related textfields <guilabel>Purchase price</guilabel> and
+                                <guilabel>Rental fee</guilabel> described above we will have to
+                            generate an eventhandler and define a <glossterm linkend="GUIHook">GUI
+                            hook</glossterm> for each of these GUI elements.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI hook onSelect</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>For the combox <guilabel>Sale or rent</guilabel> we will have to
+                            define the <glossterm linkend="GUIHook">GUI hook</glossterm> onSelect.
+                            The <glossterm linkend="GUIHook">GUI hook</glossterm> onSelect is called
+                            during updating a record when the user
+                            changes the selection in the combobox.</para>
+                        <para>We will have to implement the following Java code:</para>
+                        <programlisting><![CDATA[
+public void onSelect(
+  IClientContext context,
+  IComboBox emitter) throws Exception
+{
+  // get selected entry from combobox
+  String saleOrRent = emitter.getValue();
+
+  // get gui elements we want to enable/disable
+  IGuiElement realEstateObjectPurchasePrice =
+    context.getGroup().findByName(
+      "realEstateObjectPurchasePrice");
+  IGuiElement realEstateObjectRentalFee =
+    context.getGroup().findByName(
+      "realEstateObjectRentalFee");
+      
+  // enable purchasePrice if saleOrRent mode is "sale"
+  // or "saleOrRent"
+  // note: saleOrRent might be null!
+  realEstateObjectPurchasePrice.setEnable(
+    "sale".equals(saleOrRent) ||
+    "saleOrRent".equals(saleOrRent));
+
+  // enable rentalFee if saleOrRent mode is "rent"
+  // or "saleOrRent"
+  // note: saleOrRent might be null!
+  realEstateObjectRentalFee.setEnable(
+    "rent".equals(saleOrRent) ||
+    "saleOrRent".equals(saleOrRent));
+}]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI hook onGroupStatusChanged</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> However, for the text fields <guilabel>Purchase price</guilabel> and
+                                <guilabel>Rental fee</guilabel> we will have to define the
+                                <glossterm linkend="GUIHook">GUI hook</glossterm>
+                            onGroupStatusChanged. This <glossterm linkend="GUIHook">GUI
+                            hook</glossterm> is called after the status of the group the GUI element
+                            is contained has changed. The status of a group changes due to user
+                            actions, e.g. pressing the <guibutton>New</guibutton> button or
+                            <guibutton>Change</guibutton> button.</para>
+                        <para>For further explanations of onGroupStatusChanged please refer to the
+                            <trademark>jACOB</trademark> API documentation.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI hook for Purchase price</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>For the textfield <guilabel>Purchase price</guilabel> we will define
+                            this <glossterm linkend="GUIHook">GUI hook</glossterm> as follows:</para>
+                        <programlisting><![CDATA[
+public void onGroupStatusChanged(
+  IClientContext context,
+  GroupState status,
+  IGuiElement emitter) throws Exception
+{
+  if (status == IGuiElement.NEW ||
+      status == IGuiElement.UPDATE)
+  {
+    // fetch saleOrRent mode from record to be edited
+    String saleOrRent =
+      context.getSelectedRecord().getStringValue(
+        "saleOrRent");
+      
+    // enable if saleOrRent mode is "sale"
+    // or "saleOrRent"
+    // note: saleOrRent might be null!
+    emitter.setEnable("sale".equals(saleOrRent) ||
+    "saleOrRent".equals(saleOrRent));
+  }
+  else
+  {
+    emitter.setEnable(status == IGuiElement.SEARCH);
+  }
+}]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI hook for Rental fee</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>We will implement the <glossterm linkend="GUIHook">GUI
+                            hook</glossterm> onGroupStatusChanged for the textfield <guilabel>Rental
+                            fee</guilabel> as follows:</para>
+                        <programlisting><![CDATA[
+public void onGroupStatusChanged(
+  IClientContext context,
+  GroupState status,
+  IGuiElement emitter) throws Exception
+{
+  if (status == IGuiElement.NEW ||
+      status == IGuiElement.UPDATE)
+  {
+    // fetch saleOrRent mode from record to be edited
+    String saleOrRent =
+      context.getSelectedRecord().getStringValue(
+        "saleOrRent");
+      
+    // enable if saleOrRent mode is "rent"
+    // or "saleOrRent"
+    // note: saleOrRent might be null!
+    emitter.setEnable("rent".equals(saleOrRent) ||
+    "saleOrRent".equals(saleOrRent));
+  }
+  else
+  {
+    emitter.setEnable(status == IGuiElement.SEARCH);
+  }
+}]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to generate the event handlers and to
+                            define the <glossterm linkend="GUIHook">GUI hooks</glossterm>: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Open the form
+                                                  <guilabel>realEstateObject</guilabel> in the
+                                                  form editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the event handler for the combobox
+                                                  <guilabel>Sale or rent</guilabel>.</para>
+                                                <para>To do this, select the combobox and choose
+                                                  <guimenuitem>Edit event
+                                                  handler</guimenuitem> from the right mouse
+                                                  button menu.</para>
+                                                <para>Hereupon, <trademark>jACOB</trademark>
+                                                  Designer will ask you to confirm the generation
+                                                  of the event handler.</para>
+                                                <para> After confirming <trademark>jACOB</trademark>
+                                                  Designer will generate and open the event
+                                                  handler class in the Java editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>In the Java editor scroll down to the GUI hook
+                                                  onSelect and insert the code listed above. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Generate the event handlers and define the GUI
+                                                  hooks onGroupStatusChanged for the text fields
+                                                  <guilabel>Purchase price</guilabel> and
+                                                  <guilabel>Rental fee</guilabel> in the same
+                                                  way. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes by clicking on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Impact on form</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <trademark>jACOB</trademark> Designer adds the decoration <guiicon>
+                                <inlinemediaobject>
+                                    <imageobject>
+                                        <imagedata format="GIF" scalefit="1"
+                                            fileref="./Icons/deco_java.gif" width="5" depth="5"/>
+                                    </imageobject>
+                                </inlinemediaobject>
+                            </guiicon> to all GUI elements where an event handler class has been generated.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The next step will be to:</para>
+                        <para>
+                            <xref linkend="sect_addUserManagement" endterm="title_defineGUIHooks"/>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect1>

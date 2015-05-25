@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+  <rule posX="51" posY="130" ruleId="start">
+    <businessObjectMethod xmlns="">
+    </businessObjectMethod>
+  </rule>
+</ruleset>

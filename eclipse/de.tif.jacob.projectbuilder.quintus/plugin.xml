@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+    <extension  point="org.eclipse.ui.newWizards">
+             
+       <wizard
+             class="de.tif.jacob.projectbuilder.quintus.ProjectWizard"
+             icon="icons/jacob.gif"
+             category="de.tif.jacob/de.tif.jacob.projectbuilder"
+             project="true"
+             name="Quintus to Open-jACOB Converter Project"
+             id="de.tif.jacob.projectbuilder.wizards.NewProjectWizard_Empty"/>
+    </extension>
+
+  
+</plugin>

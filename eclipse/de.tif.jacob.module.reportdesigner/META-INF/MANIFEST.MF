@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ReportDesigner
+Bundle-SymbolicName: de.tif.jacob.module.reportdesigner;singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: de.tif.jacob.module.reportdesigner.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.common,
+ de.tif.jacob.designer,
+ de.tif.jacob.module
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

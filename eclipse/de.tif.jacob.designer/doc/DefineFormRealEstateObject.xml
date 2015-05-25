@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_defineFormRealEstateObject" label="2">
+    <title id="title_defineFormRealEstateObject">Define the form realEstateObject</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we want to define the form for the registration of real estate
+                            objects as illustrated below. With the aid of this form we also want to
+                            register new landlords.</para>
+                        <para>
+                            <figure id="fig_formRealEstateObject">
+                                <title> The form realEstateObject</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/FormRealEstateObject.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Therefore, the form realEstateObject will contain two groups:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guilabel>RealEstateObject</guilabel>:</para>
+                                <para>The group RealEstateObject will be assigned to the <glossterm
+                                        linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>realEstateObject</guilabel>.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Landlord</guilabel>:</para>
+                                <para>This group will be assigned to the <glossterm
+                                        linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>landlord</guilabel>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Foreign field Landlord</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The group RealEstateObject will contain the text field
+                            <guilabel>Landlord</guilabel> displaying the landlord owning the real
+                            estate object. The current table <guilabel>realEstateObject</guilabel>
+                            has already the foreign key column <guilabel>landlord_key</guilabel>. We
+                            could use this column to identify the landlord of course. However, this
+                            is an id and an id doesn't say very much to the user. Therefore, we will
+                            define the field <guilabel>Landlord</guilabel> as <glossterm
+                                linkend="foreignField">foreign field</glossterm> showing the
+                            fullname of the landlord. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the new form
+                                                  <guilabel>realEstateObject</guilabel>. How to do
+                                                  this is explained in step 2 of the procedure
+                                                  <link linkend="sect_defineFormEmployee"
+                                                  endterm="title_defineFormEmployee"/>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the group
+                                                  <guilabel>RealEstateObject</guilabel> into the
+                                                  form. How to do this is explained in step 3 of
+                                                  the procedure <link
+                                                  linkend="sect_defineFormEmployee" endterm="title_defineFormEmployee"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the text fields <guilabel>Id</guilabel>,
+                                                  <guilabel>Purchase price</guilabel>,
+                                                  <guilabel>Rental fee</guilabel> and
+                                                  <guilabel>Address</guilabel> into the form.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Insert the foreign field
+                                                  <guilabel>Landlord</guilabel>. </para>
+                                                <para>Therefor select
+                                                  <guimenuitem>ForeignField</guimenuitem> from the
+                                                  folder <guilabel>DB Elements</guilabel> in the
+                                                  form editor's toolbar.</para>
+                                                <para> Place the foreign field in the group <guilabel>RealEstateObject</guilabel>.</para>
+                                                <para>DB foreign fields are always assigned to a
+                                                  table column of a foreign table alias. Thus,
+                                                  <trademark>jACOB</trademark> Designer will ask
+                                                  you for the appropriate table alias. Select the
+                                                  table alias <guimenuitem>landlord</guimenuitem>.</para>
+                                                <para>After this we change into the
+                                                  <guilabel>Properties</guilabel> view and set the
+                                                  foreign field's <guilabel>Caption</guilabel> to
+                                                  "Landlord", the <guilabel>Name</guilabel> to
+                                                  "realEstateObjectLandlord", the
+                                                  <guilabel>Foreign field to
+                                                  display</guilabel> to "fullname" and the
+                                                  <guilabel>Relationset</guilabel> to "requestRelations".</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineFormRealEstateObject1.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the long text field
+                                                  <guilabel>Description</guilabel> into the form.</para>
+                                                <para>Therefor select <guimenuitem>Long
+                                                  text</guimenuitem> from the folder <guilabel>DB
+                                                  Elements</guilabel> in the form editor's toolbar.</para>
+                                                <para> Position the long text field in the form.</para>
+                                                <para>DB long text fields are always assigned to a
+                                                  table column. Therefore,
+                                                  <trademark>jACOB</trademark> Designer will ask
+                                                  you for the appropriate table column. Select the
+                                                  column <guimenuitem>description</guimenuitem>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the comboboxes <guilabel>Object
+                                                  type</guilabel> and <guilabel>Sale or
+                                                  rent</guilabel> into the form.</para>
+                                                <para>For this purpose select
+                                                  <guimenuitem>Combobox</guimenuitem> from the
+                                                  folder <guilabel>DB Elements</guilabel> in the
+                                                  form editor's toolbar.</para>
+                                                <para> Place the comboboxe in the form.</para>
+                                                <para> Position the upper left corner of the long
+                                                  text field by pressing the left mouse button and
+                                                  draw the combobox by keeping the left mouse
+                                                  button pressed.</para>
+                                                <para>DB comboboxes are always assigned to a table
+                                                  column. Therefore, <trademark>jACOB</trademark>
+                                                  Designer will ask you for the appropriate table
+                                                  column. Select the column
+                                                  <guimenuitem>objectType</guimenuitem> and
+                                                  <guimenuitem>saleOrRent</guimenuitem> respectively.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the group <guilabel>Landlord</guilabel>
+                                                  into the form.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>8</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Construct this group in the same way as the
+                                                  group <guilabel>Employee</guilabel> in the <link linkend="sect_defineFormEmployee">
+                                                  <guilabel>employee form</guilabel>
+                                                  </link>. However, leave away the checkboxes
+                                                  <guilabel>Agent</guilabel> and
+                                                  <guilabel>Receptionist</guilabel>. </para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineFormRealEstateObject.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

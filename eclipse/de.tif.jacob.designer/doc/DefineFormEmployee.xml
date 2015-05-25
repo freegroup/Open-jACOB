@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_defineFormEmployee" label="1">
+    <title id="title_defineFormEmployee">Define the form employee</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we want to define the form for the registration of Happy Home
+                            employees as illustrated below.</para>
+                        <para>
+                            <figure id="fig_formEmployee">
+                                <title> The form employee</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/FormEmployee.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table alias employee</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The form employee will contain only one group, the group
+                            <guilabel>Employee</guilabel>. In <trademark>jACOB</trademark> Designer
+                            a group is always assigned to one <glossterm linkend="tableAlias">table
+                            alias</glossterm>. Happy Home employees can be receptionists, agents or
+                            both. Therefore, we will have to create the <glossterm
+                                linkend="tableAlias">table alias</glossterm>
+                            <guilabel>employee</guilabel> on the table <guilabel>person</guilabel>
+                            before we can define the form employee. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Browser on employee</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>As already stated in the section <link linkend="sect_defineBrowsers"
+                            endterm="title_defineBrowsers"/> the creation of a new <glossterm
+                                linkend="tableAlias">table alias</glossterm> implies also the
+                            creation of an appropriate <glossterm
+                            linkend="browser">browser</glossterm>. The new <glossterm linkend="browser">browser</glossterm>
+                            <guilabel>employeeBrowser</guilabel> initially contains only one column
+                            the <glossterm linkend="primaryKey">primary key</glossterm>
+                            <guilabel>id</guilabel>. </para>
+                        <para>We will define the <guilabel>employeeBrowser</guilabel> like the other
+                                <glossterm linkend="browser">browsers</glossterm> on the table
+                            <guilabel>person</guilabel>, i.e. <guilabel>employeeBrowser</guilabel>
+                            should contain the following columns in the following order:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>surname</para>
+                            </listitem>
+                            <listitem>
+                                <para>firstName</para>
+                            </listitem>
+                            <listitem>
+                                <para>id</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the table alias
+                                                  <guilabel>employee</guilabel> on the table
+                                                  <guilabel>person</guilabel> with the condition
+                                                  "personType='internal'". The creation of table
+                                                  aliases is explained in the section <link
+                                                  linkend="sect_defineTableAliases" endterm="title_defineTableAliases"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Edit the <guilabel>employeeBrowser</guilabel>
+                                                  as explained in the section <link
+                                                  linkend="sect_defineBrowsers" endterm="title_defineBrowsers"/>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create a new form.</para>
+                                                <para>To do this, select the folder
+                                                  <guilabel>Forms</guilabel> in the
+                                                  <guilabel>Application Outline</guilabel>
+                                                  view and select the menu item <guimenuitem>New
+                                                  Form</guimenuitem> from the right mouse button menu.</para>
+                                                <para>Enter "employee" into the text field of the
+                                                  dialog window.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  designer creates the form object
+                                                  <guilabel>employee</guilabel> within the folder
+                                                  <guilabel>Forms</guilabel> and opens the form in
+                                                  the form editor in the right upper screen area.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Before we can add elements to the form, we
+                                                  will have to draw a group into the form.</para>
+                                                <para>Therefor select <guilabel>Group</guilabel>
+                                                  from the folder <guilabel>DB Elements</guilabel>
+                                                  in the form editor's toolbar. </para>
+                                                <para> Position the upper left corner of the group
+                                                  by pressing the left mouse button and draw the
+                                                  group by keeping the left mouse button pressed.</para>
+                                                <para>Then, <trademark>jACOB</trademark> Designer
+                                                  will ask you for the appropriate table alias.
+                                                  Select <guimenuitem>employee&lt;person&gt;</guimenuitem>.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  Designer will create the group
+                                                  <guilabel>Employee</guilabel>. The four buttons
+                                                  <guibutton>Search</guibutton>,
+                                                  <guibutton>Clear</guibutton>,
+                                                  <guibutton>New</guibutton> and
+                                                  <guibutton>Update</guibutton> will be created
+                                                  automatically. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the text field for the
+                                                  <guilabel>Id</guilabel> into the form.</para>
+                                                <para>Therefor select <guilabel>Text</guilabel> from
+                                                  the folder <guilabel>DB Elements</guilabel> in
+                                                  the form editor's toolbar.</para>
+                                                <para>Place the text field at the desired position
+                                                  in the group <guilabel>Employee</guilabel> by
+                                                  pressing the left mouse button.</para>
+                                                <para>DB text fields are always assigned to a table
+                                                  column. Therefore, <trademark>jACOB</trademark>
+                                                  Designer will ask you for the appropriate table
+                                                  column. Select the column <guimenuitem>id</guimenuitem>.</para>
+                                                <para>Hereafter, <trademark>jACOB</trademark>
+                                                  Designer will automatically create the
+                                                  appropriate label. <trademark>jACOB</trademark>
+                                                  Designer retrieves the string from the column object.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the text fields for the <guilabel>First
+                                                  name</guilabel>, <guilabel>Surname</guilabel>,
+                                                  <guilabel>Fullname</guilabel>,
+                                                  <guilabel>Address</guilabel>,
+                                                  <guilabel>Phone</guilabel> and
+                                                  <guilabel>Email</guilabel> in the same way.</para>
+                                                <para>The labels of the text fields can be edited in
+                                                  the properties editor or by clicking on the label.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the checkboxes <guilabel>Agent</guilabel>
+                                                  and receptionist.</para>
+                                                <para>Therefor select <guilabel>Checkbox</guilabel>
+                                                  from the folder <guilabel>DB Elements</guilabel>
+                                                  in the form editor's toolbar. </para>
+                                                <para>Position the checkbox into the form by
+                                                  pressing the left mouse button.</para>
+                                                <para>Also DB checkboxes are always assigned to a
+                                                  table column. Therefore,
+                                                  <trademark>jACOB</trademark> Designer will ask
+                                                  you for the appropriate table column. Select the
+                                                  column <guimenuitem>agent</guimenuitem> and
+                                                  <guimenuitem>receptionist</guimenuitem> respectively.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineFormEmployee.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>GUI buttons</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <trademark>jACOB</trademark> Designer automatically creates the
+                            following GUI buttons in each group: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guibutton>Search</guibutton>: </para>
+                                <para>With the aid of this button you can run constrained searches
+                                    on the appropriate <glossterm linkend="tableAlias">table
+                                    alias</glossterm>. The search condition is composed by the
+                                    content of the group's data fields. The search result will be
+                                    displayed in the appropriate search browser.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Clear</guibutton>: </para>
+                                <para>Pressing this button will clear the content of the group's
+                                    data fields.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>New</guibutton>: </para>
+                                <para>The <guibutton>New</guibutton> button enables the creation of
+                                    a new record in the appropriate data table.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guibutton>Change</guibutton>: </para>
+                                <para>The <guibutton>Change</guibutton> button enables the
+                                    modification of an already existing data record.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

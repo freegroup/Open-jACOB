@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect2 id="sect_defineDomains" label="6">
+    <title id="title_defineDomains">Define the domains of happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In this section we want to define the domains of our example
+                            application happyHome. </para>
+                        <para>A <trademark>jACOB</trademark> Designer domain is a folder like
+                            element grouping forms to a dedicated workspace.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Domains</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In the previous section we have defined three different forms. Now we
+                            will group these forms to the following <glossterm linkend="domain">domains</glossterm>:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>administration domain:</para>
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>employee form</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </listitem>
+                            <listitem>
+                                <para>agent domain:</para>
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>realEstateObject form</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>request form</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </listitem>
+                            <listitem>
+                                <para>registration domain:</para>
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>request form</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </listitem>
+                        </itemizedlist>
+                        <para>The <glossterm linkend="domain">domains</glossterm> of a
+                            <trademark>jACOB</trademark> application are located in the folder
+                                <guilabel>Composed Application UI</guilabel> of the
+                                <guilabel>Application Outline</guilabel> view. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to obtain these <glossterm linkend="domain">domains</glossterm>:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the domain <guilabel>administration</guilabel>.</para>
+                                                <para>To do this, select the folder
+                                                  <guilabel>Composed Application UI</guilabel>
+                                                  in the <guilabel>Application Outline</guilabel>
+                                                  view and choose <guimenuitem>New
+                                                  Domain</guimenuitem> from the right mouse button menu.</para>
+                                                <para>Enter "administration" into the text field of
+                                                  the dialog window.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the form <guilabel>employee</guilabel> to
+                                                  this domain.</para>
+                                                <para>Therefor select the domain and choose
+                                                  <guimenuitem>Add Form</guimenuitem> from the
+                                                  right mouse button menu.</para>
+                                                <para>Select the form <guilabel>employee</guilabel>
+                                                  from the listbox of the dialog window.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the domain <guilabel>agent</guilabel>
+                                                  as described above.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the forms
+                                                  <guilabel>realEstateObject</guilabel> and
+                                                  <guilabel>request</guilabel> to this domain
+                                                  as explained above.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the domain
+                                                  <guilabel>registration</guilabel> containing the
+                                                  form <guilabel>request</guilabel> in the same way.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we have defined the <glossterm
+                            linkend="domain">domains</glossterm> of happy home:</para>
+                        <para>
+                            <figure id="fig_domains">
+                                <title id="title_fig_domains"> Domains of happyHome</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/DefineDomains.jpg"
+                                                format="JPEG" scalefit="1" width="187" depth="120"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The <trademark>jACOB</trademark> application design is now complete.
+                            After all this we can now:</para>
+                        <para>
+                            <xref linkend="sect_buildApplication" endterm="title_buildApplication"/>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect2>

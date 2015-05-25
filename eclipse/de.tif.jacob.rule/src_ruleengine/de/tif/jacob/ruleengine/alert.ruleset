@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ruleset xmlns="http://www.example.org/ruleset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ruleset">
+  <rule posX="110" posY="205" ruleId="start">
+    <businessObjectMethod nextRuleId="decb6a:1083df1020e:-7ffe" xmlns=""/>
+  </rule>
+  <rule posX="425" posY="200" ruleId="decb6a:1083df1020e:-7ffe">
+    <businessObjectMethod businessClass="de.tif.jacob.ruleengine.bo.UserInformation" methodName="send" xmlns="">
+      <parameter>Tester and Owner of a ticker must be a different Person.</parameter>
+    </businessObjectMethod>
+  </rule>
+</ruleset>

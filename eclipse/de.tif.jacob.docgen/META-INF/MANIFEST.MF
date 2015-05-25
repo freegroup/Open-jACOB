@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Documentation Generator
+Bundle-SymbolicName: de.tif.jacob.docgen; singleton:=true
+Bundle-Version: 2.8.3
+Bundle-Activator: de.tif.jacob.docgen.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.tif.jacob.common,
+ de.tif.jacob.designer
+Eclipse-LazyStart: true
+Bundle-ClassPath: library.jar

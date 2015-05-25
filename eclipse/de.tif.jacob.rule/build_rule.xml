@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="de.tif.jacob.rule" default="all" basedir=".">
+
+<property name="buildlib.dir"        value="./lib"/>
+<property name="jacobRule"           value="./dist/jacobRule.jar"/>
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${buildlib.dir}">
+	   	<include name="*.jar"/>
+   </fileset>
+   <fileset dir="../de.tif.jacob.common/">
+   		<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+<!-- =================================================================== -->
+<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler" >
+<classpath>
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</classpath>	
+</taskdef>
+
+<target name="clean" description="clean the access classes for Ruleset definitions">
+    <!-- remove castor generated classes -->
+    <delete quiet="true" dir="./src_ruleengine/de/tif/jacob/ruleengine/castor"/>
+		<delete quiet="true" dir="./classes_ruleengine"/>
+		<delete quiet="true" dir="./dist"/>
+		<mkdir  dir="./classes_ruleengine"/>
+		<mkdir  dir="./dist"/>
+</target>
+	
+<target name="castor" depends="clean" description="create the access classes for Ruleset definitions">
+    <!-- create the classes for the JAD definitions -->
+    <XSDCompiler 
+        package="de.tif.jacob.ruleengine.castor"
+        schema="./castor/ruleset.xsd"
+        force="true"
+        destDir="./src_ruleengine">
+    </XSDCompiler>
+</target>
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="castor" description="Compile Java sources">
+	<javac encoding="ISO-8859-1" srcdir="src_ruleengine" debug="on" destdir="./classes_ruleengine" >
+       <classpath refid="compile.classpath" />
+	</javac>
+</target>
+
+<target name="all" depends="compile" description="Build the modules jars">
+    <jar destfile="${jacobRule}" >
+		<fileset dir="./classes_ruleengine">
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+		</manifest>
+   </jar>
+</target>
+
+</project>

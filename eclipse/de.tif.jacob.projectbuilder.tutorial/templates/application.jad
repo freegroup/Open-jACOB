@@ -1,0 +1,2409 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.5" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of {applicationName} datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="bug" name="bug">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="application" history="false" label="Application" name="application" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="title" history="false" label="Title" name="title" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>verified</Default>
+          <Value>verified</Value>
+          <Value>closed</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="grade" history="false" label="Grade" name="grade" readonly="false" required="true">
+        <Enumeration>
+          <Value>Missing Functionality</Value>
+          <Value>Remark</Value>
+          <Value>Cosmetic</Value>
+          <Value>Crash</Value>
+          <Value>Wrong Behaviour</Value>
+          <Value>Bug</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="reproduceabitlity" history="false" label="Reproduceabitlity" name="reproduceabitlity" readonly="false" required="true">
+        <Enumeration>
+          <Value>Once</Value>
+          <Value>Sometimes</Value>
+          <Value>Often</Value>
+          <Value>Always</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="product_key" history="false" label="Product_key" name="product_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="product_FKey">
+        <Field>product_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="request" name="request">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>open</Default>
+          <Value>open</Value>
+          <Value>closed</Value>
+          <Value>progress</Value>
+          <Value>rejected</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="any_flag1" history="false" label="%REQUEST_FLAG1" name="any_flag1" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="any_flag2" history="false" label="%REQUEST_FLAG2" name="any_flag2" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="any_flag3" history="false" label="%REQUEST_FLAG3" name="any_flag3" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="any_flag4" history="false" label="%REQUEST_FLAG4" name="any_flag4" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="document_store" name="document_store">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="data" history="false" label="Data" name="data" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Create_date" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="image_store" name="image_store">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Create_date" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="image" history="false" label="Image" name="image" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="datatypes" name="datatypes">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="text_type" history="false" label="Text type" name="text_type" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="integer_type" history="false" label="Integer type" name="integer_type" readonly="false" required="false">
+        <Integer autoincrement="false"/>
+      </Field>
+      <Field dbName="long_type" history="false" label="Long type" name="long_type" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="float_type" history="false" label="Float type" name="float_type" readonly="false" required="false">
+        <Float/>
+      </Field>
+      <Field dbName="double_type" history="false" label="Double type" name="double_type" readonly="false" required="false">
+        <Double/>
+      </Field>
+      <Field dbName="decimal_type" history="false" label="Decimal type" name="decimal_type" readonly="false" required="false">
+        <Decimal/>
+      </Field>
+      <Field dbName="enum_type" history="false" label="Enum type" name="enum_type" readonly="false" required="false">
+        <Enumeration>
+          <Value>enum01</Value>
+          <Value>enum02</Value>
+          <Value>enum03</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="date_time" history="false" label="Date time" name="date_time" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="time_type" history="false" label="Time type" name="time_type" readonly="false" required="false">
+        <Time/>
+      </Field>
+      <Field dbName="timestamp_type" history="false" label="Timestamp type" name="timestamp_type" readonly="false" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="longtext_type_inline" history="false" label="Longtext type" name="longtext_type_inline" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="binary_type" history="false" label="Binary type" name="binary_type" readonly="false" required="false">
+        <Binary/>
+      </Field>
+      <Field dbName="document_type" history="false" label="Document type" name="document_type" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="longtext_type_dialog" history="false" label="Longtext_type_dialog" name="longtext_type_dialog" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="product" name="product">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="chartdata" name="chartdata">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="monday" history="false" label="Monday" name="monday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="tuesday" history="false" label="Tuesday" name="tuesday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="wednesday" history="false" label="Wednesday" name="wednesday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="thursday" history="false" label="Thursday" name="thursday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="friday" history="false" label="Friday" name="friday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="saturday" history="false" label="Saturday" name="saturday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <Field dbName="sunday" history="false" label="Sunday" name="sunday" readonly="false" required="true">
+        <Double/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="firstname" history="false" label="Firstname" name="firstname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="lastname" history="false" label="Lastname" name="lastname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="title" history="false" label="Title" name="title" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email" history="false" label="Email" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="letter_template" name="letter_template">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="document" history="false" label="Rtf Document" name="document" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="letter" name="letter">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="letter" history="false" label="Letter" name="letter" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Create_date" name="create_date" readonly="false" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="customer_key" history="false" label="Customer_key" name="customer_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="customer_FKey">
+        <Field>customer_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="recipe" name="recipe">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="image" history="false" label="Image" name="image" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="template" history="false" label="Template" name="template" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="ingredients" name="ingredients">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="amount" history="false" label="Amount" name="amount" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="unit" history="false" label="Unit" name="unit" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="recipe_key" history="false" label="Recipe_key" name="recipe_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="recipe_FKey">
+        <Field>recipe_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="workingstep" name="workingstep">
+      <Field dbName="pkey" history="false" label="PKey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="description" history="false" label="Description" name="description" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="recipe_key" history="false" label="Recipe_key" name="recipe_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="recipe_FKey">
+        <Field>recipe_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="bug" table="bug"/>
+    <TableAlias name="request" table="request"/>
+    <TableAlias name="document_store" table="document_store"/>
+    <TableAlias name="image_store" table="image_store"/>
+    <TableAlias name="datatypes" table="datatypes"/>
+    <TableAlias name="product" table="product"/>
+    <TableAlias name="chartdata" table="chartdata"/>
+    <TableAlias name="linechartdata" table="chartdata"/>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="customer" table="person"/>
+    <TableAlias name="letter_template" table="letter_template"/>
+    <TableAlias name="letter" table="letter"/>
+    <TableAlias name="recipe" table="recipe"/>
+    <TableAlias name="ingredients" table="ingredients"/>
+    <TableAlias name="workingstep" table="workingstep"/>
+    <TableAlias name="request_enabler" table="request"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="bug" name="bugBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Grade" name="browserGrade" visible="true">
+        <TableField tableField="grade"/>
+      </Field>
+      <Field label="State" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="Title" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+    </Browser>
+    <Browser alias="request" name="requestBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="document_store" name="document_storeBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Create_date" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="image_store" name="image_storeBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Create date" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="datatypes" name="datatypesBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="product" name="productBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="chartdata" name="chartdataBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Monday" name="browserMonday" visible="true">
+        <TableField tableField="monday"/>
+      </Field>
+      <Field label="Tuesday" name="browserTuesday" visible="true">
+        <TableField tableField="tuesday"/>
+      </Field>
+      <Field label="Wednesday" name="browserWednesday" visible="true">
+        <TableField tableField="wednesday"/>
+      </Field>
+      <Field label="Thursday" name="browserThursday" visible="true">
+        <TableField tableField="thursday"/>
+      </Field>
+      <Field label="Friday" name="browserFriday" visible="true">
+        <TableField tableField="friday"/>
+      </Field>
+      <Field label="Saturday" name="browserSaturday" visible="true">
+        <TableField tableField="saturday"/>
+      </Field>
+      <Field label="Sunday" name="browserSunday" visible="true">
+        <TableField tableField="sunday"/>
+      </Field>
+    </Browser>
+    <Browser alias="linechartdata" name="linechartdataBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Monday" name="browserMonday" visible="true">
+        <TableField tableField="monday"/>
+      </Field>
+      <Field label="Tuesday" name="browserTuesday" visible="true">
+        <TableField tableField="tuesday"/>
+      </Field>
+      <Field label="Wednesday" name="browserWednesday" visible="true">
+        <TableField tableField="wednesday"/>
+      </Field>
+      <Field label="Thursday" name="browserThursday" visible="true">
+        <TableField tableField="thursday"/>
+      </Field>
+      <Field label="Friday" name="browserFriday" visible="true">
+        <TableField tableField="friday"/>
+      </Field>
+      <Field label="Saturday" name="browserSaturday" visible="true">
+        <TableField tableField="saturday"/>
+      </Field>
+      <Field label="Sunday" name="browserSunday" visible="true">
+        <TableField tableField="sunday"/>
+      </Field>
+    </Browser>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Firstname" name="browserFirstname" visible="true">
+        <TableField tableField="firstname"/>
+      </Field>
+      <Field label="Lastname" name="browserLastname" visible="true">
+        <TableField tableField="lastname"/>
+      </Field>
+    </Browser>
+    <Browser alias="customer" name="customerBrowser" type="inform">
+      <Field label="Title" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+      <Field label="Firstname" name="browserFirstname" visible="true">
+        <TableField tableField="firstname"/>
+      </Field>
+      <Field label="Lastname" name="browserLastname" visible="true">
+        <TableField tableField="lastname"/>
+      </Field>
+    </Browser>
+    <Browser alias="letter_template" name="letterTemplateBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="letter" name="letterBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Create date" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="recipe" name="recipeBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="ingredients" name="ingredientsBrowser" type="inform">
+      <Field label="Amount" name="browserAmount" visible="true">
+        <TableField tableField="amount"/>
+      </Field>
+      <Field label="Unit" name="browserUnit" visible="true">
+        <TableField tableField="unit"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="workingstep" name="workingstepBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="request_enabler" name="request_enablerBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="State" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="product_bug">
+      <OneToMany fromAlias="product" toAlias="bug" toKey="product_FKey"/>
+    </Relation>
+    <Relation name="customer_letter">
+      <OneToMany fromAlias="customer" toAlias="letter" toKey="customer_FKey"/>
+    </Relation>
+    <Relation name="recipe_ingredients">
+      <OneToMany fromAlias="recipe" toAlias="ingredients" toKey="recipe_FKey"/>
+    </Relation>
+    <Relation name="recipe_workingstep">
+      <OneToMany fromAlias="recipe" toAlias="workingstep" toKey="recipe_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="newRelation">
+      <Relation>product_bug</Relation>
+      <Property>
+        <Name>bug.x</Name>
+        <Value>215</Value>
+      </Property>
+      <Property>
+        <Name>bug.y</Name>
+        <Value>61</Value>
+      </Property>
+      <Property>
+        <Name>bug.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>bug.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>product.x</Name>
+        <Value>330</Value>
+      </Property>
+      <Property>
+        <Name>product.y</Name>
+        <Value>331</Value>
+      </Property>
+      <Property>
+        <Name>product.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>product.height</Name>
+        <Value>-1</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="newRelationx">
+      <Property>
+        <Name>bug.x</Name>
+        <Value>200</Value>
+      </Property>
+      <Property>
+        <Name>bug.y</Name>
+        <Value>187</Value>
+      </Property>
+      <Property>
+        <Name>bug.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>bug.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>product.x</Name>
+        <Value>104</Value>
+      </Property>
+      <Property>
+        <Name>product.y</Name>
+        <Value>45</Value>
+      </Property>
+      <Property>
+        <Name>product.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>product.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_32ef2d:1026262935b:-8000.x</Name>
+        <Value>21</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_32ef2d:1026262935b:-8000.y</Name>
+        <Value>27</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_32ef2d:1026262935b:-8000.width</Name>
+        <Value>218</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_32ef2d:1026262935b:-8000.height</Name>
+        <Value>66</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_32ef2d:1026262935b:-8000.text</Name>
+        <Value>Dies ist ein Kommentar</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="customerLetter">
+      <Relation>customer_letter</Relation>
+      <Property>
+        <Name>customer.x</Name>
+        <Value>275</Value>
+      </Property>
+      <Property>
+        <Name>customer.y</Name>
+        <Value>319</Value>
+      </Property>
+      <Property>
+        <Name>customer.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>customer.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>letter.x</Name>
+        <Value>275</Value>
+      </Property>
+      <Property>
+        <Name>letter.y</Name>
+        <Value>115</Value>
+      </Property>
+      <Property>
+        <Name>letter.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>letter.height</Name>
+        <Value>-1</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="recipe">
+      <Relation>recipe_ingredients</Relation>
+      <Relation>recipe_workingstep</Relation>
+      <Property>
+        <Name>ingredients.x</Name>
+        <Value>142</Value>
+      </Property>
+      <Property>
+        <Name>ingredients.y</Name>
+        <Value>50</Value>
+      </Property>
+      <Property>
+        <Name>ingredients.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>ingredients.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>recipe.x</Name>
+        <Value>342</Value>
+      </Property>
+      <Property>
+        <Name>recipe.y</Name>
+        <Value>348</Value>
+      </Property>
+      <Property>
+        <Name>recipe.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>recipe.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>workingstep.x</Name>
+        <Value>482</Value>
+      </Property>
+      <Property>
+        <Name>workingstep.y</Name>
+        <Value>57</Value>
+      </Property>
+      <Property>
+        <Name>workingstep.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>workingstep.height</Name>
+        <Value>-1</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="Simple Dialogs" name="simple_dialogs">
+      <Group alias="bug" browser="bugBrowser" label="Dialogs" name="bugGroup">
+        <Dimension height="193" width="553" x="12" y="12"/>
+        <GuiElement eventHandler="jacob.event.ui.bug.BugButtonMessageDialog" name="bugButtonMessageDialog" visible="true">
+          <Button label="open a message Dialog">
+            <Dimension height="20" width="172" x="36" y="72"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.bug.BugButtonOkCancelDialog" name="bugButtonOkCancelDialog" visible="true">
+          <Button label="open a Ok/Cancel Dialog">
+            <Dimension height="20" width="172" x="348" y="72"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.bug.BugButtonInputDialog" name="bugButtonInputDialog" visible="true">
+          <Button label="open an input dialog">
+            <Dimension height="20" width="172" x="36" y="108"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.bug.BugButtonGridDialog" name="bugButtonGridDialog" visible="true">
+          <Button label="open a grid dialog">
+            <Dimension height="20" width="172" x="348" y="108"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Grid dialogs" name="grid_dialogs">
+      <Group alias="bug" browser="bugBrowser" label="GridDialog" name="bugGroup">
+        <Dimension height="217" width="553" x="12" y="12"/>
+        <GuiElement name="bugTextfield" visible="true">
+          <LocalInputField>
+            <TextInput>
+              <Dimension height="20" width="145" x="180" y="84"/>
+              <Caption halign="right" label="TextField" valign="top">
+                <Dimension height="20" width="67" x="108" y="84"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.bug.BugButtonConnectedGrid" name="bugButtonConnectedGrid" visible="true">
+          <Button label="...">
+            <Dimension height="20" width="25" x="324" y="84"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Combobox" name="combobox">
+      <Group alias="request" browser="requestBrowser" label="Request" name="requestGroup">
+        <Dimension height="145" width="553" x="12" y="12"/>
+        <GuiElement eventHandler="jacob.event.ui.request.RequestState" name="requestState" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="179" x="54" y="69"/>
+              <Value>open</Value>
+              <Value>closed</Value>
+              <Value>progress</Value>
+              <Value>rejected</Value>
+              <Caption halign="right" label="State" valign="top">
+                <Dimension height="20" width="50" x="-2" y="69"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="requestName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="180" x="53" y="34"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="70" x="-22" y="34"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="requestLabel" visible="true">
+          <Label>
+            <Caption halign="right" label="Info: Create a new request and try to change the 'State' of the request." valign="top">
+              <Dimension height="20" width="491" x="36" y="108"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="requestButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="34"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="requestButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="34"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="requestButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="64"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="requestButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="64"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+      <Group alias="request_enabler" browser="request_enablerBrowser" label="Request_enabler" name="request_enablerGroup">
+        <Dimension height="181" width="553" x="12" y="168"/>
+        <GuiElement name="request_enablerButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="request_enablerButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="request_enablerButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="request_enablerButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.request_enabler.Request_enablerAny_flag2" name="request_flag2" tabIndex="100" visible="true">
+          <LocalInputField tableField="any_flag2">
+            <CheckBox>
+              <Dimension height="16" width="16" x="372" y="57"/>
+              <Caption halign="right" label="%REQUEST_FLAG2" valign="top">
+                <Dimension height="16" width="127" x="240" y="57"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.request_enabler.Request_enablerAny_flag3" name="request_flag3" tabIndex="100" visible="true">
+          <LocalInputField tableField="any_flag3">
+            <CheckBox>
+              <Dimension height="16" width="16" x="372" y="86"/>
+              <Caption halign="right" label="%REQUEST_FLAG3" valign="top">
+                <Dimension height="16" width="127" x="240" y="86"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.request_enabler.Request_enablerAny_flag1" name="request_flag1" tabIndex="100" visible="true">
+          <LocalInputField tableField="any_flag1">
+            <CheckBox>
+              <Dimension height="16" width="16" x="372" y="27"/>
+              <Caption halign="right" label="%REQUEST_FLAG1" valign="top">
+                <Dimension height="16" width="127" x="240" y="27"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.request_enabler.Request_enablerState" name="request_enablerState" tabIndex="2" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="180" x="53" y="55"/>
+              <Value>open</Value>
+              <Value>closed</Value>
+              <Value>progress</Value>
+              <Value>rejected</Value>
+              <Caption halign="right" label="State" valign="top">
+                <Dimension height="20" width="70" x="-22" y="55"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="request_enablerName" tabIndex="1" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="180" x="53" y="25"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="70" x="-22" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.request_enabler.Request_enablerAny_flag4" name="request_flag4" tabIndex="100" visible="true">
+          <LocalInputField tableField="any_flag4">
+            <CheckBox>
+              <Dimension height="16" width="16" x="372" y="116"/>
+              <Caption halign="right" label="%REQUEST_FLAG4" valign="top">
+                <Dimension height="16" width="127" x="240" y="116"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="right" label="Info:: Blueprint for dependencies of a combobox and any UI elements" valign="top">
+              <Dimension height="20" width="526" x="12" y="144"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="File Upload" name="file">
+      <Group alias="document_store" browser="document_storeBrowser" label="Document Store" name="document_storeGroup">
+        <Dimension height="241" width="553" x="12" y="12"/>
+        <GuiElement name="document_storeButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="33"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="document_storeButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="33"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="document_storeButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="63"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="document_storeButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="63"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="document_storeDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="229" x="84" y="63"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="71" x="7" y="63"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="document_storeCreate_date" visible="true">
+          <LocalInputField tableField="create_date">
+            <TimestampInput>
+              <Dimension height="20" width="229" x="84" y="96"/>
+              <Caption halign="right" label="Create date" valign="top">
+                <Dimension height="20" width="72" x="6" y="96"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="document_storeDocument" visible="true">
+          <LocalInputField tableField="data">
+            <DocumentInput>
+              <Dimension height="20" width="229" x="84" y="33"/>
+              <Caption halign="right" label="Document" valign="top">
+                <Dimension height="20" width="70" x="9" y="33"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Image Upload" name="image">
+      <Group alias="image_store" browser="image_storeBrowser" label="Image store" name="image_storeGroup">
+        <Dimension height="313" width="553" x="12" y="12"/>
+        <GuiElement name="image_storeButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="image_storeButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="30"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="image_storeButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="60"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="image_storeButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="60"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="image_storeImage" visible="true">
+          <LocalInputField tableField="image">
+            <Image inForm="true">
+              <Dimension height="241" width="289" x="72" y="60"/>
+              <Caption halign="right" label="Image" valign="top">
+                <Dimension height="20" width="70" x="-3" y="60"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="image_storeDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="289" x="72" y="30"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="70" x="-3" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Datatypes" name="datatype_mapping">
+      <Group alias="datatypes" browser="datatypesBrowser" label="Datatypes" name="datatypesGroup">
+        <Dimension height="589" width="553" x="12" y="12"/>
+        <GuiElement name="datatypesButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="467" y="22"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="datatypesButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="467" y="52"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="datatypesButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="387" y="52"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="datatypesText" visible="true">
+          <LocalInputField tableField="text_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="24"/>
+              <Caption halign="right" label="Text type" valign="top">
+                <Dimension height="20" width="125" x="19" y="24"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesLongtext_inline" visible="true">
+          <LocalInputField tableField="longtext_type_inline">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="73" width="200" x="156" y="206"/>
+              <Caption halign="right" label="Longtext type (inline)" valign="top">
+                <Dimension height="20" width="132" x="12" y="206"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesEnum_type" visible="true">
+          <LocalInputField tableField="enum_type">
+            <ComboBox>
+              <Dimension height="20" width="200" x="156" y="359"/>
+              <Value>enum02</Value>
+              <Value>enum03</Value>
+              <Value>enum01</Value>
+              <Caption halign="right" label="Enum type" valign="top">
+                <Dimension height="20" width="125" x="19" y="359"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDate_time" visible="true">
+          <LocalInputField tableField="date_time">
+            <DateInput>
+              <Dimension height="20" width="200" x="156" y="390"/>
+              <Caption halign="right" label="Date" valign="top">
+                <Dimension height="20" width="125" x="19" y="390"/>
+              </Caption>
+            </DateInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesTimestamp_type" visible="true">
+          <LocalInputField tableField="timestamp_type">
+            <TimestampInput>
+              <Dimension height="20" width="200" x="156" y="452"/>
+              <Caption halign="right" label="Timestamp type" valign="top">
+                <Dimension height="20" width="125" x="19" y="452"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDocument" visible="true">
+          <LocalInputField tableField="document_type">
+            <DocumentInput>
+              <Dimension height="20" width="200" x="156" y="483"/>
+              <Caption halign="right" label="Document type" valign="top">
+                <Dimension height="20" width="132" x="19" y="483"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesButtonGeneric" visible="true">
+          <Button label="%BUTTON_COMMON_GENERIC">
+            <Dimension height="1" width="12" x="132" y="540"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="datatypesDecimal_type" visible="true">
+          <LocalInputField tableField="decimal_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="52"/>
+              <Caption halign="right" label="Decimal type" valign="top">
+                <Dimension height="20" width="70" x="81" y="52"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDecimal_type2" visible="true">
+          <LocalInputField tableField="double_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="84"/>
+              <Caption halign="right" label="Double type" valign="top">
+                <Dimension height="20" width="70" x="81" y="84"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDecimal_type3" visible="true">
+          <LocalInputField tableField="float_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="120"/>
+              <Caption halign="right" label="Float type" valign="top">
+                <Dimension height="20" width="70" x="81" y="120"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDecimal_type4" visible="true">
+          <LocalInputField tableField="integer_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="150"/>
+              <Caption halign="right" label="Integer type" valign="top">
+                <Dimension height="20" width="70" x="81" y="150"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesDecimal_type5" visible="true">
+          <LocalInputField tableField="long_type">
+            <TextInput>
+              <Dimension height="20" width="200" x="156" y="180"/>
+              <Caption halign="right" label="Long type" valign="top">
+                <Dimension height="20" width="70" x="81" y="180"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesLongtext_dialog" visible="true">
+          <LocalInputField tableField="longtext_type_dialog">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="16" x="156" y="287"/>
+              <Caption halign="right" label="Longtext type (dialog)" valign="top">
+                <Dimension height="20" width="125" x="19" y="287"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesLongCheckbox" visible="true">
+          <LocalInputField tableField="long_type">
+            <CheckBox>
+              <Dimension height="16" width="16" x="156" y="335"/>
+              <Caption halign="right" label="Long type" valign="top">
+                <Dimension height="20" width="125" x="19" y="335"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesIntegerCheckbox" visible="true">
+          <LocalInputField tableField="integer_type">
+            <CheckBox>
+              <Dimension height="16" width="16" x="156" y="311"/>
+              <Caption halign="right" label="Integer type" valign="top">
+                <Dimension height="20" width="125" x="19" y="311"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="387" y="22"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="datatypesTime" visible="true">
+          <LocalInputField tableField="date_time">
+            <TimeInput>
+              <Dimension height="20" width="200" x="156" y="421"/>
+              <Caption halign="right" label="Date" valign="top">
+                <Dimension height="20" width="70" x="74" y="421"/>
+              </Caption>
+            </TimeInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="datatypesPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="156" y="514"/>
+              <Caption halign="right" label="Text type as password field" valign="top">
+                <Dimension height="16" width="139" x="12" y="514"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Export" name="exporting">
+      <Group alias="product" browser="productBrowser" label="Product" name="productGroup">
+        <Dimension height="313" width="553" x="12" y="12"/>
+        <GuiElement name="productButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="productButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="30"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="productButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="60"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="productButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="60"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="productDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="265" x="72" y="60"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="70" x="-3" y="60"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="productName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="265" x="72" y="30"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="70" x="-3" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.product.ProductButtonExportPDF" name="productButtonExportPDF" visible="true">
+          <Button label="Export to PDF">
+            <Dimension height="20" width="150" x="388" y="228"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.product.ProductButtonExportXML" name="productButtonExportXML" visible="true">
+          <Button label="Export to XML">
+            <Dimension height="20" width="150" x="388" y="108"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.product.ProductButtonExportHTML" name="productButtonExportHTML" visible="true">
+          <Button label="Export to HTML">
+            <Dimension height="20" width="150" x="388" y="168"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.product.ProductButtonExportTEXT" name="productButtonExportTEXT" visible="true">
+          <Button label="Export to Text">
+            <Dimension height="20" width="150" x="388" y="138"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.product.ProductButtonExportExcel" name="productButtonExportExcel" visible="true">
+          <Button label="Export to Excel">
+            <Dimension height="20" width="150" x="388" y="197"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Barchart" name="barchart">
+      <Group alias="chartdata" browser="chartdataBrowser" label="Chartdata" name="chartdataGroup">
+        <Dimension height="457" width="553" x="12" y="12"/>
+        <GuiElement name="chartdataButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="30"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="60"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="60"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataMonday" visible="true">
+          <LocalInputField tableField="monday">
+            <TextInput>
+              <Dimension height="20" width="100" x="73" y="31"/>
+              <Caption halign="right" label="Monday" valign="top">
+                <Dimension height="20" width="70" x="-2" y="31"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataTuesday" visible="true">
+          <LocalInputField tableField="tuesday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="31"/>
+              <Caption halign="right" label="Tuesday" valign="top">
+                <Dimension height="20" width="70" x="165" y="31"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataWednesday" visible="true">
+          <LocalInputField tableField="wednesday">
+            <TextInput>
+              <Dimension height="20" width="100" x="73" y="60"/>
+              <Caption halign="right" label="Wednesday" valign="top">
+                <Dimension height="20" width="70" x="-2" y="60"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataThursday" visible="true">
+          <LocalInputField tableField="thursday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="60"/>
+              <Caption halign="right" label="Thursday" valign="top">
+                <Dimension height="20" width="70" x="165" y="60"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataFriday" visible="true">
+          <LocalInputField tableField="friday">
+            <TextInput>
+              <Dimension height="20" width="100" x="73" y="90"/>
+              <Caption halign="right" label="Friday" valign="top">
+                <Dimension height="20" width="70" x="-2" y="90"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataSaturday" visible="true">
+          <LocalInputField tableField="saturday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="90"/>
+              <Caption halign="right" label="Saturday" valign="top">
+                <Dimension height="20" width="70" x="165" y="90"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="chartdataSunday" visible="true">
+          <LocalInputField tableField="sunday">
+            <TextInput>
+              <Dimension height="20" width="100" x="73" y="120"/>
+              <Caption halign="right" label="Sunday" valign="top">
+                <Dimension height="20" width="70" x="-2" y="120"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.chartdata.ChartdataBarChart" name="chartdataBarChart" visible="true">
+          <BarChart>
+            <Dimension height="289" width="526" x="12" y="156"/>
+          </BarChart>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Linechart" name="linechart">
+      <Group alias="linechartdata" browser="linechartdataBrowser" label="Line chart" name="linechartdataGroup">
+        <Dimension height="493" width="553" x="12" y="12"/>
+        <GuiElement name="linechartdataButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="linechartdataButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="linechartdataButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="linechartdataButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="linechartdataMonday" visible="true">
+          <LocalInputField tableField="monday">
+            <TextInput>
+              <Dimension height="20" width="100" x="72" y="25"/>
+              <Caption halign="right" label="Monday" valign="top">
+                <Dimension height="20" width="70" x="-3" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataTuesday" visible="true">
+          <LocalInputField tableField="tuesday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="25"/>
+              <Caption halign="right" label="Tuesday" valign="top">
+                <Dimension height="20" width="70" x="165" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataWednesday" visible="true">
+          <LocalInputField tableField="wednesday">
+            <TextInput>
+              <Dimension height="20" width="100" x="72" y="55"/>
+              <Caption halign="right" label="Wednesday" valign="top">
+                <Dimension height="20" width="70" x="-3" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataThursday" visible="true">
+          <LocalInputField tableField="thursday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="55"/>
+              <Caption halign="right" label="Thursday" valign="top">
+                <Dimension height="20" width="70" x="165" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataFriday" visible="true">
+          <LocalInputField tableField="friday">
+            <TextInput>
+              <Dimension height="20" width="100" x="72" y="84"/>
+              <Caption halign="right" label="Friday" valign="top">
+                <Dimension height="20" width="70" x="-3" y="84"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataFriday2" visible="true">
+          <LocalInputField tableField="saturday">
+            <TextInput>
+              <Dimension height="20" width="100" x="240" y="84"/>
+              <Caption halign="right" label="Saturday" valign="top">
+                <Dimension height="20" width="70" x="165" y="84"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="linechartdataFriday3" visible="true">
+          <LocalInputField tableField="sunday">
+            <TextInput>
+              <Dimension height="20" width="100" x="72" y="114"/>
+              <Caption halign="right" label="Sunday" valign="top">
+                <Dimension height="20" width="70" x="-3" y="114"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.linechartdata.LinechartdataLineChart" name="linechartdataLineChart" visible="true">
+          <LineChart>
+            <Dimension height="337" width="526" x="12" y="144"/>
+          </LineChart>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Own Drawn Elements" name="owndraw">
+      <Group alias="chartdata" browser="chartdataBrowser" label="OwnDraw" name="chartdataGroup">
+        <Dimension height="433" width="553" x="12" y="12"/>
+        <GuiElement name="chartdataButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="chartdataButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.chartdata.ChartdataSmily" name="chartdataSmily" visible="true">
+          <OwnDrawElement>
+            <Dimension height="252" width="325" x="48" y="25"/>
+          </OwnDrawElement>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.chartdata.ChartdataMemoryChart" name="chartdataMemoryChart" visible="true">
+          <OwnDrawElement>
+            <Dimension height="25" width="469" x="48" y="312"/>
+          </OwnDrawElement>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Simple LetterEngine" name="letter_simple">
+      <Group alias="customer" browser="customerBrowser" label="Customer" name="customerGroup">
+        <Dimension height="181" width="553" x="12" y="12"/>
+        <GuiElement name="customerButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerTitle" visible="true">
+          <LocalInputField tableField="title">
+            <TextInput>
+              <Dimension height="20" width="252" x="84" y="55"/>
+              <Caption halign="right" label="Title" valign="top">
+                <Dimension height="20" width="70" x="9" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="customerFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="252" x="84" y="85"/>
+              <Caption halign="right" label="Firstname" valign="top">
+                <Dimension height="20" width="70" x="9" y="85"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="customerLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="252" x="84" y="114"/>
+              <Caption halign="right" label="Lastname" valign="top">
+                <Dimension height="20" width="70" x="9" y="114"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.customer.CustomerButtonGenerateLetter" name="customerButtonGenerateLetter" visible="true">
+          <Button label="generate Letter">
+            <Dimension height="20" width="150" x="388" y="84"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="252" x="85" y="25"/>
+              <Caption halign="right" label="Customer #" valign="top">
+                <Dimension height="20" width="71" x="9" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+      <Group alias="letter_template" browser="letterTemplateBrowser" label="LetterTemplate" name="letterTemplateGroup">
+        <Dimension height="157" width="553" x="12" y="204"/>
+        <GuiElement name="letterTemplateButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letterTemplateButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letterTemplateButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letterTemplateButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letterTemplateDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="252" x="84" y="55"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="70" x="9" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="letterTemplateDescription2" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="252" x="84" y="25"/>
+              <Caption halign="right" label="PKey" valign="top">
+                <Dimension height="20" width="56" x="23" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="letter_templateDocument" visible="true">
+          <LocalInputField tableField="document">
+            <DocumentInput>
+              <Dimension height="20" width="252" x="84" y="84"/>
+              <Caption halign="right" label="Template" valign="top">
+                <Dimension height="20" width="70" x="9" y="84"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Extended LetterEngine" name="letter_extended">
+      <Group alias="customer" browser="customerBrowser" label="Customer" name="customerGroup">
+        <Dimension height="301" width="553" x="12" y="12"/>
+        <GuiElement name="customerButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="customerPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="251" x="74" y="25"/>
+              <Caption halign="right" label="Customer #" valign="top">
+                <Dimension height="20" width="70" x="-1" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="customerFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="251" x="74" y="55"/>
+              <Caption halign="right" label="First name" valign="top">
+                <Dimension height="20" width="70" x="-1" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="customerLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="251" x="74" y="89"/>
+              <Caption halign="right" label="Last name" valign="top">
+                <Dimension height="20" width="70" x="-1" y="89"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="customerLetterBrowser" visible="true">
+          <InFormBrowser browserToUse="letterBrowser" deleteMode="true" newMode="false" relationToUse="customer_letter" updateMode="false">
+            <Dimension height="145" width="526" x="12" y="144"/>
+            <Caption halign="right" label="Generated Letter" valign="top">
+              <Dimension height="50" width="200" x="175" y="180"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.customer.CustomerButtonGenerateLetterAttachment" name="customerButtonGenerateLetterAttachment" visible="true">
+          <Button label="Generate Letter">
+            <Dimension height="20" width="150" x="388" y="85"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+      <Group alias="letter_template" browser="letterTemplateBrowser" label="Letter Template" name="letter_templateGroup">
+        <Dimension height="217" width="553" x="12" y="324"/>
+        <GuiElement name="letter_templateButtonSearch" visible="true">
+          <Button label="Search">
+            <Dimension height="20" width="70" x="388" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letter_templateButtonNewRecord" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="70" x="468" y="25"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letter_templateButtonUpdateRecord" visible="true">
+          <Button label="Update">
+            <Dimension height="20" width="70" x="468" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letter_templateButtonClearGroup" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="70" x="388" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="letter_templatePkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="253" x="72" y="25"/>
+              <Caption halign="right" label="PKey" valign="top">
+                <Dimension height="20" width="70" x="-3" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="letter_templateDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="253" x="72" y="55"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="70" x="-3" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="letter_templateDocument" visible="true">
+          <LocalInputField tableField="document">
+            <DocumentInput>
+              <Dimension height="20" width="253" x="72" y="83"/>
+              <Caption halign="right" label="Template" valign="top">
+                <Dimension height="20" width="70" x="-3" y="83"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Recipe" name="recipe">
+      <Group alias="recipe" browser="recipeBrowser" label="Recipe" name="recipeGroup">
+        <Dimension height="565" width="757" x="12" y="12"/>
+        <GuiElement name="recipeButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="436" y="528"/>
+            <Action>
+              <Search filldirection="both" relationset="recipe" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recipeButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="592" y="528"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recipeButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="672" y="528"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recipeButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="516" y="528"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recipeIngredientsBrowser" visible="true">
+          <InFormBrowser browserToUse="ingredientsBrowser" deleteMode="true" newMode="true" relationToUse="recipe_ingredients" updateMode="true">
+            <Dimension height="217" width="671" x="71" y="276"/>
+            <Caption halign="right" label="Ingredencien" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement name="recipeName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="670" x="72" y="25"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="70" x="-3" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recipeDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="193" width="670" x="72" y="60"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="25" width="60" x="12" y="60"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recipeDocument" visible="true">
+          <LocalInputField tableField="template">
+            <DocumentInput>
+              <Dimension height="20" width="164" x="72" y="500"/>
+              <Caption halign="right" label="Template" valign="top">
+                <Dimension height="20" width="70" x="-3" y="500"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.recipe.RecipeButtonExportToWord" name="recipeButtonExportToWord" visible="true">
+          <Button label="Export">
+            <Dimension height="20" width="70" x="360" y="528"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Person" name="person">
+      <Group alias="person" browser="personBrowser" label="Person" name="personGroup">
+        <Dimension height="313" width="601" x="12" y="12"/>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonButtonLevenshteinSearch" name="personButtonLevenshteinSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="201" x="384" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="201" x="385" y="276"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="193" x="84" y="90"/>
+              <Caption halign="right" label="Lastname(!)" valign="top">
+                <Dimension height="20" width="70" x="9" y="90"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="193" x="84" y="25"/>
+              <Caption halign="right" label="PKey" valign="top">
+                <Dimension height="20" width="70" x="9" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonButtonQBESearch" name="personButtonQBESearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="201" x="384" y="90"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonButtonFuzzySearch" name="personButtonFuzzySearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="201" x="384" y="55"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonButtonMetaphoneSearch" name="personButtonMetaphoneSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="198" x="387" y="129"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personDescription2" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="193" x="84" y="55"/>
+              <Caption halign="right" label="Firstname" valign="top">
+                <Dimension height="20" width="70" x="9" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="198" x="387" y="168"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="199" x="387" y="204"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonDeleteRecord" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="198" x="387" y="240"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Autosuggest" name="autosuggest">
+      <Group alias="person" browser="personBrowser" label="Person" name="personGroup">
+        <Dimension height="316" width="606" x="5" y="5"/>
+        <GuiElement name="personButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="441" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="521" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="521" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="441" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonEmail" name="personEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="236" x="85" y="60"/>
+              <Caption halign="right" label="Email" valign="top">
+                <Dimension height="20" width="70" x="10" y="60"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="100" x="85" y="127"/>
+              <Caption halign="right" label="Firstname" valign="top">
+                <Dimension height="20" width="70" x="10" y="127"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="100" x="85" y="157"/>
+              <Caption halign="right" label="Lastname" valign="top">
+                <Dimension height="20" width="70" x="10" y="157"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personTitle" visible="true">
+          <LocalInputField tableField="title">
+            <TextInput>
+              <Dimension height="20" width="100" x="85" y="187"/>
+              <Caption halign="right" label="Title" valign="top">
+                <Dimension height="20" width="70" x="10" y="187"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="100" x="85" y="97"/>
+              <Caption halign="right" label="Description" valign="top">
+                <Dimension height="20" width="70" x="10" y="97"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="right" label="DatnDaten" valign="top">
+              <Dimension height="20" width="271" x="85" y="215"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Tab_group" name="tab_group">
+      <Group alias="person" browser="personBrowser" label="Person" name="personGroup">
+        <Dimension height="441" width="601" x="5" y="5"/>
+        <GuiElement name="personButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="436" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="516" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="516" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="436" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="301" width="561" x="25" y="115"/>
+            <Pane alias="person" browser="personBrowser" label="Common" name="personGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="personEmail" visible="true">
+                <LocalInputField tableField="email">
+                  <TextInput>
+                    <Dimension height="20" width="100" x="112" y="82"/>
+                    <Caption halign="right" label="Email" valign="top">
+                      <Dimension height="20" width="70" x="37" y="82"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="personPkey" visible="true">
+                <LocalInputField tableField="pkey">
+                  <TextInput>
+                    <Dimension height="20" width="100" x="112" y="112"/>
+                    <Caption halign="right" label="PKey" valign="top">
+                      <Dimension height="20" width="70" x="37" y="112"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="personDescription" visible="true">
+                <LocalInputField tableField="description">
+                  <TextInput>
+                    <Dimension height="20" width="100" x="112" y="52"/>
+                    <Caption halign="right" label="Description" valign="top">
+                      <Dimension height="20" width="70" x="37" y="52"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="person" browser="personBrowser" label="Additonal" name="personGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="personTitle" visible="true">
+                <LocalInputField tableField="title">
+                  <TextInput>
+                    <Dimension height="20" width="100" x="139" y="55"/>
+                    <Caption halign="right" label="Title" valign="top">
+                      <Dimension height="20" width="70" x="64" y="55"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="personLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="311" x="84" y="57"/>
+              <Caption halign="right" label="Lastname" valign="top">
+                <Dimension height="20" width="70" x="9" y="57"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="311" x="84" y="27"/>
+              <Caption halign="right" label="Firstname" valign="top">
+                <Dimension height="20" width="70" x="9" y="27"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="gui" title="GUI Examples" visible="true">
+      <Form>datatype_mapping</Form>
+      <Form>simple_dialogs</Form>
+      <Form>grid_dialogs</Form>
+      <Form>combobox</Form>
+      <Form>owndraw</Form>
+      <Form>autosuggest</Form>
+      <Form>tab_group</Form>
+    </Domain>
+    <Domain name="document" title="Document handling" visible="true">
+      <Form>file</Form>
+      <Form>image</Form>
+      <Form>exporting</Form>
+      <Form>letter_simple</Form>
+      <Form>letter_extended</Form>
+      <Form>recipe</Form>
+    </Domain>
+    <Domain name="chart" title="Charts" visible="true">
+      <Form>barchart</Form>
+      <Form>linechart</Form>
+    </Domain>
+    <Domain name="search" title="Search" visible="true">
+      <Form>person</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>gui</Domain>
+      <Domain>document</Domain>
+      <Domain>chart</Domain>
+      <Domain>search</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

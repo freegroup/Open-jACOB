@@ -1,0 +1,19 @@
+/**************************************************************************
+ * Project  : jacob.$application.name
+ * 
+ * THIS IS A GENERATED FILE - DO NOT CHANGE!
+ *
+ *************************************************************************/
+package $package;
+
+
+/**
+ *
+ **/
+public final class $StringUtils.capitalise($relationset.name)
+{
+   private $StringUtils.capitalise($relationset.name)(){}
+
+   // the name of the table alias	 
+   public final static String NAME = "$relationset.name";
+}

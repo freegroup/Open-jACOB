@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            adaptable="true"
+            class="de.tif.jacob.project.properties.I18NPreferencePage"
+            id="de.tif.jacob.project.properties.projectI18NPropertyPage"
+            name="jACOB Project"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject"/>
+   </extension>
+
+</plugin>

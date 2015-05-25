@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.tif.jacob.components.progressbar.feature"
+      label="Progressbar"
+      version="1.0.10"
+      provider-name="Andreas Herz | FreeGroup">
+
+   <description url="http://www.example.com/description">
+      Open-jACOB is a Java rapid application development tool (RAD)
+based on Eclipse that enables the development of Rich Internet
+Applications (RIA) that are entirely based on Java.
+An Open-jACOB based application can be deployed as a stand alone
+application (.war) in a Web container like Jakarta-Tomcat. Alternatively,
+it may also be deployed as a jacapp Application within the jACOB
+Application server, profiting from the more advanced management
+features of the Open-jACOB container.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      This Eclipse plugin is part of Open-jACOB
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="de.tif.jacob.designer"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="de.tif.jacob.common"/>
+   </requires>
+
+   <plugin
+         id="de.tif.jacob.components.progressbar"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

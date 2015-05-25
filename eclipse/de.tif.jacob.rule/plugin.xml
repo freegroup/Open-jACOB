@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+    <extension  point="org.eclipse.ui.newWizards">
+       <category
+             id="de.tif.jacob.ruleengine"
+             name="Rules"
+             parentCategory="de.tif.jacob"/>
+
+       <wizard
+             category="de.tif.jacob/de.tif.jacob.ruleengine"
+             class="de.tif.jacob.rule.wizards.NewRulesetWizard"
+             icon="icons/editor_ruleset.gif"
+             id="de.tif.jacob.designer.rulesetwizard"
+             name="Simple Rule Definition"/>
+    </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            class="de.tif.jacob.rule.editor.rules.RulesetEditor"
+            extensions="ruleset"
+            icon="icons/editor_ruleset.gif"
+            id="de.tif.jacob.designer.editor.rules.ruleseteditor"
+            name="RulesetEditor">
+      </editor>
+   </extension>
+
+
+	<!-- Contribution for RuleEditPart -->
+	<extension point="org.eclipse.ui.popupMenus">
+    <objectContribution  objectClass="de.tif.jacob.rule.editor.rules.editpart.BusinessObjectModelEditPart"  
+   						 id="de.tif.jacob.rule.editor.rules.editpart.BusinessObjectModelEditPart">
+       <action
+          label="%popup.rules.showJavaClass"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.rule.editor.rules.actions.ShowJavaSourceCodeAction"
+          menubarPath="additions"
+          id="de.tif.jacob.rule.editor.rules.actions.ShowJavaSourceCodeAction"/>
+
+     </objectContribution>
+   </extension>
+
+
+</plugin>

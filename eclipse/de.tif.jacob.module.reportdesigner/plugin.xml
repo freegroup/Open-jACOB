@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.ui.popupMenus">
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeComposedApplicationParent"
+          id="de.tif.jacob.module.reportcontribution_domain">
+
+       <action
+             label="Extended Adhoc Reporting"
+             icon="icons/new_report_domain.png"
+             class="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction"
+             menubarPath="subMenuModulesDomain/modules"
+             id="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction1"/>
+                
+    </objectContribution>
+
+
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeApplicationParent"
+          id="de.tif.jacob.module.reportcontribution_application">
+
+       <action
+             label="Extended Adhoc Reporting"
+             icon="icons/new_report_domain.png"
+             class="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction"
+             menubarPath="subMenuModulesApplication/modules"
+             id="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction2"/>
+                
+    </objectContribution>
+
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeDomainObject"
+          id="de.tif.jacob.designer.treedomainobjectcontributionreporting">
+
+
+       <action
+             label="Extended Adhoc Reporting"
+             icon="icons/new_report_domain.png"
+             class="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction"
+             menubarPath="subMenuModules/modules"
+             id="de.tif.jacob.module.reportdesigner.actions.CreateReportingDomainAction3"/>
+                
+    </objectContribution>
+
+   </extension>
+
+</plugin>

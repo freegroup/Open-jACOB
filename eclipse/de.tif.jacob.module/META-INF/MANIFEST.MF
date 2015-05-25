@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Generic Open-jACOB Module Plug-in
+Bundle-SymbolicName: de.tif.jacob.module; singleton:=true
+Bundle-Version: 2.8.7
+Bundle-Activator: de.tif.jacob.module.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.tif.jacob.common,
+ de.tif.jacob.designer,
+ org.eclipse.jdt.core
+Eclipse-LazyStart: true
+Export-Package: de.tif.jacob.module,
+ de.tif.jacob.module.popup.actions
+Bundle-ClassPath: library.jar

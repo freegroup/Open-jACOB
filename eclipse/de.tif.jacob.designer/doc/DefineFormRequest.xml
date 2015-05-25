@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect3 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect3 id="sect_defineFormRequest" label="3">
+    <title id="title_defineFormRequest">Define the form request</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>In this step we want to define the form for the registration of
+                            customer requests as illustrated below. With the aid of this form we
+                            also want to register new customers, i.e. here interested persons.</para>
+                       <para>
+                            <figure id="fig_formRequest">
+                                <title>
+                                    The form request</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/FormRequest.jpg"
+                                                format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>Therefore, the form request will contain three groups:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <guilabel>Request</guilabel>:</para>
+                                <para>The group <guilabel>Request</guilabel> will be assigned to the
+                                        <glossterm linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>request</guilabel>.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Interested person</guilabel>:</para>
+                                <para>This group will be assigned to the <glossterm
+                                        linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>interestedPerson</guilabel>.</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <guilabel>Real estate object</guilabel>:</para>
+                                <para>The group <guilabel>Real estate object</guilabel> will be
+                                    assigned to the <glossterm linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>realEstateObject</guilabel>. This group serves for
+                                    linking an already existing real estate object to a request. Therefore, this group will
+                                    contain only the <guibutton>Search</guibutton> and the
+                                    <guibutton>Clear</guibutton> button.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Foreign field Receptionist</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The group <guilabel>Request</guilabel> will contain the text field
+                            <guilabel>Receptionist</guilabel> displaying the receptionist who has
+                            registered the request. The current table <guilabel>request</guilabel>
+                            has already the foreign key field
+                            <guilabel>receptionist_FKey</guilabel>. We could use this field to
+                            identify the receptionist of course. However, this is an id and an id
+                            doesn't say very much to the user. Therefore, we will define the field
+                            <guilabel>Receptionist</guilabel> as <glossterm
+                                linkend="foreignField">foreign field</glossterm> showing the
+                            fullname of the receptionist. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Foreign field Agent</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The group <guilabel>Interested person</guilabel> will contain the text
+                            field <guilabel>Agent</guilabel> displaying the agent who is responsible
+                            for the person. Like the field <guilabel>Receptionist</guilabel> we will
+                            define this field as <glossterm linkend="foreignField">foreign
+                            field</glossterm> on the fullname of the agent.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Proceed the following steps:</para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the new form
+                                                  <guilabel>request</guilabel>. . </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the group <guilabel>Request</guilabel>
+                                                  into the form..</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the text fields <guilabel>Id</guilabel>
+                                                  and <guilabel>Short description</guilabel> into
+                                                  the form.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the long text field <guilabel>Long
+                                                  description</guilabel> into the form..</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the timestamp field <guilabel>Registration
+                                                  date</guilabel> into the form.</para>
+                                                <para>For this purpose select
+                                                  <guimenuitem>Timestamp</guimenuitem> from the
+                                                  folder <guilabel>DB Elements</guilabel> in the
+                                                  form editor's toolbar.</para>
+                                                <para>Position the timestamp field into the form by
+                                                  pressing the left mouse button.</para>
+                                                <para>DB timestamp fields are always assigned to a
+                                                  table column. Therefore,
+                                                  <trademark>jACOB</trademark> Designer will ask
+                                                  you for the appropriate table column. Select the
+                                                  column <guimenuitem>registrationDate</guimenuitem>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Insert the foreign field
+                                                  <guilabel>Receptionist</guilabel>. </para>
+                                                <para>Change into the
+                                                  <guilabel>Properties</guilabel> view and set the
+                                                  foreign field's <guilabel>Caption</guilabel> to
+                                                  "Receptionist", the <guilabel>Name</guilabel> to
+                                                  "requestReceptionist", the <guilabel>Foreign
+                                                  field to display</guilabel> to "fullname"
+                                                  and the <guilabel>Relationset</guilabel> to "requestRelations".</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the group <guilabel>Interested
+                                                  person</guilabel> assigned to the <glossterm
+                                                  linkend="tableAlias">table alias</glossterm>
+                                                  <guilabel>interestedPerson</guilabel>. Position
+                                                  this group below the group
+                                                  <guilabel>Request</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>8</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Construct this group in the same way as the
+                                                  group <guilabel>Employee</guilabel> in the <link linkend="sect_defineFormEmployee">
+                                                  <guilabel>employee form</guilabel>
+                                                  </link>. However, leave away the checkboxes
+                                                  <guilabel>Agent</guilabel> and
+                                                  <guilabel>Receptionist</guilabel>. Add the
+                                                  foreign field <guilabel>Agent</guilabel> instead.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>9</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Add the group <guilabel>Real estate
+                                                  object</guilabel> below the group
+                                                  <guilabel>Interested person</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>10</para>
+                                            </entry>
+                                            <entry>
+                                                <para> Construct this group in the same way as the
+                                                  group <guilabel>Real estate object</guilabel> in
+                                                  the <link linkend="sect_defineFormRealEstateObject">
+                                                  <guilabel>realEstateObject form</guilabel>
+                                                  </link>. However, remove the GUI buttons
+                                                  <guibutton>New</guibutton> and
+                                                  <guibutton>Change</guibutton>. </para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DefineFormRequest.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>11</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Next Step</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we have defined the forms of happy home:</para>
+                        <para>
+                            <figure id="fig_forms">
+                                <title id="title_fig_forms"> Forms of happyHome</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/DefineForms.jpg"
+                                                format="JPEG" scalefit="1" width="190" depth="124"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                        <para>The next step will be to:</para>
+                        <para>
+                            <xref linkend="sect_defineDomains" endterm="title_defineDomains"/>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect3>

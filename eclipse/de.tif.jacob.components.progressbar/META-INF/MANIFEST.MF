@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Progressbar
+Bundle-SymbolicName: de.tif.jacob.components.progressbar;singleton:=true
+Bundle-Version: 1.0.9
+Bundle-Activator: de.tif.jacob.components.progressbar.impl.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.designer,
+ org.eclipse.gef,
+ de.tif.jacob.common
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: library.jar

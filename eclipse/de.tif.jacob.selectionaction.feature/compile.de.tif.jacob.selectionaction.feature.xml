@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile de.tif.jacob.selectionaction.feature" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../de.tif.jacob.selectionaction.remove_records" target="build.jars"/>
+		<ant antfile="build.xml" dir="../de.tif.jacob.selectionaction.assign_records" target="build.jars"/>
+	</target>
+</project>

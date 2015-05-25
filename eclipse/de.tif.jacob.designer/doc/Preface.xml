@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<chapter id="chap_preface" label="1">
+    <title id="title_chap_preface">Preface</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>What is the <trademark>jACOB</trademark> Designer?</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <trademark>jACOB</trademark> Designer is an
+                            <trademark>Eclipse</trademark> plugin, which extends
+                            <trademark>Eclipse</trademark> by the functionality to develop
+                            <trademark>jACOB</trademark> application designs.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>What is a <trademark>jACOB</trademark> application design?</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A <trademark>jACOB</trademark> application consists of: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>A <trademark>jACOB</trademark> application design,</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <trademark>jACOB</trademark> application hooks and</para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <trademark>jACOB</trademark> resources</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>The <trademark>jACOB</trademark> application design describes:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>The data model of the <trademark>jACOB</trademark> application,</para>
+                            </listitem>
+                            <listitem>
+                                <para>The forms</para>
+                            </listitem>
+                            <listitem><para>etc.</para></listitem>
+                        </itemizedlist>
+                        <para>Describe that jACOB application design can be found in application.jad file....</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</chapter>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_definingTableHooks" label="4">
+    <title id="title_definingTableHooks">Defining table hooks</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Purpose</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>
+                            <glossterm linkend="tableHook">Table hooks</glossterm> contain the data
+                            specific business logic of a <trademark>jACOB</trademark> application.</para>
+                        <para>
+                            <glossterm linkend="tableHook">Table hooks</glossterm> are user-defined
+                            call-back methods which are called by the <trademark>jACOB</trademark>
+                            application server while accessing the database.</para>
+                        <para> They are tied to <glossterm linkend="tableAlias">table
+                            aliases</glossterm> and thereby "hook" data specific business logic to
+                                <glossterm linkend="tableAlias">table aliases</glossterm>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Event handler</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hooks</glossterm> of a
+                                <glossterm linkend="tableAlias">table alias</glossterm> are
+                            combined in an event handler. An event handler class can be generated
+                            for each <glossterm linkend="tableAlias">table alias</glossterm>. </para>
+                        <para> Each generated event handler class contains the following four <glossterm
+                                linkend="tableHook">table hook</glossterm> methods:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>beforeCommitAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterCommitAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterNewAction</para>
+                            </listitem>
+                            <listitem>
+                                <para>afterDeleteAction</para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>Initially these methods are empty. The paragraphs following will
+                            briefly present these <glossterm linkend="tableHook">table
+                            hook</glossterm> methods. For a full description please refer to the
+                            <trademark>jACOB</trademark> API documentation. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>beforeCommitAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm> method
+                            beforeCommitAction is called by the <trademark>jACOB</trademark>
+                            application server during the save process of a data record entered into
+                            a form. This is exactly done before the database action commit is performed.</para>
+                        <para>This method is the right place for validity checks and assigning
+                            default values to the data record.</para>
+                        <para>E.g. for an order event handler you can implement the
+                            beforeCommitAction hook method so that the order status is calculated
+                            and set.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>afterCommitAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm> method
+                            afterCommitAction is called by the <trademark>jACOB</trademark>
+                            application server immediately after it has performed a commit on a
+                            data record.</para>
+                        <para>This hook method can be used to carry out further actions that should
+                            be only performed after a successful commit.</para>
+                        <para>E.g. for an order event handler you can implement the
+                            afterCommitAction hook method so that an order confirmation is sent to
+                            the customer.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>afterNewAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm> method
+                            afterNewAction is called by the <trademark>jACOB</trademark> application
+                            server immedialtely after a new data record has been created and initialized.</para>
+                        <para>This hook method is the right place to perform further application
+                            specific initializations before the new data record will be displayed at
+                            the GUI.</para>
+                        <para>E.g. for an order event handler you can implement the afterNewAction
+                            method in the way that the order's receptionist field is initialized
+                            with the id of the person registering the order.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>afterDeleteAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The <glossterm linkend="tableHook">table hook</glossterm> method
+                            afterDeleteAction is called by the <trademark>jACOB</trademark>
+                            application server immediately after a delete operation has been invoked
+                            on a data record.</para>
+                        <para>This hook method is the right place to carry out further application
+                            specific clear up actions.</para>
+                        <para>E.g. for an order event handler you can implement the
+                            afterDeleteAction method in the way that all positions of the order are deleted.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Editor</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> The event handler class containing the <glossterm
+                                linkend="tableHook">table hook</glossterm> methods can be edited
+                            with the aid of the Java editor:</para>
+                        <para>
+                            <figure id="fig_javaEditor">
+                                <title> Event handler class in the Java editor</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/JavaEditor.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to generate an event handler for a
+                                <glossterm linkend="tableAlias">table alias</glossterm>: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Select the table alias in the
+                                                  <guilabel>Application Outline</guilabel> view.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Choose <guimenuitem>Edit event
+                                                  handler</guimenuitem> from the right mouse
+                                                  button menu.</para>
+                                                <para> Hereupon, <trademark>jACOB</trademark>
+                                                  Designer asks whether it should create an event
+                                                  handler for the table alias.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Confirm with OK.</para>
+                                                <para>Thereafter, <trademark>jACOB</trademark>
+                                                  Designer generates the event handler class and
+                                                  opens it in the Java editor.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Implement your data specific business logic in
+                                                  the table hook methods given. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes to the application design.
+                                                  To do this click on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect1>

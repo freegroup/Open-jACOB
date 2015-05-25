@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of {applicationName} datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+    <Role description="" name="guest"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="bug" historyField="history" name="bug" representativeField="pkey">
+      <Field dbName="pkey" history="false" label="%BUG.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="title" history="true" label="%BUG.TITLE" name="title" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="true" label="%BUG.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="state" history="true" label="%BUG.STATE" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>open</Default>
+          <Value>open</Value>
+          <Value>verified</Value>
+          <Value>closed</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="grade" history="true" label="%BUG.GRADE" name="grade" readonly="false" required="true">
+        <Enumeration>
+          <Default>Bug</Default>
+          <Value>Missing Functionality</Value>
+          <Value>Remark</Value>
+          <Value>Cosmetic</Value>
+          <Value>Crash</Value>
+          <Value>Wrong Behaviour</Value>
+          <Value>Bug</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="reproduceabitlity" history="true" label="%BUG.REPRODUCEABITLITY" name="reproduceabitlity" readonly="false" required="true">
+        <Enumeration>
+          <Default>Once</Default>
+          <Value>Once</Value>
+          <Value>Sometimes</Value>
+          <Value>Often</Value>
+          <Value>Always</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="owner_key" history="true" label="%BUG.OWNER_KEY" name="owner_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="creator_key" history="true" label="%BUG.CREATOR_KEY" name="creator_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="history" history="false" label="%BUG.HISTORY" name="history" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="application_key" history="false" label="%BUG.APPLICATION_KEY" name="application_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="owner_FKey">
+        <Field>owner_key</Field>
+      </ForeignKey>
+      <ForeignKey name="creator_FKey">
+        <Field>creator_key</Field>
+      </ForeignKey>
+      <ForeignKey name="application_FKey">
+        <Field>application_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="account" name="account" representativeField="fullname">
+      <Field dbName="pkey" history="false" label="%ACCOUNT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="%ACCOUNT.LOGINNAME" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="%ACCOUNT.PASSWORD" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="%ACCOUNT.FULLNAME" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="%ACCOUNT.PHOTO" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="email" history="false" label="%ACCOUNT.EMAIL" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="rule" historyField="history" name="rule" representativeField="pkey">
+      <Field dbName="pkey" history="false" label="%RULE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="tablealias" history="true" label="%RULE.TABLEALIAS" name="tablealias" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="action" history="true" label="%RULE.ACTION" name="action" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="rule" history="true" label="%RULE.RULE" name="rule" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="description" history="true" label="%RULE.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="readonly" history="true" label="%RULE.READONLY" name="readonly" readonly="false" required="false">
+        <Boolean/>
+      </Field>
+      <Field dbName="history" history="false" label="%RULE.HISTORY" name="history" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="rule_uniqueKey">
+        <Field>action</Field>
+        <Field>tablealias</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="email" name="email">
+      <Field dbName="pkey" history="false" label="%EMAIL.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="smtp_user" history="false" label="%EMAIL.SMTP_USER" name="smtp_user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_server" history="false" label="%EMAIL.SMTP_SERVER" name="smtp_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_password" history="false" label="%EMAIL.SMTP_PASSWORD" name="smtp_password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_from_address" history="false" label="%EMAIL.SMTP_FROM_ADDRESS" name="smtp_from_address" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="application" name="application" representativeField="name">
+      <Field dbName="pkey" history="false" label="%APPLICATION.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%APPLICATION.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="%APPLICATION.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="bug" table="bug"/>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="rule" table="rule"/>
+    <TableAlias name="owner" table="account"/>
+    <TableAlias name="creator" table="account"/>
+    <TableAlias name="email" table="email"/>
+    <TableAlias name="application" table="application"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="bug" name="bugBrowser" type="inform">
+      <Field label="%BUG.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%BUG.GRADE" name="browserGrade" visible="true">
+        <TableField tableField="grade"/>
+      </Field>
+      <Field label="%BUG.STATE" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="%BUG.TITLE" name="browserTitle" visible="true">
+        <TableField tableField="title"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="%ACCOUNT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ACCOUNT.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%ACCOUNT.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="rule" name="ruleBrowser" type="inform">
+      <Field label="%RULE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%RULE.TABLEALIAS" name="browserTablealias" visible="true">
+        <TableField tableField="tablealias"/>
+      </Field>
+      <Field label="%RULE.ACTION" name="browserAction" visible="true">
+        <TableField tableField="action"/>
+      </Field>
+    </Browser>
+    <Browser alias="owner" name="ownerBrowser" type="inform">
+      <Field label="%ACCOUNT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="creator" name="creatorBrowser" type="inform">
+      <Field label="%ACCOUNT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ACCOUNT.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%ACCOUNT.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="email" name="emailBrowser" type="inform">
+      <Field label="%EMAIL.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="application" name="applicationBrowser" type="inform">
+      <Field label="%APPLICATION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%APPLICATION.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="owner_bug">
+      <OneToMany fromAlias="owner" toAlias="bug" toKey="owner_FKey"/>
+    </Relation>
+    <Relation name="creator_bug">
+      <OneToMany fromAlias="creator" toAlias="bug" toKey="creator_FKey"/>
+    </Relation>
+    <Relation name="application_bug">
+      <OneToMany fromAlias="application" toAlias="bug" toKey="application_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="bugRelationset">
+      <Relation>owner_bug</Relation>
+      <Relation>creator_bug</Relation>
+      <Relation>application_bug</Relation>
+      <Property>
+        <Name>account.x</Name>
+        <Value>312</Value>
+      </Property>
+      <Property>
+        <Name>account.y</Name>
+        <Value>131</Value>
+      </Property>
+      <Property>
+        <Name>bug.x</Name>
+        <Value>330</Value>
+      </Property>
+      <Property>
+        <Name>bug.y</Name>
+        <Value>63</Value>
+      </Property>
+      <Property>
+        <Name>bug.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>account.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>owner.x</Name>
+        <Value>581</Value>
+      </Property>
+      <Property>
+        <Name>owner.y</Name>
+        <Value>412</Value>
+      </Property>
+      <Property>
+        <Name>owner.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>creator.x</Name>
+        <Value>315</Value>
+      </Property>
+      <Property>
+        <Name>creator.y</Name>
+        <Value>413</Value>
+      </Property>
+      <Property>
+        <Name>creator.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>application.x</Name>
+        <Value>57</Value>
+      </Property>
+      <Property>
+        <Name>application.y</Name>
+        <Value>410</Value>
+      </Property>
+      <Property>
+        <Name>application.expanded</Name>
+        <Value>true</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form eventHandler="jacob.event.ui.Bug" label="%FORM.BUG" name="bug">
+      <Group alias="bug" border="false" browser="bugBrowser" label="%GROUP.BUGGROUP" name="bugGroup">
+        <Dimension height="444" width="781" x="5" y="5"/>
+        <GuiElement name="bugGrade" visible="true">
+          <LocalInputField tableField="grade">
+            <ComboBox>
+              <Dimension height="20" width="100" x="395" y="65"/>
+              <Value>Missing Functionality</Value>
+              <Value>Remark</Value>
+              <Value>Cosmetic</Value>
+              <Value>Crash</Value>
+              <Value>Wrong Behaviour</Value>
+              <Value>Bug</Value>
+              <Caption halign="left" label="%BUG.GRADE" valign="top">
+                <Dimension height="20" width="110" x="280" y="65"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugReproduceabitlity" visible="true">
+          <LocalInputField tableField="reproduceabitlity">
+            <ComboBox>
+              <Dimension height="20" width="100" x="395" y="96"/>
+              <Value>Once</Value>
+              <Value>Sometimes</Value>
+              <Value>Often</Value>
+              <Value>Always</Value>
+              <Caption halign="left" label="%BUG.REPRODUCEABITLITY" valign="top">
+                <Dimension height="20" width="110" x="280" y="96"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugGrade3" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="136" x="98" y="65"/>
+              <Value>verified</Value>
+              <Value>closed</Value>
+              <Caption halign="left" label="%BUG.STATE" valign="top">
+                <Dimension height="20" width="76" x="18" y="65"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugApplication2" visible="true">
+          <LocalInputField tableField="title">
+            <TextInput>
+              <Dimension height="20" width="742" x="18" y="193"/>
+              <Caption halign="left" label="%BUG.TITLE" valign="top">
+                <Dimension height="20" width="81" x="18" y="174"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="191" width="742" x="18" y="238"/>
+              <Caption halign="left" label="%BUG.DESCRIPTION" valign="top">
+                <Dimension height="20" width="81" x="18" y="219"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugButton2" visible="true">
+          <Button label="Clear">
+            <Dimension height="20" width="64" x="696" y="96"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="bugButton4" visible="true">
+          <Button label="New">
+            <Dimension height="20" width="64" x="696" y="65"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="bugPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="135" x="98" y="36"/>
+              <Caption halign="left" label="%BUG.PKEY" valign="top">
+                <Dimension height="20" width="75" x="18" y="36"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="64" x="696" y="36"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="bugOwner" visible="true">
+          <ForeignInputField browserToUse="ownerBrowser" filldirection="both" foreignAlias="owner" foreignTableField="fullname" relationToUse="owner_bug" relationset="local">
+            <Dimension height="20" width="136" x="98" y="96"/>
+            <Caption halign="left" label="%OWNER" valign="top">
+              <Dimension height="20" width="75" x="18" y="96"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="bugCreator" visible="true">
+          <ForeignInputField browserToUse="creatorBrowser" filldirection="both" foreignAlias="creator" foreignTableField="fullname" relationToUse="creator_bug" relationset="local">
+            <Dimension height="20" width="135" x="98" y="130"/>
+            <Caption halign="left" label="%CREATOR" valign="top">
+              <Dimension height="20" width="75" x="18" y="130"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="bugHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="20" x="395" y="130"/>
+              <Caption halign="left" label="%BUG.HISTORY" valign="top">
+                <Dimension height="20" width="173" x="414" y="130"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="bugApplication" visible="true">
+          <ForeignInputField browserToUse="applicationBrowser" filldirection="both" foreignAlias="application" foreignTableField="name" relationToUse="application_bug" relationset="local">
+            <Dimension height="20" width="100" x="395" y="28"/>
+            <Caption halign="left" label="%APPLICATION" valign="top">
+              <Dimension height="20" width="70" x="320" y="28"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Account" label="%FORM.ACCOUNT" name="account">
+      <Group alias="account" border="false" browser="accountBrowser" label="%GROUP.ACCOUNTGROUP" name="accountGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="accountClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.account.AccountSearchUpdateRecordButton" name="accountSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.account.AccountDeleteRecordButton" name="accountDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.account.AccountNewRecordButton" name="accountNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="130"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="85" y="80"/>
+              <Caption halign="left" label="%ACCOUNT.LOGINNAME" valign="top">
+                <Dimension height="20" width="70" x="10" y="80"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountFullname" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="200" x="85" y="55"/>
+              <Caption halign="left" label="%ACCOUNT.FULLNAME" valign="top">
+                <Dimension height="20" width="70" x="10" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.account.AccountPassword" name="accountPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="85" y="105"/>
+              <Caption halign="left" label="%ACCOUNT.PASSWORD" valign="top">
+                <Dimension height="20" width="70" x="10" y="105"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="226" width="200" x="330" y="55"/>
+              <Caption halign="left" label="%ACCOUNT.PHOTO" valign="top">
+                <Dimension height="20" width="70" x="330" y="36"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="200" x="85" y="130"/>
+              <Caption halign="left" label="%ACCOUNT.EMAIL" valign="top">
+                <Dimension height="20" width="70" x="10" y="130"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Rule" label="%FORM.RULE" name="rule">
+      <Group alias="rule" border="false" browser="ruleBrowser" label="%GROUP.RULE" name="ruleGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="ruleClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.rule.RuleSearchUpdateRecordButton" name="ruleSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.rule.RuleDeleteRecordButton" name="ruleDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="ruleNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.rule.RuleEditButton" name="ruleEditButton" visible="true">
+          <Button label="Open Designer">
+            <Dimension height="26" width="115" x="520" y="135"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="ruleDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="221" width="496" x="20" y="105"/>
+              <Caption halign="left" label="%RULE.DESCRIPTION" valign="top">
+                <Dimension height="20" width="70" x="20" y="85"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.rule.RuleTablealias" name="ruleTablealias" visible="true">
+          <LocalInputField tableField="tablealias">
+            <TextInput>
+              <Dimension height="20" width="153" x="89" y="30"/>
+              <Caption halign="left" label="%RULE.TABLEALIAS" valign="top">
+                <Dimension height="20" width="65" x="19" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.rule.RuleAction" name="ruleAction" visible="true">
+          <LocalInputField tableField="action">
+            <TextInput>
+              <Dimension height="20" width="176" x="340" y="30"/>
+              <Caption halign="left" label="%RULE.ACTION" valign="top">
+                <Dimension height="20" width="75" x="260" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="ruleReadonly" visible="true">
+          <LocalInputField tableField="readonly">
+            <CheckBox>
+              <Dimension height="16" width="16" x="89" y="57"/>
+              <Caption halign="left" label="%RULE.READONLY" valign="top">
+                <Dimension height="20" width="406" x="110" y="57"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="ruleHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="20" x="340" y="55"/>
+              <Caption halign="left" label="%RULE.HISTORY" valign="top">
+                <Dimension height="20" width="157" x="359" y="55"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Messaging" label="%FORM.EMAIL" name="messaging">
+      <Group alias="email" border="false" browser="emailBrowser" label="%GROUP.EMAIL" name="emailGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailSearchUpdateRecordButton" name="emailSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="81" x="355" y="49"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="emailSmtp_server" visible="true">
+          <LocalInputField tableField="smtp_server">
+            <TextInput>
+              <Dimension height="20" width="200" x="130" y="49"/>
+              <Caption halign="left" label="%EMAIL.SMTP_SERVER" valign="top">
+                <Dimension height="20" width="120" x="5" y="49"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailSmtp_user" name="emailSmtp_user" visible="true">
+          <LocalInputField tableField="smtp_user">
+            <TextInput>
+              <Dimension height="20" width="200" x="130" y="74"/>
+              <Caption halign="left" label="%EMAIL.SMTP_USER" valign="top">
+                <Dimension height="20" width="120" x="5" y="74"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailSmtp_from_address" name="emailSmtp_from_address" visible="true">
+          <LocalInputField tableField="smtp_from_address">
+            <TextInput>
+              <Dimension height="20" width="200" x="130" y="124"/>
+              <Caption halign="left" label="%EMAIL.SMTP_FROM_ADDRESS" valign="top">
+                <Dimension height="20" width="120" x="5" y="124"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="%SMTP_CONFIGURATION" valign="top">
+              <Dimension height="20" width="436" x="5" y="15"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailRecordSelectedButton" name="emailRecordSelectedButton" visible="true">
+          <Button label="%BUTTON_TEST">
+            <Dimension height="20" width="81" x="355" y="74"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailSmtp_password" name="emailSmtp_password" visible="true">
+          <LocalInputField tableField="smtp_password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="130" y="100"/>
+              <Caption halign="left" label="%EMAIL.SMTP_PASSWORD" valign="top">
+                <Dimension height="20" width="120" x="5" y="100"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.AppForm" label="%FORM.APPLICATION" name="appForm">
+      <Group alias="application" border="false" browser="applicationBrowser" label="%GROUP.APPLICATION" name="applicationGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="applicationClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.application.ApplicationSearchUpdateRecordButton" name="applicationSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.application.ApplicationDeleteRecordButton" name="applicationDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.application.ApplicationNewRecordButton" name="applicationNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="applicationName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="223" x="13" y="30"/>
+              <Caption halign="left" label="%APPLICATION.NAME" valign="top">
+                <Dimension height="20" width="223" x="13" y="11"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="applicationDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="231" width="528" x="13" y="80"/>
+              <Caption halign="left" label="%APPLICATION.DESCRIPTION" valign="top">
+                <Dimension height="20" width="207" x="13" y="60"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="tracker" title="%DOMAIN.TRACKER" visible="true">
+      <Form>bug</Form>
+      <Role>user</Role>
+      <Role>admin</Role>
+      <Role>guest</Role>
+    </Domain>
+    <Domain name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>appForm</Form>
+      <Form>account</Form>
+      <Form>rule</Form>
+      <Form>messaging</Form>
+      <Role>admin</Role>
+      <Role>guest</Role>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="{applicationName}" title="{applicationName} Application">
+      <Domain>tracker</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

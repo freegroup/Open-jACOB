@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jACOB Project Configuration Plug-in
+Bundle-SymbolicName: de.tif.jacob.project; singleton:=true
+Bundle-Version: 2.8.3
+Bundle-Activator: de.tif.jacob.project.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.tif.jacob.designer,
+ de.tif.jacob.common
+Eclipse-LazyStart: true
+Bundle-ClassPath: library.jar

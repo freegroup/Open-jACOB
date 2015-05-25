@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension   point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="de.tif.jacob.designer.model.IStyleProviderExtension"
+            objectClass="de.tif.jacob.designer.model.IStyleProvider">
+
+        <action
+              class="de.tif.jacob.properties.copy_style.actions.ConsumeStyleAction"
+              icon="icons/consume_style.png"
+              id="de.tif.jacob.designer.consumeStyleAction"
+              label="Paste Style"
+              menubarPath="style"/>
+      </objectContribution>
+
+
+      <objectContribution
+            id="de.tif.jacob.designer.model.IStyleProviderExtension"
+            objectClass="de.tif.jacob.designer.model.IStyleProvider">
+        <action
+              class="de.tif.jacob.properties.copy_style.actions.CopyStyleAction"
+              icon="icons/copy_style.png"
+              id="de.tif.jacob.designer.copyStyleAction"
+              label="Copy Style"
+              menubarPath="style"/>
+
+        <!--      
+        <visibility>
+            <objectState name="KEY_ALT" value="false"/>
+        </visibility>
+        -->
+      </objectContribution>
+
+
+      <objectContribution
+            id="de.tif.jacob.designer.model.IStyleProviderExtension"
+            objectClass="de.tif.jacob.designer.model.IStyleProvider">
+        <action
+              class="de.tif.jacob.properties.copy_style.actions.CopyExcStyleAction"
+              icon="icons/copy_style.png"
+              id="de.tif.jacob.designer.copyStyleAction"
+              label="Copy Style and Position"
+              menubarPath="style"/>
+
+<!--              
+        <visibility>
+            <objectState name="KEY_ALT" value="true"/>
+        </visibility>
+-->
+      </objectContribution>
+   </extension>
+
+</plugin>

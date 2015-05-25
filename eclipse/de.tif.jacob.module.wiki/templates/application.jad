@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="module" engineVersion="2.7" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{modulename}DataSource">
+      <Desc></Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="administration"/>
+  </Roles>
+  <Tables>
+  
+    <!-- The core wiki table -->
+    <Table datasource="{modulename}DataSource" dbName="{modulename}" name="{modulename}">
+      <Field dbName="pkey" history="false" label="%{MODULENAME}.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="wikitext" history="false" label="%{MODULENAME}.WIKITEXT" name="wikitext" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%{MODULENAME}.CREATE_DATE" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="link_name" history="false" label="%{MODULENAME}.LINK_NAME" name="link_name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="comment" history="false" label="%{MODULENAME}.COMMENT" name="comment" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    
+    <!-- The links between the different wiki pages -->
+    <Table datasource="{modulename}DataSource" dbName="{modulename}_link" name="{modulename}_link">
+      <Field dbName="pkey" history="false" label="%{MODULENAME}_LINK.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="source" history="false" label="%{MODULENAME}_LINK.SOURCE" name="source" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="target" history="false" label="%{MODULENAME}_LINK.TARGET" name="target" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="page_linkUnique">
+        <Field>target</Field>
+        <Field>source</Field>
+      </UniqueIndex>
+    </Table>
+    
+    <!-- used images in the wiki -->
+    <Table datasource="{modulename}DataSource" dbName="{modulename}_image" name="{modulename}_image">
+      <Field dbName="pkey" history="false" label="%{MODULENAME}_IMAGE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%{MODULENAME}_IMAGE.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="image" history="false" label="%{MODULENAME}_IMAGE.IMAGE" name="image" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    
+  </Tables>
+  <TableAliases>
+    <TableAlias name="{modulename}"       table="{modulename}"/>
+    <TableAlias name="{modulename}_link"  table="{modulename}_link"/>
+    <TableAlias name="{modulename}_image" table="{modulename}_image"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="{modulename}" name="{modulename}Browser" type="inform">
+      <Field label="%{MODULENAME}.PKEY" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%{MODULENAME}.LINK_NAME" name="browserLink_name" visible="false">
+        <TableField sortOrder="ascending" tableField="link_name"/>
+      </Field>
+      <Field label="%{MODULENAME}.CREATE_DATE" name="browserCreate_date" visible="true">
+        <TableField sortOrder="descending" tableField="create_date"/>
+      </Field>
+      <Field label="%{MODULENAME}.COMMENT" name="browserComment" visible="true">
+        <TableField tableField="comment"/>
+      </Field>
+    </Browser>
+    <Browser alias="{modulename}_link" name="{modulename}_linkBrowser" type="inform">
+      <Field label="%{MODULENAME}_LINK.PKEY" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%{MODULENAME}_LINK.WIKI_PAGE" name="browserWiki_page" visible="true">
+        <TableField tableField="target"/>
+      </Field>
+      <Field label="%{MODULENAME}_LINK.NAME" name="browserName" visible="true">
+        <TableField tableField="source"/>
+      </Field>
+    </Browser>
+    <Browser alias="{modulename}_image" name="{modulename}_imageBrowser" type="inform">
+      <Field label="%{MODULENAME}_IMAGE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+  </Relations>
+  <Relationsets>
+  </Relationsets>
+  <Forms>
+    <HtmlForm label="%FORM.{MODULENAME}" name="{modulename}">
+      <Group alias="{modulename}" browser="{modulename}Browser" eventHandler="jacob.event.ui.{modulename}.{Modulename}Group" label="unused" name="{modulename}Group"/>
+    </HtmlForm>
+  </Forms>
+  <Domains>
+    <Domain name="unused" title="unused" visible="true">
+      <Form>{modulename}</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="module" title="{Modulename} Module">
+      <Domain>unused</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

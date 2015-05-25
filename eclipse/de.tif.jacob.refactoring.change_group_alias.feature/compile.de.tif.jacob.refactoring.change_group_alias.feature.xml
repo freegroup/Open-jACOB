@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile de.tif.jacob.refactoring.change_group_alias.feature" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../de.tif.jacob.refactoring.change_group_alias" target="build.jars"/>
+	</target>
+</project>

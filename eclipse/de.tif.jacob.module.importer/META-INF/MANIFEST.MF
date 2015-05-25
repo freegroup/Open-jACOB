@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: dbTube (Excel Importer)
+Bundle-SymbolicName: de.tif.jacob.module.importer;singleton:=true
+Bundle-Version: 1.0.8
+Bundle-Activator: de.tif.jacob.module.importer.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.common,
+ de.tif.jacob.module,
+ de.tif.jacob.designer
+Eclipse-LazyStart: true
+Bundle-ClassPath: library.jar

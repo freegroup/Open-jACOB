@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/activation.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/birt-oda.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/chart-engine.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/core.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/dte.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/engine.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/flute.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/imap.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/jacobBase.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/mail.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/mailapi.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/oda.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/odaconsumer-helper.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/pop3.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/sac.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/smtp.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/lib/jacobRule.jar"/>
+	<classpathentry kind="lib" path="/home/andherz/workspace/de.tif.jacob.projectbuilder/templates/lib/build/commons-io-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

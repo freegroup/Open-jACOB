@@ -1,0 +1,1121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{applicationName}" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{applicationName}DataSource">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+    <DataSource name="newModel">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="user"/>
+    <Role description="" name="admin"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{applicationName}DataSource" dbName="email" name="email">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="subject" history="false" label="Subject" name="subject" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="body" history="false" label="Body" name="body" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="from" history="false" label="From" name="from" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="folder" history="true" label="Folder" name="folder" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="msgId" history="false" label="MsgId" name="msgId" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="senddate" history="false" label="Senddate" name="senddate" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="to" history="false" label="To" name="to" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="answered" history="false" label="Answered" name="answered" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="deleted" history="false" label="Deleted" name="deleted" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="draft" history="false" label="Draft" name="draft" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="flagged" history="false" label="Flagged" name="flagged" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="recent" history="false" label="Recent" name="recent" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="seen" history="false" label="Seen" name="seen" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="folder_FKey">
+        <Field>folder</Field>
+        <Field>mandator_id</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="configuration" name="configuration">
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="imap_server" history="false" label="Imap_server" name="imap_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="user" history="false" label="User" name="user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_server" history="false" label="Smtp_server" name="smtp_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="folder_out" history="false" label="Folder_out" name="folder_out" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="folder_trash" history="false" label="Folder_trash" name="folder_trash" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="folder_spam" history="false" label="Folder_spam" name="folder_spam" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="save_incoming_emailaddress" history="false" label="Save_incoming_emailaddress" name="save_incoming_emailaddress" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="save_outgoing_emailaddress" history="false" label="Save_outgoing_emailaddress" name="save_outgoing_emailaddress" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="signature" history="false" label="Signature" name="signature" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>mandator_id</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="folder" name="folder">
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="url" history="false" label="Url" name="url" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="person_key" history="false" label="Person_key" name="person_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>name</Field>
+        <Field>mandator_id</Field>
+      </PrimaryKey>
+      <ForeignKey name="person_FKey">
+        <Field>person_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="attachment" name="attachment">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="docfile" history="false" label="Docfile" name="docfile" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="email_key" history="false" label="Email_key" name="email_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="email_FKey">
+        <Field>email_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="contact" name="contact">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="lastname" history="false" label="Lastname" name="lastname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="firstname" history="false" label="Firstname" name="firstname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="person_key" history="false" label="Person_key" name="person_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="type" history="false" label="Type" name="type" readonly="false" required="true">
+        <Enumeration>
+          <Value>privat</Value>
+          <Value>common</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="image" history="false" label="Image" name="image" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="work_email" history="false" label="Work_email" name="work_email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="work_phone" history="false" label="Work_phone" name="work_phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="work_fax" history="false" label="Work_fax" name="work_fax" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="privat_email" history="false" label="Privat_email" name="privat_email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="private_phone" history="false" label="Private_phone" name="private_phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="private_fax" history="false" label="Private_fax" name="private_fax" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="person_FKey">
+        <Field>person_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="{applicationName}DataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>must be a valid email address</Value>
+        </Property>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mandator_id" history="false" label="Mandator_id" name="mandator_id" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="email" table="email">
+      <Condition>email.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="configuration" table="configuration">
+      <Condition>configuration.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="folder" table="folder">
+      <Condition>folder.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="attachment" table="attachment">
+      <Condition>attachment.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="contact" table="contact">
+      <Condition>contact.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="person" table="person">
+      <Condition/>
+    </TableAlias>
+    <TableAlias name="account" table="person">
+      <Condition>account.loginname!='admin'</Condition>
+    </TableAlias>
+    <TableAlias name="privatContact" table="contact">
+      <Condition>privatContact.type='privat' AND privatContact.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="commonContact" table="contact">
+      <Condition>commonContact.type='common' AND commonContact.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+    <TableAlias name="send_email" table="email">
+      <Condition>send_email.mandator_id='{MANDATORID}'</Condition>
+    </TableAlias>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="email" name="emailBrowser" type="inform">
+      <Field label="Seen" name="browserSeen" visible="true">
+        <TableField tableField="seen"/>
+      </Field>
+      <Field label="Senddate" name="browserSenddate" visible="true">
+        <TableField sortOrder="descending" tableField="senddate"/>
+      </Field>
+      <Field label="From" name="browserFrom" visible="true">
+        <TableField tableField="from"/>
+      </Field>
+      <Field label="Subject" name="browserSubject" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+    </Browser>
+    <Browser alias="configuration" name="configurationBrowser" type="inform">
+      <Field label="JacobUserId" name="browserJacobUserId" visible="true">
+        <TableField tableField="mandator_id"/>
+      </Field>
+      <Field label="Server" name="browserServer" visible="true">
+        <TableField tableField="imap_server"/>
+      </Field>
+      <Field label="User" name="browserUser" visible="true">
+        <TableField tableField="user"/>
+      </Field>
+    </Browser>
+    <Browser alias="folder" name="folderBrowser" type="inform">
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Url" name="browserUrl" visible="true">
+        <TableField tableField="url"/>
+      </Field>
+    </Browser>
+    <Browser alias="attachment" name="attachmentBrowser" type="inform">
+      <Field label="Datei" name="browserDocfile" visible="true">
+        <TableField tableField="docfile"/>
+      </Field>
+    </Browser>
+    <Browser alias="contact" name="contactBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="privatContact" name="privatContactBrowser" type="inform">
+      <Field label="Last" name="browserLastname" visible="true">
+        <TableField sortOrder="ascending" tableField="lastname"/>
+      </Field>
+      <Field label="First" name="browserFirstname" visible="true">
+        <TableField sortOrder="ascending" tableField="firstname"/>
+      </Field>
+      <Field label="Privat Mail" name="browserPrivat_email" visible="true">
+        <TableField tableField="privat_email"/>
+      </Field>
+    </Browser>
+    <Browser alias="commonContact" name="commonContactBrowser" type="inform">
+      <Field label="Last" name="browserLastname" visible="true">
+        <TableField sortOrder="ascending" tableField="lastname"/>
+      </Field>
+      <Field label="First" name="browserFirstname" visible="true">
+        <TableField sortOrder="ascending" tableField="firstname"/>
+      </Field>
+      <Field label="Privat Mail" name="browserPrivat_email" visible="true">
+        <TableField tableField="privat_email"/>
+      </Field>
+    </Browser>
+    <Browser alias="send_email" name="email_sentBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField sortOrder="ascending" tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="folder_email">
+      <OneToMany fromAlias="folder" toAlias="email" toKey="folder_FKey"/>
+    </Relation>
+    <Relation name="email_attachment">
+      <OneToMany fromAlias="email" toAlias="attachment" toKey="email_FKey"/>
+    </Relation>
+    <Relation name="person_contact">
+      <OneToMany fromAlias="person" toAlias="contact" toKey="person_FKey"/>
+    </Relation>
+    <Relation name="person_folder">
+      <OneToMany fromAlias="person" toAlias="folder" toKey="person_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="emailRelationset">
+      <Relation>folder_email</Relation>
+      <Relation>email_attachment</Relation>
+      <Relation>person_contact</Relation>
+      <Relation>person_folder</Relation>
+      <Property>
+        <Name>email.x</Name>
+        <Value>143</Value>
+      </Property>
+      <Property>
+        <Name>email.y</Name>
+        <Value>420</Value>
+      </Property>
+      <Property>
+        <Name>folder.x</Name>
+        <Value>124</Value>
+      </Property>
+      <Property>
+        <Name>folder.y</Name>
+        <Value>126</Value>
+      </Property>
+      <Property>
+        <Name>email.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>folder.expanded</Name>
+        <Value>true</Value>
+      </Property>
+      <Property>
+        <Name>attachment.x</Name>
+        <Value>123</Value>
+      </Property>
+      <Property>
+        <Name>attachment.y</Name>
+        <Value>678</Value>
+      </Property>
+      <Property>
+        <Name>configuration.x</Name>
+        <Value>95</Value>
+      </Property>
+      <Property>
+        <Name>configuration.y</Name>
+        <Value>28</Value>
+      </Property>
+      <Property>
+        <Name>contact.x</Name>
+        <Value>528</Value>
+      </Property>
+      <Property>
+        <Name>contact.y</Name>
+        <Value>413</Value>
+      </Property>
+      <Property>
+        <Name>person.x</Name>
+        <Value>528</Value>
+      </Property>
+      <Property>
+        <Name>person.y</Name>
+        <Value>223</Value>
+      </Property>
+      <Property>
+        <Name>configuration.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>person.expanded</Name>
+        <Value>true</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="Email" name="email">
+      <Group alias="email" border="false" browser="emailBrowser" eventHandler="jacob.event.ui.email.EmailGroup" label="Email" name="emailGroup">
+        <Dimension height="521" width="721" x="5" y="5"/>
+        <GuiElement name="emailFrom" visible="true">
+          <Label tableField="from">
+            <Caption halign="left" label="&lt;unset>" valign="top">
+              <Dimension height="31" width="387" x="99" y="45"/>
+              <Font family="sans-serif" size="12" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="emailSubject" visible="true">
+          <Label tableField="subject">
+            <Caption halign="left" label="&lt;unset>" valign="top">
+              <Dimension height="21" width="381" x="99" y="100"/>
+              <Font family="sans-serif" size="8" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="left" label="From:" valign="top">
+              <Dimension height="31" width="102" x="-2" y="45"/>
+              <Font family="sans-serif" size="12" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="left" label="Subject:" valign="top">
+              <Dimension height="21" width="102" x="-2" y="100"/>
+              <Font family="sans-serif" size="8" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="left" label="Date:" valign="top">
+              <Dimension height="26" width="102" x="-2" y="75"/>
+              <Font family="sans-serif" size="8" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="emailSenddate" visible="true">
+          <Label tableField="senddate">
+            <Caption halign="left" label="&lt;unset>" valign="top">
+              <Dimension height="26" width="387" x="99" y="75"/>
+              <Font family="sans-serif" size="8" style="italic" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="emailBody" visible="true">
+          <LocalInputField tableField="body">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="396" width="703" x="-2" y="125"/>
+              <Caption halign="left" label="Body" valign="top">
+                <Dimension height="20" width="70" x="-77" y="125"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailListbox" name="emailListbox" visible="true">
+          <TableListBox displayField="docfile" tableAlias="attachment">
+            <Dimension height="61" width="216" x="485" y="60"/>
+            <Caption halign="left" label="Attachments" valign="top">
+              <Dimension height="20" width="146" x="485" y="41"/>
+              <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+            </Caption>
+          </TableListBox>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.SendButton" name="SendButton" visible="true">
+          <Button label="New">
+            <Dimension height="21" width="121" x="-2" y="0"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.ReplyButton" name="ReplyButton" visible="true">
+          <Button label="Reply">
+            <Dimension height="21" width="121" x="238" y="0"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.DeleteMailButton" name="DeleteMailButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="21" width="121" x="118" y="0"/>
+            <Action>
+              <DeleteRecord needUserConfirmation="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.ForwardButton" name="ForwardButton" visible="true">
+          <Button label="Forward">
+            <Dimension height="21" width="121" x="358" y="0"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailRecordMoveToButton" name="emailRecordMoveToButton" visible="true">
+          <Button label="Move to..">
+            <Dimension height="21" width="121" x="478" y="0"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmptyTrashButton" name="emptyTrashButton" visible="true">
+          <Button label="Empty Trash">
+            <Dimension height="21" width="121" x="598" y="0"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry eventHandler="jacob.event.ui.email.DeleteWithAttachmentContextMenu" label="%BUTTON_COMMON_DELETE" name="DeleteWithAttachmentContextMenu" visible="true">
+          <Action>
+            <DeleteRecord needUserConfirmation="false"/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Identity" label="eMail Identity" name="identity">
+      <Group alias="configuration" border="false" browser="configurationBrowser" eventHandler="jacob.event.ui.configuration.ConfigurationGroup" label="eMail Identity" name="configurationGroup">
+        <Dimension height="196" width="576" x="5" y="20"/>
+        <GuiElement name="configurationButtonUpdateRecord" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="495" y="5"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="configurationServer" tabIndex="1" visible="true">
+          <LocalInputField tableField="imap_server">
+            <TextInput>
+              <Dimension height="20" width="296" x="140" y="5"/>
+              <Caption halign="left" label="Incoming mail (IMAP)" valign="top">
+                <Dimension height="20" width="130" x="5" y="5"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationUser" tabIndex="3" visible="true">
+          <LocalInputField tableField="user">
+            <TextInput>
+              <Dimension height="20" width="296" x="140" y="80"/>
+              <Caption halign="left" label="Account Name" valign="top">
+                <Dimension height="20" width="130" x="5" y="80"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationPassword" tabIndex="4" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="296" x="140" y="110"/>
+              <Caption halign="left" label="Password" valign="top">
+                <Dimension height="20" width="130" x="5" y="110"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationSmtp_server" tabIndex="2" visible="true">
+          <LocalInputField tableField="smtp_server">
+            <TextInput>
+              <Dimension height="21" width="296" x="140" y="33"/>
+              <Caption halign="left" label="Outgoing mail (SMTP)" valign="top">
+                <Dimension height="21" width="130" x="5" y="33"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.PrivatContact" label="Privat" name="privatContact">
+      <Group alias="privatContact" border="true" browser="privatContactBrowser" label="Privat Contact" name="privatContactGroup">
+        <Dimension height="261" width="601" x="5" y="5"/>
+        <GuiElement name="privatContactButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="520" y="50"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="privatContactButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="520" y="75"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="520" y="25"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="privatContactLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="220" x="95" y="50"/>
+              <Caption halign="left" label="Last Name" valign="top">
+                <Dimension height="20" width="70" x="20" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="privatContactFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="220" x="95" y="25"/>
+              <Caption halign="left" label="First Name" valign="top">
+                <Dimension height="20" width="70" x="20" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="privatContactImage" visible="true">
+          <LocalInputField tableField="image">
+            <Image inForm="true">
+              <Dimension height="206" width="180" x="325" y="25"/>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="150" width="295" x="20" y="80"/>
+            <Pane alias="privatContact" browser="privatContactBrowser" label="Privat" name="privatContactGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="privatContactPrivate_fax" visible="true">
+                <LocalInputField tableField="private_fax">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="50"/>
+                    <Caption halign="left" label="Fax" valign="top">
+                      <Dimension height="20" width="50" x="10" y="50"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="privatContactPrivate_phone" visible="true">
+                <LocalInputField tableField="private_phone">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="75"/>
+                    <Caption halign="left" label="Phone" valign="top">
+                      <Dimension height="20" width="50" x="10" y="75"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="privatContactPrivat_email" visible="true">
+                <LocalInputField tableField="privat_email">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="25"/>
+                    <Caption halign="left" label="eMail" valign="top">
+                      <Dimension height="20" width="50" x="10" y="25"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.privatContact.PrivatContactSendPrivatMailButton" name="privatContactSendPrivatMailButton" visible="true">
+                <Button label="...">
+                  <Dimension height="20" width="36" x="250" y="25"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+            <Pane alias="privatContact" browser="privatContactBrowser" label="Work" name="privatContactGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="privatContactWork_fax" visible="true">
+                <LocalInputField tableField="work_fax">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="50"/>
+                    <Caption halign="left" label="Fax" valign="top">
+                      <Dimension height="20" width="50" x="10" y="50"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="privatContactWork_phone" visible="true">
+                <LocalInputField tableField="work_phone">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="75"/>
+                    <Caption halign="left" label="Phone" valign="top">
+                      <Dimension height="20" width="50" x="10" y="75"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="privatContactWork_email" visible="true">
+                <LocalInputField tableField="work_email">
+                  <TextInput>
+                    <Dimension height="20" width="186" x="65" y="25"/>
+                    <Caption halign="left" label="eMail" valign="top">
+                      <Dimension height="20" width="50" x="10" y="25"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.privatContact.PrivatContactSendWorkMailButton" name="privatContactSendWorkMailButton" visible="true">
+                <Button label="...">
+                  <Dimension height="20" width="36" x="250" y="25"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="21" width="70" x="520" y="100"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry eventHandler="jacob.event.ui.privatContact.ContactImportVCard" label="Import vCard" name="contactImportVCard" visible="true">
+          <Action>
+            <Generic/>
+          </Action>
+        </ContextMenuEntry>
+        <ContextMenuEntry eventHandler="jacob.event.ui.privatContact.ContactExportVCard" label="Export vCard" name="contactExportVCard" visible="true">
+          <Action>
+            <RecordSelected/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.CommonContact" label="Common" name="commonContact">
+      <Group alias="commonContact" browser="commonContactBrowser" label="Common Contact" name="commonContactGroup">
+        <Dimension height="250" width="600" x="5" y="5"/>
+        <GuiElement name="commonContactButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="520" y="50"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="commonContactButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="520" y="75"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="520" y="25"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="commonContactFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="220" x="95" y="25"/>
+              <Caption halign="left" label="First Name" valign="top">
+                <Dimension height="20" width="70" x="20" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="commonContactLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="220" x="95" y="50"/>
+              <Caption halign="left" label="Last Name" valign="top">
+                <Dimension height="20" width="70" x="20" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="150" width="295" x="20" y="80"/>
+            <Pane alias="commonContact" browser="commonContactBrowser" label="Privat" name="commonContactGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="commonContactPrivate_fax" visible="true">
+                <LocalInputField tableField="private_fax">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="50"/>
+                    <Caption halign="left" label="Fax" valign="top">
+                      <Dimension height="20" width="70" x="25" y="50"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="commonContactPrivate_phone" visible="true">
+                <LocalInputField tableField="private_phone">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="75"/>
+                    <Caption halign="left" label="Phone" valign="top">
+                      <Dimension height="20" width="70" x="25" y="75"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="commonContactPrivat_email" visible="true">
+                <LocalInputField tableField="privat_email">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="25"/>
+                    <Caption halign="left" label="eMail" valign="top">
+                      <Dimension height="20" width="70" x="25" y="25"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="commonContact" browser="commonContactBrowser" label="Work" name="commonContactGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="commonContactWork_fax" visible="true">
+                <LocalInputField tableField="work_fax">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="50"/>
+                    <Caption halign="left" label="Fax" valign="top">
+                      <Dimension height="20" width="70" x="25" y="50"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="commonContactWork_phone" visible="true">
+                <LocalInputField tableField="work_phone">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="75"/>
+                    <Caption halign="left" label="Phone" valign="top">
+                      <Dimension height="20" width="70" x="25" y="75"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="commonContactWork_email" visible="true">
+                <LocalInputField tableField="work_email">
+                  <TextInput>
+                    <Dimension height="20" width="175" x="100" y="25"/>
+                    <Caption halign="left" label="eMail" valign="top">
+                      <Dimension height="20" width="70" x="25" y="25"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="commonContactImage" visible="true">
+          <LocalInputField tableField="image">
+            <Image inForm="true">
+              <Dimension height="205" width="180" x="325" y="25"/>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="21" width="70" x="520" y="100"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry eventHandler="jacob.event.ui.commonContact.ContactImportVCard" label="Import vCard" name="contactImportVCard" visible="true">
+          <Action>
+            <Generic/>
+          </Action>
+        </ContextMenuEntry>
+        <ContextMenuEntry eventHandler="jacob.event.ui.commonContact.ContactExportVCard" label="Export vCard" name="contactExportVCard" visible="true">
+          <Action>
+            <RecordSelected/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form label="User accounts" name="user_account">
+      <Group alias="account" border="false" browser="accountBrowser" label="User Account" name="accountGroup">
+        <Dimension height="171" width="601" x="5" y="5"/>
+        <GuiElement name="accountButtonClearGroup" tabIndex="5" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="81" x="165" y="6"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountButtonNewRecord" tabIndex="6" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="81" x="5" y="6"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountButtonSearch" tabIndex="4" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="81" x="85" y="6"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="accountFullname" tabIndex="2" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="241" x="85" y="75"/>
+              <Caption halign="left" label="Full Name" valign="top">
+                <Dimension height="20" width="70" x="10" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountLoginname" tabIndex="1" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="241" x="85" y="45"/>
+              <Caption halign="left" label="Login Name" valign="top">
+                <Dimension height="20" width="70" x="10" y="45"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="accountPassword" tabIndex="3" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="241" x="85" y="105"/>
+              <Caption halign="left" label="Password" valign="top">
+                <Dimension height="20" width="70" x="10" y="105"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="left" label="( Must be a valid eMail address )" valign="top">
+              <Dimension height="20" width="216" x="335" y="45"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="accountButtonDelete" tabIndex="7" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="81" x="245" y="6"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Behaviour" label="Behaviour" name="behaviour">
+      <Group alias="configuration" border="false" browser="configurationBrowser" eventHandler="jacob.event.ui.configuration.BehaviourGroup" label="Configuration" name="behaviourGroup">
+        <Dimension height="401" width="621" x="5" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.configuration.ConfigurationFolder_spam" name="configurationFolder_spam" tabIndex="2" visible="true">
+          <LocalInputField tableField="folder_spam">
+            <TextInput>
+              <Dimension height="20" width="171" x="175" y="40"/>
+              <Caption halign="left" label="Move SPAM Email to" valign="top">
+                <Dimension height="20" width="165" x="5" y="40"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.configuration.ConfigurationFolder_trash" name="configurationFolder_trash" tabIndex="3" visible="true">
+          <LocalInputField tableField="folder_trash">
+            <TextInput>
+              <Dimension height="20" width="171" x="175" y="70"/>
+              <Caption halign="left" label="Move Deleted Emails to" valign="top">
+                <Dimension height="20" width="165" x="5" y="70"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.configuration.ConfigurationFolder_out" name="configurationFolder_out" tabIndex="1" visible="true">
+          <LocalInputField tableField="folder_out">
+            <TextInput>
+              <Dimension height="20" width="171" x="175" y="10"/>
+              <Caption halign="left" label="Save a Copy of Sent Emails in" valign="top">
+                <Dimension height="20" width="165" x="5" y="10"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" tabIndex="6" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="66" x="375" y="10"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="configurationSave_outgoing_emailaddress" tabIndex="5" visible="true">
+          <LocalInputField tableField="save_outgoing_emailaddress">
+            <CheckBox>
+              <Dimension height="16" width="16" x="175" y="145"/>
+              <Caption halign="left" label="Add Outgoing to Address Book" valign="top">
+                <Dimension height="16" width="165" x="196" y="145"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="configurationSave_incoming_emailaddress" tabIndex="4" visible="true">
+          <LocalInputField tableField="save_incoming_emailaddress">
+            <CheckBox>
+              <Dimension height="16" width="16" x="175" y="122"/>
+              <Caption halign="left" label="Add Incoming to Address Book" valign="top">
+                <Dimension height="16" width="165" x="196" y="122"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Label>
+            <Caption halign="left" label="Email Address Handling" valign="top">
+              <Dimension height="16" width="165" x="5" y="122"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="configurationSignature" visible="true">
+          <LocalInputField tableField="signature">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="181" width="341" x="5" y="180"/>
+              <Caption halign="left" label="Signature" valign="top">
+                <Dimension height="20" width="165" x="5" y="161"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain eventHandler="jacob.event.ui.EMail" name="eMail" title="EMail" visible="true">
+      <Form>email</Form>
+      <Role>user</Role>
+    </Domain>
+    <Domain eventHandler="jacob.event.ui.Configuration" name="configuration" title="Configuration" visible="true">
+      <Form>identity</Form>
+      <Form>behaviour</Form>
+      <Role>user</Role>
+    </Domain>
+    <Domain eventHandler="jacob.event.ui.Contact" name="Contact" title="Contact" visible="true">
+      <Form>privatContact</Form>
+      <Form>commonContact</Form>
+      <Role>user</Role>
+    </Domain>
+    <Domain name="administration" title="Administration" visible="true">
+      <Form>user_account</Form>
+      <Role>admin</Role>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="{applicationName}" title="email Application">
+      <Domain>eMail</Domain>
+      <Domain>Contact</Domain>
+      <Domain>configuration</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

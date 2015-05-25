@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="{modulename}" engineVersion="2.8.5" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="{modulename}DataSource" reconfigure="full">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+  </Roles>
+  <Tables>
+    <Table datasource="{modulename}DataSource" dbName="{modulename}_definition" name="{modulename}_definition">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="xml" history="false" label="Xml" name="xml" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="{modulename}DataSource" dbName="{modulename}_files" name="{modulename}_files">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="excel" history="false" label="Excel" name="excel" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="log" history="false" label="Log" name="log" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="import_date" history="false" label="Import_date" name="import_date" readonly="false" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="false">
+        <Enumeration>
+          <Value>uploaded</Value>
+          <Value>tested</Value>
+          <Value>imported</Value>
+          <Label>uploaded</Label>
+          <Label>tested</Label>
+          <Label>imported</Label>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="{modulename}_definition" table="{modulename}_definition"/>
+    <TableAlias name="{modulename}_files" table="{modulename}_files"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="{modulename}_definition" name="{modulename}_definitionBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="{modulename}_files" name="{modulename}_filesBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+  </Relations>
+  <Relationsets>
+  </Relationsets>
+  <Forms>
+    <Form label="{Modulename} Import" name="{modulename}_importer">
+      <Group alias="{modulename}_files" border="false" browser="{modulename}_filesBrowser" label="{Modulename}_files" name="{modulename}_filesGroup">
+        <Dimension height="506" width="650" x="5" y="105"/>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}_files.UploadButton" name="uploadButton" visible="true">
+          <Button label="Upload">
+            <Dimension height="20" width="70" x="49" y="5"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}_files.TestButton" name="testButton" visible="true">
+          <Button label="Test">
+            <Dimension height="20" width="70" x="49" y="45"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}_files.ImportButton" name="importButton" visible="true">
+          <Button label="Import">
+            <Dimension height="20" width="70" x="49" y="90"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="protocolArea" visible="true">
+          <LocalInputField tableField="log">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="246" width="571" x="19" y="170"/>
+              <Caption halign="left" label="Log" valign="top">
+                <Dimension height="20" width="70" x="19" y="150"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="{modulename}_filesClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="520" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+      <Group alias="{modulename}_definition" border="false" browser="{modulename}_definitionBrowser" label="{Modulename}" name="{modulename}_definitionGroup">
+        <Dimension height="91" width="650" x="5" y="5"/>
+        <GuiElement name="{modulename}_definitionSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="490" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="{modulename}_definitionClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="{modulename}_definitionName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="15" y="30"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="15" y="11"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <HtmlForm label="{Modulename} Editor" name="{modulename}_editor">
+      <Group alias="{modulename}_definition" browser="{modulename}_definitionBrowser" eventHandler="jacob.event.ui.{modulename}_definition.Draw2DEditorGroup" label="&lt;unused>" name="draw2dEditorGroup"/>
+    </HtmlForm>
+  </Forms>
+  <Domains>
+    <Domain name="unused" title="unused" visible="true">
+      <Form>{modulename}_editor</Form>
+      <Form>{modulename}_importer</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="{modulename}" title="{Modulename} Application">
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

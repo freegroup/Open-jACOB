@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="feature_export">
+	<target name="feature_export">
+		<pde.exportFeatures features="de.tif.jacob.feature" destination="J:\de.tif.jacob.feature\dist" filename="jacob.feature.zip" exportType="zip" exportSource="false"/>
+	</target>
+</project>

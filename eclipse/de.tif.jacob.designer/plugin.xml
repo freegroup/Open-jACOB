@@ -1,0 +1,1468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="jacobUiPluginComponent" name="de.tif.jacob.components.plugin" schema="schema/jacobUiPluginComponent.exsd"/>
+   <extension-point id="jacobObjectModelPropertyPlugin" name="de.tif.jacob.properties.plugin" schema="schema/jacobObjectModelPropertyPlugin.exsd"/>
+   <extension-point id="jacobSelectionActionPlugin" name="de.tif.jacob.selectionaction.plugin" schema="schema/jacobSelectionActionPlugin.exsd"/>
+   <extension point="org.eclipse.ui.editors">
+
+      <editor
+            name="I18NEditor"
+            icon="icons/editor_i18n.png"
+            class="de.tif.jacob.designer.editor.i18n.I18NEditor"
+            id="de.tif.jacob.designer.editor.i18n.I18NEditor">
+      </editor>
+      
+      <editor
+            name="JacobDomainEditor"
+            icon="icons/editor_form.png"
+            class="de.tif.jacob.designer.editor.domain.JacobDomainEditor"
+            id="de.tif.jacob.designer.editor.domain.domaineditor">
+      </editor>
+      
+      <editor
+            name="SelectionActionEditor"
+            icon="icons/editor_form.png"
+            class="de.tif.jacob.designer.editor.selectionaction.SelectionActionEditor"
+            id="de.tif.jacob.designer.editor.selectionaction.SelectionActionEditor">
+      </editor>
+      
+      <editor
+            name="JacobAliasEditor"
+            icon="icons/editor_alias.png"
+            class="de.tif.jacob.designer.editor.alias.JacobAliasEditor"
+            id="de.tif.jacob.designer.editor.alias.aliaseditor">
+      </editor>
+      
+      <editor
+            name="JacobRoleEditor"
+            icon="icons/editor_userrole.gif"
+            class="de.tif.jacob.designer.editor.userrole.RoleEditor"
+            id="de.tif.jacob.designer.editor.userrole.userroleeditor">
+      </editor>
+      
+      <editor
+            name="JacobFormEditor"
+            icon="icons/editor_form.png"
+      			contributorClass="de.tif.jacob.designer.editor.jacobform.contributor.FormEditorContributor"
+            class="de.tif.jacob.designer.editor.jacobform.JacobFormEditor"
+            id="de.tif.jacob.designer.editor.jacobform.formeditor">
+      </editor>
+      
+      <editor
+            name="ExternalFormEditor"
+            icon="icons/editor_form.png"
+            class="de.tif.jacob.designer.editor.externalform.ExternalFormEditor"
+            id="de.tif.jacob.designer.editor.externalform.ExternalFormEditor">
+      </editor>
+
+      <editor
+            name="MutableFormEditor"
+            icon="icons/editor_form.png"
+            class="de.tif.jacob.designer.editor.mutableform.MutableFormEditor"
+            id="de.tif.jacob.designer.editor.mutableform.MutableFormEditor">
+      </editor>
+
+      <editor
+            name="HtmlFormEditor"
+            icon="icons/editor_form.png"
+            class="de.tif.jacob.designer.editor.htmlform.HtmlFormEditor"
+            id="de.tif.jacob.designer.editor.htmlform.HtmlFormEditor">
+      </editor>
+
+
+      <editor
+            name="ContextMenuEditor"
+            icon="icons/editor_contextmenu.png"
+            class="de.tif.jacob.designer.editor.contextmenu.ContextMenuEditor"
+            id="de.tif.jacob.designer.editor.contextmenu.ContextMenuEditor">
+      </editor>
+ 
+       <editor
+            name="JacobTableEditor"
+            icon="icons/editor_table.png"
+            class="de.tif.jacob.designer.editor.table.JacobTableEditor"
+            id="de.tif.jacob.designer.editor.table.tableeditor">
+      </editor>
+      
+      <editor
+            name="JacobBrowserEditor"
+            icon="icons/editor_browser.png"
+            class="de.tif.jacob.designer.editor.browser.JacobBrowserEditor"
+            id="de.tif.jacob.designer.editor.browser.browsereditor">
+      </editor>
+      
+      <editor
+            name="JacobRelationsetEditor"
+            icon="icons/editor_relationset.png"
+            class="de.tif.jacob.designer.editor.relationset.JacobRelationsetEditor"
+            contributorClass="de.tif.jacob.designer.editor.relationset.contributor.RelationsetEditorContributor"
+            id="de.tif.jacob.designer.editor.relationset.relationseteditor">
+      </editor>
+      
+      <editor
+            name="ActivityDiagramEditor"
+            icon="icons/editor_activitydiagram.png"
+            class="de.tif.jacob.designer.editor.diagram.activity.ActivityDiagramEditor"
+            contributorClass="de.tif.jacob.designer.editor.diagram.activity.contributor.EditorContributor"
+            id="de.tif.jacob.designer.editor.diagram.activity.activiyDiagramEditor">
+      </editor>
+ 
+       <editor
+            name="jACOB JAD Editor"
+            class="de.tif.jacob.designer.editor.jad.JadEditor"
+            icon="icons/perspective.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            id="de.tif.jacob.designer.editor.jad.JadEditor"
+            extensions="jad"/>
+   </extension>
+   
+   
+   <extension  point="org.eclipse.ui.views">
+      <category
+            name="jACOB"
+            id="de.tif.jacob.designer"/>
+      <view
+            class="de.tif.jacob.designer.views.ApplicationOutlineView"
+            icon="icons/applicationOutline.png"
+            category="de.tif.jacob.designer"
+            name="Application Outline"
+            id="de.tif.jacob.designer.views.ApplicationOutlineView"/>
+    </extension>
+   
+	<extension point="org.eclipse.ui.perspectives">
+	   <perspective
+	         name="jACOB Programming"
+	         class="de.tif.jacob.designer.perspective.Programming"
+	         id="de.tif.jacob.designer.perspective.Programming"
+	         icon="icons/perspective.gif" >
+	   </perspective>
+	</extension>
+	
+    
+    <!-- 
+      ##################################################################
+	  ##
+	  ## The context menu for the ApplicationOutlineView
+	  ##
+	  ## All menu items should be inserted via  "objectContribution"
+	  ##################################################################
+	-->
+	<extension point="org.eclipse.ui.viewActions">
+      <viewContribution
+            targetID="de.tif.jacob.designer.views.ApplicationOutlineView"
+            id="de.tif.jacob.designer.views.ApplicationOutlineView.contrib.SearchAction">
+      </viewContribution>
+    </extension>
+
+    <!-- 
+      ##################################################################
+	  ##
+	  ## The context menu items for selectable objects
+	  ##
+	  ##################################################################
+	-->
+	 
+
+	<extension point="org.eclipse.ui.popupMenus">
+   	<!-- Contribution for TreeApplicationParent -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeApplicationParent"
+          id="de.tif.jacob.designer.treeapplicationparentcontribution">
+
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"/>
+
+       <action
+          label="%popup.applicationoutline.convertToI18N"
+          icon="icons/editor_i18n.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ConvertProjectToI18NAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ConvertProjectToI18NAction"/>
+
+		 		<menu
+		         id="subMenuModulesApplication"
+		         label="%popup.applicationoutline.modules"
+             icon="icons/modules.png"
+		         path="additions">
+	      <separator name="modules"/>
+	    	</menu>
+
+    </objectContribution>
+
+	<!-- Contribution for TreeComposedApplicationParent -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeComposedApplicationParent"
+          id="de.tif.jacob.designer.treecomposedapplicationparentcontribution">
+       <action
+             label="%popup.applicationoutline.newDomain"
+             icon="icons/new_domain.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewDomainAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newDomainAction"/>
+
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"/>
+
+		 		<menu
+		         id="subMenuModulesDomain"
+		         label="%popup.applicationoutline.modules"
+             icon="icons/modules.png"
+		         path="additions">
+	      <separator name="modules"/>
+	    	</menu>
+
+    </objectContribution>
+    
+
+	<!-- Contribution for TreeDomainObject -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeDomainObject"
+          id="de.tif.jacob.designer.treedomainobjectcontribution">
+
+       <action
+             label="%popup.applicationoutline.newFormGroup"
+             icon="icons/new_formgroup.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewFormGroupAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newFormGroupAction"/>
+
+       <action
+             label="%popup.applicationoutline.newHtmlForm"
+             icon="icons/new_html_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewLinkedHtmlFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newLinkedHtmlFormAction"/>
+
+       <action
+             label="%popup.applicationoutline.newExternalForm"
+             icon="icons/new_external_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewLinkedExternalFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newLinkedExternalFormAction"/>
+             
+       <action
+             label="%popup.applicationoutline.newMutableForm"
+             icon="icons/new_mutable_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewLinkedMutableFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newLinkedMutableFormAction"/>
+
+
+       <action
+             label="%popup.applicationoutline.newJacobForm"
+             icon="icons/new_jacob_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewLinkedJacobFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newLinkedFormAction"/>
+
+       <action
+             label="%popup.applicationoutline.addForm"
+             icon="icons/add_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.AddFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.addFormAction"/>
+             
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"/>
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteDomainAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteDomainAction"/>
+ 
+		 		<menu
+		         id="subMenuModules"
+		         label="%popup.applicationoutline.modules"
+             icon="icons/modules.png"
+		         path="additions">
+	      <separator name="modules"/>
+	    	</menu>
+
+    </objectContribution>
+    
+	<!-- Contribution for TreeFormGroupObject -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeFormGroupObject"
+          id="de.tif.jacob.designer.treeformgroupobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.newJacobForm"
+             icon="icons/new_jacob_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewLinkedJacobFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newFormAction"/>
+
+       <action
+             label="%popup.applicationoutline.addForm"
+             icon="icons/add_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.AddFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.addFormAction"/>
+
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteFormGroupAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteDomainAction"/>
+
+    </objectContribution>
+
+	 
+	<!--Contribution for TreeUserRoleParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeUserRoleParent"
+          id="de.tif.jacob.designer.treeuserroleparentcontribution">
+          
+       <action
+             label="%popup.applicationoutline.generateRoleClasses"
+             icon="icons/editor_java.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.GenerateRoleHelperClassAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.GenerateRoleHelperClassAction"/>
+             
+       <action
+             label="%popup.applicationoutline.newUserRole"
+             icon="icons/new_userrole.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewUserRoleAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newUserRoleAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeActivityDiagramParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeActivityDiagramParent"
+          id="de.tif.jacob.designer.treeactivitydiagramparentcontribution">
+       <action
+             label="%popup.applicationoutline.newActivityDiagram"
+             icon="icons/new_activitydiagram.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewActivityDiagramAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newActivityDiagramAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeActivityDiagramObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeActivityDiagramObject"
+          id="de.tif.jacob.designer.treeactivitydiagramobjectcontribution">
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteActivityDiagramAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteActivityDiagramAction"/>
+     </objectContribution>
+	 
+	<!--Contribution for TreeTableAliasParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeTableAliasParent"
+          id="de.tif.jacob.designer.treetablealiasparentcontribution">
+          
+       <action
+             label="%popup.applicationoutline.newTableAlias"
+             icon="icons/new_alias.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewTableAliasAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newTableAliasAction"/>
+
+       <action
+             label="%popup.applicationoutline.generateModelClasses"
+             icon="icons/editor_java.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.GenerateModelHelperClassAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.GenerateModelHelperClassAction"/>
+             
+    </objectContribution>
+
+    <!-- Contribution for TreeKeyObject -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeKeyObject"
+          id="de.tif.jacob.designer.treekeyobjectcontribution">
+          
+        <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteKeyAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteKeyAction"/>
+
+		 		<menu
+		         id="subMenuReference"
+		         label="%popup.applicationoutline.reference"
+             icon="icons/reference.png"
+		         path="additions">
+		      <separator name="reference"/>
+	    	</menu>
+
+       <action
+             label="%popup.applicationoutline.reference.firstLevel"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesFirstLevelAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesAction"/>
+    </objectContribution>
+
+	<!-- Contribution for TreeTableFieldObject -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeTableFieldObject"
+          id="de.tif.jacob.designer.treetablefieldcontribution">
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteFieldAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteFieldAction"/>
+
+		 		<menu
+		         id="subMenuReference"
+		         label="%popup.applicationoutline.reference"
+		         path="additions">
+		      <separator name="reference"/>
+	    	</menu>
+
+       <action
+             label="%popup.applicationoutline.reference.browser"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesBrowserAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesBrowserAction"/>
+
+       <action
+             label="%popup.applicationoutline.reference.firstLevel"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesFirstLevelAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeSchedulerSystemParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeSchedulerSystemParent"
+          id="de.tif.jacob.designer.treeschedulersystemparentcontribution">
+       <action
+             label="%popup.applicationoutline.new"
+             icon="icons/new_alias.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewScheduledJobSystemAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newScheduledJobSystemAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeSchedulerUserParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeSchedulerUserParent"
+          id="de.tif.jacob.designer.treescheduleruserparentcontribution">
+       <action
+             label="%popup.applicationoutline.new"
+             icon="icons/new_alias.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewScheduledJobUserAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newScheduledJobUserAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeEntryPointSOAPParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeEntryPointSOAPParent"
+          id="de.tif.jacob.designer.treeentrypointsoapparentcontribution">
+       <action
+             label="%popup.applicationoutline.new"
+             icon="icons/new_entry_soap.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewEntryPointSOAPAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newEntryPointSOAPAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeEntryPointCMDParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeEntryPointCMDParent"
+          id="de.tif.jacob.designer.treeentrypointcmdparentcontribution">
+       <action
+             label="%popup.applicationoutline.new"
+             icon="icons/new_entry_cmd.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewEntryPointCMDAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newEntryPointCMDAction"/>
+    </objectContribution>
+	 
+	<!--Contribution for TreeEntryPointGUIParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeEntryPointGUIParent"
+          id="de.tif.jacob.designer.treeentrypointguiparentcontribution">
+       <action
+             label="%popup.applicationoutline.new"
+             icon="icons/new_entry_gui.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewEntryPointGUIAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newEntryPointGUIAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeTableAliasObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeTableAliasObject"
+          id="de.tif.jacob.designer.treetablealiasobjectcontribution">
+               
+       <action
+             label="%popup.applicationoutline.newBrowser"
+             icon="icons/new_browser.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewBrowserFromAliasAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newBrowserFromAliasAction"/>
+
+       <action
+             label="%popup.applicationoutline.showHook"
+             icon="icons/editor_java.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowTableAliasHookAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.showTableAliasHookAction"/>
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteTableAliasAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteTableAliasAction"/>
+               
+		 		<menu
+		         id="subMenuReference"
+		         label="%popup.applicationoutline.reference"
+		         path="additions">
+		      <separator name="reference"/>
+	    	</menu>
+
+       <action
+             label="%popup.applicationoutline.reference.firstLevel"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesFirstLevelAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesAction"/>
+
+    </objectContribution>
+
+	<!--Contribution for TreePhysicalDataModelParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreePhysicalDataModelParent"
+          id="de.tif.jacob.designer.treedatasourceobjectcontribution">
+       <action
+             label="%popup.applicationoutline.newPhysicalDataModel"
+             icon="icons/new_physicaldatamodel.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewPhysicalDataModelAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newPhysicalDataModelAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreePhysicalDataModelObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreePhysicalDataModelObject"
+          id="de.tif.jacob.designer.treedatasourceobjectcontribution">
+	
+       <action
+             label="%popup.applicationoutline.newTable"
+             icon="icons/new_table.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewTableAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newTableAction"/>
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeletePhysicalDataModelAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deletePhysicalDataModelAction"/>
+     </objectContribution>
+
+	<!--Contribution for TreeRelationsetParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeRelationsetParent"
+          id="de.tif.jacob.designer.treerelationsetparentcontribution">
+
+       <action
+             label="%popup.applicationoutline.resetTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ResetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.resetTestRelationsetAction"/>
+             
+       <action
+             label="%popup.applicationoutline.setTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.SetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.setTestRelationsetAction"/>
+
+       <action
+             label="%popup.applicationoutline.newRelationset"
+             icon="icons/new_relationset.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newRelationsetAction"/>
+
+       <action
+             label="%popup.applicationoutline.generateRelationsetClasses"
+             icon="icons/editor_java.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.GenerateRelationsetHelperClassAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.GenerateRelationsetHelperClassAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeRelationsetObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeRelationsetObject"
+          id="de.tif.jacob.designer.treerelationsetobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.resetTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ResetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.resetTestRelationsetAction"/>
+             
+       <action
+             label="%popup.applicationoutline.setAsTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.SetAsTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.setAsTestRelationsetAction"/>
+             
+	       <action
+              label="%popup.applicationoutline.addTableAliasAction"
+              icon="icons/add_alias.png"
+              class="de.tif.jacob.designer.views.applicationoutline.action.AddTableAliasToRelationsetAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.relationset.action.addTableAliasAction"/>
+	
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteRelationsetAction"/>
+
+    </objectContribution>
+
+	<!--Contribution for TreeRelationObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeRelationObject"
+          id="de.tif.jacob.designer.treerelationobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteRelationAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteRelationAction"/>
+	
+    </objectContribution>
+
+	<!--Contribution for TreeTableParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeTableParent"
+          id="de.tif.jacob.designer.treetableparentcontribution">
+       <action
+             label="%popup.applicationoutline.newTableAlias"
+             icon="icons/new_alias.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewTableAliasFromTableAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.addTableAliasAction"/>
+	
+		 		<menu
+		         id="subMenu"
+		         label="Refactor"
+		         path="additions">
+		      <separator name="refactor"/>
+	    	</menu>
+
+        <action
+             label="%popup.applicationoutline.rename"
+             icon="icons/rename.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.RefactorRenameTableAction"
+             menubarPath="subMenu/refactor"
+             id="de.tif.jacob.designer.views.applicationoutline.action.RefactorRenameTableAction"/>
+             
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteTableAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.DeleteTableAction"/>
+	
+		 		<menu
+		         id="subMenuReference"
+		         label="%popup.applicationoutline.reference"
+             icon="icons/reference.png"
+		         path="additions">
+		      <separator name="reference"/>
+	    	</menu>
+
+       <action
+             label="%popup.applicationoutline.reference.browser"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesBrowserAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesBrowserAction"/>
+
+       <action
+             label="Table Alias"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesRelatedAliasAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesRelatedAliasAction"/>
+
+       <action
+             label="%popup.applicationoutline.reference.firstLevel"
+             icon="icons/reference.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesFirstLevelAction"
+             menubarPath="subMenuReference/reference"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowReferencesAction"/>
+
+    </objectContribution>
+
+	<!--Contribution for TreeBrowserParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeBrowserParent"
+          id="de.tif.jacob.designer.treebrowserparentcontribution">
+          
+       <action
+             label="%popup.applicationoutline.newBrowser"
+             icon="icons/new_browser.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewBrowserAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newBrowserAction"/>
+             
+       <action
+             label="%popup.applicationoutline.generateBrowserClasses"
+             icon="icons/editor_java.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.GenerateBrowserHelperClassAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.GenerateBrowserHelperClassAction"/>
+             
+    </objectContribution>
+
+
+	<!--Contribution for TreeBrowserObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeBrowserObject"
+          id="de.tif.jacob.designer.treebrowserobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteBrowserAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteBrowserAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeFormParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeFormParent"
+          id="de.tif.jacob.designer.treedomainobjectcontribution">
+
+       <action
+             label="%popup.applicationoutline.resetTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ResetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.resetTestRelationsetAction"/>
+             
+
+       <action
+             label="%popup.applicationoutline.setTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.SetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.setTestRelationsetAction"/>
+
+       <action
+             label="%popup.applicationoutline.newJacobForm"
+             icon="icons/new_jacob_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewJacobFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newJacobFormAction"/>
+             
+       <action
+             label="%popup.applicationoutline.newExternalForm"
+             icon="icons/new_external_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewExternalFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newExternalFormAction"/>
+             
+       <action
+             label="%popup.applicationoutline.newMutableForm"
+             icon="icons/new_mutable_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewMutableFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newMutableFormAction"/>
+
+       <action
+             label="%popup.applicationoutline.newHtmlForm"
+             icon="icons/new_html_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.NewHtmlFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.newHtmlFormAction"/>
+
+    </objectContribution>
+
+	<!--Contribution for TreeJacobFormObject  -->
+    <objectContribution  objectClass="de.tif.jacob.designer.views.applicationoutline.TreeJacobFormObject"  
+                         id="de.tif.jacob.designer.views.applicationoutline.TreeJacobFormObject">
+               
+       <action
+             label="%popup.applicationoutline.resetTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ResetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.resetTestRelationsetAction"/>
+             
+       <action
+             label="%popup.applicationoutline.setTestRelationset"
+             icon="icons/RelationsetModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.SetTestRelationsetAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.setTestRelationsetAction"/>
+
+       <action
+             label="%popup.applicationoutline.editForm"
+             icon="icons/editor_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowJacobFormEditorAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.editor.jacobform.showFormEditorAction"/>
+             
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"/>
+
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.editor.jacobform.deleteFormAction"/>
+ 
+    </objectContribution>
+
+  	<!--Contribution for TreeExternalFormObject  -->
+    <objectContribution  objectClass="de.tif.jacob.designer.views.applicationoutline.TreeExternalFormObject"  
+                         id="de.tif.jacob.designer.views.applicationoutline.TreeExternalFormObject">
+               
+       <action
+             label="%popup.applicationoutline.editForm"
+             icon="icons/editor_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowExternalFormEditorAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowExternalFormEditorAction"/>
+             
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteExternalFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.DeleteExternalFormAction"/>
+ 
+    </objectContribution>
+
+  	<!--Contribution for TreeMutableFormObject  -->
+    <objectContribution  objectClass="de.tif.jacob.designer.views.applicationoutline.TreeMutableFormObject"  
+                         id="de.tif.jacob.designer.views.applicationoutline.TreeMutableFormObject">
+               
+       <action
+             label="%popup.applicationoutline.editForm"
+             icon="icons/editor_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowMutableFormEditorAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.ShowExternalFormEditorAction"/>
+             
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteMutableFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.DeleteMutableFormAction"/>
+ 
+    </objectContribution>
+
+  	<!--Contribution for TreeLinkedFormObject  -->
+    <objectContribution  objectClass="de.tif.jacob.designer.views.applicationoutline.TreeLinkedFormObject"  
+                         id="de.tif.jacob.designer.views.applicationoutline.TreeLinkedFormObject">
+
+       <action
+             label="%popup.applicationoutline.editForm"
+             icon="icons/edit_form.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ShowLinkedJacobFormEditorAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.editor.jacobform.showLinkedFormEditorAction"/>
+
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ShowObjectModelHookAction"/>
+               
+       <action
+             label="%popup.applicationoutline.remove"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.RemoveLinkedFormAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.editor.jacobform.deleteFormAction"/>
+ 
+    </objectContribution>
+
+	<!--Contribution for TreeJavaClassModelObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeJavaClassModelObject"
+          id="de.tif.jacob.designer.treejavaclassmodelobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.delete"
+             icon="icons/delete.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.DeleteJavaClassModelAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.deleteJavaClassModelAction"/>
+    </objectContribution>
+    
+	<!--Contribution for TreeI18NParent  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeI18NParent"
+          id="de.tif.jacob.designer.treeresourcebundleparentcontribution">
+       <action
+             label="%popup.applicationoutline.generateI18NClasses"
+             icon="icons/ResourcebundleModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.GenerateI18nHelperClassAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.views.applicationoutline.action.GenerateI18nHelperClassAction"/>
+    </objectContribution>
+
+	<!--Contribution for TreeI18NResourceObject  -->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeI18NResourceObject"
+          id="de.tif.jacob.designer.treeresourcebundleobjectcontribution">
+          
+       <action
+             label="%popup.applicationoutline.resetTestResourcebundle"
+             icon="icons/ResourcebundleModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.ResetTestResourcebundleAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.resetTestResourcebundleAction"/>
+             
+       <action
+             label="%popup.applicationoutline.setAsTestResourcebundle"
+             icon="icons/ResourcebundleModel_test.png"
+             class="de.tif.jacob.designer.views.applicationoutline.action.SetAsTestResourcebundleAction"
+             menubarPath="additions"
+             id="de.tif.jacob.designer.setAsTestResourcebundleAction"/>
+    </objectContribution>
+
+	<!-- RELATIONSET EDITOR   -->
+	
+	<!-- Contribution for TableAliasEditPart -->
+    <objectContribution  objectClass="de.tif.jacob.designer.editor.relationset.editpart.TableAliasEditPart"  
+   						 id="de.tif.jacob.designer.tablealiaseditpartcontribution">
+
+       <action
+          label="%popup.form.groupeditpart.showTableEditor"
+          icon="icons/editor_table.png"
+          class="de.tif.jacob.designer.editor.relationset.action.ShowTableEditorAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.showTableEditorAction"/>
+
+       <action
+          label="%popup.form.groupeditpart.showTableAliasEditor"
+          icon="icons/editor_alias.png"
+          class="de.tif.jacob.designer.editor.relationset.action.ShowTableAliasEditorAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.showTableAliasEditorAction"/>
+               
+       <action
+          label="%popup.form.groupeditpart.addRelatedTableAlias"
+          icon="icons/relationseteditor_action_addrelatedtablealias.gif"
+          class="de.tif.jacob.designer.editor.relationset.action.AddRelatedTableAliasAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.addRelatedTableAliasAction"/>
+
+       <action
+          label="%popup.applicationoutline.showHook"
+          icon="icons/editor_java.png"
+          class="de.tif.jacob.designer.editor.relationset.action.ShowObjectModelHookAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.actions.showObjectModelHookAction"/>
+
+ 
+
+     </objectContribution>
+
+	<!-- Contribution for RelationEditPart -->
+    <objectContribution  objectClass="de.tif.jacob.designer.editor.relationset.editpart.RelationEditPart"  
+   						 id="de.tif.jacob.designer.relationeditpartcontribution">
+
+       <action
+          label="%popup.relationset.setRelationOneToManyAction"
+          icon="icons/relation_one2many.png"
+          class="de.tif.jacob.designer.editor.relationset.action.SetRelationOneToManyAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.setRelationOneToManyAction"/>
+
+       <action
+          label="%popup.relationset.setRelationZeroToManyAction"
+          icon="icons/relation_zero2many.png"
+          class="de.tif.jacob.designer.editor.relationset.action.SetRelationZeroToManyAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.actions.setRelationZeroToManyAction"/>
+
+    </objectContribution>
+
+	 
+	<!-- Contribution for RelationsetEditPart -->
+    <objectContribution  objectClass="de.tif.jacob.designer.editor.relationset.editpart.RelationsetEditPart"  
+   						 id="de.tif.jacob.designer.relationseteditpartcontribution">
+
+       <action
+          label="%popup.relationset.addTableAliasAction"
+          icon="icons/add_alias.png"
+          class="de.tif.jacob.designer.editor.relationset.action.AddTableAliasToRelationsetAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.action.addTableAliasAction"/>
+
+       <action
+          label="%popup.relationset.newTableAction"
+          icon="icons/new_table.png"
+          class="de.tif.jacob.designer.editor.relationset.action.NewTableToRelationsetAction"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.editor.relationset.action.newTableAliasAction"/>
+
+    </objectContribution>
+
+
+	<!-- FORM EDITOR   -->
+
+	<!-- Contribution for GroupEditPart -->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.GroupEditPart"  
+	    					 id="de.tif.jacob.designer.groupeditpartcontribution">
+	
+	       <action
+              label="%popup.form.groupeditpart.showTableAliasEditor"
+              icon="icons/editor_tablealias.png"
+              class="de.tif.jacob.designer.editor.jacobform.action.ShowTableAliasEditorAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.jacobform.showTableAliasEditorAction"/>
+	
+	       <action
+              label="%popup.form.groupeditpart.showTableEditor"
+              icon="icons/editor_table.png"
+              class="de.tif.jacob.designer.editor.jacobform.action.ShowTableEditorAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.jacobform.showTableEditorAction"/>
+	
+	       <action
+              label="%popup.form.groupeditpart.showBrowserEditor"
+              icon="icons/editor_browser.png"
+              class="de.tif.jacob.designer.editor.jacobform.action.ShowBrowserEditorAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.browser.actions.showBrowserEditorAction"/>
+	               
+	       <action
+              label="%popup.form.groupeditpart.showContextMenu"
+              icon="icons/editor_contextmenu.png"
+              class="de.tif.jacob.designer.editor.jacobform.action.ShowContextMenuEditorAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.browser.actions.showContextMenuEditorAction"/>
+
+	       <action
+              label="%popup.applicationoutline.showHook"
+              icon="icons/editor_java.png"
+              class="de.tif.jacob.designer.editor.jacobform.action.ShowObjectModelHookAction"
+              menubarPath="additions"
+              id="de.tif.jacob.designer.editor.jacobform.actions.showObjectModelHookAction"/>
+
+		       <action
+	              label="%popup.form.groupeditpart.showSelectionActionEditor"
+	              icon="icons/editor_selectionactions.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowGroupSelectionActionEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ShowGroupSelectionActionEditorAction">
+	           </action>
+             
+	    </objectContribution>
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.GroupEditPart"  
+	    					 id="de.tif.jacob.designer.groupeditpartcontribution_notI18N">
+	        <action
+               class="de.tif.jacob.designer.editor.jacobform.action.ConvertGroupToI18NAction"
+               icon="icons/editor_i18n.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.ConvertGroupToI18NAction"
+               label="%popup.form.groupeditpart.convertToI18N"
+               menubarPath="additions">
+	        </action>
+	        <visibility>
+	            <not>
+		           <objectState value="%" name="caption"/>
+	            </not>
+	        </visibility>
+	     </objectContribution>
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.GroupEditPart"  
+	    					 id="de.tif.jacob.designer.groupeditpartcontribution_I18N">
+	        <action
+	              label="%popup.form.groupeditpart.showI18NEditor"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowGroupI18NEditorAction"
+	              icon="icons/editor_i18n.png"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ShowGroupI18NEditorAction">
+	        </action>
+	        <visibility>
+		           <objectState value="%" name="caption"/>
+	        </visibility>
+	     </objectContribution>
+
+
+		<!--  Contribution for InformBrowserEditPart -->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.InformBrowserEditPart"  
+	                         id="de.tif.jacob.designer.informbrowsercontribution">
+	                         
+		       <action
+	              label="%popup.form.groupeditpart.showBrowserEditor"
+	              icon="icons/editor_browser.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowBrowserEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.browser.actions.showBrowserEditorAction">
+	           </action>
+		               
+		       <action
+	              label="%popup.form.groupeditpart.showTableEditor"
+	              icon="icons/editor_table.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowBrowserTableEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.showBrowserTableEditorAction"/>
+		
+		       <action
+	              label="%popup.form.groupeditpart.showSelectionActionEditor"
+	              icon="icons/editor_selectionactions.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowInformBrowserSelectionActionEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ShowInformBrowserSelectionActionEditorAction">
+	           </action>
+
+	    </objectContribution>
+
+		<!--  Contribution for GroupElementEditPart-->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.GroupElementEditPart"  
+	                         id="de.tif.jacob.designer.groupelementeditpartcontribution">
+	                         
+		       <action
+	              label="%popup.applicationoutline.showHook"
+	              icon="icons/editor_java.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowObjectModelHookAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.actions.showObjectModelHookAction">
+	            </action>
+		        <visibility>
+		            <not>
+			           <objectState name="templateName" value=""/>
+		            </not>
+		        </visibility>
+	    </objectContribution>
+
+		<!--  Contribution for TabEditPart-->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.TabEditPart"  
+	                         id="de.tif.jacob.designer.editor.jacobform.editpart.TabEditPart">
+	                         
+		       <action
+	              label="%popup.applicationoutline.showHook"
+	              icon="icons/editor_java.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowObjectModelHookAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.actions.showObjectModelHookAction">
+           </action>
+	    </objectContribution>
+
+		<!--  Contribution for ButtonEditPart -->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.ButtonEditPart"  
+	                         id="de.tif.jacob.buttoneditpartcontribution">
+		       <action
+	              label="%popup.form.groupeditpart.showRelationsetEditor"
+	              icon="icons/editor_relationset.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowRelationsetEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.actions.showRelationsetEditorAction">
+	            </action>
+		       <visibility> 
+             <or>
+     				    <objectState name="action" value="Search"/>
+	  	   		    <objectState name="action" value="SearchUpdateRecord"/>
+             </or>
+		       </visibility>
+	    </objectContribution>
+	    
+
+		<!--  Contribution for DBForeignFieldEditPart -->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.DBForeignFieldEditPart"  
+	                         id="de.tif.jacob.designer.foreingfieldeditpartcontribution">
+	                         
+		       <action
+	              label="%popup.form.groupeditpart.showBrowserEditor"
+	              icon="icons/editor_browser.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowBrowserEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.browser.actions.showBrowserEditorAction"/>
+	               
+		       <action
+	              label="%popup.form.groupeditpart.showTableEditor"
+	              icon="icons/editor_table.png"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowForeignTableEditorAction"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.showForeignTableEditorAction"/>
+		
+	    </objectContribution>
+
+		<!-- OPEN the field editor for DBLocalInputFieldEditPart -->
+	    <objectContribution  objectClass="de.tif.jacob.designer.editor.jacobform.editpart.DBLocalInputFieldEditPart"  
+	                        id="de.tif.jacob.designer.groupeditpartcontribution">
+	       <action label="%popup.form.groupeditpart.showTableFieldEditor" 
+	               class="de.tif.jacob.designer.editor.jacobform.action.ShowTableFieldEditorAction"
+	               menubarPath="additions"
+	              icon="icons/FieldModel.png"
+	               id="de.tif.jacob.designer.editor.jacobform.addGroupElements"/>
+	    </objectContribution>
+	    
+	    <!-- The Contextmenu for CaptionEditPart *WITH* I18N Caption-->
+	     <objectContribution
+	           objectClass="de.tif.jacob.designer.editor.jacobform.editpart.CaptionEditPart"
+	           id="de.tif.jacob.designer.captioneditpartcontribution_existsI18N">
+	        <action
+	              label="%popup.form.groupeditpart.showI18NEditor"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ShowCaptionI18NEditorAction"
+	              icon="icons/editor_i18n.png"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ShowCaptionI18NEditorAction">
+	        </action>
+	        <visibility>
+		        <and>
+		           <objectState value="%" name="caption"/>
+	    	       <objectState value="true" name="exists"/>
+	           </and>
+	        </visibility>
+	     </objectContribution>
+	     
+	     <objectContribution
+	           objectClass="de.tif.jacob.designer.editor.jacobform.editpart.CaptionEditPart"
+	           id="de.tif.jacob.designer.captioneditpartcontribution__missingI18N">
+	        <action
+	              label="%popup.form.groupeditpart.importI18N"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ImportCaptionI18NEditorAction"
+	              icon="icons/editor_i18n.png"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ImportCaptionI18NEditorAction">
+	        </action>
+	        <visibility>
+		        <and>
+		           <objectState value="%" name="caption"/>
+	    	       <objectState value="false" name="exists"/>
+	           </and>
+	        </visibility>
+	     </objectContribution>
+	     
+	     <objectContribution
+	           objectClass="de.tif.jacob.designer.editor.jacobform.editpart.CaptionEditPart"
+	           id="de.tif.jacob.designer.captioneditpartcontribution">
+	        <action
+	              label="%popup.form.groupeditpart.convertAndEditToI18N"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ConvertAndEditCaptionToI18NAction"
+	              icon="icons/editor_i18n.png"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ConvertAndEditCaptionToI18NAction">
+	        </action>
+	        <action
+	              label="%popup.form.groupeditpart.convertToI18N"
+	              class="de.tif.jacob.designer.editor.jacobform.action.ConvertCaptionToI18NAction"
+	              icon="icons/editor_i18n.png"
+	              menubarPath="additions"
+	              id="de.tif.jacob.designer.editor.jacobform.action.ConvertToI18NAction">
+	        </action>
+	        <visibility>
+	            <not>
+		           <objectState value="%" name="caption"/>
+	            </not>
+	        </visibility>
+	     </objectContribution>
+	     
+  	<!-- Contribution for TreeObject (ApplicationOutline)-->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.applicationoutline.TreeObject"
+          id="de.tif.jacob.designer.views.applicationoutline.TreeObject">
+
+       <action
+          label="%popup.applicationoutline.expandAll"
+          icon="icons/expandall.png"
+          class="de.tif.jacob.designer.views.applicationoutline.action.ExpandTreeObjectChildren"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.applicationoutline.action.ExpandTreeObjectChildren"/>
+
+    </objectContribution>
+
+  	<!-- Contribution for TreeObject (ReferenceSearch)-->
+    <objectContribution
+          objectClass="de.tif.jacob.designer.views.search.tree.TreeObject"
+          id="de.tif.jacob.designer.views.search.tree.TreeObject">
+
+       <action
+          label="%popup.applicationoutline.expandAll"
+          icon="icons/expandall.png"
+          class="de.tif.jacob.designer.views.search.action.ExpandTreeObjectChildren"
+          menubarPath="additions"
+          id="de.tif.jacob.designer.views.search.action.ExpandTreeObjectChildren"/>
+
+    </objectContribution>
+	</extension>
+	
+
+    <extension point="org.eclipse.ui.preferencePages">
+	    <page
+           class="de.tif.jacob.designer.preferences.PreferencePage"
+           name="jACOB Preferences"
+           id="de.tif.jacob"/>
+      <page
+            class="de.tif.jacob.designer.preferences.FormEditorPreferencePage"
+            category="de.tif.jacob"
+            name="Form Editor"
+            id="de.tif.jacob.designer.preferences.FormEditorPreferencePage">
+      </page>
+    </extension>
+    
+    
+    <extension  point="org.eclipse.ui.actionSets">
+       <actionSet
+             label="jACOB Action Set"
+             visible="true"
+             id="de.tif.jacob.designer.actionSet">
+          <action
+                class="de.tif.jacob.designer.actions.HotdeployJacappAction"
+                icon="icons/hotdeploy.png"
+                id="de.tif.jacob.designer.actions.HotdeployJacappAction"
+                label="&amp;Hotdeploy"
+                toolbarPath="jacobGroup"
+                tooltip="Build and deploy the application to the local WebServer">
+          </action>
+          <action
+                class="de.tif.jacob.designer.actions.SaveJadAction"
+                icon="icons/saveJad.png"
+                id="de.tif.jacob.designer.actions.SaveJadAction"
+                label="&amp;Save"
+                toolbarPath="jacobGroup"
+                tooltip="Save the current JAD Project">
+          </action>
+       </actionSet>
+    </extension>
+    
+   <extension  point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="de.tif.jacob.designer.editor.relationset.relationseteditor"
+            id="de.tif.jacob.designer.editor.relationset.Actions">
+<!--            
+         <action
+               label="%editorAction.relationset.toggleLabel"
+               icon="icons/relationseteditor_action_togglelabel.gif"
+               tooltip="%editorAction.relationset.toggleLabel"
+               class="de.tif.jacob.designer.editor.relationset.action.ToggleLabelAction"
+               toolbarPath="jacobGroup"
+               id="de.tif.jacob.designer.editor.relationset.action.ToggleLabelAction">
+         </action>
+-->         
+      </editorContribution>
+
+      <editorContribution
+            targetID="de.tif.jacob.designer.editor.jacobform.formeditor"
+            id="de.tif.jacob.designer.editor.jacobform.Actions">
+         <action
+               enablesFor="3+"
+               toolbarPath="jacobGroup"
+               label="%editorAction.form.alignVertical"
+               class="de.tif.jacob.designer.editor.jacobform.action.AlignVerticalGroupElementsAction"
+               tooltip="%editorAction.form.alignVertical"
+               icon="icons/align_vertical.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.AlignVerticalGroupElementsAction">
+         </action>
+         <action
+               enablesFor="1+"
+               toolbarPath="jacobGroupFont"
+               label="%editorAction.form.textItalic"
+               class="de.tif.jacob.designer.editor.jacobform.action.TextItalicAction"
+               tooltip="%editorAction.form.textItalic"
+               icon="icons/text_italic.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.TextItalicAction">
+         </action>
+         <action
+               enablesFor="1+"
+               toolbarPath="jacobGroupFont"
+               label="%editorAction.form.textBold"
+               class="de.tif.jacob.designer.editor.jacobform.action.TextBoldAction"
+               tooltip="%editorAction.form.textBold"
+               icon="icons/text_bold.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.TextBoldAction">
+         </action>
+         <action
+               enablesFor="1+"
+               toolbarPath="jacobGroupFont"
+               label="%editorAction.form.textAlignRight"
+               class="de.tif.jacob.designer.editor.jacobform.action.TextAlignRightAction"
+               tooltip="%editorAction.form.textAlignRight"
+               icon="icons/text_align_right.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.TextAlignRightAction">
+         </action>
+         <action
+               enablesFor="1+"
+               toolbarPath="jacobGroupFont"
+               label="%editorAction.form.textAlignLeft"
+               class="de.tif.jacob.designer.editor.jacobform.action.TextAlignLeftAction"
+               tooltip="%editorAction.form.textAlignLeft"
+               icon="icons/text_align_left.png"
+               id="de.tif.jacob.designer.editor.jacobform.action.TextAlignLeftAction">
+         </action>
+         </editorContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               id="de.tif.jacob.designer.views.SampleView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList"/>
+      </perspectiveExtension>
+   </extension>
+
+   
+   <!-- Cheat Sheet -->
+   <extension  point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+			<category name= "jACOB Tutorials" id="de.tif.jacob.designer.cheat.category">
+			</category>
+      <cheatsheet
+            category="de.tif.jacob.designer.cheat.category"
+            composite="false"
+            contentFile="cheat/EmptyProject.xml"
+            id="de.tif.jacob.designer.cheatsheet.EmptyProject"
+            listener="de.tif.jacob.designer.cheat.emptyproject.Listener"
+            name="First Steps with an new jACOB Project"/>
+   </extension>
+   
+   <extension point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="de.tif.jacob.designer.views.search.ReferenceSearchResultPage"
+            id="de.tif.jacob.designer.search.ReferenceSearchResultPage"
+            searchResultClass="de.tif.jacob.designer.views.search.ReferenceSearchResult"/>
+   </extension>
+
+ </plugin>

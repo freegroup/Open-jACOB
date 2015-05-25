@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<chapter id="chap_dataModelling" label="2">
+    <title id="title_chap_dataModelling">Data modeling</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Data model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The base of a <trademark>jACOB</trademark> application design is the data model.
+                        The data model itself consists of:</para>
+                        <itemizedlist>
+                            <listitem><para>tables,</para></listitem>
+                            <listitem><para><glossterm linkend="tableAlias">table aliases</glossterm>,</para></listitem>
+                            <listitem><para>relations and <glossterm linkend="relationSet">relation sets</glossterm>,</para></listitem>
+                            <listitem><para><glossterm linkend="browser">browsers</glossterm> and</para></listitem>
+                            <listitem><para><glossterm linkend="tableHooks">table hooks</glossterm>.</para></listitem>
+                        </itemizedlist>
+                        
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Creation of a data model</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The creation of such a data model will be explained in the following sections:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingTables" endterm="title_definingTables"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingTableAliases" endterm="title_definingTableAliases"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingRelationSets" endterm="title_definingRelationSets"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingBrowsers" endterm="title_definingBrowsers"/>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>
+                                    <xref linkend="sect_definingTableHooks" endterm="title_definingTableHooks"/>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+    <xi:include href="DefiningTables.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningTableAliases.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningRelationSets.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningBrowsers.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="DefiningTableHooks.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>

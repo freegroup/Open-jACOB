@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<appendix id="app_codeForUserManagement">
+    <title id="title_app_codeForUserManagement">Code for user management</title>
+    <para>The code listed below realizes the implementation of the the user management defined in the section <link
+                linkend="sect_addUserManagement" endterm="title_addUserManagement"/>.</para>
+    <sect1 label="1">
+        <title id="title_codeForClassUser"/>
+        <para>The following listing contains the Java code of the <trademark>jACOB</trademark> class
+            User: </para>
+        <programlisting><![CDATA[
+package jacob.security;
+
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import de.tif.jacob.core.data.IDataTableRecord;
+import de.tif.jacob.core.data.IDataTransaction;
+import de.tif.jacob.core.exception.InvalidNewPasswordException;
+import de.tif.jacob.security.impl.AbstractUser;
+
+/**
+ * HappyHome user implementation.
+ */
+public class User extends AbstractUser
+{
+  private final UserFactory factory;
+  private final String loginId;
+  private final String fullName;
+  private final String key;
+  private final String email;
+  private String passwd;
+
+  private final List roles = new ArrayList();
+
+  protected User(UserFactory factory, IDataTableRecord userRecord) throws Exception
+  {
+    this.factory = factory;
+    this.loginId = userRecord.getStringValue("loginId");
+    this.key = userRecord.getStringValue("id");
+    this.fullName = userRecord.getStringValue("fullname");
+    this.email = userRecord.getStringValue("email");
+    this.passwd = userRecord.getStringValue("passwd");
+
+    // determine user roles
+    //
+    if (userRecord.getintValue("administrator") == 1)
+      this.roles.add(new Role("administrator"));
+    if (userRecord.getintValue("agent") == 1)
+      this.roles.add(new Role("agent"));
+    if (userRecord.getintValue("receptionist") == 1)
+      this.roles.add(new Role("receptionist"));
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUser#getLoginId()
+   */
+  public String getLoginId()
+  {
+    return loginId;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUser#getFullName()
+   */
+  public String getFullName()
+  {
+    return fullName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUser#getKey()
+   */
+  public String getKey()
+  {
+    return key;
+  }
+
+  /**
+   * @return Returns the passwd.
+   */
+  protected String getPasswd()
+  {
+    return passwd;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUser#setPassword(java.lang.String)
+   */
+  public void setPassword(String password) throws InvalidNewPasswordException, Exception
+  {
+    // fetch user record of this user
+    //
+    IDataTableRecord userRecord = this.factory.findUserRecord(this.loginId);
+
+    // and set new password
+    //
+    IDataTransaction trans = userRecord.getAccessor().newTransaction();
+    try
+    {
+      userRecord.setValue(trans, "passwd", password);
+      trans.commit();
+    }
+    finally
+    {
+      trans.close();
+    }
+  }
+
+  /*
+   * @see de.tif.jacob.security.IUser#getEMail()
+   */
+  public String getEMail()
+  {
+    return email;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.impl.AbstractUser#fetchRoles()
+   */
+  protected Iterator fetchRoles() throws GeneralSecurityException
+  {
+    return this.roles.iterator();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("User[");
+    buffer.append("loginId = ").append(loginId);
+    buffer.append(", fullName = ").append(fullName);
+    buffer.append(", passwd = ").append(passwd);
+    buffer.append(", key = ").append(key);
+    buffer.append(", email = ").append(email);
+    buffer.append(", roles = ").append(roles);
+    buffer.append("]");
+    return buffer.toString();
+  }
+}]]>
+                    </programlisting>
+    </sect1>
+    <sect1 label="2">
+        <title id="title_codeForClassUserFactory"/>
+        <para>The following listing contains the Java code of the <trademark>jACOB</trademark> class
+            UserFactory : </para>
+        <programlisting><![CDATA[
+package jacob.security;
+
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.tif.jacob.core.data.IDataAccessor;
+import de.tif.jacob.core.data.IDataTable;
+import de.tif.jacob.core.data.IDataTableRecord;
+import de.tif.jacob.core.data.IDataTransaction;
+import de.tif.jacob.core.exception.AuthenticationException;
+import de.tif.jacob.core.exception.InvalidUseridPasswordException;
+import de.tif.jacob.core.exception.UserNotExistingException;
+import de.tif.jacob.security.IUser;
+import de.tif.jacob.security.IUserFactory;
+
+/**
+ * HappyHome user factory implementation.
+ */
+public class UserFactory extends IUserFactory
+{
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUserFactory#findUser(java.lang.String)
+   */
+  public IUser findUser(String loginId) throws UserNotExistingException
+  {
+    try
+    {
+      return new User(this, findUserRecord(loginId));
+    }
+    catch (UserNotExistingException ex)
+    {
+      throw ex;
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  protected IDataTableRecord findUserRecord(String loginId) throws UserNotExistingException, Exception
+  {
+    IDataAccessor dataAccessor = newDataAccessor();
+    IDataTable table = dataAccessor.getTable("employee");
+
+    // use exact match operator for login name
+    table.qbeSetKeyValue("loginId", loginId);
+
+    table.search();
+    if (table.recordCount() == 1)
+    {
+      IDataTableRecord userRecord = table.getRecord(0);
+      return userRecord;
+    }
+    throw new UserNotExistingException(loginId);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see de.tif.jacob.security.IUserFactory#getValid(java.lang.String,
+   *      java.lang.String)
+   */
+  public IUser getValid(String userId, String passwd) throws AuthenticationException, GeneralSecurityException
+  {
+    try
+    {
+      User user = (User) findUser(userId);
+
+      // user has no password
+      if (user.getPasswd() == null)
+        return user;
+
+      // verify password
+      if (user.getPasswd().equals(passwd))
+        return user;
+    }
+    catch (UserNotExistingException ex)
+    {
+      // ensure login for user 'admin', if no administrator has been
+      // created so far.
+      //
+      if ("admin".equals(userId))
+      {
+        IUser admin = createInitialAdministrator();
+        if (admin != null)
+          return admin;
+      }
+    }
+    throw new InvalidUseridPasswordException();
+  }
+
+  /**
+   * Creates an initial administrator, if no administrator exists so far.
+   * 
+   * @return the initial administrator or <code>null</code>, if at least one
+   *         administrator exists already.
+   */
+  private IUser createInitialAdministrator()
+  {
+    try
+    {
+      // search for administrators
+      //
+      IDataAccessor dataAccessor = newDataAccessor();
+      IDataTable table = dataAccessor.getTable("employee");
+      table.qbeSetKeyValue("administrator", "1");
+      if (table.exists())
+      {
+        // administrators are already existing
+        return null;
+      }
+
+      // create initial administrator
+      //
+      IDataTransaction trans = dataAccessor.newTransaction();
+      try
+      {
+        IDataTableRecord adminRecord = table.newRecord(trans);
+        adminRecord.setValue(trans, "firstName", "default");
+        adminRecord.setValue(trans, "surname", "administrator");
+        adminRecord.setValue(trans, "loginId", "admin");
+        adminRecord.setValue(trans, "administrator", "1");
+        adminRecord.setValue(trans, "address", "unknown");
+        adminRecord.setValue(trans, "phone", "unknown");
+        trans.commit();
+
+        return new User(this, adminRecord);
+      }
+      finally
+      {
+        trans.close();
+      }
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  /*
+   * @see de.tif.jacob.security.IUserFactory#findByFullName(java.lang.String)
+   */
+  public List findByFullName(String fullNamePart) throws Exception
+  {
+    List result = new ArrayList();
+    IDataAccessor dataAccessor = newDataAccessor();
+    IDataTable table = dataAccessor.getTable("employee");
+
+    table.qbeSetValue("fullname", fullNamePart);
+    table.search();
+    for (int i = 0; i < table.recordCount(); i++)
+    {
+      IDataTableRecord userRecord = table.getRecord(i);
+      result.add(new User(this, userRecord));
+    }
+    return result;
+  }
+}]]>
+                    </programlisting>
+    </sect1>
+</appendix>

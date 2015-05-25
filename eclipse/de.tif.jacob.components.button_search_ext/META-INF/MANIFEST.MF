@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Search Button (with constraint memento)
+Bundle-SymbolicName: de.tif.jacob.components.button_search_ext;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: de.tif.jacob.components.button_search_ext.impl.Activator
+Bundle-Vendor: Andreas Herz | FreeGroup
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tif.jacob.designer,
+ org.eclipse.gef,
+ de.tif.jacob.common,
+ org.eclipse.ui.views
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: library.jar

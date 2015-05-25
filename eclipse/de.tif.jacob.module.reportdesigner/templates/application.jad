@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="module" engineVersion="2.9" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="jacobPersistentDataSource" reconfigure="none">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="jacobPersistentDataSource" dbName="report" name="report">
+      <Field dbName="id" label="ID" name="id" readonly="true" required="true">
+        <Integer autoincrement="true" dbincrement="false"/>
+      </Field>
+      <Field dbName="applicationname" label="Application" name="applicationname" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="definition" label="Definition" name="definition" readonly="false" required="true">
+        <LongText changeHeader="true" editMode="fulledit"/>
+      </Field>
+      <Field dbName="accessmode" label="Access mode" name="accessmode" readonly="false" required="true">
+        <Enumeration>
+          <Value>public</Value>
+          <Value>private</Value>
+          <Value>shared</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="ownerid" label="Owner" name="ownerid" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="50" searchMode="unbound"/>
+      </Field>
+      <Field dbName="applicationversionstr" label="Version" name="applicationversion" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Should be required but because of compatibility to old databases containing entries with dbname applicationversion DECIMAL this has not been done.</Value>
+        </Property>
+      </Field>
+      <Field dbName="name" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="scheduled" label="Scheduled" name="scheduled" readonly="true" required="true">
+        <Enumeration>
+          <Value>false</Value>
+          <Value>true</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="lastUsage" label="Last usage" name="lastUsage" readonly="true" required="false">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <PrimaryKey name="PKey">
+        <Field>id</Field>
+      </PrimaryKey>
+      <ForeignKey name="application_fkey">
+        <Field>applicationname</Field>
+      </ForeignKey>
+      <Index name="applicationOwner">
+        <Field>applicationname</Field>
+        <Field>ownerid</Field>
+        <Field>name</Field>
+      </Index>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="report" table="report">
+      <Condition>report.applicationname='{APPLICATIONNAME}' and (report.ownerid='{LOGINID}' or report.accessmode='shared')</Condition>
+    </TableAlias>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="report" name="reportBrowser" type="inform">
+      <Field label="ID" name="browserId" visible="false">
+        <TableField tableField="id"/>
+      </Field>
+      <Field configureable="false" label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Owner" name="browserOwnerid" visible="false">
+        <TableField tableField="ownerid"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations/>
+  <Relationsets/>
+  <Forms>
+    <Form label="{Modulename} Configuration" name="{modulename}_configure">
+      <Group alias="report" border="false" browser="reportBrowser" eventHandler="jacob.event.ui.{modulename}.ReportConfigureGroup" label="{modulename}_group" name="reportConfigureGroup">
+        <Dimension height="661" width="736" x="5" y="5"/>
+        <GuiElement name="reportStaticImage" visible="true">
+          <StaticImage src="{Modulename}_configure.png">
+            <Dimension height="68" width="77" x="15" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSearchButton" name="reportSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="86" x="336" y="110"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportRecordLayoutButton" name="reportRecordLayoutButton" visible="true">
+          <Button label="Layout">
+            <Dimension height="20" width="111" x="110" y="53"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportDeleteRecordButton" name="reportDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="336" y="53"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportUpdateRecordButton" name="reportUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="86" x="336" y="213"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportRecordPreviewButton" name="reportRecordPreviewButton" visible="true">
+          <Button label="Preview">
+            <Dimension height="20" width="85" x="235" y="53"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSearchNameText" inputHint="Report Name" name="reportSearchNameText" tabIndex="1" visible="true">
+          <LocalInputField>
+            <TextInput>
+              <Dimension height="20" width="287" x="28" y="110"/>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="reportLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Report Configuration" valign="top">
+              <Dimension height="40" width="400" x="110" y="5"/>
+              <Font family="sans-serif" size="20" style="normal" weight="normal"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="reportHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="Schedule" valign="top">
+              <Dimension height="20" width="526" x="15" y="298"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportEmailText" inputHint="User eMail Address" name="reportEmailText" tabIndex="2" visible="true">
+          <LocalInputField>
+            <TextInput>
+              <Dimension height="20" width="231" x="28" y="336"/>
+              <Caption halign="left" label="To" valign="top">
+                <Dimension height="20" width="70" x="28" y="317"/>
+                <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportFormatCombobox" name="reportFormatCombobox" tabIndex="2" visible="true">
+          <LocalInputField>
+            <ComboBox>
+              <Dimension height="20" width="166" x="28" y="389"/>
+              <Caption halign="left" label="Format" valign="top">
+                <Dimension height="20" width="70" x="28" y="370"/>
+                <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportHourCombobox" name="reportHourCombobox" tabIndex="2" visible="true">
+          <LocalInputField>
+            <ComboBox>
+              <Dimension height="20" width="51" x="28" y="435"/>
+              <Caption halign="left" label="Time" valign="top">
+                <Dimension height="20" width="70" x="28" y="416"/>
+                <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportMinuteCombobox" name="reportMinuteCombobox" tabIndex="2" visible="true">
+          <LocalInputField>
+            <ComboBox>
+              <Dimension height="20" width="48" x="97" y="435"/>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="reportLabel2" visible="true">
+          <Label>
+            <Caption halign="left" label=":" valign="top">
+              <Dimension height="20" width="15" x="83" y="435"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="reportLabel3" visible="true">
+          <Label>
+            <Caption halign="left" label="Day:" valign="top">
+              <Dimension height="21" width="60" x="28" y="479"/>
+              <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportMondayCheckbox" name="reportMondayCheckbox" tabIndex="3" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="499"/>
+              <Caption halign="left" label="Monday" valign="top">
+                <Dimension height="20" width="49" x="63" y="499"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportTuesdayCheckbox" name="reportTuesdayCheckbox" tabIndex="4" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="518"/>
+              <Caption halign="left" label="Tuesday" valign="top">
+                <Dimension height="20" width="55" x="63" y="518"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportWednesdayCheckbox" name="reportWednesdayCheckbox" tabIndex="5" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="537"/>
+              <Caption halign="left" label="Wednesday" valign="top">
+                <Dimension height="20" width="60" x="63" y="537"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportThursdayCheckbox" name="reportThursdayCheckbox" tabIndex="6" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="556"/>
+              <Caption halign="left" label="Thursday" valign="top">
+                <Dimension height="20" width="60" x="63" y="556"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportFridayCheckbox" name="reportFridayCheckbox" tabIndex="7" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="575"/>
+              <Caption halign="left" label="Friday" valign="top">
+                <Dimension height="20" width="40" x="63" y="575"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSaturdayCheckbox" name="reportSaturdayCheckbox" tabIndex="8" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="594"/>
+              <Caption halign="left" label="Saturday" valign="top">
+                <Dimension height="20" width="60" x="63" y="594"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSundayCheckbox" name="reportSundayCheckbox" tabIndex="9" visible="true">
+          <LocalInputField>
+            <CheckBox>
+              <Dimension height="16" width="16" x="42" y="613"/>
+              <Caption halign="left" label="Sunday" valign="top">
+                <Dimension height="20" width="55" x="63" y="613"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportName" name="reportName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="28" y="213"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="30" y="194"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="reportHeading2" visible="true">
+          <Heading>
+            <Caption halign="left" label="Common" valign="top">
+              <Dimension height="20" width="526" x="15" y="170"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportAccessmode" name="reportAccessmode" visible="true">
+          <LocalInputField tableField="accessmode">
+            <ComboBox>
+              <Dimension height="20" width="107" x="28" y="255"/>
+              <Value>private</Value>
+              <Value>shared</Value>
+              <Caption halign="left" label="Access mode" valign="top">
+                <Dimension height="20" width="70" x="29" y="236"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportUpdateSharedReportRecordButton" name="reportUpdateSharedReportRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="86" x="336" y="336"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="{Modulename} Preview" name="{modulename}_preview" visible="false">
+      <Group alias="report" border="false" browser="reportBrowser" eventHandler="jacob.event.ui.{modulename}.ReportPreviewGroup" label="Report" name="reportPreviewGroup">
+        <Dimension height="431" width="650" x="5" y="5"/>
+        <GuiElement name="reportStaticImage" visible="true">
+          <StaticImage src="{Modulename}_preview.png">
+            <Dimension height="68" width="77" x="15" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSearchButton" name="reportSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="101" x="330" y="110"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportDeleteRecordButton" name="reportDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="305" y="53"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="reportPreviewStyledText" visible="true">
+          <StyledText i18nkey="Enter your HTML styled text here or use a I18N Key.">
+            <Dimension height="186" width="576" x="15" y="210"/>
+          </StyledText>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportRecordPreviewLayoutButton" name="reportRecordPreviewLayoutButton" visible="true">
+          <Button label="Layout">
+            <Dimension height="20" width="96" x="115" y="53"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportRecordConfigureButton" name="reportRecordConfigureButton" visible="true">
+          <Button label="Configure">
+            <Dimension height="20" width="70" x="220" y="53"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportSearchNameText" inputHint="Report Name" name="reportSearchNameText" visible="true">
+          <LocalInputField>
+            <TextInput>
+              <Dimension height="20" width="300" x="15" y="110"/>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="reportLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Report Preview" valign="top">
+              <Dimension height="40" width="400" x="115" y="10"/>
+              <Font family="sans-serif" size="20" style="normal" weight="normal"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportRecordSaveAsButton" name="reportRecordSaveAsButton" visible="true">
+          <Button label="Save Output As..">
+            <Dimension height="20" width="121" x="390" y="53"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.{modulename}.ReportPreviewFormatCombobox" name="reportPreviewFormatCombobox" visible="true">
+          <LocalInputField>
+            <ComboBox>
+              <Dimension height="20" width="91" x="15" y="156"/>
+              <Caption halign="left" label="Preview Format" valign="top">
+                <Dimension height="20" width="92" x="14" y="138"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <ExternalForm label="{Modulename} Layout" name="{modulename}_layout" target="Content Area" url="{APPLICATION_WEBPATH}/{Modulename}/index.jsp" visible="false"/>
+  </Forms>
+  <Domains>
+    <Domain eventHandler="jacob.event.ui.{Modulename}Domain" name="{modulename}" title="{Modulename}" visible="true">
+      <Form>{modulename}_layout</Form>
+      <Form>{modulename}_configure</Form>
+      <Form>{modulename}_preview</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="module" title="module Application">
+      <Domain>{modulename}</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

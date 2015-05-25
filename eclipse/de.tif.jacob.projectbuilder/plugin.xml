@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+    <extension  point="org.eclipse.ui.newWizards">
+       <category 
+             name="jACOB"
+             id="de.tif.jacob"/>
+
+       <category 
+             parentCategory="de.tif.jacob"
+             name="Projects"
+             id="de.tif.jacob.projectbuilder"/>
+             
+    </extension>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.tif.jacob.projectbuilder"
+            name="Sample Wizards"/>
+      <wizard
+            category="de.tif.jacob.projectbuilder"
+            class="de.tif.jacob.projectbuilder.wizards.SampleNewWizard"
+            icon="icons/sample.gif"
+            id="de.tif.jacob.projectbuilder.wizards.SampleNewWizard"
+            name="Multi-page Editor file"/>
+   </extension>
+
+   
+   <extension
+         id="jACOBNature"
+         name="Open-jACOB Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="de.tif.jacob.projectbuilder.builder.JacobNature"/>
+      </runtime>
+      <builder id="de.tif.jacob.projectbuilder.JacobUtilBuilder"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/project.png"
+            id="de.tif.jacob.projectbuilder.image1"
+            natureId="de.tif.jacob.projectbuilder.jACOBNature"/>
+   </extension>
+
+</plugin>

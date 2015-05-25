@@ -1,0 +1,12 @@
+<client>
+	<name>Verside.org</name>
+	<version>1.0</version>
+	<author>
+		<name>Andreas Herz</name>
+		<email>a.herz@freegroup.de</email>
+		<twitter>WireInTheAir</twitter>
+	</author>
+	<url>http://www.verside.org/</url>
+	<twitter>WireInTheAir</twitter>
+	<description>Verside.org integration API</description>
+</client>

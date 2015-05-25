@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.docbook.org/xml/4.3/docbookx.dtd"[
+<!ENTITY % xinclude SYSTEM "file:/C:/Programme/Oxygen 5.0/frameworks/docbook/dtd/xinclude.mod" >
+%xinclude;
+<!ENTITY % local.common.attrib "xml:base CDATA #IMPLIED" >
+]>
+<sect1 id="sect_addUserManagement" label="6">
+    <title id="title_addUserManagement">Add a user management to happyHome</title>
+    <informaltable frame="none">
+        <tgroup rowsep="0" cols="2" align="left" colsep="0">
+            <colspec colwidth="1*"/>
+            <colspec colwidth="3*"/>
+            <tbody>
+                <row>
+                    <entry/>
+                    <entry rowsep="1"/>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Intention</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Our application can currently be accessed by every user without any
+                            authentication. This means also that every user can record employees,
+                            real estate objects and requests. </para>
+                        <para>We want to change this by introducing a password protection and by
+                            defining user roles. </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Password protection</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>A user should authenticate against the application by a login-Id and
+                            a password.</para>
+                        <para>Therefor we will have to do the following:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>extend our table <guilabel>person</guilabel> by the columns
+                                    <guilabel>loginId</guilabel> and <guilabel>password;</guilabel>
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>create an <glossterm linkend="uniqueIndex">unique
+                                    index</glossterm> on the column <guilabel>loginId</guilabel> to
+                                    avoid that one login-Id can be assigned to more than one
+                                    employee and </para>
+                            </listitem>
+                            <listitem>
+                                <para>add the textfield <guilabel>Login-Id</guilabel> to the form <guilabel>employee.</guilabel>
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>The initial value of the password will be an empty string. Each user
+                            can change his/her password individually via the <trademark>jACOB</trademark>
+                            functionality setPassword triggered by pressing the toolbar-button <guibutton>Password</guibutton>.</para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>User roles</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Our current data model has two types of employees: agents and
+                            receptionists. Each of these employee types is assigned to a decisive
+                            role. Their role is reflected in the <glossterm
+                            linkend="domain">domains</glossterm> we have previously defined:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>Agent:</para>
+                                <para>The role of an agent is to register real estate objects and
+                                    follow up customer requests. Therefore agents should only have
+                                    access to the <glossterm linkend="domain">domain</glossterm>
+                                    <guilabel>Agent</guilabel>. </para>
+                            </listitem>
+                            <listitem>
+                                <para>Receptionist:</para>
+                                <para>Receptionists have the role to register customer requests.
+                                    Thus, receptionists should only have access to the <glossterm linkend="domain">domain</glossterm>
+                                    <guilabel>Registration</guilabel>. </para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>User role administrator</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>We want to extend this data model by another employee type/role: </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>Administrator:</para>
+                                <para>The role of an administrator is to administrate employees,
+                                    i.e. agents, receptionists and also administrators. In doing so
+                                    he/she can assign one or more user roles to an employee. Hence,
+                                    administrators should only have access to the <glossterm linkend="domain">domain</glossterm>
+                                    <guilabel>Administration</guilabel>. </para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>Therefor we will have to do the following:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>extend our table <guilabel>person</guilabel> by another
+                                    column. The column <guilabel>administrator</guilabel> will
+                                    indicate whether an employee is an administrator;</para>
+                            </listitem>
+                            <listitem>
+                                <para>add a checkbox <guilabel>Administrator</guilabel> to the form <guilabel>employee</guilabel>;</para>
+                            </listitem>
+                            <listitem>
+                                <para>adapt the previously defined <glossterm
+                                        linkend="tableHook">table hook</glossterm>
+                                    beforeCommitAction of the <glossterm linkend="tableAlias">table alias</glossterm>
+                                    <guilabel>employee</guilabel> so that no exception is thrown in
+                                    case an employee is only an administrator and</para>
+                            </listitem>
+                            <listitem>
+                                <para>define the three user roles and assign them to the appropriate
+                                        <glossterm linkend="domain">domains</glossterm>.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>New structure of the table <guilabel>person</guilabel>
+                            </emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The outcome of this is that the table <guilabel>person</guilabel> will
+                            have the following new structure:</para>
+                        <xi:include href="TablePersonWithUserManagement.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>New layout of the form <guilabel>employee</guilabel>
+                            </emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Consequently the new layout of the form <guilabel>employee</guilabel>
+                            will be as illustrated below.</para>
+                        <para>
+                            <figure id="fig_formEmployeeWithUserManagement">
+                                <title> The form employee enabling user management</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata
+                                                fileref="./Screenshots/FormEmployeeWithUserManagement.jpg" format="JPEG"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Table hook beforeCommitAction</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> The <glossterm linkend="tableHook">table hook</glossterm>
+                            beforeCommitAction of the <glossterm linkend="tableAlias">table alias</glossterm>
+                            <guilabel>employee</guilabel> will be extended as follows:</para>
+                        <programlisting><![CDATA[
+public void beforeCommitAction(
+  IDataTableRecord tableRecord, 
+  IDataTransaction transaction) throws Exception
+{
+  // check agent, receptionist and administrator flags
+  boolean isAgent =
+    tableRecord.getintValue("agent") != 0;
+  boolean isReceptionist = 
+    tableRecord.getintValue("receptionist") != 0;
+  boolean isAdministrator =
+    tableRecord.getintValue("administrator") != 0;
+                                
+  if (!isAgent && !isReceptionist && !isAdministrator)
+    throw new UserException(
+      "The employee must be an agent, receptionist or admin");
+    
+  // compose full name
+  String fullname = tableRecord.getStringValue("firstName") +
+    " " + tableRecord.getStringValue("surname");
+  tableRecord.setValue(transaction, "fullname", fullname);
+    
+  // enforce the person to be an employee, i.e. internal flag
+  tableRecord.setValue(transaction, "personType", "internal");
+ }]]>
+</programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>User and UserFactory</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>The implementation of a dedicated user management implies an
+                            appropriate implementation of the <trademark>jACOB</trademark> class
+                            User and of the <trademark>jACOB</trademark> class UserFactory.
+                            Therefore we have to implement additional code to these two classes.
+                            Refer to the <trademark>jACOB</trademark> API documentation for further details.</para>
+                        <para>The files "User.java" and "UserFactory.java" can be found in the
+                            project directory of happyHome under "./java/jacob/security". For
+                            simplicity reasons the following listing presents only code fragments.
+                            The full Java code of these two classes can be found in the appendix
+                                <link linkend="app_codeForUserManagement" endterm="title_app_codeForUserManagement"/>.</para>
+                        <para>The constructor of the class User will be extended in the way that the
+                            user's role(s) are retrieved from the columns <guilabel>agent</guilabel>,
+                            <guilabel>receptionist</guilabel> and <guilabel>administrator</guilabel>
+                            of the table <guilabel>person</guilabel>:</para>
+                        <programlisting><![CDATA[
+protected User(UserFactory factory,
+  IDataTableRecord userRecord) throws Exception
+{
+  this.factory = factory;
+  this.loginId = userRecord.getStringValue("loginId");
+  this.key = userRecord.getStringValue("id");
+  this.fullName = userRecord.getStringValue("fullname");
+  this.email = userRecord.getStringValue("email");
+  this.passwd = userRecord.getStringValue("passwd");
+
+  // determine user roles
+  if (userRecord.getintValue("admin") == 1)
+    this.roles.add(new Role("admin"));
+  if (userRecord.getintValue("agent") == 1)
+    this.roles.add(new Role("agent"));
+  if (userRecord.getintValue("receptionist") == 1)
+    this.roles.add(new Role("receptionist"));
+}]]>
+                    </programlisting>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Procedure</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para> Perform the following steps to add the user management defined above
+                            to the application: </para>
+                        <para>
+                            <informaltable rowsep="1" colsep="1" frame="all">
+                                <tgroup cols="2">
+                                    <colspec align="center" colwidth="1*"/>
+                                    <colspec align="left" colwidth="6*"/>
+                                    <thead>
+                                        <row>
+                                            <entry>Step</entry>
+                                            <entry align="center">Procedure</entry>
+                                        </row>
+                                    </thead>
+                                    <tbody>
+                                        <row>
+                                            <entry>
+                                                <para>1</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Extend the table <guilabel>person</guilabel>
+                                                  by the columns <guilabel>loginId</guilabel>,
+                                                  <guilabel>passwd</guilabel> and
+                                                  <guilabel>administrator</guilabel> as stated above.</para>
+                                                <para>Create an unique index on the column <guilabel>loginId</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>2</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Add the textfield
+                                                  <guilabel>Login-Id</guilabel> and the checkbox
+                                                  <guilabel>Administrator</guilabel> to the form
+                                                  <guilabel>employee</guilabel>. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>3</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Extend the table hook beforeCommitAction of
+                                                  the table alias <guilabel>employee</guilabel> as
+                                                  listed above. </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>4</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create the role <guilabel>agent</guilabel>.</para>
+                                                <para>To do this select the folder <guilabel>User
+                                                  roles</guilabel> in the <guilabel>Application
+                                                  Outline</guilabel> view and choose
+                                                  <guimenuitem>New user role</guimenuitem>
+                                                  from the right mouse button menu.</para>
+                                                <para>Enter the name "agent" into the dialog window
+                                                  and confirm.</para>
+                                                <para>Hereupon, <trademark>jACOB</trademark>
+                                                  Designer will create the user role
+                                                  <guilabel>agent</guilabel> in the folder
+                                                  <guilabel>User roles</guilabel>.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>5</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Define the user role of agents.</para>
+                                                <para>Therefor open the domain
+                                                  <guilabel>agent</guilabel> in the
+                                                  <guilabel>Domain</guilabel> editor by
+                                                  double clicking on the domain.</para>
+                                                <para>In the <guilabel>Domain</guilabel> editor tag
+                                                  the role <guilabel>agent</guilabel>.</para>
+                                                <para>
+                                                  <screenshot>
+                                                  <mediaobject>
+                                                  <imageobject>
+                                                  <imagedata
+                                                  fileref="./Screenshots/DomainEditor.jpg" format="JPEG"/>
+                                                  </imageobject>
+                                                  </mediaobject>
+                                                  </screenshot>
+                                                </para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>6</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Create and define the user roles
+                                                  <guilabel>receptionist</guilabel> and
+                                                  <guilabel>administrator</guilabel> in the same way.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>7</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Save your changes by clicking on the
+                                                  <guibutton>Save</guibutton> icon <guiicon>
+                                                  <inlinemediaobject>
+                                                  <imageobject>
+                                                  <imagedata format="GIF" scalefit="1"
+                                                  fileref="./Icons/sample.gif"
+                                                  width="10" depth="10"/>
+                                                  </imageobject>
+                                                  </inlinemediaobject>
+                                                  </guiicon> in the upper left screen area.</para>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry>
+                                                <para>8</para>
+                                            </entry>
+                                            <entry>
+                                                <para>Implement the code of the Java classes User
+                                                  and UserFactory as listed in the appendix <link
+                                                  linkend="app_codeForUserManagement" endterm="title_app_codeForUserManagement"/>.</para>
+                                                <para>The files "User.java" and "UserFactory.java"
+                                                  can be found in the project directory of
+                                                  happyHome under "./java/jacob/security".</para>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry>
+                        <para>
+                            <emphasis>Impact</emphasis>
+                        </para>
+                    </entry>
+                    <entry rowsep="1">
+                        <para>Now we have added a user management to our application happyHome. The
+                            users will have to authenticate against the application and will only be
+                            able to perform the actions associated with the user role(s).</para>
+                        <para>The <trademark>jACOB</trademark> Designer decorates all <glossterm
+                            linkend="domain">domains</glossterm> assigned to at least one user role
+                            with a lock symbol:</para>
+                        <para>
+                            <figure id="fig_domainsAssignedToUserRoles">
+                                <title id="title_fig_domainsAssignedToUserRoles"> Domains assigned
+                                    to user roles</title>
+                                <screenshot>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="./Screenshots/AddUserManagement.jpg"
+                                                format="JPEG" scalefit="1" width="183" depth="187"/>
+                                        </imageobject>
+                                    </mediaobject>
+                                </screenshot>
+                            </figure>
+                        </para>
+                    </entry>
+                </row>
+                <row>
+                    <entry/>
+                    <entry/>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+</sect1>

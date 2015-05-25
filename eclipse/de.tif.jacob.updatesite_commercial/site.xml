@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.tif.jacob.components.candystick.feature_1.0.2.jar" id="de.tif.jacob.components.candystick.feature" version="1.0.2"/>
+   <feature url="features/de.tif.jacob.components.flotr.feature_1.0.5.jar" id="de.tif.jacob.components.flotr.feature" version="1.0.5"/>
+   <feature url="features/de.tif.jacob.components.progressbar.feature_1.0.6.jar" id="de.tif.jacob.components.progressbar.feature" version="1.0.6"/>
+   <feature url="features/de.tif.jacob.components.searchbrowser_contextmenu.feature_1.0.2.jar" id="de.tif.jacob.components.searchbrowser_contextmenu.feature" version="1.0.2"/>
+   <feature url="features/de.tif.jacob.module.importer.feature_1.0.8.jar" id="de.tif.jacob.module.importer.feature" version="1.0.8"/>
+</site>
