@@ -1,0 +1,347 @@
+'NAME = "LocationNew"
+'TYPE = 0
+'TEMPLATE = "Sub LocationNew()"
+'TEXT = [[
+'****************************************************************************
+'Script:       LocationNew
+'Purpose:      Business rules that are executed when a New Calllocation is entered
+'Copyright:    Tarrragon,2003
+'****************************************************************************
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallLocationGroup As SGroup
+Dim iObjectLocationTable As DBTable
+Dim iObjectLocationRec As DBRecord
+
+Sub LinkForeignValue( sForeignGUIFieldName As String, sFieldName As String, sTablename As String)
+Dim sKey As String
+Dim sName As String	
+	  sKey = iObjectLocationRec.GetValue(sFieldName)
+	  If sKey <> "" Or sKey <> "NULL" THEN
+	  	sName = iNetwork.GetTable(sTablename).GetValueWhere("name","pkey","=" & sKey)
+	  	If sName <> "" Then
+	   		iCallLocationGroup.SetForeignValue sForeignGUIFieldName, sName, sKey
+	  	End If 
+	  End If
+End Sub
+Sub LocationNew()
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+	Set iCallLocationGroup = iApp.ContextGroup  
+	If iCallLocationGroup.Mode <> MODE_NEW Then Exit Sub
+	Set iObjectLocationTable = iNetwork.GetTable("objectlocation")
+	If iObjectLocationTable.RecordCount <> 1 Then Exit Sub
+	Set iObjectLocationRec = iObjectLocationTable.GetRecord(0)
+	' Site
+		LinkForeignValue "locationSite", "site_key", "faplissite" 
+	'Sitepart
+		LinkForeignValue "locationSitepart", "sitepart_key", "faplissitepart" 
+	'Building	
+		LinkForeignValue "locationBuilding", "building_key", "faplisbuilding" 
+	'Buildingpart	
+		LinkForeignValue "locationBuildingpart", "buildingpart_key", "faplisbuildingpart" 
+	'floor
+		LinkForeignValue "locationFloor", "floor_key", "faplisfloor" 
+	'plane	
+		LinkForeignValue "locationPlane", "plane_key", "faplisplane" 
+	'room	
+		LinkForeignValue "locationRoom", "room_key", "faplisroom" 
+	'b-axis	
+		LinkForeignValue "locationBaxis", "baxis_key", "faplisbaxis" 
+	'z-axis	
+		LinkForeignValue "locationZaxis", "zaxis_key", "fapliszaxis" 
+	iCallLocationGroup.SetValue "locationNote", iObjectLocationRec.GetValue("note")
+	iCallLocationGroup.SetValue "locationOrientation", iObjectLocationRec.GetValue("orientation")
+	iCallLocationGroup.Update
+Exit Sub
+Error_handler:
+    iApp.UserMsg "NewObject error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GotoLocation"
+'TYPE = 0
+'TEMPLATE = "Sub GotoLocation()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       GotoLocation
+'Purpose:      GUI script to jump to location form
+'Type:	       GUI Rule
+'Copyright:    Quartess MDo, 2002
+'*****************************************************************************
+
+Sub GotoLocation()
+Dim iApp As Application
+Dim iObjLocationGroup As SGroup
+Dim iForm As SForm
+Dim sKey As String
+Dim sName As String	
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iForm = iApp.ContextForm
+	Set iObjLocationGroup = iForm.GetGroup("objectlocation")	
+	iApp.ContextFocus.ShowForm "location"
+
+	Set iCallLocationGroup = iApp.ContextFocus.GetForm( "location" ).GetGroup("location")  
+	iCallLocationGroup.Clear
+	' Site
+	  sName = iObjLocationGroup.GetValue("objectlocationSite")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationSite") 		
+	  	iCallLocationGroup.SetForeignValue "locationSite",sName,sKey
+	  End If 
+	'Sitepart	
+	  sName = iObjLocationGroup.GetValue("objectlocationSitepart")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationSitepart") 		
+	  	iCallLocationGroup.SetForeignValue "locationSitepart",sName,sKey 
+	  End If 
+	'Building	
+	  sName = iObjLocationGroup.GetValue("objectlocationBuilding")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationBuilding") 		
+	  	iCallLocationGroup.SetForeignValue "locationBuilding",sName,sKey 
+	  End If 
+	'Buildingpart	
+	  sName = iObjLocationGroup.GetValue("objectlocationBuildingpart")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationBuildingpart") 		
+	  	iCallLocationGroup.SetForeignValue "locationBuildingpart",sName,sKey 
+	  End If 	
+	'floor
+	  sName = iObjLocationGroup.GetValue("objectlocationFloor")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationFloor") 		
+	  	iCallLocationGroup.SetForeignValue "locationFloor",sName,sKey 
+	  End If 	
+	'plane	
+	  sName = iObjLocationGroup.GetValue("objectlocationPlane")
+	  If sName <> "" Then
+		sKey = iObjLocationGroup.GetForeignKey("objectlocationPlane") 		
+	  	iCallLocationGroup.SetForeignValue "locationPlane",sName,sKey 
+	  End If 	
+	iCallLocationGroup.SetValue "locationNote", iObjLocationGroup.GetValue("objectlocationNote")
+	iCallLocationGroup.NewRec
+	iCallLocationGroup.Update
+Exit Sub
+Error_handler:
+    iApp.UserMsg "GotoObject error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "LocationUpdate"
+'TYPE = 0
+'TEMPLATE = "Function LocationUpate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       LocationUpate
+'Purpose:      Business rules that are executed when a calllocation is updated.
+'Copyright:    Quartess Corporation, 2002
+'*****************************************************************************
+'Option Explicit
+Dim iApp As Application
+Dim iLocationUpdateRec As DBRecord
+
+Function GetLinkedValue( sTable As String, sField As String, sKeyName As String) As String
+Dim sValue As String
+ sValue = ""
+ If iLocationUpdateRec.GetValue( sKeyName) = "" Or iLocationUpdateRec.GetValue( sKeyName) = "NULL" Then Goto Exit_Function	
+ If iLocationUpdateRec.HasLinkedRecord( sTable) Then
+	sValue = iLocationUpdateRec.GetLinkedRecord( sTable ).GetValue(sField) 
+ End If
+Exit_Function:
+ GetLinkedValue = sValue
+End Function
+
+'-------------------------------------------
+
+Function LocationUpate() As Boolean
+Dim  sDescription As String
+On Error Goto Error_handler
+    Set iApp = GetApp
+    Set iLocationUpdateRec = iApp.ContextRecord
+	sDescription = iLocationUpdateRec.GetValue("note")
+	if sdescription <> "" Then
+   		sDescription = sDescription & "-" & GetLinkedValue ("faplissite","shortname", "site_key")
+	else
+   		sDescription =  GetLinkedValue ("faplissite","shortname", "site_key")
+	End If
+
+	sDescription = sDescription & "/" & GetLinkedValue ("faplissitepart","shortname", "sitepart_key" )
+	sDescription = sDescription & "/" & GetLinkedValue ("faplisbuilding","shortname" ,"building_key")
+	sDescription = sDescription & "/" & GetLinkedValue ("faplisbuildingpart","shortname", "buildingpart_key" )
+	sDescription = sDescription & "/" & GetLinkedValue ("faplisplane","shortname" , "plane_key")
+	sDescription = sDescription & "/" & GetLinkedValue ("faplisroom","shortname" , "room_key")
+	sDescription = sDescription & "/" & GetLinkedValue ("faplisbaxis","shortname", "baxis_key" )
+	sDescription = sDescription & "-" & GetLinkedValue ("fapliszaxis","shortname" , "zaxis_key")
+	
+
+	If right$(sDescription,7) ="//////-" and iLocationUpdateRec.GetValue("note") <> "" Then
+	   sDescription =  iLocationUpdateRec.GetValue("note")	
+	End If
+	iLocationUpdateRec.SetValue "description", left$(sDescription,120)
+	LocationUpate =True
+ Error_handler:
+    Set iLocationUpdateRec = Nothing
+    Set iApp = Nothing
+	
+	
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ObjLocationUpdate"
+'TYPE = 0
+'TEMPLATE = "Function ObjLocationUpate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ObjLocationUpate
+'Purpose:      Business rules that are executed when a OBJlocation is updated.
+'Copyright:    Quartess Corporation, 2002
+'*****************************************************************************
+Dim iApp As Application
+Dim iLocationRec As DBRecord
+
+Function GetLinkedValue( sTable,sField ) As String
+Dim sValue As String
+ sValue = ""
+ If iLocationRec.HasLinkedRecord( sTable) Then
+	sValue = iLocationRec.GetLinkedRecord( sTable ).GetValue(sField) 
+ End If
+ GetLinkedValue = sValue
+End Function
+
+'-------------------------------------------
+
+Function ObjLocationUpate() As Boolean
+Dim  sDescription As String
+
+On Error GoTo objloc_error_handler
+    Set iApp = GetApp
+    Set iLocationRec = iApp.ContextRecord
+	
+	sDescription = GetLinkedValue ("objfaplissite","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplissitepart","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplisbuilding","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplisbuildingpart","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplisplane","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplisroom","name" )
+	sDescription = sDescription & "/" & GetLinkedValue ("objfaplisbaxis","name" )
+	sDescription = sDescription & "-" & GetLinkedValue ("objfapliszaxis","name" )
+	iLocationRec.SetValue "description", left$(sDescription,50)
+	ObjLocationUpate =True
+Exit Function
+objloc_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "AcceptCall error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

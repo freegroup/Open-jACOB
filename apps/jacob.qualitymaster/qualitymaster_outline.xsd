@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/qualitymaster_outline" xmlns:tns="http://www.example.org/qualitymaster_outline">
+	<element name="CastorResponse">
+		<complexType>
+				<choice>
+				<element name="CastorDefect" maxOccurs="unbounded" minOccurs="0">
+					<complexType>
+						<attribute name="pkey" type="string"></attribute>
+						<attribute name="priority" type="string"></attribute>
+						<attribute name="state" type="string"></attribute>
+						<attribute name="createDate" type="string"></attribute>
+						<attribute name="subject" type="string"></attribute>
+					</complexType>
+				</element>
+					<element name="ErrorMessage" type="string" maxOccurs="1" minOccurs="0"></element>
+				</choice>
+		</complexType>
+	</element>
+
+</schema>

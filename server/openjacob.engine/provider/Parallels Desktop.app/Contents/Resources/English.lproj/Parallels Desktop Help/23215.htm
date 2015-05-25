@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta name="description" content="Add a new or existing virtual hard disk to your virtual machine or use your Boot Camp partition as a hard disk in your virtual machine." />
+
+<meta name="description" content="Configure your virtual hard disk to use either a hard disk image file created together with your virtual machine or a Boot Camp partition." />
+
+<title> Festplatteneinstellungen </title>
+<meta name="Keywords" content="Erstellen	virtuelle Festplatten, Festplatte	BootCamp als Festplatte verwenden, Festplatte	Festplatte konfigurieren, Festplatte	IDE- und SCSI-Schnittstellen, Festplatten-Image	als virtuelle Festplatte verwenden, Festplatten-Image	virtuelles Festplatten-Image neu erstellen, IDE-Geräte in Virtual Machine	Festplatten, Virtuelle Festplatte	IDE- und SCSI-Schnittstellen, Virtuelle Festplatte	konfigurieren, Virtuelle Festplatte	neues virtuelle Festplatte erstellen" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22289.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22249.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Festplatteneinstellungen</h3>
+<p class="bodytext">Im Bereich <strong class="specialbold">Festplatte</strong> der Konfiguration der virtuellen Maschine können Sie die Einstellungen für die virtuelle Festplatte anzeigen und konfigurieren. In der aktuellen Version von Parallels Desktop können virtuelle Maschinen Festplatten-Images im <code class="monospace">HDD</code>-Format sowie Windows Boot Camp-Partitionen verwenden.</p>
+<p class="bodytext">          <strong class="buttons">Hinweis:</strong> Sie können bis zu vier IDE-Geräte (Festplatten und CD/DVD-ROM-Laufwerke) und 15 SCSI-Geräte mit einer virtuellen Maschine verbinden. Jedes Gerät ist einzeln in der Konfiguration der virtuellen Maschine aufgeführt und hat eine eigene Nummer.        </p>
+<p class="bodytext">          <img src="pd_ce_harddisk.gif" alt="Festplatten-Optionen" height="393" width="561" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Im Feld <strong class="specialbold">Quelle</strong> wird die Datei der virtuellen Festplatte (<code class="monospace">.hdd)</code> angegeben, die die Festplatte der virtuellen Maschine emuliert. Die Quelle der Festplatte lässt sich ändern:</p>
+<ul class="listbullet"><li class="listbullet">Wenn Sie eine <a id="h22431" class="jumptemplate" title="Verwenden der Boot Camp-Partition in einer virtuellen Maschine" href="22183.htm" target="_self">Boot Camp-Partition</a> als Festplatte für die virtuelle Maschine verwenden möchten, klicken Sie auf das Feld <strong class="specialbold">Quelle</strong> und wählen in der Liste den Namen der Boot Camp-Partition.</li><li class="listbullet">Wenn Sie die Datei der virtuellen Festplatte als Festplatte der virtuellen Maschine verwenden möchten, klicken Sie auf das Feld <strong class="specialbold">Quelle</strong> und wählen die Datei der virtuellen Festplatte aus der Liste oder Sie klicken auf <strong class="specialbold">Imagedatei wählen</strong> und geben den Pfad zur gewünschten Imagedatei (<code class="monospace">.hdd</code>) auf dem Mac ein.</li></ul><p class="bodytext">Geben Sie im Feld <strong class="specialbold">Ort</strong> den Schnittstellentyp für die Einbindung des Gerätes an:</p>
+<ul class="listbullet"><li class="listbullet">          <strong class="specialbold">IDE</strong>. Mit diesem Schnittstellentyp können Sie bis zu vier virtuelle Geräte (Festplatten und CD/DVD-Laufwerke) einbinden.</li><li class="listbullet">          <strong class="specialbold">SCSI</strong>. Mit diesem Schnittstellentyp können Sie bis zu 15 virtuelle Geräte (Festplatten und CD/DVD-Laufwerke) einbinden.</li></ul><p class="note">          <strong class="buttons">Hinweis:</strong> 1. Das Gastbetriebssystem Mac OS X unterstützt keine SCSI-Controller. In den jüngsten Linux-Distributionen (z. B. RHEL 5.3) wird der SCSI-Treiber evtl. nicht installiert. In diesem Fall müssen Sie den Treiber im Linux-Gastbetriebssystem installieren, um den SCSI-Controller benutzen zu können.</p>
+<p class="note">2. Der Standort SCSI 7:0 steht nicht zur Auswahl, da er vom SCSI-Controller selbst belegt wird.</p>
+<p class="subheading">Festplatte komprimieren</p>
+<p class="bodytext">Wenn Sie eine <a id="h27600" class="jumptemplate" title="Unterstützung für virtuelle und reale Festplatten" href="23580.htm" target="_self">expandierende</a> virtuelle Festplatte in der virtuellen Maschine verwenden, nimmt die Größe der Imagedatei auf der physischen Festplatte zu, je mehr Daten zur virtuellen Festplatte hinzugefügt werden. Beim Löschen von Daten auf der virtuellen Festplatte wird zwar nicht genutzter Speicherplatz freigegeben, doch der Speicherplatz, den die virtuelle Maschine auf der Festplatte des Mac belegt, verringert sich nicht. Um nicht genutzten Speicherplatz wieder auf dem Mac verfügbar zu machen, klicken Sie auf die Taste <strong class="specialbold">Komprimieren</strong>. Daraufhin wird die virtuelle Festplatte komprimiert und die Imagedatei der virtuellen Festplatte wird verkleinert. Anschließend steht auf der Festplatte des Mac wieder mehr Speicherplatz zur Verfügung.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Die Option <strong class="specialbold">Komprimieren</strong> ist nur Windows virtuelle Maschinen verfügbar. Komprimierung kann nur für virtuelle Maschinen ohne <a id="h22610" class="jumptemplate" title="Arbeiten mit Snapshots" href="22609.htm" target="_self">Snapshots</a> durchgeführt werden und wenn die Option <a id="h30295" class="jumptemplate" title="Rückgängig-Datenträger" href="30294.htm" target="_self">Rückgängig-Datenträger</a> deaktiviert wurde.</p>
+<p class="bodytext">Im Bereich <strong class="specialbold"><a id="h30288" class="jumptemplate" title="Optimierungseinstellungen" href="26699.htm" target="_self">Optimierung</a></strong> der Konfiguration der virtuellen Maschine können Sie die regelmäßige automatische Festplattenkomprimierung aktivieren. </p>
+<p class="subheading">Größe der Festplatte ändern</p>
+<p class="bodytext">Wenn Sie feststellen, dass die Kapazität der Festplatte Ihrer virtuellen Maschine Ihren Anforderungen nicht mehr entspricht, können Sie die Größe ändern. Klicken Sie auf die Schaltfläche <strong class="specialbold">Größe ändern</strong> und das Dialogfenster zum Ändern der Festplattengröße erscheint.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Falls Ihre virtuelle Maschine nicht ausgeführt wird, über Snapshots verfügt oder eine Boot Camp-Partition als virtuelle Festplatte verwendet, dann kann die Größe der virtuellen Festplatte nicht geändert werden.</p>
+<p class="bodytext">          <img src="pd_ce_harddisk_resize.gif" alt="PD CE - Größe der Festplatte ändern" height="151" width="330" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Um die Größe der Festplatte zu ändern, verschieben Sie den Regler oder geben Sie die neue Größe in das Feld <strong class="specialbold">Größe</strong> ein. Wählen Sie die Option <strong class="specialbold">Größe des Dateisystems ändern</strong>, wenn Sie die Größe des Dateisystems ändern möchten:</p>
+<ul class="listbullet"><li class="listbullet">Wenn Sie die Option <strong class="specialbold">Größe des Dateisystems ändern</strong>, wenn Sie die Festplattengröße vergrößern, wird der zusätzliche Festplattenplatz zum letzten Laufwerk hinzugefügt. Falls Sie die Option <strong class="specialbold">Größe des Dateisystems ändern</strong> deaktivieren, wird der hinzugefügte Speicherplatz als nicht zugewiesener Platz angezeigt und für das Gastbetriebssystem nicht erkennbar sein. Um diesen Platz zuzuweisen, können Sie eine neue Partition erstellen oder eine bestehende Partition erweitern. Informationen über die Zuweisung von neuem Speicherplatz finden Sie unter <strong class="specialbold"><a id="h30895" class="jumptemplate" title="Initialisieren des neu hinzugefügten Speicherplatzes" href="30894.htm" target="_self">Initialisieren des neu hinzugefügten Speicherplatzes</a></strong>.</li><li class="listbullet">Wenn Sie die Option <strong class="specialbold">Größe des Dateisystems ändern</strong> auswählen, wenn die Festplattengröße verkleinert wird, dann wird die Festplattengröße verkleinert, indem der nicht zugewiesene Speicherplatz entfernt wird und indem die Größe der Festplattenpartitionen reduziert wird. Falls Sie das Option <strong class="specialbold">Größe des Dateisystems ändern</strong> deaktivieren, wenn die Festplattengröße verkleinert wird, dann können Sie nur den nicht zugewiesenen Speicherplatz entfernen und die Partitionen der Festplatte bleiben unverändert. </li></ul><p class="bodytext">          Wenn die Konfiguration der virtuellen Maschine vor weiteren, nicht authorisierten Änderungen geschützt werden soll, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Einstellungen in einem Bereich der Konfiguration der virtuellen Maschine ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30334" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

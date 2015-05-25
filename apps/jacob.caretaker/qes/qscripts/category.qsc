@@ -1,0 +1,3925 @@
+'NAME = "UpLevel"
+'TYPE = 0
+'TEMPLATE = "Sub UpLevel()"
+'TEXT = [[
+
+
+'*****************************************************************************
+'Script:       UpLevel
+'Purpose:      Move up a category level - parse the category name, looking
+'              for '/' separator characters. Strip off the end, and search
+'              on the rest.
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+Dim iCategoryTable As DBTable
+
+Sub Clear()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iFocus.Clear
+	Else
+		iGroup.Clear
+	End If
+End Sub
+Sub Search()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iApp.ContextBrowser.Search "r_category",2
+	Else
+		iApp.ContextBrowser.Search "cqlocal",1
+	End If
+End Sub
+
+Sub UpLevel()
+Dim sName As String
+
+
+	Set iApp = GetApp()
+	Set iFocus = iApp.ContextFocus()
+	Set iForm = iApp.ContextForm()
+	Set iGroup = iApp.ContextGroup()
+	Set iNetwork = iApp.ContextNetwork()
+	If iGroup.GetCurrentRecord.GetValue("parentcategory_key") = "NULL" Or iGroup.GetCurrentRecord.GetValue("parentcategory_key") = "" Then Exit Sub
+
+	Set iCategoryTable = iApp.ContextNetwork.GetTable("category")
+	sKeyValue = iGroup.GetCurrentRecord.GetValue("parentcategory_key")
+		 
+    Clear
+	iCategoryTable.Clear
+	iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+	iCategoryTable.QBESetValue "pkey" , sKeyValue
+
+	Search	
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryUpdate()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       CategoryUpdate
+'Purpose:      Business rules that are executed when a category is updated.
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub CategoryUpdate()
+' Database record modifications.  No GUI required.
+Dim nParentLevel As Integer
+Dim sParentLevel As String
+Dim bHasQCall As Boolean
+Dim bIsParent As Boolean
+Dim sParentKey As String
+Dim iCategoryTable As DBTable
+Dim iCategoryRec As DBRecord
+Dim bRes As Boolean
+
+    Set iCategoryRec = GetApp.ContextRecord
+
+    ' Set has_template if there is a quick call linked
+    'bHasQCall = iCategoryRec.HasLinkedRecord("quickcall")
+    'If bHasQCall Then
+    '    iCategoryRec.SetValue "has_template", "1"
+    'Else
+    '    iCategoryRec.SetValue "has_template", "0"
+    'End If
+    'bIsParent = iCategoryRec.GetTable.InDatabase("parentcategory_key",iCategoryRec.GetValue("pkey"))
+    'If Not bIsParent Then
+    '    iCategoryRec.SetValue "hasobject", "1"
+    'Else
+   '     iCategoryRec.SetValue "hasobject", "0"
+    'End If
+
+    ' Set the level according to category name
+	sParentKey = iCategoryRec.GetValue("parentcategory_key")
+	If Not ((sParentKey = "" ) Or (sParentKey = "NULL" )) Then
+		Set iCategoryTAble = GetApp.ContextTable
+		sParentLevel = iCategoryTable.GetValueWhere("categorylevel","pkey",sParentKey)
+    	iCategoryRec.SetValue "categorylevel", CStr(val(sParentLevel)+1)
+	Else 
+    	iCategoryRec.SetValue "categorylevel", "1"
+	End If
+    bRes = iCategoryRec.WriteHistory("history")
+	
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "DownLevel"
+'TYPE = 0
+'TEMPLATE = "Sub DownLevel()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       DownLevel
+'Purpose:      Business rule that is executed when moving down a category level
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+Dim iCategoryTable As DBTable
+
+Sub Clear()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iFocus.Clear
+	Else
+		iGroup.Clear
+	End If
+End Sub
+Sub Search()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iApp.ContextBrowser.Search "r_category",2
+	Else
+		iApp.ContextBrowser.Search "cqlocal",1
+	End If
+End Sub
+
+Sub DownLevel()
+Dim sName As String
+
+
+	Set iApp = GetApp()
+	Set iFocus = iApp.ContextFocus()
+	Set iForm = iApp.ContextForm()
+	Set iGroup = iApp.ContextGroup()
+	Set iNetwork = iApp.ContextNetwork()
+
+	Set iCategoryTable = iApp.ContextNetwork.GetTable("category")
+
+        sName = iGroup.GetCurrentRecord.GetValue("name")
+		sKeyValue = iGroup.GetValue("categoryPkey") 
+		iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+
+        If Len(sName) <> 0 Then
+            Clear
+			iCategoryTable.Clear
+			iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+			iCategoryTable.QBESetValue "parentcategory_key" , sKeyValue
+            iGroup.SetForeignValue "categoryParentcategory", sName, sKeyValue
+        End If
+		Search	
+        'Check for upper bound on sLevel
+        If iApp.ContextBrowser.RecordCount = 0 Then
+		   	Clear
+			iCategoryTable.Clear
+	   		iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+			iCategoryTable.QBESetValue "pkey" , sKeyValue
+            iGroup.SetValue "categoryPkey", sKeyValue 
+			Search
+		End If
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TopLevel"
+'TYPE = 0
+'TEMPLATE = "Sub TopLevel()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       TopLevel
+'Purpose:      Move to the top category level
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+Dim iCategoryTable As DBTable
+
+Sub Clear()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iFocus.Clear
+	Else
+		iGroup.Clear
+	End If
+End Sub
+Sub Search()
+	If iFocus.Name = "Stammdaten" Or iFocus.Name ="Administration" Then
+		iApp.ContextBrowser.Search "r_category",2
+	Else
+		iApp.ContextBrowser.Search "cqlocal",1
+	End If
+End Sub
+
+Sub TopLevel()
+
+	Set iApp = GetApp()
+	Set iForm = iApp.ContextForm()
+	Set iGroup = iApp.ContextGroup()
+	Set iFocus = iApp.ContextFocus()
+  	Set iCategoryTable = iApp.ContextNetwork.GetTable("category")
+		Clear
+	iCategoryTable.Clear
+	iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+	iCategoryTable.QBESetValue "parentcategory_key" , "NULL"
+		Search
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryDisable"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryDisable()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CategoryDisable
+'Purpose:      Business rules that disable the generic buttons in change or new mode. 
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+Sub CategoryDisable()
+Dim iApp As Application
+Dim iGroup As SGroup
+ 
+    On Error GoTo new_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+
+	' Disable the special buttons...
+	If iGroup.Mode = MODE_NEW Or iGroup.Mode = MODE_FILLED Then
+		iGroup.BtnEnable "categoryTop", False
+		iGroup.BtnEnable "categoryDwn", False
+		iGroup.BtnEnable "categoryUp",  False
+	End If
+    Exit Sub
+
+new_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "CategoryDisable error " & CStr(Err) & ": " & Error$
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "QuickTaskUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub QuickTaskUpdate()"
+'TEXT = [[
+Sub QuickTaskUpdate()
+
+' This routine is necessary to force a refresh of the GUI
+' after the database changes the format of the float and interval fields
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SystemLaunch"
+'TYPE = 0
+'TEMPLATE = "Sub SystemLaunch()"
+'TEXT = [[
+'*****************************************************************************
+' File:         SystemLaunch
+' Purpose:      Start a Program that spezified by a String
+' Copyright:    Quartess, 1998
+' *****************************************************************************
+Sub SystemLaunch()
+Dim iApp As Application
+Dim iCatRec As DBRecord
+Dim iCallRec As DBRecord
+Dim iGroup As SGroup
+Dim sGroupName As String
+Dim sSystem As String
+Dim id As Integer
+
+  On Error GoTo systemlaunch_error_handler
+  '-------------------------------------------------
+  Set iApp = GetApp()
+  Set iGroup = iApp.ContextGroup()
+  sGroupName = iGroup.name()
+  
+  If iGroup.Mode() <> MODE_FILLED Then 
+	 iApp.UserMsg " Es ist kein Datensatz selektiert."
+     Exit Sub
+  End If	
+
+' get the record of the category
+  If sGroupname ="callManage" Then
+       Set iCallRec = iGroup.GetCurrentRecord()
+	   If iCallRec.HasLinkedRecord("category") Then
+		  Set iCatRec = iCallRec.GetLinkedRecord("category")
+	   Else
+          iApp.UserMsg " Es ist kein Gewerk ausgewählt "
+          Exit Sub
+	   End If
+  Else
+       Set iCatRec = iGroup.GetCurrentRecord()
+  End If
+  sSystem = iCatRec.GetValue("description")
+  If sSystem <>"" Then
+	 id=Shell(sSystem,ebNormalFocus)
+  End If
+  Exit Sub
+ '-------------------------------------------------
+systemlaunch_error_handler:
+  iApp.UserMsg "SystemLaunch error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategorySearch"
+'TYPE = 0
+'TEMPLATE = "Function CategorySearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CategorySearch
+'Purpose:      Before searching in the category table:
+'              check the GUI object categoryAktiv.
+'              Set the object to "Ja" if it has not been set by the user
+'              to avoid selecting inactive categories
+'Notes:        GUI, accesses the GUI objects,
+'              appended to the button "categorySearch"
+'Copyright:    Quartess, 1998
+'*****************************************************************************
+
+Function CategorySearch() As Boolean
+Dim iApp As Application
+Dim iCategoryTable As DBTable
+Dim iBrowser As DBBrowser
+Dim iGroup As SGroup
+
+Const sObjName = "categoryStatus"
+
+	On Error GoTo categorysearch_error_handler
+	Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	Set iCategoryTable = iApp.ContextNetwork.GetTable("category")
+	Set iBrowser = iApp.ContextBrowser
+	iApp.ContextFocus.ApplyCurrentConstraints "r_category"
+	If iGroup.GetValue( sObjName ) = "" Then
+		iCategoryTable.QBESetValue "categorystatus" ,"Gültig|Keine Zuordnung"
+		'iGroup.SetValue sObjName, "Gültig|Keine Zuordnung"
+	End If
+	iBrowser.Search "r_category" ,1 	
+   '	nRecs = iGroup.Search( "r_category"	,1)
+	CategorySearch = False
+	Exit Function
+
+categorysearch_error_handler:
+	iApp.UserMsg "CategorySearch error " & CStr(Err) & ": " & Error$
+	Exit Function
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ImportRoutingTable"
+'TYPE = 0
+'TEMPLATE = "Sub ImportRoutingTable()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ImportRoutingTable
+'Purpose:      Script to import routing records 
+'Copyright:    Quartess, 2001
+'*****************************************************************************
+'Option Explicit
+
+Const SEPARATOR = ";" 'chr$(9) 'Tab
+Const sProcessKeyLst = "1,2,3,4,5,6,7"
+Const cNoGroup = "-"
+Const sLogFile = "Routing.log"
+'Global Varibles
+'Dim iApp As Object
+'Dim iNetwork As Object
+'Dim iTable As Object
+'Dim iCategoryTable As Object
+'Dim iProcessTable As Object
+'Dim iWorkgroupTable As Object
+'Dim iProcessRec As Object
+'Dim iCategoryRec As Object
+'Dim iWorkgroupRec As Object
+'Dim iRec As Object
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iCategoryTable As DBTable
+Dim iProcessTable As DBTable
+Dim iWorkgroupTable As DBTable
+Dim iProcessRec As DBRecord
+Dim iCategoryRec As DBRecord
+Dim iWorkgroupRec As DBRecord
+Dim iRec As DBRecord
+
+Dim sColumn() As String
+Dim nMaxColumns As Integer
+Dim nMaxRows As Integer
+Dim sTimestamp As String
+Dim sCurrentRow As String
+Dim bIsUnique As Boolean
+Dim bAbort As Boolean
+'----------------------------------------------------
+Sub Initialize( )
+Dim sFirstRow As String	
+On Error GoTo Error_handler
+   '	Viewport.Open
+  '	Viewport.Clear
+	Line Input #2,sFirstRow
+	nMaxColumns = ItemCount( sFirstRow, SEPARATOR )
+	If nMaxColumns < 1 	 Then
+		iApp.UserMsg "Source contains no Data"
+		Stop
+	End If
+	ReDim sColumn( nMaxColumns ) As String
+	sTimeStamp = Format(Now(),"dd-mm-yy hh:mm:ss")
+	Exit Sub
+Error_Handler:
+	iApp.UserMsg "Initialize error " & CStr(Err) & ": " & Error$
+End Sub
+
+'----------------------------------------------------
+Sub GetRow()
+Dim n As Long
+
+On Error GoTo Error_handler
+	Line Input #2, sCurrentRow
+	For n = 1 To nMaxColumns
+  		sColumn( n ) = item$( sCurrentrow, n,1, SEPARATOR )
+  	Next n
+	Exit Sub
+Error_Handler:
+	iApp.UserMsg "Initialize error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+'----------------------------------------------------
+'----------------------------------------------------
+Sub DeleteOldRecords()
+Dim nRecs As Long
+Dim i As Long
+On Error GoTo Error_handler
+  iTable. MaxRecords = -1
+	Msg.Open "Lösche Datensätze..",0,True,True
+
+  Do
+	iTable.Clear
+	iTable.Search
+	nRecs = iTable.RecordCount
+	For i = nRecs-1 To 0 Step -1 
+		iTable.DeleteRecord i
+		Msg.Thermometer = int((nRecs-i)/nRecs*100)
+	Next i
+	iTable.Commit
+  Loop Until nRecs = 0
+	Msg.Text="Inaktiviere Gewerke.."
+
+  iCategoryTable. MaxRecords = -1
+
+  Do
+	iCategoryTable.Clear
+	iCategoryTable.QBEClear
+	iCategoryTable.QBESetValue "aktiv", "Ja"
+	iCategoryTable.Search
+	nRecs = iCategoryTable.RecordCount
+	For i = 0 To nRecs-1 
+		Set iCategoryRec = iCategoryTable.GetRecord(i)
+		iCategoryRec.SetValue "aktiv", "Nein"
+ 		iCategoryTable.Commit
+		Msg.Thermometer = int(i/nRecs*100)
+	Next i
+  Loop Until nRecs = 0
+
+
+   Msg.Close
+Exit Sub
+Error_Handler:
+	iApp.UserMsg "DeleteOldRecords error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+'----------------------------------------------------
+Sub WriteEventLog(sMsg As String)
+Dim sMessage As String
+Dim sFileName As String
+
+On Error GoTo Error_handler
+	If FreeFile() <= 1 Then
+		sFileName = Environ$( "TEMP" )
+		If ( sFileName = "" ) Then sFileName = Environ$( "TMP" )
+		If ( sFileName = "" ) Then sFileName = "C:\"
+		If ( Right$( sFileName, 1 ) <> "\" ) Then sFileName = sFileName & "\"
+		sFileName = sFileName & sLogFile
+		Open sFileName For Output Lock Write As #1
+	End If
+
+	sMessage ="[" & Format$( Now(),"dd-mm-yy:hh:mm:ss") & "] " & sMsg 
+	Print #1, sMessage
+	'Print sMessage
+	Exit Sub
+
+Error_Handler:
+	If ( Err.Number And 65535 ) = 18 Then ' cancel
+		bAbort = True
+		Resume
+	Else
+		iApp.UserMsg "WriteEventlog error " & CStr(Err) & ": " & Error$
+	End If
+End Sub
+'----------------------------------------------------
+Function FindWorkgroupKey( sGroupName As String ) As String
+Dim sFkey As String
+Dim nRecs As Integer
+
+On Error GoTo Error_handler
+	sFKey =""
+	iWorkgroupTable.QBEClear
+ 	iWorkgroupTable.QBESetValue "name", "=" & sGroupName
+	iWorkgroupTable.Search
+	nRecs = iWorkgroupTable.RecordCount
+	If nRecs =0 Then 'No record found Add a new one
+		Set iWorkgroupRec = iWorkgroupTable.AddRecord
+		iWorkgroupRec.SetValue "name", sGroupName
+		iWorkgroupTable.Commit
+		WriteEventLog "Workgroup: " & sGroupName & " ist neu erzeugt!- Keine Gruppenmitglieder vorhanden!"
+		nRecs = 1
+	End If
+	If nRecs = 1 Then ' find one 
+		Set iWorkgroupRec = iWorkgroupTable.GetRecord(0)
+		sFKey = iWorkgroupRec. GetValue( "pkey" )
+	End If
+	Set iWorkgroupRec = Nothing
+GoTo Exit_Function
+Error_Handler:
+	sFkey = ""
+	MsgBox "FindCategoryKey error " & CStr(Err) & ": " & Error$
+Exit_Function:
+   FindWorkgroupKey = sFKey
+End Function
+'----------------------------------------------------
+Sub ImportRow( )
+
+Dim nRecs As Integer
+Dim nIndex As Integer
+Dim sFkey As String
+On Error GoTo Error_handler
+	For nIndex=2 To nMaxColumns
+		iCategoryTable.QBEClear
+ 		iCategoryTable.QBESetValue "name", "=" & sColumn(1)
+		iCategoryTable.Search
+  		nRecs = iCategoryTable.RecordCount
+   		If nRecs =0 Then 'No record found Add a new one
+			Set iCategoryRec = iCategoryTable.AddRecord
+			iCategoryRec.SetValue "name", sColumn(1)
+			iCategoryRec.SetValue "aktiv","Ja"
+			iCategoryRec.SetValue "standard","Ja"
+	 		iCategoryTable.Commit
+   		End If
+   		If  nRecs = 1 Then ' there is only one; fine
+			Set iCategoryRec = iCategoryTable.GetRecord(0)
+			iCategoryRec.SetValue "aktiv","Ja"
+			iCategoryRec.SetValue "standard","Ja"
+	 		iCategoryTable.Commit
+
+ 		End If
+ 		If nRecs > 1 Then ' there are to much records found
+  			WriteEventLog "Gewerkdatensatz nicht eindeutig in DB "  & sCurrentRow
+  			bIsUnique = False 'before delete needed Records
+  			GoTo Exit_sub
+ 		End If
+
+	' Foreignfield to Workgroup ?
+
+		 ' Wenn kein Routing, dann überspringen.
+         If sColumn(nIndex) = cNoGroup Then GoTo NextIndex
+
+ 		 sFkey = FindWorkgroupKey(sColumn(nIndex) )
+		 If sFKey ="" Then 
+  		 	WriteEventLog "Workgroup: " & sColumn(nIndex) & " ist nicht erzeugt"
+  		 	bIsUnique = False 'before delete needed Records
+   		 	GoTo Exit_sub
+  	 	 End If
+   		Set iRec =iTable.AddRecord
+  		iRec.SetValue "category_key", iCategoryRec.GetValue("pkey")
+  		iRec.SetValue "process_key", Item$(sProcessKeyLst,nIndex-1)
+ 		iRec.SetValue "workgroup_key", sFkey
+   		iTable.Commit
+		iTable.QBEClear
+		iTable.Clear
+NextIndex:
+	Next nIndex
+
+ GoTo Exit_Sub
+Error_Handler:
+	If Err.Number = 10015 Then
+		WriteEventLog "unable to Update record: " & sCurrentRow
+		Resume Next
+	End If
+
+	iApp.UserMsg "ImportRow error " & CStr(Err) & ": " & Error$
+Exit_Sub:
+End Sub
+'----------------------------------------------------
+
+Sub ImportRoutingTable()
+
+Dim SFile As String
+Dim sRow As String
+Dim nCount As Integer
+Dim nAnswer As Integer
+
+    On Error GoTo Error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp
+	'Set iApp = GetObject( "", "CustomerQ.Application" )
+	'Set iNetwork = iApp.CreateNetwork( "f_administration", "f_administration" )
+	Set iNetwork =iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable( "categoryprocess" )
+	Set iCategoryTable = iNetwork.GetTable( "category" )
+   '	Set iProcessTable = iNetwork.GetTable( "process" )
+	Set iWorkgroupTable = iNetwork.GetTable( "categoryworkgroup" )
+
+	sFile = OpenFileName$("Routing","CSV Dateien:*.csv")
+
+
+	If sFile <> "" Then
+		Open sFile For Input As #2
+		bIsUnique =True
+		nMaxRows=0
+		Do While Not EOF(2)
+			Line Input #2,sRow
+			nMaxRows = nMaxRows +1
+		Loop
+		Close #2
+		nAnswer=iApp.UserResponseMsg("Es wird die alte Tabelle gelöscht"_
+						+chr$(10)+chr$(13) & "Fortfahren ?", 1, "Datenstätze löschen..." )
+ 			If nAnswer = 1 Then 
+					DeleteOldRecords
+			Else 
+				GoTo Exit_Sub	
+			End If
+
+		Msg.Open "Importiere Datensätze..",0,True,True
+
+		Open sFile For Input As #2
+			Initialize
+			WriteEventLog "Start import	of " & CStr(nMaxRows-2) & " records at Timestamp " & sTimeStamp
+			nCount = 0
+			Do While Not EOF(2)
+				GetRow
+				nCount = nCount +1
+				Msg.Thermometer = int(nCount/nMaxRows*100)
+				ImportRow
+			Loop
+		Close #2
+		Msg.close
+		If Not bIsUnique Then
+		   iApp.UserMsg "Es wurden nicht eindeutige Datensätze gefunden vgl. Sie das Logfile"
+		End If
+End If	
+WriteEventLog "Stopp"
+
+    GoTo Exit_Sub
+
+Error_handler:
+    iApp.UserMsg "ImportCustomerTable error " & CStr(Err) & ": " & Error$
+Exit_Sub:
+	'Set iNetwork =Nothing
+	'Set iTable = Nothing
+    'Set iCategoryTable = Nothing 
+    'Set iProcessTable = Nothing 
+    Set iRec = Nothing
+    'Set iWorkgroupTable = Nothing 
+    Set iWorkgroupRec = Nothing
+    Set iCategoryRec = Nothing
+    Set iProcessRec = Nothing
+	Close
+End Sub
+
+'Sub Main()
+' ImportRoutingTable
+'End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "FindWorkgroup"
+'TYPE = 0
+'TEMPLATE = "Sub FindWorkgroup()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       FindWorkgroup
+'Copyright:    Quartess GmbH 2002
+'*****************************************************************************
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+
+Declare Function GetAccountingcode(iApp As Application, _
+									iCustomerRec As DBRecord) As String
+
+Declare Function GetContractFromLocation(iNetwork As DBNetwork, iLocationRec As DBRecord) As String
+'-------------------------------------------------------------------
+Public bManuellSearch As Boolean
+Global nResult As Integer
+Global nSelection As Integer
+Global AKList() As String
+Const nAccept = 1
+Function SelectAK(id$, action%, suppval%)
+    Select Case action
+        Case 2
+			Select Case id$
+            	Case "OK"
+					nSelection = CInt(DlgValue("AKList")) 
+                	nResult = nAccept
+           		Case "Info"
+					SelectAK = 1
+					Msgbox AKList(CInt(DlgValue("AKList")))
+  			End Select
+    End Select
+End Function
+
+Begin Dialog UserDialog ,,539,107,"AK auswählen",.SelectAK
+	GroupBox 2,3,526,70,"",.GroupBox
+	Text 8,11,188,8,"Wählen Sie einen Auftragskoordinator  aus:",.Text
+	ListBox 8,24,508,40,AKList,.AKList
+	OKButton 196,79,40,14
+	PushButton 256,79,44,14,"Info",.Info
+End Dialog
+
+Function SelectRoutingTable(iApp, iNetwork, iRoutingBrowser) As DBRecord
+Dim d As UserDialog
+Dim sWorkgroupKey As String
+Dim sRoutingInfo As String
+Dim sDesription As String
+On Error GoTo Error_handler
+
+    nRecs = iRoutingBrowser.RecordCount
+    ReDim AKList(nRecs - 1)
+
+    For i = 0 To nRecs - 1
+        sWorkgroupKey= iRoutingBrowser.GetRecord(i).GetValue("workgroup_key")
+        sName = iNetwork.GetTable("categoryworkgroup").GetValueWhere("name","pkey",sWorkgroupKey)
+		SDesription = iNetwork.GetTable("categoryworkgroup").GetValueWhere("description","pkey",sWorkgroupKey)
+        sRoutingInfo = iRoutingBrowser.GetRecord(i).GetValue("routinginfo")
+        AKList(i) = sName & " | "  & sDesription & " | "  &sRoutingInfo 
+    Next i
+	Do
+		r1% = Dialog( d )
+	Loop Until r1% = -1
+
+	Set SelectRoutingTable = iRoutingBrowser.GetRecord(nSelection)
+
+	Exit Function
+Error_handler:
+    iApp.UserMsg "FindWorkgroup.SelectRoutinTable error " & CStr(Err) & ": " & Error$
+End Function
+'-------------------------------------------------------------------
+
+
+Sub FindWorkgroup()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallGroup As SGroup
+Dim iCategoryTable As DBTable
+Dim iProcessTable As DBTable
+Dim iRoutingBrowser As DBBrowser
+Dim iRoutingTable As DBTable
+Dim iLocationTable As DBTable
+Dim iChildCategoryTable As DBTable
+Dim iRoutingRecord As DBRecord
+Dim iCallRecord As DBRecord
+Dim iWorkgroupTable As DBTable
+Dim iObjectTable As DBTable
+Dim sCategoryKey As String
+Dim sCurrentCategoryKey As String
+Dim sProcessKey As String
+Dim sContractKey As String
+Dim sCurrentContractKey As String
+Dim sDefaultContractKey As String
+Dim bHasContract As Boolean
+Dim sAccountingcodeKey As String
+Dim sWorkgroupKey As String
+Dim sWorkgroupName As String
+Dim sIsConference As String
+Dim sWorkgroupPhone As String
+Dim bSuccessfull As Boolean
+Dim bSetDefaultContract As Boolean
+Dim bFirstTime As Boolean
+Dim bFinish As Boolean
+Dim sCallStatus As String
+Dim iTable As DBTable
+On Error GoTo Error_handler
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iCallGroup = iApp.ContextGroup
+	'If Not(iCallGroup.Mode = 3 Or iCallGroup.Mode = 2) Then	'MODE_UDATE	Or New
+	If iCallGroup.Mode = MODE_FILLED Then	'
+		GoTo Exit_Sub
+	End If
+' Check ob der Status "AK Zugewiesen oder Fehlgeroutet ist.
+	sCallStatus = iCallGroup.GetValue("callCallstatus")
+	If Instr("Angenommen|Fertig gemeldet|Dokumentiert",sCallStatus ) And sCallStatus <> "" Then	
+		iApp.UserMsg "Neuberechnung ist in diesem Meldungsstatus nicht mehr erlaubt", ebInformation
+		GoTo Exit_Sub
+	End If
+
+
+	Set iCategoryTable = iNetwork.GetTable("category")
+	Set iChildCategoryTable = iNetwork.GetTable("childcategories")
+
+	If iCategoryTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sCategoryKey = iCategoryTable.Getrecord(0).GetValue("pkey")
+	Else
+		iApp.UserMsg "Es ist kein Gewerk ausgewählt"
+		GoTo Exit_Sub
+    End If
+	Set iProcessTable = iNetwork.GetTable("process")
+	If iProcessTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sProcessKey = iProcessTable.Getrecord(0).GetValue("pkey")
+	Else
+		iApp.UserMsg "Es ist keine Tätigkeit ausgewählt"
+		GoTo Exit_Sub
+    End If
+	Set iLocationTable = iNetwork.GetTable("location")
+
+	If iLocationTable.RecordCount <> 1 Then
+		iApp.UserMsg "Es muss ein Störungsort angegeben werden"
+		GoTo Exit_Sub
+    End If
+  	iCallGroup.SetValue "callDefaultcontract",0
+
+	' Den Vertrag über die Ortszuordnung finden.
+	' Wenn kein Vertrag vorhanden ist, den den Problemmanager nehmen
+	sContractKey = GetContractFromLocation(iNetwork,iLocationTable.GetRecord(0))
+
+	If sContractKey = "" Then	' kein Vertrag dann Problemmanger
+		sWorkgroupKey =	GetAppProfileValue(iNetwork, "problemmanager_key")
+		Set iWorkgroupTable = iNetwork.GetTable("callworkgroup")
+    	sWorkgroupName = iWorkgroupTable.GetValueWhere("name", "pkey", sWorkgroupKey)
+		iWorkgroupTable.Clear
+		iWorkgroupTable.QBESetValue "pkey", sWorkgroupKey
+		iWorkgroupTable.Search
+		iCallGroup.SetForeignValue "callWorkgroup", sWorkgroupName, sWorkgroupKey
+		iCallGroup.SetValue "callRoutinginfo","keinen Vertrag gefunden"
+		Exit Sub
+	End If
+	bHasContract = True
+	sDefaultContractKey = GetAppProfileValue(iNetwork, "contract_key") ' Standardvertrag	
+	If sDefaultContractKey = "NULL" Or sDefaultContractKey = "" Then
+		  iApp.UserMsg "Routing nicht möglich: Es ist kein Standardvertrag in der Administration definiert." & Basic.Eoln$ & _
+ 					   "Wenden Sie sich an den Administrator", ebCritical
+		Exit Sub
+	End If
+	bSetDefaultContract =False
+
+'  Suchen des Routingsatzes
+	
+	Set iRoutingTable = iNetwork.GetTable("categoryprocess")
+	sCurrentCategoryKey = sCategoryKey
+	If bHasContract Then
+		sCurrentContractKey = sContractKey
+	Else
+		sCurrentContractKey = sDefaultContractKey
+	End If
+	bSuccessfull = False
+	bFinish = False
+	bFirstTime = True
+    Set iWorkgroupTable = iNetwork.GetTable("categoryworkgroup")
+	Set iRoutingBrowser = iNetwork.GetBrowser("categoryprocessBrowser")
+	Do
+		iRoutingBrowser.Clear
+		iWorkgroupTable.Clear
+		iWorkgroupTable.QBEClear
+		iWorkgroupTable.QBESetValue "groupstatus", "gültig"
+		iRoutingTable.Clear
+ 		iRoutingTable.QBEClear
+  		iRoutingTable.QBESetValue "category_key", sCurrentCategoryKey
+		iRoutingTable.QBESetValue "process_key", sProcessKey
+		iRoutingTable.QBESetValue "contract_key", sCurrentContractKey
+		iRoutingBrowser.Search 	"r_routing"
+		If iRoutingBrowser.RecordCount > 0 Then
+		'We have a  record Lets Select selected.
+			If iRoutingBrowser.RecordCount > 1 Then
+	   			 Set iRoutingRecord  = SelectRoutingTable(iApp, iNetwork, iRoutingBrowser)
+			Else
+				Set iRoutingRecord  = iRoutingBrowser.GetRecord(0)
+			End If
+		   	bSuccessfull= True
+	   	End If
+		
+		'Wenn keine Abdeckung schauen ob Kindergewerke da sind
+		If Not bSuccessfull And bFirstTime Then
+			bFirstTime = False
+'	InDatabase ignoriert Constraints der Tabellen Aliase!
+			 iChildCategoryTable.Clear
+			 iChildCategoryTable.QBEClear
+			 iChildCategoryTable.QBESetValue "parentcategory_key", sCurrentCategoryKey
+			 iChildCategoryTable.QBESetValue "categorystatus", "!Ungültig"
+			 iChildCategoryTable.Search
+			If iChildCategoryTable.RecordCount> 0 Then
+				nAnswer = iApp.UserResponseMsg("Es existieren noch Untergewerke." & Basic.Eoln$ &_ 
+											   "Sollen diese jetzt angezeigt werden?", ebYesNo+ebDefaultbutton2+ebQuestion, "Ak ermitteln")
+				If nAnswer = ebYes Then
+						iApp.ContextForm.GetGroup("category").BtnClick "categoryDwn" 
+					Exit Sub 
+				End If
+			End If
+		End If
+		'Wenn keine Abdeckung schauen ob Vatergewerk Abdeckung hat
+		If Not bSuccessfull Then
+			sCurrentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sCurrentCategoryKey)
+			If (sCurrentCategoryKey = "" Or sCurrentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums erreicht
+' Rückfallebene Standardvertrag wird ausgeschaltet laut Krusche
+	'			If bHasContract Then ' wenn nicht der spezielle Vertrag vielleicht der Standardvertrag
+	'				If Not bSetDefaultContract Then
+	'					nAnswer = iApp.UserResponseMsg("Die Tätigkeit wird nicht vom Vertrag der gewählten Kostenstelle gedeckt." & Basic.Eoln$ & _
+	'											   "Soll mit dem Standardvertrag gesucht werden?", ebYesNo)
+	'					If nAnswer = ebNo Then Exit Sub
+  	'					iCallGroup.SetValue "callDefaultcontract",1
+	'				End If
+	'   			bHasContract = False
+	'				bSetDefaultContract = True
+	'				sCurrentCategoryKey = sCategoryKey
+	'				sCurrentContractKey =sDefaultContractKey	
+	'			Else
+					bFinish = True ' Nichts gefunden :-(
+	'			End If
+			End If
+		End If 
+	Loop Until bSuccessfull Or bFinish
+	If bSuccessfull Then
+		'We have a single record selected.  Let's link.
+	    sWorkgroupKey = iRoutingRecord.GetValue("workgroup_key")
+		sRoutingInfo = 	iRoutingRecord.GetValue("routinginfo")
+	Else
+		sWorkgroupKey =	GetAppProfileValue(iNetwork, "problemmanager_key")
+		sRoutingInfo ="kein Routing gefunden"
+    End If
+
+    sWorkgroupName = iWorkgroupTable.GetValueWhere("name", "pkey", sWorkgroupKey)
+    
+	Set iWorkgroupTable = iNetwork.GetTable("callworkgroup")
+	iWorkgroupTable.Clear
+	iWorkgroupTable.QBESetValue "pkey", sWorkgroupKey
+	iWorkgroupTable.Search
+	iCallGroup.SetForeignValue "callWorkgroup", sWorkgroupName, sWorkgroupKey
+	iCallGroup.SetValue "callRoutinginfo",sRoutingInfo
+    bManuellSearch = False
+	
+	If iProcessTable.Getrecord(0).GetValue("considerpriority") = 1 Then
+		Set iObjectTable = iNetwork.GetTable("object")
+			If iObjectTable.RecordCount = 1 Then
+	    		sObjectPriority = iObjectTable.Getrecord(0).GetValue("priority")
+				If 	iObjectTable.MapEnumStrToInt("priority",iCallGroup.GetValue("callPriority")) < iObjectTable.MapEnumStrToInt("priority",sObjectPriority)	Then
+					iCallGroup.SetValue "callPriority", sObjectPriority
+				End If
+			End If		
+	End If
+ 
+
+
+
+GoTo Exit_Sub
+Error_handler:
+    iApp.UserMsg "FindWorkgroup error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+'-------------------------------------------------------------------
+
+'          old Findworkgroup
+'-------------------------------------------------------------------
+
+Sub FindWorkgroup_old()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallGroup As SGroup
+Dim iCategoryTable As DBTable
+Dim iProcessTable As DBTable
+Dim iRoutingBrowser As DBBrowser
+Dim iRoutingTable As DBTable
+Dim iCustmerTable As DBTable
+Dim iChildCategoryTable As DBTable
+Dim iRoutingRecord As DBRecord
+Dim iCallRecord As DBRecord
+Dim iWorkgroupTable As DBTable
+Dim iObjectTable As DBTable
+Dim sCategoryKey As String
+Dim sCurrentCategoryKey As String
+Dim sProcessKey As String
+Dim sContractKey As String
+Dim sCurrentContractKey As String
+Dim sDefaultContractKey As String
+Dim bHasContract As Boolean
+Dim sAccountingcodeKey As String
+Dim sWorkgroupKey As String
+Dim sWorkgroupName As String
+Dim sIsConference As String
+Dim sWorkgroupPhone As String
+Dim bSuccessfull As Boolean
+Dim bSetDefaultContract As Boolean
+Dim bFirstTime As Boolean
+Dim bFinish As Boolean
+Dim sCallStatus As String
+Dim iTable As DBTable
+On Error GoTo Error_handler
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iCallGroup = iApp.ContextGroup
+	'If Not(iCallGroup.Mode = 3 Or iCallGroup.Mode = 2) Then	'MODE_UDATE	Or New
+	If iCallGroup.Mode = MODE_FILLED Then	'
+		GoTo Exit_Sub
+	End If
+' Check ob der Status "AK Zugewiesen oder Fehlgeroutet ist.
+	sCallStatus = iCallGroup.GetValue("callCallstatus")
+	If Instr("Angenommen|Fertig gemeldet|Dokumentiert",sCallStatus ) And sCallStatus <> "" Then	
+		iApp.UserMsg "Neuberechnung ist in diesem Meldungsstatus nicht mehr erlaubt", ebInformation
+		GoTo Exit_Sub
+	End If
+  	iCallGroup.SetValue "callDefaultcontract",0
+
+	' First get the table from the network, and see if we have a record selected.
+	Set iCustomerTable = iNetwork.GetTable("customerint")
+
+	If iCustomerTable.RecordCount = 1 Then
+		sAccountingCode = GetAccountingCode(iApp,iCustomerTable.GetRecord(0) )
+    End If
+	Set iCategoryTable = iNetwork.GetTable("category")
+	Set iChildCategoryTable = iNetwork.GetTable("childcategories")
+
+	If iCategoryTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sCategoryKey = iCategoryTable.Getrecord(0).GetValue("pkey")
+	Else
+		iApp.UserMsg "Es ist kein Gewerk ausgewählt"
+		GoTo Exit_Sub
+    End If
+	Set iProcessTable = iNetwork.GetTable("process")
+	If iProcessTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sProcessKey = iProcessTable.Getrecord(0).GetValue("pkey")
+	Else
+		iApp.UserMsg "Es ist keine Tätigkeit ausgewählt"
+		GoTo Exit_Sub
+    End If
+	' Den Vertrag über die Kostenstelle finden.
+	' Wenn kein Vertrag vorhanden ist, den Standardvertrag nehmen
+	sContractKey = ""
+	bSetDefaultContract = False
+	sAccountingcodeKey = iCallGroup.GetForeignKey("callAccounting")
+	If sAccountingcodeKey <> "NULL" And sAccountingcodeKey <> "" Then
+ 		' automatisches SQL erzeugt falschen Code statt where code = 'XXX' wird code ='''XXX''' erzeugt ( varchar als Key :-(
+		'	sContractKey = iNetwork.GetTable("accountingcode").GetValueWhere("contract_key","code",sAccountingcodeKey)
+   	     Set iTable = iApp.ContextNetwork.GetTable("accountingcode")
+		 If iTable.RecordCount = 1 Then
+   		   sContractKey = iTable.GetRecord(0).GetValue("contract_key")
+		 End If
+	Else
+   		If iCustomerTable.RecordCount = 1 And ( sAccountingcodeKey = "" Or sAccountingcodeKey = "NULL" )Then
+			sAccountingcodeKey = GetAccountingCode(iApp,iCustomerTable.GetRecord(0) )
+				If sAccountingcodeKey <> "NULL" And sAccountingcodeKey <> "" Then
+   	     	   		Set iTable = iApp.ContextNetwork.GetTable("accountingcode")
+			   		iTable.Clear
+			   		iTable.QBEClear
+			  		iTable.QBESetValue "code", sAccountingcodeKey
+		   	  		iTable.Search
+		   		 	iCallGroup.SetForeignValue  "callAccounting", sAccountingcodeKey, sAccountingcodeKey
+		 	   		If iTable.RecordCount = 1 Then
+   		   	   			sContractKey = iTable.GetRecord(0).GetValue("contract_key")
+		 	   		End If
+			   End If
+		End If
+	End If
+	bHasContract = True
+	If sContractKey = "NULL" Or sContractKey = "" Then
+	   bSetDefaultContract = True	
+	   bHasContract = False	
+	End If
+	sDefaultContractKey = GetAppProfileValue(iNetwork, "contract_key") ' Standardvertrag	
+	
+	If sDefaultContractKey = "NULL" Or sDefaultContractKey = "" Then
+		  iApp.UserMsg "Routing nicht möglich: Es ist kein Standardvertrag in der Administration definiert." & Basic.Eoln$ & _
+ 					   "Wenden Sie sich an den Administrator", ebCritical
+		Exit Sub
+	End If
+
+'  Suchen des Routingsatzes
+	
+	Set iRoutingTable = iNetwork.GetTable("categoryprocess")
+	sCurrentCategoryKey = sCategoryKey
+	If bHasContract Then
+		sCurrentContractKey = sContractKey
+	Else
+		sCurrentContractKey = sDefaultContractKey
+	End If
+	bSuccessfull = False
+	bFinish = False
+	bFirstTime = True
+    Set iWorkgroupTable = iNetwork.GetTable("categoryworkgroup")
+	Set iRoutingBrowser = iNetwork.GetBrowser("categoryprocessBrowser")
+	Do
+		iRoutingBrowser.Clear
+		iWorkgroupTable.Clear
+		iWorkgroupTable.QBEClear
+		iWorkgroupTable.QBESetValue "groupstatus", "gültig"
+		iRoutingTable.Clear
+ 		iRoutingTable.QBEClear
+  		iRoutingTable.QBESetValue "category_key", sCurrentCategoryKey
+		iRoutingTable.QBESetValue "process_key", sProcessKey
+		iRoutingTable.QBESetValue "contract_key", sCurrentContractKey
+		iRoutingBrowser.Search 	"r_routing"
+		If iRoutingBrowser.RecordCount > 0 Then
+		'We have a  record Lets Select selected.
+			If iRoutingBrowser.RecordCount > 1 Then
+	   			 Set iRoutingRecord  = SelectRoutingTable(iApp, iNetwork, iRoutingBrowser)
+			Else
+				Set iRoutingRecord  = iRoutingBrowser.GetRecord(0)
+			End If
+		   	bSuccessfull= True
+	   	End If
+		
+		'Wenn keine Abdeckung schauen ob Kindergewerke da sind
+		If Not bSuccessfull And bFirstTime Then
+			bFirstTime = False
+'	InDatabase ignoriert Constraints der Tabellen Aliase!
+			 iChildCategoryTable.Clear
+			 iChildCategoryTable.QBEClear
+			 iChildCategoryTable.QBESetValue "parentcategory_key", sCurrentCategoryKey
+			 iChildCategoryTable.QBESetValue "categorystatus", "!Ungültig"
+			 iChildCategoryTable.Search
+			If iChildCategoryTable.RecordCount> 0 Then
+				nAnswer = iApp.UserResponseMsg("Es existieren noch Untergewerke." & Basic.Eoln$ &_ 
+											   "Sollen diese jetzt angezeigt werden?", ebYesNo+ebDefaultbutton2+ebQuestion, "Ak ermitteln")
+				If nAnswer = ebYes Then
+						iApp.ContextForm.GetGroup("category").BtnClick "categoryDwn" 
+					Exit Sub 
+				End If
+			End If
+		End If
+		'Wenn keine Abdeckung schauen ob Vatergewerk Abdeckung hat
+		If Not bSuccessfull Then
+			sCurrentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sCurrentCategoryKey)
+			If (sCurrentCategoryKey = "" Or sCurrentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums erreicht
+				If bHasContract Then ' wenn nicht der spezielle Vertrag vielleicht der Standardvertrag
+					If Not bSetDefaultContract Then
+						nAnswer = iApp.UserResponseMsg("Die Tätigkeit wird nicht vom Vertrag der gewählten Kostenstelle gedeckt." & Basic.Eoln$ & _
+												   "Soll mit dem Standardvertrag gesucht werden?", ebYesNo)
+						If nAnswer = ebNo Then Exit Sub
+  						iCallGroup.SetValue "callDefaultcontract",1
+					End If
+					bHasContract = False
+					bSetDefaultContract = True
+					sCurrentCategoryKey = sCategoryKey
+					sCurrentContractKey =sDefaultContractKey	
+				Else
+					bFinish = True ' Nichts gefunden :-(
+				End If
+			End If
+		End If 
+	Loop Until bSuccessfull Or bFinish
+	If bSuccessfull Then
+		'We have a single record selected.  Let's link.
+	    sWorkgroupKey = iRoutingRecord.GetValue("workgroup_key")
+		sRoutingInfo = 	iRoutingRecord.GetValue("routinginfo")
+	   '	sSL = iRoutingRecord.GetValue("sl")
+		'   sKSL = iRoutingRecord.GetValue("ksl")
+	Else
+		iApp.UserMsg "Kein Auftragskoordinator gefunden."  & Basic.Eoln$ & _
+					 "Es besteht kein Vertragsvereinbarung für diese Tätigkeit und Gewerk",ebInformation
+		GoTo Exit_Sub
+    End If
+    sWorkgroupName = iWorkgroupTable.GetValueWhere("name", "pkey", sWorkgroupKey)
+    
+	'sIsConference = iWorkgroupTable.GetValueWhere("groupconferencecall", "pkey", sWorkgroupKey)
+	'If sIsConference= "Ja" Then
+    '	sWorkgroupPhone = iWorkgroupTable.GetValueWhere("phone", "pkey", sWorkgroupKey)
+	'	iApp.UserMsg "Bitte starten Sie einen Gruppenruf mit der Nummer: " & sWorkgroupPhone
+	'	If iCallGroup.GetValue("callAction") = "" Then
+	'		iCallGroup.SetValue "callAction", "Gruppenruf unter: " &  sWorkgroupPhone
+	'	Else
+	'		iCallGroup.SetValue "callAction", "Gruppenruf unter: " &  sWorkgroupPhone & " " & iCallGroup.GetValue("callAction")
+	'	End If
+	'End If
+	Set iWorkgroupTable = iNetwork.GetTable("callworkgroup")
+	iWorkgroupTable.Clear
+	iWorkgroupTable.QBESetValue "pkey", sWorkgroupKey
+	iWorkgroupTable.Search
+	iCallGroup.SetForeignValue "callWorkgroup", sWorkgroupName, sWorkgroupKey
+	iCallGroup.SetValue "callRoutinginfo",sRoutingInfo
+    bManuellSearch = False
+	
+   '	iCallGroup.SetValue "callSl",sSL
+   '	iCallGroup.SetValue "callKsl",sKSL
+' Priorität des Objekts  übernehmen
+	If iProcessTable.Getrecord(0).GetValue("considerpriority") = 1 Then
+		Set iObjectTable = iNetwork.GetTable("object")
+			If iObjectTable.RecordCount = 1 Then
+	    		sObjectPriority = iObjectTable.Getrecord(0).GetValue("priority")
+				If 	iObjectTable.MapEnumStrToInt("priority",iCallGroup.GetValue("callPriority")) < iObjectTable.MapEnumStrToInt("priority",sObjectPriority)	Then
+					iCallGroup.SetValue "callPriority", sObjectPriority
+				End If
+			End If		
+	End If
+ 
+
+
+
+GoTo Exit_Sub
+Error_handler:
+    iApp.UserMsg "FindWorkgroup error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryBackfill()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CategoryBackfill
+'Purpose:      Business rules that disable the Question button if no questions available
+'Copyright:    Quartess, 2002
+'*****************************************************************************
+Sub CategoryBackfill()
+Dim iApp As Application
+Dim iTable As DBTable
+Dim iobjTable As DBTable
+Dim iCategoryTable As DBTable
+Dim sSearchStr As String
+Dim sParentCategoryKey As String
+Dim nNewQuestions As Integer
+Dim bFinish As Boolean
+
+Dim iGroup As SGroup
+ 
+    On Error GoTo new_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+	Set iTable = iApp.ContextNetwork.GetTable("question")
+	Set iObjTable = iApp.ContextNetwork.GetTable("object")
+   '	iGroup.BtnEnable "categoryQuestion", False
+	iGroup.SetControlVisibility "categoryQuestion", False
+	Set iCategoryTable = iApp.ContextNetwork.GetTable("category")
+	If iObjTable.RecordCount = 0 Then 
+		' Disable the special buttons...
+
+    sSearchStr = iGroup.GetValue("categoryPkey")
+	sParentCategoryKey = sSearchStr
+	bFinish= False
+	Do
+		sParentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sParentCategoryKey)
+		If Not (sParentCategoryKey = "" Or sParentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums nicht erreicht
+    		sSearchStr = sSearchStr & "|" &	sParentCategoryKey
+		Else
+			bFinish =True
+		End If
+	Loop Until bFinish
+
+		If iTable.InDatabase("category_key", sSearchStr) Then
+   '	iGroup.BtnEnable "categoryQuestion", True			
+	   		iGroup.SetControlVisibility "categoryQuestion", True
+		End If
+	End If
+	iCategoryTable.SetWhere "category.categorystatus=1	"
+	If iCategoryTable.InDatabase("parentcategory_key", iGroup.GetValue("categoryPkey")) Then
+	   iGroup.SetValue "categorySubcategory","0", True	
+	Else
+	   iGroup.SetValue "categorySubcategory","1", True	
+	End If	
+	iCategoryTable.SetWhere ""	
+    Exit Sub
+
+new_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "CategoryBackfill error " & CStr(Err) & ": " & Error$
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryQuestion"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryQuestion()"
+'TEXT = [[
+'*****************************************************************************
+' Script:     	Checklist
+' Purpose:      Checklist - display some questions, and allow to answer them
+' Copyright:    Quartess, Mike Döring 1999
+' *****************************************************************************
+
+' Definition of the array questions
+Const q_name = 0
+Const q_questionkey = 1
+Const q_question = 2
+Const q_type = 3
+Const q_root = 4
+Const q_answers = 5
+Const q_chklistkey = 6
+Const q_Rows = 6 ' Number of Rows - 1 of questions array
+Const qa_answer = 0
+Const qa_addchecklist = 1
+Const qa_Rows = 2
+Const nTabLength = 5 ' Number of spaces for one Tab
+
+Const sNL = Chr$( 13 ) & Chr$( 10 )
+
+Dim sDlgQuestion As String
+Dim sAnswers$()
+Dim sInfo As String
+Dim sQuestionList$()
+Dim sAnswerList$()
+Dim sQuestions$()
+
+Dim iApp As Application 'Object
+Dim iNetwork As DBNetwork 'Object
+Dim iQuestionTable As DBTable 'Object
+Dim iGroup As SGroup
+Dim sGroupName As String
+Dim iCallGroup As SGroup
+Dim iRecord As DBRecord
+Dim nQuestionIndex As Integer
+Dim nQuestionCount As Integer
+Dim nAnswerIndex As Integer
+Dim bAddQuestions As Boolean
+Dim bDelQuestions As Boolean
+Dim sChecklistKey As String
+Dim sCategorykey As String
+
+Function CheckList_DlgFkt( ControlName$, Action%, SuppValue% )
+Dim spkey As String
+Dim sInfo As String
+'Print ControlName$, Action%, SuppValue%
+
+Select Case Action%
+ Case 1 ' First time open Dialog
+ Case 2 ' something clicked
+
+  Select Case ControlName$
+   Case "OK"
+        CheckList_DlgFkt=0
+  
+   Case "Cancel"
+    CheckList_DlgFkt=0
+
+
+   Case "Question"
+        CheckList_DlgFkt=0
+		nQuestionindex = SuppValue%
+ 
+   End Select
+ End Select
+End Function
+
+
+Function TextAnswer_DlgFkt( ControlName$, Action%, SuppValue% )
+'Print ControlName$, Action%, SuppValue%
+
+Select Case Action%
+ Case 1 ' First time open Dialog
+ 	 DlgText "Question", sDlgQuestion
+ Case 2 ' something clicked
+   Select Case ControlName$
+     Case "OK"
+  		  sQuestions$( nQuestionIndex, q_answers ) = DlgText$( "Answer" )
+		  'Print sQuestions$( nQuestionindex, q_answers )
+     Case "Cancel"
+
+     End Select	
+ End Select
+End Function 
+
+Begin Dialog ChecklistDialog ,,299,207,"Fragenkatalog", .Checklist_DlgFkt
+	OKButton 256,-150,40,14
+	CancelButton 256,70,40,14
+    PushButton 256,15,40,14,"Antwort",.Answer
+	PushButton 256,36,40,14,"Beenden",.Quit
+	ListBox 8,16,236,184,sQuestionList$,.Question
+End Dialog
+
+Begin Dialog TextAnswerDialog ,,267,159,"Antwort", .TextAnswer_DlgFkt
+
+	OKButton 224,12,40,14
+	CancelButton 224,32,40,14
+	Text 16,12,204,20,sDlgQuestion,.Question
+	TextBox 16,44,200,104,.Answer,1
+End Dialog
+
+
+Sub AnswerDialog( sDlgQuestion , sQuestiontype As String )
+Dim TextAnswer_Dlg As TextAnswerDialog
+	bAddQuestions = False
+	bDelQuestions = False
+	Select Case	sQuestionType
+		Case "Text"
+		  Do 
+		    r2% = Dialog(TextAnswer_Dlg)
+		  Loop Until r2% < 1
+	End Select
+End Sub
+
+Sub Checklistadd(  iNetwork As DBNetwork, _ 'Object, _
+					nQuestionIndex As Integer, _
+					nQuestionCount  As Integer, _
+					sCheckListkey As String )
+' Search all question related with the selected checklist 
+Dim sTab As String
+Dim iCategoryTable As DBTable
+Dim sSearchStr As String
+Dim sParentCategoryKey As String
+Dim nNewQuestions As Integer
+Dim bFinish As Boolean
+
+	Set iCategoryTable = iNetwork.GetTable("category")
+    sSearchStr = sCategoryKey
+	sParentCategoryKey = sSearchStr
+	bFinish= False
+	Do
+		sParentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sParentCategoryKey)
+		If Not (sParentCategoryKey = "" Or sParentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums nicht erreicht
+    		sSearchStr = sSearchStr & "|" &	sParentCategoryKey
+		Else
+			bFinish =True
+		End If
+	Loop Until bFinish
+
+
+	Set iQuestionBrowser = iNetwork.GetBrowser( "questionBrowser" )
+	Set iQuestionTable = iNetwork.GetTable( "question" )
+	 iQuestionTable.Clear
+	 iQuestionTable.QBEClear
+
+	iQuestionBrowser.Clear
+	iQuestionTable.QBEClear
+	iQuestionTable.QBESetValue "category_key" , sSearchStr
+	iQuestionBrowser.Search "r_question", 1, True, False
+	nNewQuestions = iQuestionBrowser.RecordCount
+	If nNewQuestions = 0 Then  Exit Sub
+	nOldQuestionCount = nQuestionCount
+	nQuestionCount = nOldQuestionCount + nNewQuestions 
+	ReDim Preserve sQuestions$( nQuestionCount - 1, q_Rows )
+	ReDim Preserve sQuestionList$( nQuestionCount - 1 )
+	For i = nOldQuestionCount - 1 To nQuestionIndex +1 Step -1
+		For j = 0 To q_rows
+			sQuestions$( i + nNewQuestions , j ) = sQuestions$( i, j )
+		Next j
+	Next i
+
+	For nCounter = 1  To nNewQuestions 
+		Set iQuestionRec = 	iQuestionBrowser.GetRecord( nCounter - 1 )
+		sQuestions$( nQuestionIndex+nCounter, q_name ) = sTab &  iQuestionRec.GetValue( "question.question" )
+		sQuestions$( nQuestionIndex+nCounter, q_questionkey ) =  iQuestionRec.GetValue( "question.pkey" )
+		sQuestions$( nQuestionIndex+nCounter, q_question ) =  iQuestionRec.GetValue( "question.question" )
+		sQuestions$( nQuestionIndex+nCounter, q_type ) =  "Text"
+		sQuestions$( nQuestionIndex+nCounter, q_chklistkey ) =  ""
+		If nQuestionIndex = -1 Then
+  			sQuestions$( nQuestionIndex+nCounter, q_root ) =   "/" & sQuestions$( nQuestionIndex+nCounter, q_chklistkey )
+		
+ 		Else
+			sQuestions$( nQuestionIndex+nCounter, q_root ) =  sQuestions$( nQuestionIndex, q_root )_
+ 						 & "/" & sQuestions$( nQuestionIndex+nCounter, q_chklistkey )
+ 		End If
+		sQuestions$( nQuestionIndex+nCounter, q_answers ) = ""
+	Next nCounter
+
+
+End Sub
+
+Sub DeleteCheckList( nQuestionIndex As Integer )
+Dim sRoot As String
+Dim Finish	As Boolean
+Dim nPointer,nToDelete As Integer
+Dim nOldQuestionCount As Integer
+    finish = False
+	sRoot = sQuestions$( nQuestionIndex, q_root )
+	nPointer = nQuestionindex
+	nToDelete = 0
+	Do While  ( ( nPointer +1 < nQuestionCount ) And ( Not Finish ) )  
+	  If sRoot <> sQuestions$( nPointer +1, q_root )  Then
+	  	nPointer = nPointer +1
+		nToDelete = nToDelete +1
+      Else
+      	Finish = True
+	  End If
+	Loop 
+	If nPointer > nQuestionIndex Then ' del Questions
+		nOldQuestionCount = nQuestionCount
+		nQuestionCount = nOldQuestionCount - nToDelete 
+ 		For i = nQuestionIndex + nToDelete +1 To nOldQuestionCount - 1 
+			For j = 0 To q_rows
+				sQuestions$( i - nToDelete , j ) = sQuestions$( i , j )
+   			Next j
+  		Next i
+		ReDim Preserve sQuestions$( nQuestionCount - 1, q_Rows )
+		ReDim Preserve sQuestionList$( nQuestionCount - 1 )
+	End If
+End Sub
+
+'--------------------------------------------------------------------
+Sub CategoryQuestion()
+Dim aAnswerCount As Integer
+Dim CheckList_dlg As ChecklistDialog
+Dim sQuestionType As String
+Dim TabCounter As Integer
+Dim sTab As String
+Dim n As Integer
+
+    On Error GoTo checklist_error_handler
+    '-------------------------------------------------
+' Init 
+ '	sChecklistKey = 1	' muß übergeben werden
+	
+	nQuestionCount =0
+    nQuestionIndex= -1 ' Empty QuestionList
+	ReDim sQuestions$( 0, q_Rows )
+	ReDim sQuestionList$( 0 )
+	'Set iApp = GetObject( "", "CustomerQ.Application" )
+	Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	sCategorykey = iGroup.GetValue("categoryPkey")
+	Set iNetwork = iApp.ContextNetwork
+			
+	Set iCallGroup = iApp.ContextForm.GetGroup( "callEntry" )
+	Select Case iCallGroup.Mode
+				Case MODE_NEW, MODE_UPDATE
+				'	OK
+				Case MODE_CLEAR, MODE_BROWSE
+					iApp.UserMsg "nicht möglich - keine Störungsmeldung selektiert"
+					GoTo Exit_Checklist
+				Case MODE_MULTISELECT, MODE_MULTIUPDATE
+					iApp.UserMsg "nicht möglich bei Mehrfachauswahl"
+					GoTo Exit_Checklist
+				Case MODE_FILLED
+					iCallGroup.Change
+			End Select
+
+ 	Checklistadd  iNetwork, nQuestionIndex, nQuestionCount, sCheckListkey 	
+
+    If nQuestionCount > 0 Then
+		 nQuestionIndex = 0
+	Else
+		iApp.UserMsg " Fragenkatalog enthält keine Fragen "
+		GoTo Exit_Checklist
+	End If
+
+	Do
+   		For nCounter = 0 To nQuestionCount -1
+		' generate Tabspaces
+			nTabCounter = ItemCount( sQuestions$( nCounter, q_root ), "/" ) - 2
+			sTab = Space$( nTabCounter * nTabLength )
+	        sQuestionList$( nCounter ) = sTab & sQuestions$( nCounter, q_name ) & ": " & sQuestions$( nCounter, q_answers )
+ 		Next
+		r1% = Dialog(CheckList_dlg)
+		If ( r1% = -1 ) Or ( r1% = 1 ) Then
+			sDlgQuestion = sQuestions$( nQuestionIndex, q_question )
+			sQuestionType = sQuestions$( nQuestionIndex, q_type )
+			AnswerDialog sDlgQuestion, sQuestiontype
+ 			If bDelQuestions = True Then
+				DeleteCheckList  nQuestionIndex
+			End If
+			If bAddQuestions =True Then
+				DeleteCheckList  nQuestionIndex
+				Checklistadd  iNetwork, nQuestionIndex, nQuestionCount, sCheckListkey
+			End If
+
+		End If
+	Loop Until (( r1% = 0 ) Or (r1% = 2 ))
+	If r1% =0 Then
+		GoTo Exit_Checklist
+	End If
+
+		If nQuestionCount > 0 Then
+			'sDlgQuestion = iCallGroup.GetValue( "callProblemtext" )
+			'sDlgQuestion = sDlgQuestion & sNL & sNL & _
+			sDlgQuestion = 	"Beantwortete Fragen aus dem Fragenkatalog:" & sNL
+			For nCounter = 0 To nQuestionCount - 1
+				If sQuestions$( nCounter, q_answers ) <> "" Then
+					sDlgQuestion = sDlgQuestion & sNL & _
+							sQuestions$( nCounter, q_question ) & " : " & _
+							sQuestions$( nCounter, q_answers )
+				End If
+			Next nCounter
+			sDlgQuestion = sDlgQuestion & sNL & sNL & _
+				"Ende der Antworten"
+			iCallGroup.GetCurrentRecord.SetLTValue "problemtext", sDlgQuestion,1
+		Else
+			iApp.UserMsg "Warnung - keine Fragen wurden beantwortet"
+		End If
+
+' Destroy all Objects
+ Exit_CheckList:
+	Set iAnswerTable = Nothing
+	Set iAnswerBrowser = Nothing
+	Set iNetwork = Nothing
+	Exit Sub
+
+ checkList_error_handler:
+    iApp.UserMsg "CheckList error " & CStr(Err) & ": " & Error$
+	GoTo Exit_CheckList
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ShowKnowledgebase"
+'TYPE = 0
+'TEMPLATE = "Sub ShowKnowledgebase()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ShowKnowledgebase
+'Purpose:      Executed when WDB Button is pushed
+'Copyright:    Quartess 2002
+'*****************************************************************************
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+'-------------------------------------------------------------
+Sub ShowKnowledgebase()
+  Dim iApp As Application
+  Dim iGroup As SGroup
+  Dim iNetwork As DBNetwork
+  Dim iRec As DBRecord
+  Dim sHTTPStr As String
+
+    On Error GoTo show_error_handler
+    '------------------- GUI ------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+	Set iNetwork = iApp.ContextNetwork
+	sHTTPStr = GetAppProfileValue( iNetwork, "knowledgebase" )
+    If sHTTPStr= "" Then
+		iApp.UserMsg "Es ist keine WDB in der Administration definiert" & Basic.Eoln$ & _
+                     "Wenden Sie sich an den Administrator."
+		Exit Sub
+	End If
+	' hier muß die URL noch aufgebohrt werden
+	If iGroup.Mode = MODE_FILLED Then
+	   sHTTPStr = sHTTPStr & ",case=ref(ID"& iGroup.GetValue(iGroup.GUIName("pkey")) & ")"	
+	End If
+	
+		'PID = shell( sHTTPStr, ebNormalFocus )
+
+	iApp.SetURL sHTTPStr
+	iApp.ShowHTMLBrowser
+    Exit Sub
+
+show_error_handler:
+    iApp.UserMsg "ShowKnowledgebase error " & CStr(Err) & ": " & Error$, ebCritical
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ProcessSearch"
+'TYPE = 0
+'TEMPLATE = "Function ProcessSearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         ProcessSearch
+' Purpose:      Search for all process including parentcategoy and contract
+' Copyright:    Tarragon 2004
+' *****************************************************************************
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+
+'-------------------------------------------------------------------
+Function GetContractFromLocation(iNetwork As DBNetwork, iLocationRec As DBRecord) As String
+Dim iLocationContractTable As DBTable
+Dim sSite_key As String
+Dim sSitepart_key As String
+Dim sBuilding_key As String
+Dim sBuildingpart_key As String
+
+On Error GoTo Error_handler
+	sSite_key = iLocationRec.GetValue("site_key")
+	If sSite_key = "" Then sSite_key = "NULL"
+	sSitepart_key = iLocationRec.GetValue("sitepart_key")
+	If sSitepart_key = "" Then sSitepart_key = "NULL"
+	sBuilding_key = iLocationRec.GetValue("building_key")
+	If sBuilding_key = "" Then sBuilding_key = "NULL"
+	sBuildingpart_key = iLocationRec.GetValue("buildingpart_key")
+	If sBuildingpart_key = "" Then sBuildingpart_key = "NULL"
+
+	Set iLocationContractTable = iNetwork.GetTable("locationcontract")
+	'Suche nach site, sitepart,building, buildingpart
+	iLocationContractTable.Clear
+	iLocationContractTable.QBEClear
+	iLocationContractTable.QBESetValue "site_key", sSite_key
+	iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+	iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+	iLocationContractTable.QBESetValue "buildingpart_key", sBuildingpart_key
+	iLocationContractTable.Search
+	If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart,building
+		iLocationContractTable.Clear
+		iLocationContractTable.QBEClear
+		iLocationContractTable.QBESetValue "site_key", sSite_key
+		iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+		iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		iLocationContractTable.Search
+   		If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart
+			iLocationContractTable.Clear
+ 			iLocationContractTable.QBEClear
+  			iLocationContractTable.QBESetValue "site_key", sSite_key
+			iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+  			iLocationContractTable.QBESetValue "building_key",	"NULL"
+   			iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+			iLocationContractTable.Search
+   			If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site
+		 		iLocationContractTable.Clear
+ 		 		iLocationContractTable.QBEClear
+  		  		iLocationContractTable.QBESetValue "site_key", sSite_key
+		  		iLocationContractTable.QBESetValue "sitepart_key", "NULL"
+  		   		iLocationContractTable.QBESetValue "building_key",	"NULL"
+   		  		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		   		iLocationContractTable.Search
+   			End If
+		End If
+	End If
+	If iLocationContractTable.RecordCount = 1  Then
+		GetContractFromLocation = iLocationContractTable.getRecord(0).GetValue("contract_key")
+	Else
+	 	GetContractFromLocation =  GetAppProfileValue(iNetwork, "contract_key") ' Standardvertrag	
+	End If
+Exit Function
+Error_handler:
+    Msgbox "FindWorkgroup.GetContractFromLocation error " & CStr(Err) & ": " & Error$
+End Function
+'-------------------------------------------------------------------
+
+
+Function ProcessSearch() As Boolean
+
+Dim iApp As Application
+Dim iContextTable As DBTable
+Dim iCategoryTable As DBTable
+Dim iFaplissiteTable As DBTable
+Dim iTbl As DBTable
+Dim sSearchStr As String
+Dim sParentCategoryKey As String
+Dim bFinish As Boolean
+Dim sContract As String
+Dim iNetwork As DBNetwork
+
+
+    On Error GoTo error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork
+
+    Set iContextTable = iApp.ContextTable
+    iApp.ContextFocus.ApplyCurrentConstraints "r_processsearch"
+	Set iCategoryTable = iNetwork.GetTable("category")
+
+	If iCategoryTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sSearchStr = iCategoryTable.Getrecord(0).GetValue("pkey")
+		sParentCategoryKey = sSearchStr
+	Else
+		iApp.UserMsg "Bitte wählen Sie erst ein Gewerk aus"
+    	ProcessSearch = False
+    	Exit Function
+    End If
+
+	If  iNetwork.GetTable("category").GetRecord(0).GetValue("locationrequired") = "Ja"	 Then
+			If 	Not ( iNetwork.GetTable("location").RecordCount = 1 And iNetwork.GetTable("faplissite").RecordCount = 1) Then
+	   			iApp.UserMsg "Störungsort muss  mindestens mit Angabe eines Werkes ausgewhält werden."
+       			ProcessSearch = False
+    			Exit Function
+    		End If
+			sContract =	GetContractFromLocation(iNetwork , iNetwork.GetTable("location").GetRecord(0))
+	Else
+            sContract =  GetAppProfileValue(iNetwork, "contract_key") ' Standardvertrag
+	End If 
+
+	bFinish= False
+	Do
+		sParentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sParentCategoryKey)
+		If Not (sParentCategoryKey = "" Or sParentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums nicht erreicht
+    		sSearchStr = sSearchStr & "|" &	sParentCategoryKey
+		Else
+			bFinish =True
+		End If
+	Loop Until bFinish
+
+    If iNetwork.HasTable("categoryprocess") Then
+              Set iTbl = iNetwork.GetTable( "categoryprocess" )
+              ' constrain the search
+			  iTbl.Clear
+			  iTbl.QBEClear									  
+              iTbl.QBESetValue "contract_key", sContract 
+              iTbl.QBESetValue "category_key", sSearchStr 
+    End If
+	iApp.ContextTable.QBESetValue "processstatus", "Gültig"	 ' Nur gültige Tätigkeiten auswählbar machen.
+    iApp.ContextBrowser.Search "r_processsearch"
+
+    ' Clear the QBE Data for ContextTable before exiting
+    iContextTable.QBEClear
+
+    ' Return False to prevent standard search
+    ProcessSearch = False
+    Exit Function
+
+error_handler:
+    iApp.UserMsg "ProcessSearch error " & CStr(Err) & ": " & Error$
+
+    ' Clear the QBE Data for ContextTable before exiting
+    If Not iContextTable Is Nothing Then
+        iContextTable.QBEClear
+    End If
+
+    ProcessSearch = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryBackfillPM()"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryBackfillPM()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       CategoryBackfillPM
+'Purpose:      Business rules that make readonly some fields
+'Copyright:    Quartess, 2002
+'*****************************************************************************
+Sub CategoryBackfillPM()
+Dim iApp As Application
+
+Dim iGroup As SGroup
+ 
+    On Error GoTo error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+
+	iGroup.SetReadOnly iGroup.GUIName("longname")
+	iGroup.SetReadOnly iGroup.GUIName("name")
+	iGroup.SetReadOnly iGroup.GUIName("categorystatus")
+    Exit Sub
+
+error_handler:
+    iApp.UserMsg "CategoryBackfillPM error " & CStr(Err) & ": " & Error$
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessPreUpdate"
+'TYPE = 0
+'TEMPLATE = "Function CategoryProcessPreUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CategoryProcessPreUpdate
+'Purpose:      Business rules that check changes of the pkey. 
+'Copyright:    Quartess, 2002
+'*****************************************************************************
+Public bCatProcessDelete  As Boolean
+Public sCatProcessCategoryKey As String
+Public sCatProcessProcessKey As String
+Public sCatProcessContractKey As String
+Public sCatProcessGroupKey As String
+
+Function CategoryProcessPreUpdate() As Boolean
+Dim iApp As Application
+Dim iGroup As SGroup
+ 
+    On Error GoTo error_handler
+    '-------------------------------------------------
+
+    Set iApp = GetApp
+
+	Set iGroup = iApp.ContextGroup()
+	nGroupMode = iGroup.Mode()
+	If iGroup.Mode =MODE_FILLED Then
+		CategoryProcessPreUpdate = False
+		Exit Function
+	End If
+	If bCatProcessDelete = False And sCatProcessCategoryKey <> "" Then  bCatProcessDelete =True
+	CategoryProcessPreUpdate = True
+	' Disable the special buttons...
+    Exit Function
+
+error_handler:
+ 
+    iApp.UserMsg "CategoryProcessPreUpdate error " & CStr(Err) & ": " & Error$
+	CategoryProcessPreUpdate = False
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GDSErrorCodeSearch"
+'TYPE = 0
+'TEMPLATE = "Function GDSErrorCodeSearch() As Boolean"
+'TEXT = [[
+Function GDSErrorCodeSearch() As Boolean
+Dim iApp As Application
+Dim iCategoryTable As DBTable
+Dim iObjectTable As DBTable
+Dim iTbl As DBTable
+Dim sGDSalias As String
+Dim sNewGDSAlias As String
+Dim sSearchStr As String
+Dim sCategoryKey As String
+Dim sParentCategoryKey As String
+Dim bFinish As Boolean
+Dim iNetwork As DBNetwork
+Dim bGDSApplication As Boolean
+
+    On Error GoTo error_handler
+	
+    Set iApp = GetApp()
+	
+    Set iNetwork = iApp.ContextNetwork
+	If InStr( iNetwork.Name,"f_administration" ) >0 Then
+    	GDSErrorCodeSearch = True
+    	Exit Function
+    End If
+	Set iObjectTable = iNetwork.GetTable("object")
+	If 	iObjectTable.RecordCount <> 1 Then
+		iApp.UserMsg "Es ist kein Objekt ausgewählt für diesen Auftrag/Meldung"
+    	GDSErrorCodeSearch = False
+    	Exit Function
+    End If
+	sCategoryKey = iObjectTable.GetRecord(0).GetValue("objectcategory_key")
+	If 	sCategoryKey = "" Or sCategoryKey ="NULL" Then 
+		iApp.UserMsg "Das betroffende Objekt besitzt kein Gewerk."
+    	GDSErrorCodeSearch = False
+    	Exit Function
+    End If
+	Set iCategoryTable = iNetwork.GetTable("objectcategory")
+	iCategoryTable.Clear
+	iCategoryTable.QBEClear
+	iCategoryTable.QBESetValue "pkey", sCategoryKey
+	iCategoryTable.Search 
+	If iCategoryTable.RecordCount = 1 Then
+		'We have a single record selected.  Let's link.
+	    sSearchStr = iCategoryTable.Getrecord(0).GetValue("pkey")
+		sParentCategoryKey = sSearchStr
+		sGDSalias = iCategoryTable.Getrecord(0).GetValue("gdsalias") 
+	Else
+    	GDSErrorCodeSearch = False
+    	Exit Function
+
+    End If
+	sNewGDSAlias = sGDSalias 
+	bFinish= False
+	bGDSApplication = True
+	Do
+		sParentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sParentCategoryKey)
+		sNewGDSAlias =iCategoryTable.GetValueWhere("gdsalias","pkey",sParentCategoryKey)
+		If 	sNewGDSAlias <> sGDSAlias Then	
+			If sGDSAlias = "" Then 'innerhalb eines Baums. d.h. sNewGDSAlias ist der Beginn
+			   bGDSApplication = True
+			Else	' sGDSAlias war der Knoten
+			   bGDSApplication = False
+			End If
+			bFinish =True
+		End If
+		If Not (sParentCategoryKey = "" Or sParentCategoryKey ="NULL") And bGDSApplication Then	'Ebene 1 des Gewerkebaums nicht erreicht
+    		sSearchStr = sSearchStr & "|" &	sParentCategoryKey
+		Else
+			bFinish =True
+		End If
+
+	Loop Until bFinish
+
+    If iNetwork.HasTable("gdserrorcode") Then
+              Set iTbl = iNetwork.GetTable( "gdserrorcode" )
+              ' constrain the search							  
+              iTbl.QBESetValue "category_key", sSearchStr 
+              iTbl.QBESetValue "codestatus", "gültig"	 ' Nur gültige GDS-Codes auswählbar machen. 
+    End If
+    'iNetwork.GetBrowser("gdserrorcodeBrowser").Search "cqlocal"
+
+    ' Return False to prevent standard search
+    GDSErrorCodeSearch = True
+    Exit Function
+
+error_handler:
+    iApp.UserMsg "GDSErrorCodeSearch error " & CStr(Err) & ": " & Error$
+
+    GDSErrorCodeSearch = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessSearch"
+'TYPE = 0
+'TEMPLATE = "Function CategoryProcessSearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CategoryprcessSearch
+'Purpose:      blockieren der Suche um eine Änerung zu vehindern.
+'Copyright:    Tarragon 2002
+'*****************************************************************************
+
+Function CategoryProcessSearch() As Boolean
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim sMsg As String
+
+  Set iApp = GetApp()
+  Set iGroup = iApp.ContextGroup
+  If iGroup.Mode = MODE_UPDATE Then
+	sMsg = "Man darf nur die Routinginfo ändern." & Basic.Eoln$ & "Rückgängig mit CLEAR"
+	iApp.UserMsg sMsg, ebInformation
+    CategoryProcessSearch = False
+    Exit Function
+  End If
+  CategoryProcessSearch = True
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessChangeInfo"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryProcessChangeInfo()"
+'TEXT = [[
+Sub CategoryProcessChangeInfo()
+Dim iApp As Application
+Dim iGroup As SGroup
+ 
+
+    Set iApp = GetApp
+	Set iCallRec = iApp.ContextRecord
+
+	Set iGroup = iApp.ContextGroup()
+	nGroupMode = iGroup.Mode()
+	If nGroupMode = MODE_FILLED Then
+	 	  iGroup.Change
+          iGroup.SetControlVisibility "categoryprocessUpdate", True
+	End If
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryProcessBackfill()"
+'TEXT = [[
+Sub CategoryProcessBackfill()
+Dim iApp As Application
+Dim iGroup As SGroup
+
+  Set iApp = GetApp()
+  Set iGroup = iApp.ContextGroup
+  iGroup.SetControlVisibility "categoryprocessUpdate", False
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessNew"
+'TYPE = 0
+'TEMPLATE = "Function CategoryProcessNew() As Boolean"
+'TEXT = [[
+Public bCatProcessDelete  As Boolean
+Public sCatProcessCategoryKey As String
+Public sCatProcessProcessKey As String
+Public sCatProcessContractKey As String
+Public sCatProcessGroupKey As String
+
+Function CategoryProcessNew() As Boolean
+Dim iApp As Application
+Dim iGroup As SGroup
+ 
+    On Error GoTo error_handler
+    '-------------------------------------------------
+
+    Set iApp = GetApp
+	Set iGroup = iApp.ContextGroup
+	nGroupMode = iGroup.Mode()
+	If nGroupMode = MODE_FILLED Then
+		bCatProcessDelete = False
+		sCatProcessCategoryKey = iGroup.GetForeignKey("categoryprocessCategory")
+		sCatProcessProcessKey = iGroup.GetForeignKey("categoryprocessProcess")
+		sCatProcessContractKey = iGroup.GetForeignKey("categoryprocessContract")
+		sCatProcessGroupKey = iGroup.GetForeignKey("categoryprocessGroup")
+
+	Else
+		bCatProcessDelete = False
+		sCatProcessCategoryKey = ""
+		sCatProcessProcessKey = ""
+		sCatProcessContractKey = ""
+		sCatProcessGroupKey = ""
+	End If
+    iGroup.SetControlVisibility "categoryprocessUpdate", True
+	CategoryProcessNew = True
+	' Disable the special buttons...
+	
+    Exit Function
+
+error_handler:
+ 
+    iApp.UserMsg "CategoryProcessNew error " & CStr(Err) & ": " & Error$
+	CategoryProcessNew = False
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CategoryProcessPostUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub CategoryProcessPostUpdate()"
+'TEXT = [[
+Public bCatProcessDelete  As Boolean
+Public sCatProcessCategoryKey As String
+Public sCatProcessProcessKey As String
+Public sCatProcessContractKey As String
+Public sCatProcessGroupKey As String
+
+Sub CategoryProcessPostUpdate()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+
+
+	If Not bCatProcessDelete  Then GoTo Exit_Sub ' do nothing
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+    Set iTable = iNetwork.GetTable("del_catprocess")
+	iTable.Clear
+	iTable.QBEClear
+	iTable.QBESetValue "process_key",sCatProcessProcessKey 
+	iTable.QBESetValue "contract_key",sCatProcessContractKey 
+	iTable.QBESetValue "category_key",sCatProcessCategoryKey 
+	iTable.QBESetValue "workgroup_key",sCatProcessGroupKey 
+	iTable.Search
+	If iTable.RecordCount = 1 Then
+		iTable.DeleteRecord 0
+		iTable.Commit
+	End If
+Exit_Sub:
+
+	bCatProcessDelete = False
+	sCatProcessCategoryKey = ""
+	sCatProcessProcessKey = ""
+	sCatProcessContractKey = ""
+	sCatProcessGroupKey = ""
+
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ProcessLocalSearch"
+'TYPE = 0
+'TEMPLATE = "Function ProcessLocalSearch() As Boolean"
+'TEXT = [[
+Function ProcessLocalSearch() As Boolean
+Dim iTable As DBTable
+Dim iDummyTable As DBTable
+Dim iApp As Application
+Dim sControlName As String
+	On Error GoTo search_error_handler
+	Set iApp = GetApp()
+    If  iApp.ContextNetwork.HasTable("process") Then
+  		Set iTable = iApp.ContextNetwork.GetTable("process")
+		If 	iTable.RecordCount <> 1  Then
+		    iTable.QBESetValue "processstatus", "Gültig"
+		End If
+    End If
+    If  iApp.ContextNetwork.HasTable("category") Then
+ 	 		Set iTable = iApp.ContextNetwork.GetTable("category")
+			If iTable.RecordCount <> 1  Then
+  			    iTable.QBESetValue "categorystatus", "Gültig|Keine Zuordnung"
+			End If
+    End If
+	iApp.ContextBrowser.Search "cqlocal"
+	ProcessLocalSearch = False
+	Exit Function
+	 
+search_error_handler:
+	iApp.UserMsg "ProcessLocalSearch error " & CStr(Err) & ": " & Error$
+	TableSearch = False
+End Function
+
+
+
+
+
+
+']]
+'NAME = "GetContractFromLocation"
+'TYPE = 2
+'TEMPLATE = "Function GetContractFromLocation(iNetwork As DBNetwork, iLocationRec As DBRecord) As String"
+'TEXT = [[
+'*****************************************************************************
+' File:         GetContractFromLocation
+' Purpose:      gibt den Vertrag des Störungsortes an
+' Copyright:    Tarragon, 2004
+' *****************************************************************************
+Function GetContractFromLocation(iNetwork As DBNetwork, iLocationRec As DBRecord) As String
+Dim iLocationContractTable As DBTable
+Dim sSite_key As String
+Dim sSitepart_key As String
+Dim sBuilding_key As String
+Dim sBuildingpart_key As String
+
+On Error GoTo Error_handler
+	sSite_key = iLocationRec.GetValue("site_key")
+	If sSite_key = "" Then sSite_key = "NULL"
+	sSitepart_key = iLocationRec.GetValue("sitepart_key")
+	If sSitepart_key = "" Then sSitepart_key = "NULL"
+	sBuilding_key = iLocationRec.GetValue("building_key")
+	If sBuilding_key = "" Then sBuilding_key = "NULL"
+	sBuildingpart_key = iLocationRec.GetValue("buildingpart_key")
+	If sBuildingpart_key = "" Then sBuildingpart_key = "NULL"
+
+	Set iLocationContractTable = iNetwork.GetTable("locationcontract")
+	'Suche nach site, sitepart,building, buildingpart
+	iLocationContractTable.Clear
+	iLocationContractTable.QBEClear
+	iLocationContractTable.QBESetValue "site_key", sSite_key
+	iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+	iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+	iLocationContractTable.QBESetValue "buildingpart_key", sBuildingpart_key
+	iLocationContractTable.Search
+	If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart,building
+		iLocationContractTable.Clear
+		iLocationContractTable.QBEClear
+		iLocationContractTable.QBESetValue "site_key", sSite_key
+		iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+		iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		iLocationContractTable.Search
+   		If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart
+			iLocationContractTable.Clear
+ 			iLocationContractTable.QBEClear
+  			iLocationContractTable.QBESetValue "site_key", sSite_key
+			iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+  			iLocationContractTable.QBESetValue "building_key",	"NULL"
+   			iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+			iLocationContractTable.Search
+   			If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site
+		 		iLocationContractTable.Clear
+ 		 		iLocationContractTable.QBEClear
+  		  		iLocationContractTable.QBESetValue "site_key", sSite_key
+		  		iLocationContractTable.QBESetValue "sitepart_key", "NULL"
+  		   		iLocationContractTable.QBESetValue "building_key",	"NULL"
+   		  		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		   		iLocationContractTable.Search
+   			End If
+		End If
+	End If
+	If iLocationContractTable.RecordCount = 1  Then
+		GetContractFromLocation = iLocationContractTable.getRecord(0).GetValue("contract_key")
+	Else
+	 	GetContractFromLocation = ""
+	End If
+Exit Function
+Error_handler:
+    Msgbox "FindWorkgroup.GetContractFromLocation error " & CStr(Err) & ": " & Error$
+End Function
+'-------------------------------------------------------------------
+
+
+']]

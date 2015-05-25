@@ -1,0 +1,20 @@
+
+Start
+
+db_field(defect.pkey)
+
+startForEach(ipactions) 
+db_field(pkey), db_field(actionholder), db_field(state)
+endForEach(ipactions)
+
+
+startForEach(defectattachment)
+db_field(docname), db_field(userid), 
+endForEach(defectattachment)
+
+
+Manhours D&E
+db_field(defect.manhrsde)
+
+
+Ende

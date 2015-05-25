@@ -1,0 +1,223 @@
+'NAME = "WebQAuthIntUpdate"
+'TYPE = 0
+'TEMPLATE = "Function WebQAuthIntUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' Script:     	WebQAuthIntUpdate
+' Purpose:      This is the update trigget for the authorization record for an
+'				internal WebQ user.  Links to the employee table.
+' Copyright:    Quintus Corporation, 1997
+' *****************************************************************************
+Function WebQAuthIntUpdate() As Boolean
+
+' Database update function.  No GUI required.
+
+Dim iApp As Application
+Dim iRec As DBRecord
+
+	On Error GoTo error_handler
+
+	Set iApp = GetApp()
+	Set iRec = iApp.ContextRecord()
+
+	WebQAuthIntUpdate = True
+
+    ' Make sure that there is a link to am employee, this could be an agent or a 
+    ' employee customer, we really don't care.  We have only one link to the employee
+    ' record that is used for both.
+
+    If Not iRec.HasLinkedRecord("customerint") Then
+'!!: iApp.UserMsg
+		iApp.UserMsg "Missing link to the employee, must be set before update"
+		WebQAuthIntUpdate = False
+    End If
+
+	' We only need an agent if we are working with a customer.
+
+'!!: "Customer" -> "Kunde"
+'	If iRec.GetValue("usertype") = "Kunde" Then
+	If iRec.GetValue("usertype") = "Customer" Then
+	    ' Check to be sure that there is an Agent.  If not, don't update.
+    	If Not iRec.HasLinkedRecord("agent") Then
+'!!: iApp.UserMsg
+			iApp.UserMsg "Missing link to the agent, must be set before update"
+			WebQAuthIntUpdate = False
+		End If
+    End If
+	Exit Function
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "WebQAuthIntUpdate error " & CStr(Err) & ": " & Error$
+
+	WebQAuthIntUpdate = False
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebQAuthIntTanCode"
+'TYPE = 0
+'TEMPLATE = "Sub WebQAuthIntTanCode()"
+'TEXT = [[
+'*****************************************************************************
+' Script:     	WebQAuthIntTanCode
+' Purpose:      Get the employee's loginname and TanCode and create a new
+'               record
+' Copyright:    Quartess, 1998
+' Notes:        GUI, WebQAuthInt (HelpQ)
+' *****************************************************************************
+Sub WebQAuthIntTanCode()
+
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+Dim iCustTbl As DBTable
+Dim iCustRec As DBRecord
+Dim nGrpMode As Integer
+Dim sUsername As String
+Dim sPassword As String
+
+	On Error GoTo error_handler
+
+	Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	Set iNetwork = iApp.ContextNetwork
+	Set iCustTbl = iNetwork.GetTable("customerint")
+
+	 SRole = iApp.GetUserGroups
+	If Instr(1,sRole,"tancode",1)=0 Then
+		iApp.UserMsg " Sie haben nicht die Berechtigung den Tancode zu sehen." 
+		Exit Sub
+	End If
+
+	nGrpMode = iGroup.Mode()
+	If Not( ( nGrpMode = MODE_FILLED ) _
+			Or ( nGrpMode = MODE_NEW ) _
+			Or ( nGrpMode = MODE_UPDATE ) _
+	) Then
+		Exit Sub
+	End If
+	If iCustTbl.RecordCount = 1 Then
+		Set iCustRec = iCustTbl.GetRecord( 0 )
+		sUsername = iCustRec.GetValue( "loginname" )
+		sPassword = iCustRec.GetValue( "tancode" )
+	Else
+		iApp.UserMsg "Nicht möglich - kein Benutzer/Mitarbeiter selektiert"
+		Exit Sub
+	End If
+	If nGrpMode = MODE_FILLED Then
+		iGroup.Change
+	End If
+	If iGroup.GetValue( "webqauthUsername" ) = "" Then
+		iGroup.SetValue "webqauthUsername", sUsername
+	End If
+	If iGroup.GetValue( "webqauthUsertype" ) = "" Then
+		iGroup.SetValue "webqauthUsertype", "Kunde"
+	End If
+	iGroup.SetValue "webqauthPassword", sPassword
+	iGroup.Update
+	Exit Sub
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "WebQAuthIntTanCode error " & CStr(Err) & ": " & Error$
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebQAuthCustUpdate"
+'TYPE = 0
+'TEMPLATE = "Function WebQAuthCustUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' Script:     	WebQAuthCustUpdate
+' Purpose:      This is the update trigget for the authorization record for an
+'				external WebQ user.  Links to the customer table.
+' Copyright:    Quintus Corporation, 1997
+' *****************************************************************************
+Function WebQAuthCustUpdate() As Boolean
+' Database update function.  No GUI required.
+
+Dim iApp As Application
+Dim iRec As DBRecord
+
+	On Error GoTo error_handler
+
+	Set iApp = GetApp()
+	Set iRec = iApp.ContextRecord()
+
+'!!: "Customer" -> "Kunde"
+'	iRec.SetValue "usertype", "Kunde"
+	iRec.SetValue "usertype", "Customer"
+
+	WebQAuthCustUpdate = True
+
+    ' Check to be sure that there is an Customer.  If not, don't update.
+    If Not iRec.HasLinkedRecord("customer") Then
+'!!: iApp.UserMsg
+		iApp.UserMsg "Missing link to the customer, must be set before update"
+		WebQAuthCustUpdate = False
+		Exit Function
+	End If
+
+	'Link the organization so that we can change the relationset to get 
+	' authorized customers by organizations if we want.
+
+	If Not iRec.HasLinkedRecord("organization") Then _
+		iRec.SetValue "orgwebqauth", iRec.GetLinkedRecord("customer").GetValue("orgcustomer")
+
+    ' Check to be sure that there is an Agent.  If not, don't update.
+    If Not iRec.HasLinkedRecord("agent") Then
+'!!: iApp.UserMsg
+		iApp.UserMsg "Missing link to the agent, must be set before update"
+		WebQAuthCustUpdate = False
+		Exit Function
+    End If
+	Exit Function
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "WebQAuthCustUpdate error " & CStr(Err) & ": " & Error$
+
+	WebQAuthCustUpdate = False
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

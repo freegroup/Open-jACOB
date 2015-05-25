@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_AcronymResolver" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="acronym"/>
+            <parameter name="description"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="end">
+					<question pattern="(?:(?:was)|(?:die))?\s+bedeut(?:(?:et)|(?:ung))?\s+(?:von\s+)?(\w+)[?! ]*" defaultAnswer="Keine Ahnung"/>
+					<question pattern="was\s+ist\s+(\w+)[?! ]*"                                                   defaultAnswer="Keine Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="end">
+				<forward toNode="start">
+					<question pattern="super"   defaultAnswer="Ich weiss."/>
+					<question pattern="danke"   defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

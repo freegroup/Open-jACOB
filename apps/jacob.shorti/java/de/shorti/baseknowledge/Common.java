@@ -1,0 +1,44 @@
+package de.shorti.baseknowledge;
+
+/**
+ * Title:        short-i
+ * Description:  Information retrival System with human language interface
+ * Copyright:    Copyright (c) 2001
+ * Company:      short-i
+ * @author David Sommer & Andreas Herz
+ * @version 1.0
+ */
+import java.util.Locale;
+import java.util.*;
+import de.shorti.util.search.fuzzy.Keyword;
+import de.shorti.Shorti;
+
+public class Common
+{
+
+    /**
+     * try to detect the main language in the hands over text
+     *
+     */
+    public static Locale getLocale(String text)
+    {
+        return new Locale("DE","de");
+    }
+
+    /**
+     * only to test this class
+     *
+     */
+    public static void main(String[] args)
+    {
+        ArrayList result = ContinentNameCatalog.find("afrik");
+        Iterator iter = result.iterator();
+        while(iter.hasNext())
+        {
+            Keyword k = (Keyword)iter.next();
+            System.out.println(k.m_keyword);
+        }
+
+        Shorti.exit();
+    }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_PatrolStationLocator" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="city">
+					<question pattern="(?:tankstelle)\s+([ßÄÖÜäöüa-zA-Z -.]+)" defaultAnswer="Kein Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="city">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

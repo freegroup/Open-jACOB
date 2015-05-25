@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_CountryLanguage" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="country"/>
+            <parameter name="language"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="country">
+					<question pattern="was\s+spricht\s+man\s+in\s+(?:der\s+)?([ßäöüa-z-.]+)[!?]*"                         defaultAnswer="Keine Ahnung"/>
+					<question pattern="welche\s+sprache\s+spricht\s+man\s+in\s+(?:der\s+)?([ßäöüa-z-.]+)[!?]*"           defaultAnswer="Keine Ahnung"/>
+					<question pattern="welche\s+sprache\s+spricht\s+man\s+in\s+(?:der\s+)?([ßäöüa-z-.]+)[!?]*"           defaultAnswer="Keine Ahnung"/>
+					<question pattern="amtssprache\s+in\s+(?:der\s+)?([ßäöüa-z-.]+)[!?]*"                                   defaultAnswer="Keine Ahnung"/>
+					<question pattern="land(?:es)?sprache\s+in\s+(?:der\s+)?([ßäöüa-z-.]+)[!?]*"                            defaultAnswer="Keine Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="country">
+				<forward toNode="start">
+					<question pattern="super[!]*"   defaultAnswer="Naja - war ja auch nicht schwer heraus zu bekommen."/>
+					<question pattern="danke[!]*"   defaultAnswer="Bitte, gern geschehen!"/>
+					<question pattern="ende[?!]*"   defaultAnswer="OK."/>
+				</forward>
+			</node>
+
+			<node name="countryArtikel">
+				<forward toNode="start">
+					<question pattern="super[!]*"   defaultAnswer="Naja - war ja auch nicht schwer heraus zu bekommen."/>
+					<question pattern="danke[!]*"   defaultAnswer="Bitte, gern geschehen!"/>
+					<question pattern="ende[?!]*"   defaultAnswer="OK."/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

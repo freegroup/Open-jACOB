@@ -1,0 +1,47 @@
+<html>
+<head>
+<title> Upgrade der Parallels Tools im Textmodus in einem Linux-Gast-BS </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22864.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="29520.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675174.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Upgrade der Parallels Tools im Textmodus in einem Linux-Gast-BS</h2>
+<p class="bodytext">Nach dem Upgrade auf Parallels Desktop 4 kann es vorkommen, dass der X Server in Linux virtuellen Maschinen nicht mehr startet. Zur Behebung dieses Problems müssen Sie die Parallels Tools im Textmodus installieren.</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie die virtuelle Maschine.</li><li class="listnumber">Wenn die Meldung über den gescheiterten Start von X Server eingeblendet wird, wechseln Sie mit Ctrl+Alt+F1 zu einer anderen virtuellen Konsole und geben Ihre Anmeldedaten ein.</li><li class="listnumber">Wählen Sie  <strong class="specialbold">Parallels Tools installieren</strong> im Menü <strong class="specialbold">Virtuelle Maschine</strong>, um das Parallels Tools ISO-Image in die virtuelle Maschine einzubinden.</li><li class="listnumber">Erstellen Sie in der Konsole der virtuellen Maschine einen Mount-Punkt für das ISO-Image durch Eingabe von<p class="preformattedbold">mkdir /media/Parallels\ Tools</p>
+</li><li class="listnumber">Mounten Sie das eingebundene ISO-Image an diesem Mount-Punkt mit dem Befehl<p class="preformattedbold">mount -o exec /dev/hdb /media/Parallels\ Tools</p>
+<p class="listnote"><strong class="buttons">Hinweis:</strong> Das eingebundene CD/DVD-ROM-Gerät kann in der Symstemkonfiguration auch als<code class="monospace"> /dev/cdrom</code> angezeigt werden.</p>
+</li><li class="listnumber">Wenn das CD-Image der Parallels Tools gemountet ist, wechseln Sie zum CD-Verzeichnis der Parallels Tools durch Eingabe von<p class="preformattedbold">cd ./media/Parallels\ Tools</p>
+</li><li class="listnumber">In diesem Verzeichnis geben Sie folgenden Befehl ein, um das Installationsprogramm aufzurufen:<p class="preformattedbold">./install</p>
+</li><li class="listnumber">Folgen Sie den Anweisungen des Assistenten, um die Installation abzuschließen.</li></ol><p class="bodytext">Allgemeine Informationen über die Installation der Parallels Tools in Linux finden Sie unter <strong class="specialbold"><a id="h22571" class="jumptemplate" title="Installation der Parallels Tools in einem Linux-Gastbetriebssystem" href="22570.htm" target="_self">Parallels Tools in einem Linux-Gast-BS installieren</a></strong>.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+28117" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

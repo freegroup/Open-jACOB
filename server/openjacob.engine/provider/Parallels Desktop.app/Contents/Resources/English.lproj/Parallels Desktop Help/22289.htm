@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta name="description" content="You can set the virtual CD/DVD-ROM drive to use a real CD/DVD-ROM drive of your Mac or a CD/DVD disc image file." />
+
+<meta name="description" content="You can add a virtual CD/DVD-ROM drive to your virtual machine configuration and connect it to a real CD/DVD-ROM device or to a CD/DVD disc image file." />
+
+<title> CD/DVD-ROM-Einstellungen </title>
+<meta name="Keywords" content="CD/DVD-ROM-Laufwerk	einrichten, DVD-ROM-Laufwerk	konfigurieren, IDE-Geräte in Virtual Machine	CD/DVD-ROM, Verbinden	CD/DVD-ROM-Image" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22488.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23215.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">CD/DVD-ROM-Einstellungen</h3>
+<p class="bodytext">Im Bereich <strong class="specialbold">CD/DVD-ROM</strong> der VM-Konfiguration können Sie die Einstellungen für das CD/DVD-ROM-Laufwerk der virtuellen Maschine konfigurieren. Virtuelle CD/DVD-ROM-Laufwerke können entweder mit physischen CD/DVD-ROM-Laufwerken oder mit CD/DVD-Images verbunden werden.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Sie können bis zu vier IDE-Geräte (Festplatten und CD/DVD-ROM-Laufwerke) und 15 SCSI-Geräte mit einer virtuellen Maschine verbinden. Jedes Gerät ist einzeln in der Konfiguration der virtuellen Maschine aufgeführt und hat eine eigene Nummer.        </p>
+<p class="bodytext">          <img src="pd_ce_cdrom.gif" alt="CE-CD-ROM-Optionen" height="394" width="561" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Wählen Sie die Option <strong class="specialbold">Verbunden</strong>, wenn das CD/DVD-ROM-Laufwerk automatisch mit der virtuellen Maschine verbunden werden soll, wenn diese gestartet wird. </p>
+<p class="bodytext">Um das virtuelle CD/DVD-ROM-Laufwerk zu emulieren, können Sie eines der realen CD/DVD-ROM-Laufwerke auf Ihrem physischen Computer oder eine CD/DVD-ROM-Imagedatei mit der virtuellen Maschine verbinden.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Es werden ISO-, CCD-, CUE- und DMG-Images unterstützt.</p>
+<p class="bodytext">In dem Feld <strong class="specialbold">Quelle</strong> geben Sie das Quell-Gerät oder die Imagdatei an, die das CD/DVD-ROM-Laufwerk Ihrer virtuellen Maschine emuliert. Sie können das Quell-Gerät ändern:</p>
+<ul class="listbullet"><li class="listbullet">Um eine reales CD/DVD-ROM-Laufwerk als das CD/DVD-ROM-Laufwerk Ihrer virtuellen Maschine festzulegen, klicken Sie auf das Feld  <strong class="specialbold">Quelle</strong> und wählen Sie den Namen des realen Geräts aus der Liste aus.</li><li class="listbullet">Um eine Imagedatei als das CD/DVD-ROM-Laufwerk der virtuellen Maschine zu verwenden, klicken Sie auf das Feld <strong class="specialbold">Quelle</strong> und wählen Sie die Imagedatei aus der Liste aus oder klicken Sie auf <strong class="specialbold">Imagedatei auswählen</strong>, und geben Sie den Pfad zur gewünschten Imagedatei auf Ihrem Mac an.</li></ul><p class="bodytext">In dem Feld <strong class="specialbold">Ort</strong> können Sie den Schnittstellentyp angeben für das Verbinden mit dem Gerät:</p>
+<ul class="listbullet"><li class="listbullet">          <strong class="specialbold">IDE</strong>. Mit diesem Schnittstellentyp können Sie bis zu vier virtuelle Geräte (Festplatten und CD/DVD-ROM-Laufwerke) verbinden.</li><li class="listbullet">          <strong class="specialbold">SCSI</strong>. Mit diesem Schnittstellentyp können Sie bis zu 15 virtuelle Geräte (Festplatten und CD/DVD-ROM-Laufwerke) verbinden.</li></ul><p class="note">          <strong class="buttons">Hinweis:</strong> 1. Das Mac OS X-Gastbetriebssystem unterstützt keinen SCSI-Controller. In den neuesten Linux-Distributionen (z.B. RHEL 5.3) kann der SCSI-Treiber nicht installiert werden. In diesem Fall sollten Sie diesen Treiber in Ihrem Linux-Gastbetriebssystem installieren, um den SCSI-Controller verwenden zu können.</p>
+<p class="note">2. Der Standort SCSI 7:0 steht nicht zur Auswahl, da er vom SCSI-Controller selbst belegt wird.</p>
+<p class="bodytext">          Wenn die Konfiguration der virtuellen Maschine vor weiteren, nicht authorisierten Änderungen geschützt werden soll, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Einstellungen in einem Bereich der Konfiguration der virtuellen Maschine ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30332" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

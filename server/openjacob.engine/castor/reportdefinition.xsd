@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="reportDefinition">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="guid" type="xs:string"/>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="desciption" type="xs:string" minOccurs="0"/>
+				<xs:element name="anchorDomain" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The anchor domain for this report. This value must be set if you want backfill the report into the GUI. </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="anchorForm" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The anchor form for this report. This value must be set if you want backfill the report into the GUI. </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="application">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="name" type="xs:string"/>
+							<xs:element name="version" type="xs:string" minOccurs="0"/>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="input">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="relationSet" type="xs:string" minOccurs="0"/>
+							<xs:element name="mainTableAlias" type="xs:string"/>
+							<xs:element name="searchCriteria" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:all>
+										<xs:element name="tableAlias" type="xs:string"/>
+										<xs:element name="field" type="xs:string"/>
+										<xs:element name="value" type="xs:string" minOccurs="0"/>
+										<xs:element name="guiElement" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>The full qualified name of the qui element.
+app.domain.form.element
+
+e.g. qualitymaster.f_qualitymaster.request.request.requestMilestone</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="isKeyValue" type="xs:boolean" minOccurs="0"/>
+									</xs:all>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="output">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="column" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="tableAlias" type="xs:string"/>
+										<xs:element name="field" type="xs:string"/>
+										<xs:element name="label" type="xs:string"/>
+										<xs:element name="sortOrder" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="NONE"/>
+													<xs:enumeration value="DESCENDING"/>
+													<xs:enumeration value="ASCENDING"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="layouts" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="layout" type="CastorLayout" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="notifyee" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>the user and the cron rule for  an report 'news letter'. The report will be send to the url (via YAN) with the cronRule time intervall</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="address" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>The url for the report receiver. The url must start with the protocol for the message channel</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="protocol" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>The channel via the report has to bee send. The channel and the address of the receiver must match. e.g. email://a.herz@freegroup.de</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="userId" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>The internal id (key) of the notifyee.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="userLoginId" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>The login id of the notifyee. If this element is missing, the user is the owner.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="mimeType" type="xs:string" default="text/plain" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>default mimeType is text/plain</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="cronRule">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="minute" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>old cron rule</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="hour" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>old cron rule</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="days" type="xs:int" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>old cron rule</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="rule" type="xs:string" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="omitEmpty" type="xs:boolean" use="optional" default="false"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="defaultMimeType" type="xs:string" default="application/excel" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>default mimeType for the report is application/excel</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="owner" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>The loginId of the user which owns this report. The report is not visible to other users, if the 'private' attribute is set.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="private" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>if the flag is set, the report is only visible for the owner</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="CastorLayout">
+		<xs:sequence>
+			<xs:element name="prologue" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="pageHeader" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="recordHeader" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="part" type="CastorLayoutPart"/>
+			<xs:element name="recordFooter" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="pageFooter" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="epilogue" type="CastorCaption" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="mimeType" type="xs:string" use="required"/>
+		<xs:attribute name="width" type="xs:integer" use="optional"/>
+		<xs:attribute name="height" type="xs:integer" use="optional"/>
+		<xs:attribute name="spacing" type="xs:integer" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorLayoutColumns">
+		<xs:sequence>
+			<xs:element name="column" type="CastorLayoutColumn" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CastorLayoutColumn">
+		<xs:sequence>
+			<xs:element name="tableAlias" type="xs:string"/>
+			<xs:element name="field" type="xs:string"/>
+			<xs:element name="label" type="xs:string" minOccurs="0"/>
+			<xs:element name="function" type="CastorFunction" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Currently just substring as function is provided</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="font" type="CastorFont" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="color" type="xs:string" use="optional"/>
+		<xs:attribute name="justification" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="left"/>
+					<xs:enumeration value="center"/>
+					<xs:enumeration value="right"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="width" type="xs:integer" use="optional"/>
+		<xs:attribute name="ident" type="xs:integer" use="optional"/>
+		<xs:attribute name="linebreak" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="truncationMark" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorLayoutPart">
+		<xs:choice>
+			<xs:element name="group" type="CastorGroup"/>
+			<xs:element name="columns" type="CastorLayoutColumns"/>
+		</xs:choice>
+		<xs:attribute name="ident" type="xs:integer" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorGroup">
+		<xs:sequence>
+			<xs:element name="tableAlias" type="xs:string"/>
+			<xs:element name="field" type="xs:string"/>
+			<xs:element name="header" type="CastorCaption" minOccurs="0"/>
+			<xs:element name="part" type="CastorLayoutPart"/>
+			<xs:element name="footer" type="CastorCaption" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CastorFunction">
+		<xs:choice>
+			<xs:element name="substring" type="CastorSubstring"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="CastorSubstring">
+		<xs:attribute name="beginIndex" type="xs:integer" use="required"/>
+		<xs:attribute name="endIndex" type="xs:integer" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorCaption">
+		<xs:sequence>
+			<xs:element name="text" type="xs:string"/>
+			<xs:element name="font" type="CastorFont" minOccurs="0"/>
+		</xs:sequence>
+		
+		<!-- um einen Header ein/auszuschalten ohne den Header-Inhalt zu verlieren -->
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+
+	  <!-- Status im Designer ob die Gruppe/Header aufgeklappt ist --> 
+		<xs:attribute name="expanded" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="color" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorFont">
+		<xs:attribute name="family" type="xs:string" use="optional"/>
+		<xs:attribute name="style" use="optional" default="normal">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="normal"/>
+					<xs:enumeration value="italic"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="weight" use="optional" default="normal">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="normal"/>
+					<xs:enumeration value="bold"/>
+					<xs:enumeration value="bolder"/>
+					<xs:enumeration value="lighter"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="size" type="xs:integer"/>
+	</xs:complexType>
+</xs:schema>

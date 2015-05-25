@@ -1,0 +1,105 @@
+<html>
+<head>
+<title> Erstellen einer neuen Partition in Linux </title>
+<meta name="Keywords" content="Erstellen einer neuen Partition	unter Linux, Linux	neue Partition erstellen, Parallels Image Tool	neue Partition erstellen, Partition	unter Linux neu erstellen" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23119.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="27858.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675135.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h4 class="heading4">Erstellen einer neuen Partition in Linux</h4>
+<p class="bodytext">In den meisten Linux-Systemen können Sie eine neue Partition mit dem Dienstprogramm <code class="monospace">fdisk</code> erstellen und weitere Vorgänge zur Datenträgerverwaltung ausführen.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Um die erforderlichen Befehle zum Erstellen einer neuen Partition in Linux ausführen zu können, müssen Sie über die <code class="monospace">root</code>-Berechtigungen verfügen.</p>
+<p class="bodytext"><code class="monospace">fdisk</code> besitzt eine Textoberfläche, sodass die Befehle in der Befehlszeile von <code class="monospace">fdisk</code> eingegeben werden müssen. Folgende Befehle von <code class="monospace">fdisk</code> sind ggf. hilfreich:</p>
+<table width="582" cellpadding="2" cellspacing="0" border="1" style="border-collapse:collapse; border:1px solid #010101">
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tableheading">Optionen</p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tableheading">Beschreibung</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">m</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Zeigt die verfügbaren Befehle an.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">p</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Zeigt die vorhandenen Partitionen auf Ihrem <code class="monospace">hda</code>-Laufwerk an. Nicht partitionierter Speicherplatz wird nicht aufgeführt.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">n</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Erstellt eine neue Partition.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">q</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Schließt <code class="monospace">fdisk</code>, ohne Ihre Änderungen zu speichern.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">l</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Listet Partitionstypen auf.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="138"><p class="tablebodytext"><code class="monospace">w</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="444"><p class="tablebodytext">Schreibt Änderungen in die Partitionstabelle.</p>
+</td>
+</tr>
+
+</table>
+<p class="bodytext"><strong class="specialbold">So erstellen Sie in Linux eine neue Partition:</strong></p>
+<ol class="listnumber"><li class="listnumber">Starten Sie das Terminal.</li><li class="listnumber">Starten Sie <code class="monospace">fdisk</code> mit dem folgenden Befehl:<p class="preformattedbold">/sbin/fdisk /dev/hda</p>
+<p class="listcontinue"><code class="monospace">/dev/hda</code> steht hier für das zu partitionierende Festplattenlaufwerk.</p>
+</li><li class="listnumber">Um in <code class="monospace">fdisk</code> eine neue Partition zu erstellen, geben Sie folgenden Befehl ein:<p class="preformattedbold">n</p>
+<ul class="listbullet2"><li class="listbullet2">Wenn Sie aufgefordert werden, den <strong class="specialbold">Partitionstyp</strong> anzugeben, geben Sie zum Erstellen einer primären Partition <code class="monospace">p</code> und zum Erstellen einer erweiterten Partition <code class="monospace">e</code> ein. Es sind bis zu vier Partitionen möglich. Wenn Sie mehr als vier Partitionen erstellen möchten, muss die letzte Partition eine erweiterte Partition sein, die als Container für weitere logische Partitionen fungiert.</li><li class="listbullet2">Wenn Sie aufgefordert werden, die <strong class="specialbold">Nummer</strong> der Partition anzugeben, geben Sie in den meisten Fällen <code class="monospace">3</code> ein, da eine <em class="emphasis">typische</em> virtuelle Maschine unter Linux standardmäßig zwei Partitionen besitzt.</li><li class="listbullet2">Wenn Sie aufgefordert werden, den <strong class="specialbold">Startzylinder</strong> anzugeben, geben Sie eine Nummer für den Startzylinder ein oder drücken die <strong class="specialbold">Eingabetaste</strong>, um den ersten verfügbaren Zylinder zu verwenden.</li><li class="listbullet2">Wenn Sie aufgefordert werden,den <strong class="specialbold">Endzylinder</strong> anzugeben, drücken Sie die <strong class="specialbold">Eingabetaste</strong>, um den verfügbaren Speicherpatz zuzuordnen, oder geben Sie die Größe einer neuen Partition in Zylindern an, wenn Sie nicht den gesamten verfügbaren Speicherplatz verwenden möchten.</li></ul><p class="listcontinue">Per Voreinstellung erstellt <code class="monospace">fdisk</code> eine Partition mit einer <strong class="specialbold">System-ID</strong> von <code class="monospace">83</code>. Wenn Ihnen die<strong class="specialbold"> System-ID</strong> nicht bekannt ist, können Sie sie mit dem Befehl</p>
+<p class="preformattedbold">l</p>
+<p class="listcontinue">ermitteln.</p>
+</li><li class="listnumber">Mit dem Befehl<p class="preformattedbold">w</p>
+<p class="listcontinue">schreiben Sie Änderungen in die Partitionstabelle.</p>
+</li><li class="listnumber">Starten Sie die virtuelle Maschine neu, indem Sie den Befehl<p class="preformattedbold">reboot</p>
+<p class="listcontinue">eingeben.</p>
+</li><li class="listnumber">Nach dem Neustart erstellen Sie auf der neuen Partition ein Dateisystem. Es wird empfohlen, dasselbe Dateisystem wie auf den anderen Partitonen zu verwenden. Dies ist in den meisten Fällen das Dateisystem <code class="monospace">Ext3</code> oder <code class="monospace">ReiserFS</code>. Wenn Sie beispielsweise das Dateisystem<code class="monospace"> Ext3 </code> erstellen möchten, geben Sie folgenden Befehl ein:<p class="preformattedbold">/sbin/mkfs -t ext3 /dev/hda3</p>
+</li><li class="listnumber">Erstellen Sie ein Verzeichnis, das als Mountpunkt für die neue Partition fungiert. Wenn Sie das Verzeichnis beispielsweise <code class="monospace">data</code> nennen möchten, geben Sie Folgendes ein:<p class="preformattedbold">mkdir /data</p>
+</li><li class="listnumber">Mounten Sie die neue Partition mit folgendem Befehl im soeben erstellten Verzeichnis:<p class="preformattedbold">mount /dev/hda3 /data</p>
+</li><li class="listnumber">Nehmen Sie gewünschte Änderungen an den Daten Ihres statischen Dateisystems vor, indem Sie die Datei <code class="monospace">/etc/fstab</code> in einem verfügbaren Texteditor bearbeiten. Sie können dieser Datei z. B. folgende Zeichenfolge hinzufügen:<p class="preformattedbold">/dev/hda3 /data ext3 defaults 0 0</p>
+<p class="listcontinue">In dieser Zeichenfolge steht <code class="monospace">/dev/hda3</code> für die soeben erstellte Partition, <code class="monospace">/data</code> ist ein Mountpunkt für die neue Partition, und <code class="monospace">Ext3</code> ist der Dateityp der neuen Partition. Die genaue Bedeutung anderer Elemente in dieser Zeichenfolge können Sie der Linux-Dokumentation für de Befehle <code class="monospace">mount</code> und <code class="monospace">fstab</code> entnehmen.</p>
+</li><li class="listnumber">Speichern Sie die Datei <code class="monospace">/etc/fstab</code>.</li></ol>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+23117" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

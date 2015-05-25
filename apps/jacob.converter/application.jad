@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="converter" engineVersion="2.8.5" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="converterDataSource" reconfigure="full">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+  </Roles>
+  <Tables>
+    <Table datasource="converterDataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="Photo" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="company_key" history="false" label="Company_key" name="company_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="company_FKey">
+        <Field>company_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="login_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="converterDataSource" dbName="account" name="account">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="converterDataSource" dbName="company" name="company">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="uniqueKeyName">
+        <Field>name</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="converterDataSource" dbName="converter" name="converter">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="xml" history="false" label="Xml" name="xml" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="converterDataSource" dbName="imported_files" name="imported_files">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="excel" history="false" label="Excel" name="excel" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="log" history="false" label="Log" name="log" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="import_date" history="false" label="Import_date" name="import_date" readonly="false" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="false">
+        <Enumeration>
+          <Value>uploaded</Value>
+          <Value>tested</Value>
+          <Value>imported</Value>
+          <Label>uploaded</Label>
+          <Label>tested</Label>
+          <Label>imported</Label>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="company" table="company"/>
+    <TableAlias name="user" table="person"/>
+    <TableAlias name="converter" table="converter"/>
+    <TableAlias name="imported_files" table="imported_files"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="company" name="companyBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="user" name="userBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="converter" name="converterBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="imported_files" name="imported_filesBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="company_person">
+      <OneToMany fromAlias="company" toAlias="person" toKey="company_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="newRelationset">
+      <Relation>company_person</Relation>
+      <Property>
+        <Name>person.x</Name>
+        <Value>191</Value>
+      </Property>
+      <Property>
+        <Name>person.y</Name>
+        <Value>347</Value>
+      </Property>
+      <Property>
+        <Name>company.x</Name>
+        <Value>183</Value>
+      </Property>
+      <Property>
+        <Name>company.y</Name>
+        <Value>185</Value>
+      </Property>
+      <Property>
+        <Name>person.expanded</Name>
+        <Value>false</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="User" name="user">
+      <Group alias="person" browser="personBrowser" label="Person" name="personGroup">
+        <Dimension height="271" width="650" x="5" y="5"/>
+        <GuiElement name="personClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="570" y="65"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="570" y="40"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="570" y="90"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="570" y="115"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="personLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="90"/>
+              <Caption halign="left" label="Loginname" valign="top">
+                <Dimension height="20" width="70" x="5" y="90"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="40"/>
+              <Caption halign="left" label="Pkey" valign="top">
+                <Dimension height="20" width="70" x="5" y="40"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFullname" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="65"/>
+              <Caption halign="left" label="Fullname" valign="top">
+                <Dimension height="20" width="70" x="5" y="65"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPassword" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="80" y="115"/>
+              <Caption halign="left" label="Password" valign="top">
+                <Dimension height="20" width="70" x="5" y="115"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personCompany" visible="true">
+          <ForeignInputField browserToUse="companyBrowser" filldirection="both" foreignAlias="company" foreignTableField="name" relationToUse="company_person" relationset="local">
+            <Dimension height="20" width="200" x="80" y="160"/>
+            <Caption halign="left" label="Company" valign="top">
+              <Dimension height="20" width="70" x="5" y="160"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.person.PersonGenericButton" name="personGenericButton" visible="true">
+          <Button label="Test">
+            <Dimension height="62" width="196" x="370" y="179"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form label="Company" name="company">
+      <Group alias="company" browser="companyBrowser" label="Company" name="companyGroup">
+        <Dimension height="451" width="651" x="10" y="10"/>
+        <GuiElement name="companySearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="491" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="566" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="566" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="491" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="25"/>
+              <Caption halign="left" label="Pkey" valign="top">
+                <Dimension height="20" width="70" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="companyName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="50"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Dbg_converter" name="dbg_converter">
+      <Group alias="converter" browser="converterBrowser" label="Converter" name="converterGroup">
+        <Dimension height="551" width="846" x="5" y="5"/>
+        <GuiElement name="converterSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="686" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="761" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="761" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="686" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="20" y="49"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="20" y="28"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="converterXml" visible="true">
+          <LocalInputField tableField="xml">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="236" width="811" x="20" y="100"/>
+              <Caption halign="left" label="Xml" valign="top">
+                <Dimension height="20" width="70" x="20" y="80"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Import" name="importFile">
+      <Group alias="imported_files" border="false" browser="imported_filesBrowser" label="Imported_files" name="imported_filesGroup">
+        <Dimension height="506" width="650" x="5" y="105"/>
+        <GuiElement eventHandler="jacob.event.ui.imported_files.UploadButton" name="uploadButton" visible="true">
+          <Button label="Upload">
+            <Dimension height="20" width="70" x="49" y="5"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.imported_files.TestButton" name="testButton" visible="true">
+          <Button label="Test">
+            <Dimension height="20" width="70" x="49" y="45"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.imported_files.ImportButton" name="importButton" visible="true">
+          <Button label="Import">
+            <Dimension height="20" width="70" x="49" y="90"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="protocolArea" visible="true">
+          <LocalInputField tableField="log">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="246" width="571" x="19" y="170"/>
+              <Caption halign="left" label="Log" valign="top">
+                <Dimension height="20" width="70" x="19" y="150"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="imported_filesClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="520" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+      <Group alias="converter" border="false" browser="converterBrowser" label="Converter" name="converterGroup">
+        <Dimension height="91" width="650" x="5" y="5"/>
+        <GuiElement name="converterSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="490" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="converterName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="15" y="30"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="15" y="11"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <HtmlForm label="Converter" name="converter">
+      <Group alias="converter" browser="converterBrowser" eventHandler="jacob.event.ui.converter.AnyGroup" label="&lt;unused>" name="anyGroup"/>
+    </HtmlForm>
+  </Forms>
+  <Domains>
+    <Domain name="administration" title="Administration" visible="true">
+      <Form>user</Form>
+      <Form>company</Form>
+      <Form>converter</Form>
+      <Form>importFile</Form>
+    </Domain>
+    <Domain name="debug" title="Debug" visible="true">
+      <Form>dbg_converter</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="converter" title="converter Application">
+      <Domain>administration</Domain>
+      <Domain>debug</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

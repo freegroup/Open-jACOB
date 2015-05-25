@@ -1,0 +1,19 @@
+VERSION "ADL-5.5";
+
+DEFINE CONNECTION custqConnection
+{
+	DBMS_NAME	= "imsys"
+	DBMS_TYPE	= "ORACLE"
+	DBMS_SERVER	= "archimedes"
+	DBMS_HOME	= "c:\orant"
+	CQDATA_SERVER	= "archimedes"
+	CQDATA_PORT	= "5301"
+	TIMEOUT		= "60"
+	DISPLAY_TIME	= "HOSTTIME"
+	DB_LOCATION	= "user_data"
+	DB_LOCATION2	= "temporary_data"
+};
+
+DEFINE CONNECTIONSET Qconnections WITH CONNECTIONS
+	reposDataSource USING custqConnection WITH PRIMARY LOGIN DBNAME "qrepository",
+	custqDataSource USING custqConnection PRIMARY;

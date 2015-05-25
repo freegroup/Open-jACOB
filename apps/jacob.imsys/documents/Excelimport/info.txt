@@ -1,0 +1,40 @@
+Hallo Herr Döring,
+
+was lange währt...
+
+in der Anlage schicke ich Ihnen eine Exceltabelle. Die grau hinterlegten
+Felder sollen in der IMSYS-Meldung auftauchen. Ich habe in der Zeile 3
+entsprechende Hinweise aufgenommen.
+
+Mit den 3 Feldern Name, Vorname und Personalnummer sollte der Besteller in
+IMSYS eindeutig zu identifizieren sein. Wenn das kein eindeutiges Ergebnis
+liefert sollte ein entsprechender Protokolleintrag generiert werden, evtl
+kommt auch eine Form der Meldung in Frage.
+
+Zusätzlich sollte bei Agent der Name "autom. Auftrag aus P/GS-System"
+eingetragen werden. Die Tätigkeit ist immer 1st Level beraten, das Gewerk
+werde ich in der Datenstruktur noch ergänzen, ebenso den AK.
+
+Die endgültigen Daten sind verdichtet, das heißt ich fasse vorher alle
+Daten mit der gleichen Auftragsnummer (IBXXXX) zusammen, so dass immer eine
+1:1 Beziehung zwischen PGS-Auftrag und Meldung besteht.
+
+Ich melde mich telefonisch noch bei Ihnen um das Thema nochmals zu
+besprechen.
+
+(See attached file: Beispieldaten_PGS.xls.zip)
+
+Mit freundlichen Grüßen
+
+       stephan thümmler
+
+
+       DaimlerChrysler AG
+       Infrastruktur-/Service Management (BS/IS)
+       Konzepte und Informationstechnologie
+       096 E658
+       70546 Stuttgart
+
+       mailto:stephan.thuemmler@daimlerchrysler.com
+       Tel.: 0711/17-58513
+       Fax: 0711/17-790-50564

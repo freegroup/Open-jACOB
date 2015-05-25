@@ -1,0 +1,22 @@
+load averages:  0.04,  0.04,  0.04    16:01:53
+110 processes: 108 sleeping, 1 zombie, 1 on cpu
+
+Memory: 8192M real, 6734M free, 832M swap in use, 22G swap free
+
+
+  PID USERNAME THR PRI NICE  SIZE   RES STATE   TIME    CPU COMMAND
+ 1903 root      12  59    0   21M   20M sleep  33.9H  0.76% mibiisa
+16731 jacob     12   0   10   49M   10M sleep   0:00  0.44% java
+16732 jacob      1   0   10 1784K 1064K cpu1    0:00  0.02% top
+16576 root       1  11    0 3128K 1712K sleep   0:00  0.02% in.ftpd
+ 2205 root       1   3    0 4096K 1376K sleep  54:25  0.00% opcle
+ 8046 jacob     56   0   10  731M  311M sleep   3:15  0.00% java
+ 1943 root       1   3    0 1728K  488K sleep   2:35  0.00% wsaprngd
+ 8336 root       8  50    0 3376K 2416K sleep   1:28  0.00% nscd
+    1 root       1  59    0  856K  272K sleep   1:06  0.00% init
+ 1510 root       5  59    0 7208K 2136K sleep   0:43  0.00% pipeopener
+  788 root       1   1    0 2464K 1200K sleep   0:23  0.00% inetd
+ 2207 root       1  57    0 4720K 1272K sleep   0:18  0.00% opcmona
+ 8226 jacob     19   0   10   97M   42M sleep   0:15  0.00% java
+  760 root       1  59    0 2416K 1128K sleep   0:09  0.00% rpcbind
+ 1878 root       1  59    0 2168K  696K sleep   0:07  0.00% llbd

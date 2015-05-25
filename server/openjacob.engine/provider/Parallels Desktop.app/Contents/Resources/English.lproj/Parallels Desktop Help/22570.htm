@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta name="description" content="Learn how to install Parallels Tools in a Linux guest operating system." />
+
+<title> Installation der Parallels Tools in einem Linux-Gastbetriebssystem </title>
+<meta name="Keywords" content="Linux	Parallels Tools installieren, Parallels Tools	unter Linux installieren" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22575.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="27001.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967559.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Installation der Parallels Tools in einem Linux-Gastbetriebssystem</h3>
+<p class="bodytext">Treffen Sie folgende Maßnahmen, bevor Sie die Parallels Tools in einem Linux-Gastbetriebssystem installieren:</p>
+<ul class="listbullet"><li class="listbullet">Schließen Sie alle Programme im Gastbetriebssystem.</li><li class="listbullet">Deaktivieren Sie die 3D-beschleunigte Fensterverwaltung, falls zutreffend.</li><li class="listbullet">Achten Sie darauf, dass das gcc Paket sowie die Kernel-Quelldateien installiert sind. Wenn diese Pakete zuvor nicht installiert wurden, werden Sie vom Installationsprogramm der Parallels Tools darüber informiert. Der Name des Pakets mit den Kernel-Quelldateien hängt vom Typ des verwendeten Linux-Betriebssystems ab: Möglicherweise heißt es <code class="monospace">kernel-devel</code> oder <code class="monospace">kernel-headers</code>. Weitere Informationen über Kernel-Quelldateien finden Sie im Abschnitt <a id="h29526" class="jumptemplate" title="Installation des GCC-Pakets und der Kernelquelldateien in Linux" href="29520.htm" target="_self">GCC-Paket und Kernel-Quelldateien in Linux installieren</a>.</li></ul><p class="note"><strong class="buttons">Hinweis:</strong> Zur Installation der Parallels Tools in Ihrer virtuellen Maschine sind <code class="monospace">root</code>-Rechte erforderlich. </p>
+<p class="subheading">So werden die Parallels Tools in den jünsten Versionen der Linux-Gastbetriebssysteme installiert</p>
+<p class="bodytext">Wenn Sie in Ihrer virtuellen Maschine eines der jüngsten Betriebssysteme von Linux verwenden (Ubuntu, Fedora), wird die Imagedatei <code class="monospace">prl-tools-lin.iso</code> nach der Einbindung in das CD/DVD-ROM-Laufwerk automatisch geladen. Gehen Sie folgendermaßen vor, um die Parallels Tools zu installieren</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie die virtuelle Maschine.</li><li class="listnumber">Wenn das Gastbetriebssystem startet, wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">Parallels Tools installieren</strong>.<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn die Option <strong class="specialbold">Parallels Tools installieren</strong> ausgegraut ist, müssen Sie überprüfen, ob die Parallels Tools das Gastbetriebssystem unterstützen. Eine Liste der von den Parallels Tools unterstützten Gastbetriebssysteme finden Sie unter <strong class="specialbold">Parallels Tools Überblick</strong> im <em class="emphasis">Parallels Desktop<em class="emphasis"> Benutzerhandbuch</em></em>.</p>
+</li><li class="listnumber">Die Imagedatei <code class="monospace">prl-tools-lin.iso</code> wird in das CD/DVD-ROM-Laufwerk der virtuellen Maschine eingebunden und geladen.</li></ol><p class="bodytext">Zur Bearbeitung der Einstellungen der in der Virtuelle Maschine installierten Parallels Tools benutzen Sie den Bereich<strong class="specialbold">Dienste</strong> im Dialog <strong class="specialbold">Virtuelle Maschine Konfiguration</strong>.</p>
+<p class="subheading">So wird überprüft, ob die Parallels Tools installiert sind</p>
+<p class="bodytext">Wenn Sie nicht genau wissen, ob die Parallels Tools installiert sind, können Sie dies einfach überprüfen. Starten Sie Ihre virtuelle Maschine, und prüfen Sie die Statusleiste des VM-Fensters: Wenn in der Statusleiste des VM-Fensters der Tipp <code class="monospace">Ctrl + Option (Alt) drücken, um Maus und Tastatur freizugeben</code> angezeigt wird, sind die Parallels Tools nicht installiert. Denn nach Installation der Parallels Tools müssen Sie keine Taste mehr drücken, um Maus und Tastatur freizugeben. Die Freigabe erfolgt dann automatisch.</p>
+<p class="subheading">Problemlösung</p>
+<p class="bodytext">Das Installationsprogramm der Parallels Tools kann durch SELinux blockiert werden. Gehen Sie folgendermaßen vor, um das Problem zu beheben:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie eine Terminalsitzung und bestimmen Sie die Version des Kernels durch Eingabe von<p class="preformattedbold">uname -r</p>
+<p class="preformatted">2.6.18-8.el5</p>
+<p class="listcontinue">2.6.18-8.el5 ist die Version Ihres Kernels.</p>
+</li><li class="listnumber">Öffnen Sie die Datei <code class="monospace">/boot/grub/grub.conf</code> oder <code class="monospace">/boot/grub/menu.lst</code> (je nach Version Ihres Linux-Betriebssystems) und suchen Sie den Eintrag, der Ihrer Version des Kernels entspricht.<p class="preformatted">title Red Hat Enterprise Linux Server (2.6.18-8.el5)</p>
+<p class="preformatted">	root (hd0,0)</p>
+<p class="preformatted">	kernel /vmlinuz-2.6.18-8.el5 ro root=/dev/VolGroup00/LogVol00 rhgb quiet</p>
+<p class="preformatted">	initrd /initrd-2.6.18-8.el5.img</p>
+</li><li class="listnumber">Fügen Sie ans Ende des Eintrags folgende Zeichenfolge hinzu:<p class="preformattedbold">selinux=0</p>
+<p class="listcontinue">Der gesamte Eintrag lautet dann folgendermaßen:</p>
+<p class="preformatted">kernel /vmlinuz-2.6.18-8.el5 ro root=/dev/VolGroup00/LogVol00 rhgb quiet selinux=0</p>
+</li><li class="listnumber">Sichern Sie die Datei und starten Sie die virtuelle Maschine neu.</li></ol><p class="bodytext">Mounten Sie das CD-Image der Parallels Tools nach dem Neustart und versuchen Sie, die Parallels Tools zu installieren.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+22570" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

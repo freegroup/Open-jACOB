@@ -1,0 +1,41 @@
+'NAME = "OrganizationUpdate"
+'TYPE = 0
+'TEMPLATE = "Function OrganizationUpdate() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+'SCript:     OrganizationUpdate
+'Purpose:    Business rules that are executed when organizaion table is updated
+'Copyright:  Quintus Corporation, 1996
+'*****************************************************************************
+
+
+Function OrganizationUpdate() As Boolean
+'Database record modifications.  No GUI required.
+Dim iApp As Application
+Dim iOrgRec As DBRecord
+Dim bResult As Boolean
+
+    'On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp
+    Set iOrgRec = iApp.ContextRecord
+
+        OrganizationUpdate = True
+
+    Exit Function
+
+ERROR_HANDLER:
+    OrganizationUpdate = False
+'!!: iApp.UserMsg
+    iApp.UserMsg "OrganizationUpdate error " & CStr(Err) & ": " & Error$
+End Function
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+']]

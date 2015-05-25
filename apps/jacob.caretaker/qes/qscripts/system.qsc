@@ -1,0 +1,1644 @@
+'NAME = "Initialize"
+'TYPE = 1
+'TEMPLATE = "Function Initialize() As Boolean"
+'TEXT = [[
+
+' ****************************************************************************
+' Purpose:      Defines and initializes global variables
+' Author(s):    Yannis Cosmadopoulos
+' Created:      3 Nov, 1995
+' Copyright:    Quintus Corporation, 1996
+' ****************************************************************************
+Public iGApp As Application          'The Application object
+Public bFirstLevelCloseCall As Boolean
+Public bSendFAX As Boolean
+Public bIsOldCustomer As Boolean
+Public sOldCustomerKey As String
+Public bCatProcessDelete  As Boolean
+Public sCatProcessCategoryKey As String
+Public sCatProcessProcessKey As String
+Public sCatProcessContractKey As String
+Public sCatProcessGroupKey As String
+Public bManuellSearch As Boolean
+Public bCallMasterDetail As Boolean
+
+
+Function Initialize() As Boolean
+Dim sUserRoles As String
+Dim bIsAdmin As Boolean
+
+    On Error GoTo InitializeErrorHandler
+    '-----------------------------------
+    If iGApp Is Nothing Then
+    Set iGApp = CreateAppObject()
+        If Not iGApp Is Nothing Then
+            Dim iNet As DBNetwork
+			On Error GoTo NoAlertErrorHandler
+            Set iNet = iGApp.CreateNetwork("q_alert", "q_alert")
+			On Error GoTo InitializeErrorHandler
+            If Not iNet Is Nothing Then
+                Set iGApp.AlertNetwork = iNet
+                Set iNet = Nothing
+            End If
+        End If
+    End If
+	sUserRoles = iGApp.GetUserGroups
+	If InStr( sUserRoles, "CQ_ADMIN" )>0 Then
+   		bIsAdmin = True
+	Else
+		bIsAdmin = False
+	End If
+	bFirstLevelCloseCall = False 'Initialize this Variable
+	bSendFAX  = False 'Initialize this Variable
+	sOldCustomerKey = ""
+	bIsOldCustomer = False	
+	bCatProcessDelete = False
+	sCatProcessCategoryKey = ""
+	sCatProcessProcessKey = ""
+	sCatProcessContractKey = ""
+	sCatProcessGroupKey = ""
+	bManuellSearch = False
+	bCallMasterDetail = False ' um die Berechtigungsregelung für Hauptmeldungdetails zu umgeghen
+
+	If iGApp.CurrentUserName = "" And Not bIsAdmin Then
+                MsgBox "Dieser Loginname ist keiner Person zugeordnet." & _
+                       Basic.Eoln$ & "Bitte wenden Sie sich an Ihren Administrator.", _
+                    ebOKonly + ebCritical, "Login fehlgeschlagen"
+                Initialize = False
+	Else
+    	Initialize = True  'App will exit if False is returned
+	End If
+    Exit Function
+
+NoAlertErrorHandler:
+    Set iNet = Nothing
+	Resume Next
+
+InitializeErrorHandler:
+    MsgBox "Initialize error " & CStr(Err) & ": " & Error$
+    Initialize = True
+End Function
+
+' ****************************************************************************
+' Purpose:      Returns the Operating System type
+' Author(s):    Yannis Cosmadopoulos
+' Created:      3 Nov, 1995
+' Copyright:    Quintus Corporation, 1996
+' ****************************************************************************
+Function SysType() As String
+	o% = Basic.OS
+	Select Case o%
+		Case ebWin16
+			SysType = "Windows (16 bit)"
+		Case ebWin32
+			SysType = "Windows (32 bit)"
+		Case ebSolaris
+			SysType = "Solaris"
+		Case ebSunOS
+			SysType = "SunOS"
+		Case ebAIX
+			SysType = "AIX"
+		Case ebHPUX
+			SysType = "HP/UX"
+		Case Else
+			SysType = "Unknown"
+	End Select
+End Function
+
+' ****************************************************************************
+' Purpose:      Returns the (global) Application Object
+' Author(s):    Yannis Cosmadopoulos
+' Created:      3 Nov, 1995
+' Copyright:    Quintus Corporation, 1996
+' ****************************************************************************
+Function GetApp() As Application
+    Set GetApp = iGApp
+End Function
+
+' ****************************************************************************
+' Purpose:      Returns a formatted date string. This will accept date or
+'               datetime values.
+' Author(s):    Richard Southwick
+' Created:      3 Mar, 1996
+' Copyright:    Quintus Corporation, 1996
+' ****************************************************************************
+Function FormatDate(dDate As Date) As String
+    If DatePart("h", dDate) Or DatePart("n", dDate) Or DatePart("s", dDate) Then
+		FormatDate = Format$(dDate, "dd mmm yyyy hh:nn:ss")
+    Else
+		FormatDate = Format$(dDate, "dd mmm yyyy")
+    End If
+End Function
+
+Function CurrentUserKey(iNetwork As DBNetwork, sTable As String) As String
+Dim sUserKey As String
+
+    sUserKey = iGApp.CurrentUserKey
+    If Len(sUserKey) = 0 Then
+        CurrentUserKey = iGApp.CurrentUserKey
+    Else
+        CurrentUserKey = sUserKey
+    End If
+End Function
+
+Function CurrentUserName(iNetwork As DBNetwork, sTable As String) As String
+Dim sUserName As String
+
+    sUserName = iGApp.CurrentUserName
+    If Len(sUserName) = 0 Then
+        CurrentUserName = iGApp.CurrentUserName
+    Else
+        CurrentUserName = sUserName
+    End If
+End Function
+
+Function CurrentUserEmail(iNetwork As DBNetwork, sTable As String) As String
+Dim sUserEmail As String
+
+    sUserEmail = iGApp.CurrentUserEmail
+    If Len(sUserEmail) = 0 Then
+        CurrentUserEmail = iGApp.CurrentUserEmail
+    Else
+        CurrentUserEmail = sUserEmail
+    End If
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "Cleanup"
+'TYPE = 1
+'TEMPLATE = "Sub Cleanup()"
+'TEXT = [[
+
+  Public iGApp As Application             'The Application object
+
+  Sub Cleanup()
+      Set iGApp = Nothing
+  End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SendMessageHook"
+'TYPE = 1
+'TEMPLATE = "Function SendMessageHook(sDialog As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       SendMessageHook
+'Purpose:      Change behaviour when sending a message. A return other than
+'              True means the default action (sending the message) does not
+'              happen. Use this to implement integrations with other mail
+'              systems.
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Public iGApp As Application          'The Application object
+
+Function SendMessageHook(sDialog As String) As Boolean
+On Error GoTo ERROR_HANDLER
+Dim iMsg As SMessage
+    Set iMsg = iGApp.ContextMessage
+    'SendMessageHook = False    ' This would cause default action not to occur
+    'Exit Function
+    SendMessageHook = True
+    Exit Function
+ERROR_HANDLER:
+    SendMessageHook  = (iGApp.UserResponseMsg("SendMessageHook error " & CStr(Err) & ": " & Error$ & Chr$(13) & Chr$(10) & "Do you want to send the message anyway?", ebYesNo) = ebYes)
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ConstructFaxAddress"
+'TYPE = 1
+'TEMPLATE = "Sub ConstructFaxAddress(sPhone As String, sName As String, sFaxAddress As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ConstructFaxAddress
+'Purpose:      Constructs Fax Address based on the MAPI Mail Gateway to Fax Sr.
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub ConstructFaxAddress(sPhone As String, sName As String, sFaxAddress As String)
+  Dim iApp As Application
+
+    On Error GoTo faxaddr_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+
+'The following statement should be modified based the Mail Gateway to Fax Sr.
+'    sFaxAddress = "[FAXSR:" + sName + "^Quintus Corp^CustomerQ 5.x^" + sPhone + "]"  'For Microsoft Exchange Server
+'    sFaxAddress = "[FAX:" + sName + "@" + sPhone + "]"                              'For Microsoft Mail Server
+'    sFaxAddress = "sName + "@" + sPhone"                                            'For CC-Mail Gateway
+'     sFaxAddress = "[FAXSR:" + sPhone + "@WK-Fax]"  'lotus DC
+sFaxAddress = sPhone		  ' UNIX QALert wertet das aus und sendet Mail an FAXSERVER
+    Exit Sub      
+
+faxaddr_error_handler:
+    iApp.UserMsg "ConstructFaxAddress error " & CStr(Err) & " " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AlertInfo"
+'TYPE = 1
+'TEMPLATE = "Sub AlertInfo(sName As String, sValue As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       AlertInfo
+'Purpose:      Specifies table and browser names to use in the alert mechanism
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+Sub AlertInfo(ByRef sName As String, ByRef sValue As String)
+    Select Case sName
+        'Tables
+        Case "employee"
+            'Used in building the default filter ie to determine the
+            'workgroups the logged in user belongs to. Also used when
+            'sending alerts to an individual to locate their record.
+            sValue = "employee"
+        Case "groupmember"
+            'Used for setting and getting the tier constraint.
+            sValue = "groupmember"
+        Case "workgroup"
+            'Used when sending alerts to workgroups.
+            sValue = "workgroup"
+        Case "Template"
+            'Optional table used for "canned" broadcast templates. This
+            'table does not exist in the standard system.
+            sValue = "brdcast_template"
+        'Browsers
+        Case "EmployeeBrowser"
+            'Used to build the default filter by finding the workgroups the
+            'user belongs to.
+            sValue = "q_alertEmployeeBrowser"
+        Case "WorkgroupBrowser"
+            'Used to flatten workgroups to their members when sending
+            'alerts to workgroups by member.
+            sValue = "q_alertWorkgroupBrowser"
+        'Others
+        Case "PollInterval"
+            'The number of milliseconds between polls for new alerts.
+            'The maximum is 65535 which is just over a minute.
+            sValue = "65535"
+        Case "DeleteInterval"
+            'The number of hours after which any user can delete an alert.
+            sValue = "5"
+        Case Else
+            sValue = ""
+    End Select
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AlertAdministrator"
+'TYPE = 1
+'TEMPLATE = "Function AlertAdministrator() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       AlertAdministrator
+'Purpose:      Specifies whether administration is allowed. This is an example
+'              implementation. Should be customized for each application.
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+Function AlertAdministrator() As Boolean
+Dim iApp As Application
+    Set iApp = GetApp()
+    'Example implementation based on user name
+    AlertAdministrator = (iApp.DBUser = "yac")
+    'Example implementation using the application name
+    'AlertAdministrator = (iApp.Name = "sfqadm")
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetTempPath"
+'TYPE = 1
+'TEMPLATE = "Function GetTempPath(sFile As String) As String"
+'TEXT = [[
+Declare Function WinGetTempPath Lib "kernel32" Alias "GetTempPathA" _
+(ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
+Function GetTempPath(sFile As String) As String
+
+Dim sTempDir As String
+Dim nNameLen As Long
+On Error GoTo ERROR_HANDLER
+	sTempDir = String$(80,0)
+    nNameLen = WinGetTempPath(80, sTempDir)
+    If nNameLen > 0 Then
+        If InStr(sTempDir, Chr(0)) > 0 Then sTempDir = _
+left(sTempDir, InStr(sTempDir, Chr(0)) - 1)
+    End If
+	GetTempPath = sTempDir & sFile
+    Exit Function
+ERROR_HANDLER:
+	GetTempPath = sFile
+    Exit Function
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "FillTargetFromIFB"
+'TYPE = 1
+'TEMPLATE = "Function FillTargetFromIFB(sIFBTableName As String, sTargetBrowserName As String, sTargetTblName As String, sIFBRecKeyName As String, sRelationset As String, nFillDirection As Integer) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' Script:       FillTargetFromIFB
+' Purpose:      Fills information to specified Target from row in Context IFB
+' Copyright:    Quintus Corporation, 1998
+' *****************************************************************************
+
+Function FillTargetFromIFB(sIFBTableName As String, _
+							sTargetBrowserName As String, _
+							sTargetTblName As String, _
+							sIFBRecKeyName As String, _
+							sRelationset As String, _
+							nFillDirection As Integer) As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iIFB As SIFBrowser
+Dim iIFBTbl As DBTable
+Dim iTargetBrowser As DBBrowser
+Dim iTargetTbl As DBTable
+Dim iIFBRec As DBRecord
+Dim lCurrentRow As Long
+Dim lRecNum As Long
+Dim bResult As Boolean
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+    Set iIFB = iApp.ContextIFBrowser
+    Set iIFBTbl = iNetwork.GetTable(sIFBTableName)
+	Set iTargetBrowser = iNetwork.GetBrowser(sTargetBrowserName)
+    Set iTargetTbl = iNetwork.GetTable(sTargetTblName)
+	
+    lCurrentRow = iApp.ContextIFBrowserRow
+    lRecNum = iIFB.GetRowRecordNumber(lCurrentRow)
+
+    Set iIFBRec = iIFBTbl.GetRecord(lRecNum)
+	
+	iTargetTbl.QBEClear
+    iTargetTbl.QBESetKeyValue iTargetTbl.PrimaryKeyName, _
+		iIFBRec.GetKeyValue(sIFBRecKeyName)
+	
+    iTargetBrowser.Search sRelationset, nFillDirection
+
+	If iTargetBrowser.RecordCount = 0 Then
+		iApp.UserMsg "No matches were found for this row." & ebCrLf & ebCrLf & _
+			"This is usually because the Source Group needs to be Updated.", _
+			ebExclamation
+
+		Exit Function
+	Else
+		If iTargetBrowser.SelectRecord(iTargetBrowser.GetRecord(0)) Then _
+			bResult = iTargetBrowser.PropagateSelections
+	End If
+
+	FillTargetFromIFB = True
+
+	Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "FillTargetFromIFB error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "RecordIsLocked"
+'TYPE = 1
+'TEMPLATE = "Function RecordIsLocked(sUsername As String, sTablename As String, sKeyvalue As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	RecordIsLocked
+'Purpose:	Given a Username, Tablename, and Keyvalue, returns True is a lock
+'			exists in the qw_locks table
+'Copyright:	Quintus Corporation, 1998
+'*****************************************************************************
+
+Function RecordIsLocked(sUsername As String, _
+						sTablename As String, _
+						sKeyvalue As String) As Boolean
+Dim iApp As Application
+Dim iLocksTbl As DBTable
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+	Set iApp = GetApp
+	Set iLocksTbl = iApp.SysNetwork.GetTable("qw_locks")
+
+	iLocksTbl.QBEClear
+	iLocksTbl.QBESetValue "username", "=" & sUsername
+	iLocksTbl.QBESetValue "tablename", "=" & sTablename
+	iLocksTbl.QBESetValue "keyvalue", sKeyvalue
+
+	iLocksTbl.Search
+
+	If iLocksTbl.RecordCount > 0 Then
+		RecordIsLocked = True
+	Else
+		RecordIsLocked = False
+	End If
+
+    Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "RecordIsLocked error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "MakeNumeric"
+'TYPE = 1
+'TEMPLATE = "Function MakeNumeric(sSource As String) As String"
+'TEXT = [[
+'*****************************************************************************
+'Script:	MakeNumeric
+'Purpose:	Given a source string will remove everything except numbers
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Const ASC_0 = 48
+Const ASC_9 = 57
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function MakeNumeric(sSource As String) As String
+Dim sChar As String
+Dim sNewString As String
+Dim nCtr As Integer
+Dim nCharVal As Integer
+
+    sNewString = ""
+
+    For nCtr = 1 To Len(sSource)
+        sChar = Mid$(sSource, nCtr, 1)
+        nCharVal = Asc(sChar)
+        If nCharVal >= ASC_0 And nCharVal <= ASC_9 Then sNewString = sNewString & sChar
+    Next nCtr
+
+    MakeNumeric = sNewString
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetRegistryKeyValue"
+'TYPE = 1
+'TEMPLATE = "Function GetRegistryKeyValue(sKeyRoot As String, sKeyName As String, sValue As String, sReturnValue As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	GetRegistryKeyValue
+'Purpose:	Will get value from registry given the Key Root, Key Name (fully 
+'			qualified), and Value (or NULL if value of key is desired)
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Const READ_CONTROL = &H20000
+Const KEY_QUERY_VALUE = &H1
+Const KEY_SET_VALUE = &H2
+Const KEY_CREATE_SUB_KEY = &H4
+Const KEY_ENUMERATE_SUB_KEYS = &H8
+Const KEY_NOTIFY = &H10
+Const KEY_CREATE_LINK = &H20
+Const KEY_ALL_ACCESS = KEY_QUERY_VALUE + KEY_SET_VALUE + _
+                       KEY_CREATE_SUB_KEY + KEY_ENUMERATE_SUB_KEYS + _
+                       KEY_NOTIFY + KEY_CREATE_LINK + READ_CONTROL
+                       
+Const ERROR_SUCCESS = 0
+Const REG_SZ = 1                         ' Unicode nul terminated string
+Const REG_DWORD = 4                      ' 32-bit number
+
+' Reg Key ROOT Types...
+Const HKEY_CLASSES_ROOT = &H80000000
+Const HKEY_CURRENT_USER = &H80000001
+Const HKEY_LOCAL_MACHINE = &H80000002
+Const HKEY_USERS = &H80000003
+Const HKEY_CURRENT_CONFIG = &H80000005
+Const HKEY_DYN_DATA = &H80000006
+                     
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------			 
+' Functions for Registry Access
+Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, ByVal samDesired As Long, ByRef phkResult As Long) As Long
+Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, ByRef lpcbData As Long) As Long
+' NOTE: lpData has been cast to String and passed as ByVal in RegSetValueEx
+Declare Function RegSetValueEx Lib "advapi32" Alias "RegSetValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal Reserved As Long, ByVal dwType As Long, ByVal lpData As String, ByVal cbData As Long) As Long
+Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'--------------------------------------------------------------------------- 
+Function GetRegistryKeyValue(sKeyRoot As String, sKeyName As String, _
+								sValue As String, sReturnValue As String) As Boolean
+Dim lKeyRoot As Long
+Dim lCtr As Long                                           ' Loop Counter
+Dim rc As Long                                          ' Return Code
+Dim lKey As Long                                        ' Handle To An Open Registry Key
+Dim lKeyValType As Long                                 ' Data Type Of A Registry Key
+Dim sVal As String                                      ' Tempory Storage For A Registry Key Value
+Dim lKeyValSize As Long                                 ' Size Of Registry Key Variable
+
+    On Error GoTo ERROR_HANDLER
+	'--------------------------------------
+    sReturnValue = ""
+    
+    Select Case UCase(sKeyRoot)
+        Case "HKEY_CLASSES_ROOT"
+            lKeyRoot = HKEY_CLASSES_ROOT
+        Case "HKEY_CURRENT_USER"
+            lKeyRoot = HKEY_CURRENT_USER
+        Case "HKEY_LOCAL_MACHINE"
+            lKeyRoot = HKEY_LOCAL_MACHINE
+        Case "HKEY_USERS"
+            lKeyRoot = HKEY_USERS
+        Case "HKEY_CURRENT_CONFIG"
+            lKeyRoot = HKEY_CURRENT_CONFIG
+        Case "HKEY_DYN_DATA"
+            lKeyRoot = HKEY_DYN_DATA
+        Case Else
+            Exit Function
+    End Select
+    
+    '------------------------------------------------------------
+    ' Open RegKey Under lKeyRoot {HKEY_LOCAL_MACHINE...}
+    '------------------------------------------------------------
+    rc = RegOpenKeyEx(lKeyRoot, sKeyName, 0, KEY_QUERY_VALUE, lKey) ' Open Registry Key
+    
+    If (rc <> ERROR_SUCCESS) Then GoTo ERROR_HANDLER        ' Handle Error...
+    
+    sVal = String(1024, 0)                                  ' Allocate Variable Space
+    lKeyValSize = 1024                                      ' Mark Variable Size
+    '------------------------------------------------------------
+    ' Retrieve Registry Key Value...
+    '------------------------------------------------------------
+    rc = RegQueryValueEx(lKey, sValue, 0, _
+                         lKeyValType, sVal, lKeyValSize)    ' Get/Create Key Value
+                        
+    If (rc <> ERROR_SUCCESS) Then GoTo ERROR_HANDLER        ' Handle Errors
+    
+    If (Asc(Mid(sVal, lKeyValSize, 1)) = 0) Then            ' Win95 Adds Null Terminated String...
+        sVal = left(sVal, lKeyValSize - 1)                  ' Null Found, Extract From String
+    Else                                                    ' WinNT Does NOT Null Terminate String...
+        sVal = left(sVal, lKeyValSize)                      ' Null Not Found, Extract String Only
+    End If
+    '------------------------------------------------------------
+    ' Determine Key Value Type For Conversion...
+    '------------------------------------------------------------
+    Select Case lKeyValType                                 ' Search Data Types...
+        Case REG_SZ                                         ' String Registry Key Data Type
+            sReturnValue = sVal                                  ' Copy String Value
+        Case REG_DWORD                                      ' Double Word Registry Key Data Type
+            For lCtr = Len(sVal) To 1 Step -1                  ' Convert Each Bit
+                sReturnValue = sReturnValue + Hex(Asc(Mid(sVal, lCtr, 1))) ' Build Value Char. By Char.
+            Next
+            sReturnValue = Format("&h" + sReturnValue)                ' Convert Double Word To String
+    End Select
+    
+    GetKeyValue = True                                      ' Return Success
+    rc = RegCloseKey(lKey)                                  ' Close Registry Key
+    Exit Function                                           ' Exit
+    
+ERROR_HANDLER:      ' Cleanup After An Error Has Occured...
+    sReturnValue = ""                                     ' Set Return Val To Empty String
+    GetKeyValue = False                                     ' Return Failure
+    rc = RegCloseKey(lKey)                                  ' Close Registry Key
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetRegistryKeyValue"
+'TYPE = 1
+'TEMPLATE = "Function SetRegistryKeyValue(sKeyRoot As String, sKeyName As String, sValue As String, sNewValue As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	SetRegistryKeyValue
+'Purpose:	Will set value in registry given the Key Root, Key Name (fully 
+'			qualified), and Value (or NULL if value of key is desired)
+'
+'			NOTE: Key type must be string (REG_SZ)
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Const READ_CONTROL = &H20000
+Const KEY_QUERY_VALUE = &H1
+Const KEY_SET_VALUE = &H2
+Const KEY_CREATE_SUB_KEY = &H4
+Const KEY_ENUMERATE_SUB_KEYS = &H8
+Const KEY_NOTIFY = &H10
+Const KEY_CREATE_LINK = &H20
+Const KEY_ALL_ACCESS = KEY_QUERY_VALUE + KEY_SET_VALUE + _
+                       KEY_CREATE_SUB_KEY + KEY_ENUMERATE_SUB_KEYS + _
+                       KEY_NOTIFY + KEY_CREATE_LINK + READ_CONTROL
+                       
+Const ERROR_SUCCESS = 0
+Const REG_SZ = 1                         ' Unicode nul terminated string
+Const REG_DWORD = 4                      ' 32-bit number
+
+' Reg Key ROOT Types...
+Const HKEY_CLASSES_ROOT = &H80000000
+Const HKEY_CURRENT_USER = &H80000001
+Const HKEY_LOCAL_MACHINE = &H80000002
+Const HKEY_USERS = &H80000003
+Const HKEY_CURRENT_CONFIG = &H80000005
+Const HKEY_DYN_DATA = &H80000006
+                     
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------			 
+' Functions for Registry Access
+Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, ByVal samDesired As Long, ByRef phkResult As Long) As Long
+Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, ByRef lpcbData As Long) As Long
+' NOTE: lpData has been cast to String and passed as ByVal in RegSetValueEx
+Declare Function RegSetValueEx Lib "advapi32" Alias "RegSetValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal Reserved As Long, ByVal dwType As Long, ByVal lpData As String, ByVal cbData As Long) As Long
+Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'--------------------------------------------------------------------------- 
+Function SetRegistryKeyValue(sKeyRoot As String, sKeyName As String, sValue As String, _
+								sNewValue As String) As Boolean
+Dim lKeyRoot As Long
+Dim rc As Long                                          ' Return Code
+Dim lKey As Long                                        ' Handle To An Open Registry Key
+Dim lKeyValType As Long                                 ' Data Type Of A Registry Key
+Dim lKeyValSize As Long                                 ' Size Of Registry Key Variable
+
+	On Error GoTo ERROR_HANDLER
+	'------------------------------------
+    Select Case UCase(sKeyRoot)
+        Case "HKEY_CLASSES_ROOT"
+            lKeyRoot = HKEY_CLASSES_ROOT
+        Case "HKEY_CURRENT_USER"
+            lKeyRoot = HKEY_CURRENT_USER
+        Case "HKEY_LOCAL_MACHINE"
+            lKeyRoot = HKEY_LOCAL_MACHINE
+        Case "HKEY_USERS"
+            lKeyRoot = HKEY_USERS
+        Case "HKEY_CURRENT_CONFIG"
+            lKeyRoot = HKEY_CURRENT_CONFIG
+        Case "HKEY_DYN_DATA"
+            lKeyRoot = HKEY_DYN_DATA
+        Case Else
+            Exit Function
+    End Select
+    
+    '------------------------------------------------------------
+    ' Open RegKey Under lKeyRoot {HKEY_LOCAL_MACHINE...}
+    '------------------------------------------------------------
+    rc = RegOpenKeyEx(lKeyRoot, sKeyName, 0, KEY_SET_VALUE, lKey) ' Open Registry Key
+    
+    If (rc <> ERROR_SUCCESS) Then GoTo ERROR_HANDLER        ' Handle Error...
+    
+    '------------------------------------------------------------
+    ' Set up KeyVal...
+    '------------------------------------------------------------
+    lKeyValSize = Len(sNewValue)
+    If (Asc(Mid(sNewValue, lKeyValSize, 1)) <> 0) Then
+        sNewValue = sNewValue & String(1, 0)                    ' Append NULL if necessary
+        lKeyValSize = lKeyValSize + 1
+    End If
+    
+    rc = RegSetValueEx(lKey, sValue, 0, REG_SZ, sNewValue, lKeyValSize)
+    
+    If (rc <> ERROR_SUCCESS) Then GoTo ERROR_HANDLER        ' Handle Error...
+    
+    SetKeyValue = True                                      ' Return Success
+    rc = RegCloseKey(lKey)                                  ' Close Registry Key
+    Exit Function                                           ' Exit
+    
+ERROR_HANDLER:      ' Cleanup After An Error Has Occured...
+    SetKeyValue = False                                     ' Return Failure
+    rc = RegCloseKey(lKey)                                  ' Close Registry Key
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CreateFileFromText"
+'TYPE = 1
+'TEMPLATE = "Sub CreateFileFromText(sFileName As String, sFileText As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	CreateFileFromText
+'Purpose:	Creates a file from text
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub CreateFileFromText(sFileName As String, sFileText As String)
+Dim nFileNumber As Integer
+
+    nFileNumber = FreeFile
+
+    Open sFileName For Output Access Write As #nFileNumber
+
+    If Not sFileText = "" Then Print #nFileNumber, sFileText
+
+    Close #nFileNumber
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ViewFileFromFilename"
+'TYPE = 1
+'TEMPLATE = "Sub ViewFileFromFilename(sFileName As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	ViewFileFromFilename
+'Purpose:	Given a Filename will show the file in its native application.
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Declare Function ShellExecuteA Lib "shell32.dll" (ByVal hwnd As Long, ByVal lpOperation As String, _
+                 ByVal lpFile As String, ByVal lpParams As String, _
+                 ByVal lpDir As String, nShowCmd As Integer) As Long
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub ViewFileFromFilename(sFileName As String)
+Dim iApp As Application
+Dim sFileExt As String
+Dim lReturn As Long
+
+	On Error GoTo ERROR_HANDLER
+	'-------------------------------------------------
+	Set iApp = GetApp
+
+    iApp.ContextFocus.Message "Launching file viewer helper application..."
+
+    sFileExt = LCase(FileParse$(sFileName, 5))
+
+    If InStr(sFileExt, "htm") <> 0 Or sFileExt = "txt" Or _
+                  sFileExt = "jpg" Or sFileExt = "gif" Then
+        iApp.ShowHTMLBrowser
+        iApp.SetURL sFileName
+    Else
+        lReturn = ShellExecuteA(0, "open", sFileName, "", "", 0)
+    End If
+
+    iApp.ContextFocus.Message ""
+
+	Exit Sub
+
+ERROR_HANDLER:
+	iApp.UserMsg "ViewFileFromFilename error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "LogMessage"
+'TYPE = 2
+'TEMPLATE = "Sub LogMessage(nErrLevel As Integer, sMessage As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	LogMessage
+'Purpose:	Will write message to log file if DebugLevel is set at 
+'			appropriate level
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub LogMessage(nErrLevel As Integer, sMessage As String)
+Dim iApp As Application
+Dim sDebugLevel As String
+Dim sIniFilename As String
+
+	On Error GoTo ERROR_HANDLER
+	'-------------------------------------------------
+	Set iApp = GetApp
+
+	' Build Ini File based on App name
+	sIniFilename = iApp.Name & ".ini"
+
+	' Read DebugLevel from the Ini File
+	sDebugLevel = ReadINI$("General", "DebugLevel", sIniFilename)
+
+	' If Debug level is not set, then set to 0
+	If Len(sDebugLevel) = 0 Then sDebugLevel = "0"
+
+	' If at the appropriate level, then log the message
+	If nErrLevel <= CInt(sDebugLevel) Then Print sMessage
+
+	Exit Sub
+
+ERROR_HANDLER:
+	iApp.UserMsg "LogMessage error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TestFunction"
+'TYPE = 0
+'TEMPLATE = "Function TestFunction() as String"
+'TEXT = [[
+Function TestFunction() As String
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallTable As DBTable
+Dim iCallRec As DBRecord
+Dim bRes As Boolean
+TestFunction = "Test"
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ConvertToHTML"
+'TYPE = 2
+'TEMPLATE = "Function ConvertToHTML( sImput As String) As String"
+'TEXT = [[
+Function ConvertToHTML( sImput As String) As String
+Dim sOutput As String
+Dim nCounter As Integer
+Dim nMaxCounter As Integer
+Dim sChar As String
+
+'ConvertToHTML =  sImput
+'Exit Function
+
+On Error GoTo Error_Handler
+	sOutput =""
+	nMaxCounter = Len( sImput)
+	For nCounter = 1 To nMaxCounter
+		sChar = MId$(sImput,nCounter,1)
+		'If asc(sChar) =13 Then sChar="<br></br>"
+	 	Select Case sChar
+			Case "ä"
+			  sChar ="ae"
+			Case "ö"
+			  sChar ="oe"
+			Case "ü"
+			  sChar ="ue"
+			Case "ß"
+			  sChar ="ss"
+			Case "Ä"
+			  sChar ="Ae"
+			Case "Ü"
+			  sChar ="Ue"
+			Case "Ö"
+			  sChar ="Oe"
+			Case ">"
+	     	  sChar ="&gt;"
+			Case "<"
+	     	  sChar ="&lt;"
+			Case ">"
+			Case "&"
+			  sChar ="&amp;"
+			Case "'"
+			 ' sChar ="&apos;"
+			Case """"
+			'  sChar ="&quot;"
+
+		 '	Case Else
+	   	 '		sChar = "_"
+	 	End Select
+		sOutput = sOutput & sChar
+	Next nCounter
+
+
+ConvertToHTML = sOutput
+Exit Function
+Error_Handler:
+	MsgBox "Error during converting subject of an Email"
+	ConvertToHTML ="Error No Text"
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "DeleteYANRecords"
+'TYPE = 0
+'TEMPLATE = "Sub DeleteYANRecords()"
+'TEXT = [[
+Sub DeleteYANRecords( )
+
+Dim nAnswer As Integer
+Dim i As Integer
+Dim nRecs As Integer
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+
+On Error GoTo Error_handler
+	Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable( "yan_task" )
+	iTable.QBEClear
+	iTable.QBESetValue "error", "Ja"
+	iTable.Search 
+	nRecs = iTable.RecordCount
+  If nRecs > 0 Then
+	nAnswer=iApp.UserResponseMsg( "Möchten Sie wirklich die " & nRecs & " Datensätze löschen", ebQuestion+ebYesNo)	
+		If nAnswer = ebYes Then
+		 For i=1 To nRecs 
+			iTable.DeleteRecord 0
+			iTable.Commit
+		 Next i
+		 iApp.ContextFocus.Clear	
+		End If
+  End If
+	Exit Sub
+
+Error_Handler:
+	MsgBox "DeleteYANRecords error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetWebQState"
+'TYPE = 2
+'TEMPLATE = "Function GetWebQState() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'File:		GetWebQState
+'Purpose:	Return True if you are in WebQ
+'Copyright:	Tarragon Software
+'*****************************************************************************
+
+Function GetWebQState() As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+	If iNetwork.HasTable("webqauthint") Then
+		Set iWebTable = iNetwork.GetTable("webqauthint")
+	End If
+
+	If Not( iWebTable Is Nothing ) Then
+		If iWebTable.RecordCount > 0 Then
+			GetWebQState = True
+		Else
+			GetWebQState = False
+		End If
+	End If
+
+
+ End Function
+
+
+
+
+
+']]
+'NAME = "SetAppProfileValue"
+'TYPE = 2
+'TEMPLATE = "Function SetAppProfileValue(iNetwork As DBNetwork, sFieldname as String, sValue As String) As Boolean"
+'TEXT = [[
+
+
+'*****************************************************************************
+'File:		SetAppProfileValue
+'Purpose:	Set value for specified field from App Profile Table
+'Copyright:	Tarragon
+'*****************************************************************************
+
+Function SetAppProfileValue(iNetwork As DBNetwork, sFieldname as String, sValue As String) As Boolean
+Dim iAppProfileTable As DBTable
+Dim iAppProfileRecord As DBRecord
+on Error Goto Error_handler
+	'Set iApp = GetApp
+	Set iAppProfileTable = iNetwork.GetTable("appprofile")
+
+	' Only search if there is no record backfilled
+    If iAppProfileTable.RecordCount = 0 Then iAppProfileTable.Search
+
+    ' There should only be one, search only if we don't already have it.
+    If iAppProfileTable.RecordCount = 1 Then
+        Set iAppProfileRecord = iAppProfileTable.GetRecord(0)
+		iAppProfileRecord.SetValue sFieldname, sValue
+		iAppProfileTable.Commit
+		SetAppProfileValue = true
+    Else
+		SetAppProfileValue = false
+    End If
+	Set iAppProfileRecord = Nothing
+    Set iAppProfileTable = Nothing
+exit function
+Error_handler:
+	SetAppProfileValue = false
+	Set iAppProfileRecord = Nothing
+    Set iAppProfileTable = Nothing
+
+End Function
+
+
+']]

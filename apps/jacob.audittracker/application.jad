@@ -1,0 +1,1767 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="audittracker" engineVersion="2.9.4" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="audittrackerDataSource" reconfigure="full">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles/>
+  <Tables>
+    <Table datasource="audittrackerDataSource" dbName="email" name="email">
+      <Field dbName="pkey" history="false" label="%EMAIL.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="smtp_user" history="false" label="%EMAIL.SMTP_USER" name="smtp_user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_server" history="false" label="%EMAIL.SMTP_SERVER" name="smtp_server" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_password" history="false" label="%EMAIL.SMTP_PASSWORD" name="smtp_password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="smtp_from_address" history="false" label="%EMAIL.SMTP_FROM_ADDRESS" name="smtp_from_address" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="Photo" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="phone" history="false" label="Phone" name="phone" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="login_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="account" name="account">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="object" historyField="history" name="object" representativeField="name">
+      <Field dbName="pkey" history="false" label="%OBJECT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="last_change" history="false" label="%OBJECT.LAST_CHANGE" name="last_change" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="history" history="false" label="%OBJECT.HISTORY" name="history" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="name" history="true" label="%OBJECT.NAME" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="remark" history="true" label="%OBJECT.REMARK" name="remark" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="responsible_design_key" history="true" label="%OBJECT.RESPONSIBLE_DESIGN_KEY" name="responsible_design_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="responsible_technic_key" history="true" label="%OBJECT.RESPONSIBLE_TECHNIC_KEY" name="responsible_technic_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="responsible_development_key" history="true" label="%OBJECT.RESPONSIBLE_DEVELOPMENT_KEY" name="responsible_development_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="responsible_standardization_key" history="true" label="%OBJECT.RESPONSIBLE_STANDARDIZATION_KEY" name="responsible_standardization_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="contact_technic_key" history="true" label="%OBJECT.CONTACT_TECHNIC_KEY" name="contact_technic_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="vendor_key" history="true" label="%OBJECT.VENDOR_KEY" name="vendor_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="pilot_site" history="true" label="%OBJECT.PILOT_SITE" name="pilot_site" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pilot_building" history="true" label="%OBJECT.PILOT_BUILDING" name="pilot_building" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pilot_name" history="true" label="%OBJECT.PILOT_NAME" name="pilot_name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pilot_implemented" history="true" label="%OBJECT.PILOT_IMPLEMENTED" name="pilot_implemented" readonly="false" required="false">
+        <Enumeration>
+          <Default>Nein</Default>
+          <Value>Ja</Value>
+          <Value>Nein</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="pilot_planed" history="true" label="%OBJECT.PILOT_PLANED" name="pilot_planed" readonly="false" required="false">
+        <Enumeration>
+          <Default>Nein</Default>
+          <Value>Ja</Value>
+          <Value>Nein</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="pilot_comment" history="true" label="%OBJECT.PILOT_COMMENT" name="pilot_comment" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="sps_comment" history="true" label="%OBJECT.SPS_COMMENT" name="sps_comment" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="sps_partnumber" history="true" label="%OBJECT.SPS_PARTNUMBER" name="sps_partnumber" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="sps_partnumber_f" history="true" label="%OBJECT.SPS_PARTNUMBER_F" name="sps_partnumber_f" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="sps_partnumber_s" history="true" label="%OBJECT.SPS_PARTNUMBER_S" name="sps_partnumber_s" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="sps_partavailable" history="true" label="%OBJECT.SPS_PARTAVAILABLE" name="sps_partavailable" readonly="false" required="false">
+        <Enumeration>
+          <Default>Nicht Notwendig</Default>
+          <Value>Ja</Value>
+          <Value>Nein</Value>
+          <Value>Nicht Notwendig</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="sps_partavailable_f" history="true" label="%OBJECT.SPS_PARTAVAILABLE_F" name="sps_partavailable_f" readonly="false" required="false">
+        <Enumeration>
+          <Default>Nicht Notwendig</Default>
+          <Value>Ja</Value>
+          <Value>Nein</Value>
+          <Value>Nicht Notwendig</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="sps_partavailable_s" history="true" label="%OBJECT.SPS_PARTAVAILABLE_S" name="sps_partavailable_s" readonly="false" required="false">
+        <Enumeration>
+          <Default>Nicht Notwendig</Default>
+          <Value>Ja</Value>
+          <Value>Nein</Value>
+          <Value>Nicht Notwendig</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="responsible_pilot_key" history="true" label="%OBJECT.RESPONSIBLE_PILOT_KEY" name="responsible_pilot_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="sps_documentation" history="true" label="%OBJECT.SPS_DOCUMENTATION" name="sps_documentation" readonly="false" required="false">
+        <Enumeration>
+          <Value>Vorhanden</Value>
+          <Value>Keine</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="sps_documentation_f" history="true" label="%OBJECT.SPS_DOCUMENTATION_F" name="sps_documentation_f" readonly="false" required="false">
+        <Enumeration>
+          <Value>Vorhanden</Value>
+          <Value>Keine</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="sps_documentation_s" history="true" label="%OBJECT.SPS_DOCUMENTATION_S" name="sps_documentation_s" readonly="false" required="false">
+        <Enumeration>
+          <Value>Vorhanden</Value>
+          <Value>Keine</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="implementor_hmi_template_key" history="true" label="%OBJECT.IMPLEMENTOR_HMI_TEMPLATE_KEY" name="implementor_hmi_template_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_sps_key" history="true" label="%OBJECT.IMPLEMENTOR_SPS_KEY" name="implementor_sps_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_hardware_key" history="true" label="%OBJECT.IMPLEMENTOR_HARDWARE_KEY" name="implementor_hardware_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_hardwaretemplate_key" history="true" label="%OBJECT.IMPLEMENTOR_HARDWARETEMPLATE_KEY" name="implementor_hardwaretemplate_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_sps_s_key" history="true" label="%OBJECT.IMPLEMENTOR_SPS_S_KEY" name="implementor_sps_s_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_sps_f_key" history="true" label="%OBJECT.IMPLEMENTOR_SPS_F_KEY" name="implementor_sps_f_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="implementor_robot_key" history="true" label="%OBJECT.IMPLEMENTOR_ROBOT_KEY" name="implementor_robot_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="objectgroup_key" history="false" label="%OBJECT.OBJECTGROUP_KEY" name="objectgroup_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%OBJECT.CREATE_DATE" name="create_date" readonly="true" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="responsible_remark" history="false" label="%OBJECT.RESPONSIBLE_REMARK" name="responsible_remark" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="implementation_remark" history="false" label="%OBJECT.IMPLEMENTATION_REMARK" name="implementation_remark" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="responsible_design_FKey">
+        <Field>responsible_design_key</Field>
+      </ForeignKey>
+      <ForeignKey name="responsible_technic_FKey">
+        <Field>responsible_technic_key</Field>
+      </ForeignKey>
+      <ForeignKey name="responsible_development_FKey">
+        <Field>responsible_development_key</Field>
+      </ForeignKey>
+      <ForeignKey name="responsible_standardization_FKey">
+        <Field>responsible_standardization_key</Field>
+      </ForeignKey>
+      <ForeignKey name="contact_technic_FKey">
+        <Field>contact_technic_key</Field>
+      </ForeignKey>
+      <ForeignKey name="vendor_FKey">
+        <Field>vendor_key</Field>
+      </ForeignKey>
+      <ForeignKey name="responsible_pilot_FKey">
+        <Field>responsible_pilot_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_hmi_template_FKey">
+        <Field>implementor_hmi_template_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_sps_FKey">
+        <Field>implementor_sps_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_hardware_FKey">
+        <Field>implementor_hardware_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_hardwaretemplate_FKey">
+        <Field>implementor_hardwaretemplate_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_sps_s_FKey">
+        <Field>implementor_sps_s_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_sps_f_FKey">
+        <Field>implementor_sps_f_key</Field>
+      </ForeignKey>
+      <ForeignKey name="implementor_robot_FKey">
+        <Field>implementor_robot_key</Field>
+      </ForeignKey>
+      <ForeignKey name="objectgroup_FKey">
+        <Field>objectgroup_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="group" name="group">
+      <Field dbName="pkey" history="false" label="%GROUP.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%GROUP.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="parent_group_key" history="false" label="%GROUP.PARENT_GROUP_KEY" name="parent_group_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="parent_group_FKey">
+        <Field>parent_group_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="attribute" name="attribute">
+      <Field dbName="pkey" history="false" label="%ATTRIBUTE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%ATTRIBUTE.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="group_key" history="false" label="%ATTRIBUTE.GROUP_KEY" name="group_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="group_FKey">
+        <Field>group_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="object_to_attribute" name="object_to_attribute">
+      <Field dbName="pkey" history="false" label="%OBJECT_TO_ATTRIBUTE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="attribute_key" history="false" label="%OBJECT_TO_ATTRIBUTE.ATTRIBUTE_KEY" name="attribute_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="object_key" history="false" label="%OBJECT_TO_ATTRIBUTE.OBJECT_KEY" name="object_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="attribute_FKey">
+        <Field>attribute_key</Field>
+      </ForeignKey>
+      <ForeignKey name="object_FKey">
+        <Field>object_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="uniqueKey">
+        <Field>attribute_key</Field>
+        <Field>object_key</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="company" name="company">
+      <Field dbName="pkey" history="false" label="%COMPANY.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%COMPANY.NAME" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="workgroup" name="workgroup" representativeField="name">
+      <Field dbName="pkey" history="false" label="%WORKGROUP.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%WORKGROUP.NAME" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="objectgroup" name="objectgroup">
+      <Field dbName="pkey" history="false" label="%OBJECTGROUP.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%OBJECTGROUP.NAME" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="parentobjectgroup_key" history="false" label="%OBJECTGROUP.PARENTOBJECTGROUP_KEY" name="parentobjectgroup_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="longname" history="false" label="%OBJECTGROUP.LONGNAME" name="longname" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="500" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="parentobjectgroup_FKey">
+        <Field>parentobjectgroup_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="audittrackerDataSource" dbName="template" name="template">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="document" history="false" label="Document" name="document" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="object" table="object"/>
+    <TableAlias name="group" table="group"/>
+    <TableAlias name="attribute" table="attribute"/>
+    <TableAlias name="object_to_attribute" table="object_to_attribute"/>
+    <TableAlias name="responsible_technic" table="person"/>
+    <TableAlias name="responsible_development" table="person"/>
+    <TableAlias name="responsible_standardization" table="person"/>
+    <TableAlias name="responsible_design" table="person"/>
+    <TableAlias name="contact_technic" table="person"/>
+    <TableAlias name="company" table="company"/>
+    <TableAlias name="vendor" table="company"/>
+    <TableAlias name="responsible_pilot" table="person"/>
+    <TableAlias name="workgroup" table="workgroup"/>
+    <TableAlias name="implementor_hardwaretemplate" table="workgroup"/>
+    <TableAlias name="implementor_hmi_template" table="workgroup"/>
+    <TableAlias name="implementor_sps_f" table="workgroup"/>
+    <TableAlias name="implementor_sps" table="workgroup"/>
+    <TableAlias name="implementor_sps_s" table="workgroup"/>
+    <TableAlias name="implementor_hardware" table="workgroup"/>
+    <TableAlias name="implementor_robot" table="workgroup"/>
+    <TableAlias name="objectgroup" table="objectgroup"/>
+    <TableAlias name="parentobjectgroup" table="objectgroup"/>
+    <TableAlias name="email" table="email"/>
+    <TableAlias name="template" table="template"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="email" name="emailBrowser" type="inform">
+      <Field label="%EMAIL.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="object" name="objectBrowser" type="inform">
+      <Field label="%OBJECT.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%OBJECTGROUP" name="browserObjectgroup" visible="true">
+        <TableField tableField="longname">
+          <Foreign browserToUse="objectgroupBrowser" filldirection="both" foreignAlias="objectgroup" relationToUse="objectgroup_object" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="group" name="groupBrowser" type="inform">
+      <Field label="%GROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="attribute" name="attributeBrowser" type="inform">
+      <Field label="%ATTRIBUTE.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%GROUP" name="browserGroup" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="groupBrowser" filldirection="both" foreignAlias="group" relationToUse="group_attribute" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="object_to_attribute" name="object_to_attributeBrowser" type="inform">
+      <Field label="%ATTRIBUTE.NAME" name="browserAttribute" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="attributeBrowser" filldirection="both" foreignAlias="attribute" relationToUse="attribute_object_to_attribute" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="responsible_technic" name="responsible_technicBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="responsible_development" name="responsible_developmentBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="responsible_standardization" name="responsible_standardizationBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="responsible_design" name="responsible_designBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="contact_technic" name="contact_technicBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="company" name="companyBrowser" type="inform">
+      <Field label="%COMPANY.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="vendor" name="vendorBrowser" type="inform">
+      <Field label="%COMPANY.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="responsible_pilot" name="responsible_pilotBrowser" type="inform">
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="workgroup" name="workgroupBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_hardwaretemplate" name="implementor_hardwaretemplateBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_hmi_template" name="implementor_hmi_templateBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_sps_f" name="implementor_sps_fBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_sps" name="implementor_spsBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_sps_s" name="implementor_sps_sBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_hardware" name="implementor_hardwareBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="implementor_robot" name="implementor_robotBrowser" type="inform">
+      <Field label="%WORKGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="objectgroup" name="objectgroupBrowser" type="inform">
+      <Field label="%OBJECTGROUP.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%OBJECTGROUP.LONGNAME" name="browserLongname" visible="true">
+        <TableField tableField="longname"/>
+      </Field>
+    </Browser>
+    <Browser alias="parentobjectgroup" name="parentobjectgroupBrowser" type="inform">
+      <Field label="%OBJECTGROUP.LONGNAME" name="browserLongname" visible="true">
+        <TableField tableField="longname"/>
+      </Field>
+    </Browser>
+    <Browser alias="template" name="templateBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="attribute_object_to_attribute">
+      <OneToMany fromAlias="attribute" toAlias="object_to_attribute" toKey="attribute_FKey"/>
+    </Relation>
+    <Relation name="object_object_to_attribute">
+      <OneToMany fromAlias="object" toAlias="object_to_attribute" toKey="object_FKey"/>
+    </Relation>
+    <Relation name="responsible_design_object">
+      <OneToMany fromAlias="responsible_design" toAlias="object" toKey="responsible_design_FKey"/>
+    </Relation>
+    <Relation name="responsible_technic_object">
+      <OneToMany fromAlias="responsible_technic" toAlias="object" toKey="responsible_technic_FKey"/>
+    </Relation>
+    <Relation name="responsible_development_object">
+      <OneToMany fromAlias="responsible_development" toAlias="object" toKey="responsible_development_FKey"/>
+    </Relation>
+    <Relation name="responsible_standardization_object">
+      <OneToMany fromAlias="responsible_standardization" toAlias="object" toKey="responsible_standardization_FKey"/>
+    </Relation>
+    <Relation name="contact_technic_object">
+      <OneToMany fromAlias="contact_technic" toAlias="object" toKey="contact_technic_FKey"/>
+    </Relation>
+    <Relation name="group_attribute">
+      <OneToMany fromAlias="group" toAlias="attribute" toKey="group_FKey"/>
+    </Relation>
+    <Relation name="vendor_object">
+      <OneToMany fromAlias="vendor" toAlias="object" toKey="vendor_FKey"/>
+    </Relation>
+    <Relation name="responsible_pilot_object">
+      <OneToMany fromAlias="responsible_pilot" toAlias="object" toKey="responsible_pilot_FKey"/>
+    </Relation>
+    <Relation name="implementor_hmi_template_object">
+      <OneToMany fromAlias="implementor_hmi_template" toAlias="object" toKey="implementor_hmi_template_FKey"/>
+    </Relation>
+    <Relation name="implementor_sps_object">
+      <OneToMany fromAlias="implementor_sps" toAlias="object" toKey="implementor_sps_FKey"/>
+    </Relation>
+    <Relation name="implementor_hardware_object">
+      <OneToMany fromAlias="implementor_hardware" toAlias="object" toKey="implementor_hardware_FKey"/>
+    </Relation>
+    <Relation name="implementor_hardwaretemplate_object">
+      <OneToMany fromAlias="implementor_hardwaretemplate" toAlias="object" toKey="implementor_hardwaretemplate_FKey"/>
+    </Relation>
+    <Relation name="implementor_sps_s_object">
+      <OneToMany fromAlias="implementor_sps_s" toAlias="object" toKey="implementor_sps_s_FKey"/>
+    </Relation>
+    <Relation name="implementor_sps_f_object">
+      <OneToMany fromAlias="implementor_sps_f" toAlias="object" toKey="implementor_sps_f_FKey"/>
+    </Relation>
+    <Relation name="implementor_robot_object">
+      <OneToMany fromAlias="implementor_robot" toAlias="object" toKey="implementor_robot_FKey"/>
+    </Relation>
+    <Relation name="objectgroup_object">
+      <OneToMany fromAlias="objectgroup" toAlias="object" toKey="objectgroup_FKey"/>
+    </Relation>
+    <Relation name="parentobjectgroup_objectgroup">
+      <OneToMany fromAlias="parentobjectgroup" toAlias="objectgroup" toKey="parentobjectgroup_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="object">
+      <Relation>attribute_object_to_attribute</Relation>
+      <Relation>object_object_to_attribute</Relation>
+      <Relation>responsible_design_object</Relation>
+      <Relation>responsible_technic_object</Relation>
+      <Relation>responsible_development_object</Relation>
+      <Relation>responsible_standardization_object</Relation>
+      <Relation>contact_technic_object</Relation>
+      <Relation>group_attribute</Relation>
+      <Relation>vendor_object</Relation>
+      <Relation>responsible_pilot_object</Relation>
+      <Relation>implementor_hmi_template_object</Relation>
+      <Relation>implementor_sps_object</Relation>
+      <Relation>implementor_hardware_object</Relation>
+      <Relation>implementor_hardwaretemplate_object</Relation>
+      <Relation>implementor_sps_s_object</Relation>
+      <Relation>implementor_sps_f_object</Relation>
+      <Relation>implementor_robot_object</Relation>
+      <Relation>objectgroup_object</Relation>
+      <Relation>parentobjectgroup_objectgroup</Relation>
+      <Property>
+        <Name>object.x</Name>
+        <Value>828</Value>
+      </Property>
+      <Property>
+        <Name>object.y</Name>
+        <Value>320</Value>
+      </Property>
+      <Property>
+        <Name>object.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>attribute.x</Name>
+        <Value>1508</Value>
+      </Property>
+      <Property>
+        <Name>attribute.y</Name>
+        <Value>581</Value>
+      </Property>
+      <Property>
+        <Name>object_to_attribute.x</Name>
+        <Value>1434</Value>
+      </Property>
+      <Property>
+        <Name>object_to_attribute.y</Name>
+        <Value>386</Value>
+      </Property>
+      <Property>
+        <Name>responsible_design.x</Name>
+        <Value>1409</Value>
+      </Property>
+      <Property>
+        <Name>responsible_design.y</Name>
+        <Value>191</Value>
+      </Property>
+      <Property>
+        <Name>responsible_development.x</Name>
+        <Value>578</Value>
+      </Property>
+      <Property>
+        <Name>responsible_development.y</Name>
+        <Value>76</Value>
+      </Property>
+      <Property>
+        <Name>responsible_standardization.x</Name>
+        <Value>262</Value>
+      </Property>
+      <Property>
+        <Name>responsible_standardization.y</Name>
+        <Value>72</Value>
+      </Property>
+      <Property>
+        <Name>responsible_technic.x</Name>
+        <Value>1118</Value>
+      </Property>
+      <Property>
+        <Name>responsible_technic.y</Name>
+        <Value>78</Value>
+      </Property>
+      <Property>
+        <Name>contact_technic.x</Name>
+        <Value>902</Value>
+      </Property>
+      <Property>
+        <Name>contact_technic.y</Name>
+        <Value>80</Value>
+      </Property>
+      <Property>
+        <Name>group.x</Name>
+        <Value>1546</Value>
+      </Property>
+      <Property>
+        <Name>group.y</Name>
+        <Value>725</Value>
+      </Property>
+      <Property>
+        <Name>parent_group.x</Name>
+        <Value>1532</Value>
+      </Property>
+      <Property>
+        <Name>parent_group.y</Name>
+        <Value>898</Value>
+      </Property>
+      <Property>
+        <Name>parent_group.expanded</Name>
+        <Value>false</Value>
+      </Property>
+      <Property>
+        <Name>vendor.x</Name>
+        <Value>42</Value>
+      </Property>
+      <Property>
+        <Name>vendor.y</Name>
+        <Value>310</Value>
+      </Property>
+      <Property>
+        <Name>responsible_pilot.x</Name>
+        <Value>37</Value>
+      </Property>
+      <Property>
+        <Name>responsible_pilot.y</Name>
+        <Value>130</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hardware.x</Name>
+        <Value>239</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hardware.y</Name>
+        <Value>736</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hardwaretemplate.x</Name>
+        <Value>502</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hardwaretemplate.y</Name>
+        <Value>740</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hmi_template.x</Name>
+        <Value>35</Value>
+      </Property>
+      <Property>
+        <Name>implementor_hmi_template.y</Name>
+        <Value>399</Value>
+      </Property>
+      <Property>
+        <Name>implementor_robot.x</Name>
+        <Value>1295</Value>
+      </Property>
+      <Property>
+        <Name>implementor_robot.y</Name>
+        <Value>740</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps_f.x</Name>
+        <Value>1067</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps_f.y</Name>
+        <Value>737</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps_s.x</Name>
+        <Value>825</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps_s.y</Name>
+        <Value>736</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps.x</Name>
+        <Value>25</Value>
+      </Property>
+      <Property>
+        <Name>implementor_sps.y</Name>
+        <Value>729</Value>
+      </Property>
+      <Property>
+        <Name>objectgroup.x</Name>
+        <Value>463</Value>
+      </Property>
+      <Property>
+        <Name>objectgroup.y</Name>
+        <Value>470</Value>
+      </Property>
+      <Property>
+        <Name>parentobjectgroup.x</Name>
+        <Value>52</Value>
+      </Property>
+      <Property>
+        <Name>parentobjectgroup.y</Name>
+        <Value>472</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form eventHandler="jacob.event.ui.Messaging" label="%FORM.EMAIL" name="messaging">
+      <Group alias="email" border="false" browser="emailBrowser" label="%GROUP.EMAIL" name="emailGroup">
+        <Dimension height="350" width="650" x="0" y="0"/>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailSearchUpdateRecordButton" name="emailSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="81" x="5" y="0"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="emailSmtp_server" visible="true">
+          <LocalInputField tableField="smtp_server">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="49"/>
+              <Caption halign="left" label="%EMAIL.SMTP_SERVER" valign="top">
+                <Dimension height="20" width="120" x="5" y="30"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailSmtp_user" visible="true">
+          <LocalInputField tableField="smtp_user">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="101"/>
+              <Caption halign="left" label="%EMAIL.SMTP_USER" valign="top">
+                <Dimension height="20" width="120" x="5" y="82"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailSmtp_from_address" visible="true">
+          <LocalInputField tableField="smtp_from_address">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="205"/>
+              <Caption halign="left" label="%EMAIL.SMTP_FROM_ADDRESS" valign="top">
+                <Dimension height="20" width="200" x="5" y="184"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.email.EmailTestButton" name="emailTestButton" visible="true">
+          <Button label="%BUTTON_TEST">
+            <Dimension height="20" width="81" x="100" y="0"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="emailSmtp_password" visible="true">
+          <LocalInputField tableField="smtp_password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="5" y="153"/>
+              <Caption halign="left" label="%EMAIL.SMTP_PASSWORD" valign="top">
+                <Dimension height="20" width="120" x="5" y="134"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.User" label="%FORM.USER" name="user">
+      <Group alias="person" border="false" browser="personBrowser" hideEmptyBrowser="true" label="Person" name="personGroup">
+        <Dimension height="606" width="851" x="0" y="0"/>
+        <GuiElement name="personStaticImage" visible="true">
+          <StaticImage src="form_vcard.png">
+            <Dimension height="64" width="64" x="10" y="10"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="personLoginname" tabIndex="2" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="202" x="14" y="300"/>
+              <Caption halign="left" label="%PERSON.LOGINNAME" valign="top">
+                <Dimension height="20" width="70" x="14" y="281"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFullname" tabIndex="1" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="31" width="511" x="10" y="150"/>
+              <Caption halign="left" label="%PERSON.FULLNAME" valign="top">
+                <Dimension height="20" width="206" x="10" y="130"/>
+              </Caption>
+              <Font family="sans-serif" size="14" style="normal" weight="normal"/>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPassword" tabIndex="3" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="201" x="14" y="349"/>
+              <Caption halign="left" label="%PERSON.PASSWORD" valign="top">
+                <Dimension height="20" width="70" x="16" y="330"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPhone" tabIndex="4" visible="true">
+          <LocalInputField tableField="phone">
+            <TextInput>
+              <Dimension height="20" width="201" x="10" y="210"/>
+              <Caption halign="left" label="%PERSON.PHONE" valign="top">
+                <Dimension height="20" width="70" x="10" y="191"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Benutzerverwaltung" valign="top">
+              <Dimension height="46" width="285" x="90" y="25"/>
+              <Font family="sans-serif" size="20" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="personButtonBar" visible="true">
+          <FlowLayoutContainer orientation="vertical">
+            <Dimension height="391" width="261" x="560" y="150"/>
+            <GuiElement name="personNewRecordButton" visible="true">
+              <Button label="%BUTTON_COMMON_NEW">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <NewRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="personSearchButton" visible="true">
+              <Button label="%BUTTON_COMMON_SEARCH">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <Search filldirection="backward" relationset="default" safeMode="false"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="personUpdateRecordButton" visible="true">
+              <Button label="%BUTTON_COMMON_CHANGE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="personDeleteRecordButton" visible="true">
+              <Button label="%BUTTON_COMMON_DELETE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <DeleteRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+          </FlowLayoutContainer>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Product" label="%FORM.OBJECT" name="product">
+      <Group alias="object" border="false" browser="objectBrowser" label="%GROUP.OBJECT" name="objectGroup">
+        <Dimension height="596" width="651" x="0" y="0"/>
+        <GuiElement name="objectClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="565" y="55"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="565" y="30"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="565" y="80"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="565" y="105"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="291" x="5" y="30"/>
+              <Caption halign="left" label="%OBJECT.NAME" valign="top">
+                <Dimension height="20" width="186" x="5" y="11"/>
+                <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="objectRemark" visible="true">
+          <LocalInputField tableField="remark">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="76" width="630" x="5" y="175"/>
+              <Caption halign="left" label="%OBJECT.REMARK" valign="top">
+                <Dimension height="20" width="246" x="5" y="155"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="objectLast_change" visible="true">
+          <LocalInputField tableField="last_change">
+            <TimestampInput>
+              <Dimension height="20" width="192" x="328" y="80"/>
+              <Caption halign="left" label="%OBJECT.LAST_CHANGE" valign="top">
+                <Dimension height="20" width="141" x="328" y="61"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="objectContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="306" width="630" x="5" y="270"/>
+            <Pane alias="object" browser="objectBrowser" label="%GROUP.RESPONSIBLE" name="objectGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="objectResponsible_design" visible="true">
+                <ForeignInputField browserToUse="responsible_designBrowser" filldirection="both" foreignAlias="responsible_design" foreignTableField="fullname"
+                  relationToUse="responsible_design_object" relationset="local">
+                  <Dimension height="20" width="215" x="5" y="33"/>
+                  <Caption halign="left" label="%RESPONSIBLE_DESIGN" valign="top">
+                    <Dimension height="20" width="196" x="5" y="14"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectResponsible_development" visible="true">
+                <ForeignInputField browserToUse="responsible_developmentBrowser" filldirection="both" foreignAlias="responsible_development" foreignTableField="fullname"
+                  relationToUse="responsible_development_object" relationset="local">
+                  <Dimension height="20" width="215" x="5" y="83"/>
+                  <Caption halign="left" label="%RESPONSIBLE_DEVELOPMENT" valign="top">
+                    <Dimension height="20" width="196" x="5" y="64"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectResponsible_standardization" visible="true">
+                <ForeignInputField browserToUse="responsible_standardizationBrowser" filldirection="both" foreignAlias="responsible_standardization" foreignTableField="fullname"
+                  relationToUse="responsible_standardization_object" relationset="local">
+                  <Dimension height="20" width="208" x="295" y="33"/>
+                  <Caption halign="left" label="%RESPONSIBLE_STANDARDIZATION" valign="top">
+                    <Dimension height="20" width="181" x="295" y="14"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectResponsible_technic" visible="true">
+                <ForeignInputField browserToUse="responsible_technicBrowser" filldirection="both" foreignAlias="responsible_technic" foreignTableField="fullname"
+                  relationToUse="responsible_technic_object" relationset="local">
+                  <Dimension height="20" width="208" x="295" y="83"/>
+                  <Caption halign="left" label="%RESPONSIBLE_TECHNIC" valign="top">
+                    <Dimension height="20" width="151" x="295" y="64"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectResponsible_remark" visible="true">
+                <LocalInputField tableField="responsible_remark">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="121" width="611" x="5" y="153"/>
+                    <Caption halign="left" label="%OBJECT.RESPONSIBLE_REMARK" valign="top">
+                      <Dimension height="20" width="251" x="5" y="133"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="object" browser="objectBrowser" label="%GROUP.SPS" name="objectGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="objectSps_remark" visible="true">
+                <LocalInputField tableField="sps_comment">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="101" width="616" x="5" y="178"/>
+                    <Caption halign="left" label="%OBJECT.SPS_COMMENT" valign="top">
+                      <Dimension height="20" width="191" x="5" y="158"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partnumber" visible="true">
+                <LocalInputField tableField="sps_partnumber">
+                  <TextInput>
+                    <Dimension height="20" width="171" x="5" y="30"/>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTNUMBER" valign="top">
+                      <Dimension height="20" width="171" x="5" y="10"/>
+                      <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partnumber_f" visible="true">
+                <LocalInputField tableField="sps_partnumber_f">
+                  <TextInput>
+                    <Dimension height="20" width="171" x="210" y="28"/>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTNUMBER_F" valign="top">
+                      <Dimension height="20" width="171" x="210" y="9"/>
+                      <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partnumber_s" visible="true">
+                <LocalInputField tableField="sps_partnumber_s">
+                  <TextInput>
+                    <Dimension height="20" width="161" x="415" y="28"/>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTNUMBER_S" valign="top">
+                      <Dimension height="20" width="161" x="415" y="9"/>
+                      <Font family="sans-serif" size="8" style="normal" weight="bold"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partavailable" visible="true">
+                <LocalInputField tableField="sps_partavailable">
+                  <ComboBox>
+                    <Dimension height="20" width="171" x="5" y="75"/>
+                    <Value>Ja</Value>
+                    <Value>Nein</Value>
+                    <Value>Nicht Notwendig</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTAVAILABLE" valign="top">
+                      <Dimension height="20" width="171" x="5" y="55"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partavailable_f" visible="true">
+                <LocalInputField tableField="sps_partavailable_f">
+                  <ComboBox>
+                    <Dimension height="20" width="171" x="210" y="75"/>
+                    <Value>Ja</Value>
+                    <Value>Nein</Value>
+                    <Value>Nicht Notwendig</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTAVAILABLE_F" valign="top">
+                      <Dimension height="20" width="170" x="210" y="56"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_partavailable_s" visible="true">
+                <LocalInputField tableField="sps_partavailable_s">
+                  <ComboBox>
+                    <Dimension height="20" width="161" x="415" y="75"/>
+                    <Value>Ja</Value>
+                    <Value>Nein</Value>
+                    <Value>Nicht Notwendig</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_PARTAVAILABLE_S" valign="top">
+                      <Dimension height="20" width="161" x="415" y="56"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_documentation" visible="true">
+                <LocalInputField tableField="sps_documentation">
+                  <ComboBox>
+                    <Dimension height="20" width="171" x="5" y="120"/>
+                    <Value>Vorhanden</Value>
+                    <Value>Keine</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_DOCUMENTATION" valign="top">
+                      <Dimension height="20" width="171" x="5" y="100"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_documentation_f" visible="true">
+                <LocalInputField tableField="sps_documentation_f">
+                  <ComboBox>
+                    <Dimension height="20" width="168" x="212" y="120"/>
+                    <Value>Vorhanden</Value>
+                    <Value>Keine</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_DOCUMENTATION_F" valign="top">
+                      <Dimension height="20" width="168" x="212" y="101"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectSps_documentation_s" visible="true">
+                <LocalInputField tableField="sps_documentation_s">
+                  <ComboBox>
+                    <Dimension height="20" width="161" x="415" y="120"/>
+                    <Value>Vorhanden</Value>
+                    <Value>Keine</Value>
+                    <Caption halign="left" label="%OBJECT.SPS_DOCUMENTATION_S" valign="top">
+                      <Dimension height="20" width="161" x="415" y="100"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="object" browser="objectBrowser" label="%GROUP.IMPLEMENTATION" name="objectGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="objectImplementor_hardware" visible="true">
+                <ForeignInputField browserToUse="implementor_hardwareBrowser" filldirection="both" foreignAlias="implementor_hardware" foreignTableField="name"
+                  relationToUse="implementor_hardware_object" relationset="local">
+                  <Dimension height="20" width="231" x="8" y="57"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_HARDWARE" valign="top">
+                    <Dimension height="20" width="165" x="8" y="38"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_hardwaretemplate" visible="true">
+                <ForeignInputField browserToUse="implementor_hardwaretemplateBrowser" filldirection="both" foreignAlias="implementor_hardwaretemplate" foreignTableField="name"
+                  relationToUse="implementor_hardwaretemplate_object" relationset="local">
+                  <Dimension height="20" width="231" x="8" y="103"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_HARDWARETEMPLATE" valign="top">
+                    <Dimension height="20" width="231" x="8" y="84"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_hmi_template" visible="true">
+                <ForeignInputField browserToUse="implementor_hmi_templateBrowser" filldirection="both" foreignAlias="implementor_hmi_template" foreignTableField="name"
+                  relationToUse="implementor_hmi_template_object" relationset="local">
+                  <Dimension height="20" width="231" x="327" y="103"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_HMI_TEMPLATE" valign="top">
+                    <Dimension height="20" width="231" x="327" y="84"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_robot" visible="true">
+                <ForeignInputField browserToUse="implementor_robotBrowser" filldirection="both" foreignAlias="implementor_robot" foreignTableField="name" relationToUse="implementor_robot_object" relationset="local">
+                  <Dimension height="20" width="231" x="327" y="57"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_ROBOT" valign="top">
+                    <Dimension height="20" width="231" x="327" y="38"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_sps" visible="true">
+                <ForeignInputField browserToUse="implementor_spsBrowser" filldirection="both" foreignAlias="implementor_sps" foreignTableField="name" relationToUse="implementor_sps_object" relationset="local">
+                  <Dimension height="20" width="224" x="8" y="194"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_SPS" valign="top">
+                    <Dimension height="20" width="181" x="8" y="175"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_sps_f" visible="true">
+                <ForeignInputField browserToUse="implementor_sps_fBrowser" filldirection="both" foreignAlias="implementor_sps_f" foreignTableField="name" relationToUse="implementor_sps_f_object" relationset="local">
+                  <Dimension height="20" width="231" x="327" y="194"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_SPS_F" valign="top">
+                    <Dimension height="20" width="161" x="327" y="175"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectImplementor_sps_s" visible="true">
+                <ForeignInputField browserToUse="implementor_sps_sBrowser" filldirection="both" foreignAlias="implementor_sps_s" foreignTableField="name" relationToUse="implementor_sps_s_object" relationset="local">
+                  <Dimension height="20" width="224" x="8" y="243"/>
+                  <Caption halign="left" label="%IMPLEMENTOR_SPS_S" valign="top">
+                    <Dimension height="20" width="220" x="8" y="224"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+              <GuiElement name="objectHeading" visible="true">
+                <Heading>
+                  <Caption halign="left" label="Hardware" valign="top">
+                    <Dimension height="20" width="593" x="8" y="13"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+                  </Caption>
+                </Heading>
+              </GuiElement>
+              <GuiElement name="objectHeading" visible="true">
+                <Heading>
+                  <Caption halign="left" label="SPS" valign="top">
+                    <Dimension height="20" width="593" x="8" y="156"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+                  </Caption>
+                </Heading>
+              </GuiElement>
+            </Pane>
+            <Pane alias="object" browser="objectBrowser" label="%GROUP.PILOT" name="objectGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="objectPilot_site" visible="true">
+                <LocalInputField tableField="pilot_site">
+                  <TextInput>
+                    <Dimension height="20" width="200" x="10" y="78"/>
+                    <Caption halign="left" label="%OBJECT.PILOT_SITE" valign="top">
+                      <Dimension height="20" width="195" x="10" y="59"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectPilot_building" visible="true">
+                <LocalInputField tableField="pilot_building">
+                  <TextInput>
+                    <Dimension height="20" width="156" x="240" y="78"/>
+                    <Caption halign="left" label="%OBJECT.PILOT_BUILDING" valign="top">
+                      <Dimension height="20" width="146" x="240" y="59"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectPilot_name" visible="true">
+                <LocalInputField tableField="pilot_name">
+                  <TextInput>
+                    <Dimension height="20" width="200" x="10" y="30"/>
+                    <Caption halign="left" label="%OBJECT.PILOT_NAME" valign="top">
+                      <Dimension height="20" width="175" x="10" y="11"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectPilot_implemented" visible="true">
+                <LocalInputField tableField="pilot_implemented">
+                  <ComboBox>
+                    <Dimension height="20" width="156" x="424" y="30"/>
+                    <Value>Ja</Value>
+                    <Value>Nein</Value>
+                    <Caption halign="left" label="%OBJECT.PILOT_IMPLEMENTED" valign="top">
+                      <Dimension height="20" width="156" x="424" y="11"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectPilot_planed" visible="true">
+                <LocalInputField tableField="pilot_planed">
+                  <ComboBox>
+                    <Dimension height="20" width="156" x="240" y="30"/>
+                    <Value>Ja</Value>
+                    <Value>Nein</Value>
+                    <Caption halign="left" label="%OBJECT.PILOT_PLANED" valign="top">
+                      <Dimension height="20" width="156" x="240" y="11"/>
+                    </Caption>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectPilot_comment" visible="true">
+                <LocalInputField tableField="pilot_comment">
+                  <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="136" width="606" x="10" y="138"/>
+                    <Caption halign="left" label="%OBJECT.PILOT_COMMENT" valign="top">
+                      <Dimension height="20" width="200" x="10" y="118"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="objectResponsible_pilot" visible="true">
+                <ForeignInputField browserToUse="responsible_pilotBrowser" filldirection="both" foreignAlias="responsible_pilot" foreignTableField="fullname" relationToUse="responsible_pilot_object" relationset="local">
+                  <Dimension height="20" width="155" x="425" y="78"/>
+                  <Caption halign="left" label="%RESPONSIBLE_PILOT" valign="top">
+                    <Dimension height="20" width="151" x="426" y="59"/>
+                  </Caption>
+                </ForeignInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="object" browser="objectBrowser" label="%GROUP.ATTRIBUTE" name="objectGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="objectObject_to_attributeBrowser" visible="true">
+                <InFormBrowser browserToUse="object_to_attributeBrowser" deleteMode="false" newMode="false" relationToUse="object_object_to_attribute" updateMode="false">
+                  <Dimension height="266" width="511" x="5" y="13"/>
+                  <Caption halign="left" label="%BROWSER.OBJECT_TO_ATTRIBUTE" valign="top">
+                    <Dimension height="50" width="200" x="-137" y="230"/>
+                  </Caption>
+                </InFormBrowser>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.object.ObjectAddAttributeButton" name="objectAddAttributeButton" visible="true">
+                <Button label="%BUTTON_ADD">
+                  <Dimension height="20" width="91" x="525" y="13"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.object.ObjectRemoveAttributeButton" name="objectRemoveAttributeButton" visible="true">
+                <Button label="%BUTTON_REMOVE">
+                  <Dimension height="20" width="91" x="525" y="38"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="objectVendor" visible="true">
+          <ForeignInputField browserToUse="vendorBrowser" filldirection="both" foreignAlias="vendor" foreignTableField="name" relationToUse="vendor_object" relationset="local">
+            <Dimension height="20" width="291" x="5" y="80"/>
+            <Caption halign="left" label="%VENDOR" valign="top">
+              <Dimension height="20" width="136" x="5" y="61"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="objectHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="fulledit">
+              <Dimension height="20" width="20" x="565" y="139"/>
+              <Caption halign="left" label="%OBJECT.HISTORY" valign="top">
+                <Dimension height="20" width="70" x="584" y="139"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="objectObjectgroup" visible="true">
+          <ForeignInputField browserToUse="objectgroupBrowser" filldirection="both" foreignAlias="objectgroup" foreignTableField="longname" relationToUse="objectgroup_object" relationset="local">
+            <Dimension height="20" width="515" x="5" y="124"/>
+            <Caption halign="left" label="%OBJECTGROUP" valign="top">
+              <Dimension height="20" width="201" x="5" y="106"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="objectContact_technic" visible="true">
+          <ForeignInputField browserToUse="contact_technicBrowser" filldirection="both" foreignAlias="contact_technic" foreignTableField="fullname" relationToUse="contact_technic_object" relationset="local">
+            <Dimension height="20" width="192" x="328" y="30"/>
+            <Caption halign="left" label="%CONTACT_TECHNIC" valign="top">
+              <Dimension height="20" width="231" x="328" y="11"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Attribute" label="%FORM.ATTRIBUTE" name="attribute">
+      <Group alias="attribute" border="false" browser="attributeBrowser" label="%GROUP.ATTRIBUTE" name="attributeGroup">
+        <Dimension height="256" width="650" x="0" y="0"/>
+        <GuiElement name="attributeClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="88" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="attributeSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="10" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="attributeDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="166" y="5"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="attributeNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="245" y="5"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="attributeName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="336" x="10" y="60"/>
+              <Caption halign="left" label="%ATTRIBUTE.NAME" valign="top">
+                <Dimension height="20" width="251" x="10" y="41"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="attributeGroup" visible="true">
+          <ForeignInputField browserToUse="groupBrowser" filldirection="both" foreignAlias="group" foreignTableField="name" relationToUse="group_attribute" relationset="local">
+            <Dimension height="20" width="271" x="10" y="100"/>
+            <Caption halign="left" label="%GROUP" valign="top">
+              <Dimension height="20" width="126" x="10" y="81"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Attributegroup" label="%FORM.GROUP" name="attributegroup">
+      <Group alias="group" border="false" browser="groupBrowser" label="%GROUP.GROUP" name="groupGroup">
+        <Dimension height="350" width="650" x="0" y="0"/>
+        <GuiElement name="groupClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="90" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="10" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="170" y="5"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="250" y="5"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="310" x="10" y="60"/>
+              <Caption halign="left" label="%GROUP.NAME" valign="top">
+                <Dimension height="20" width="161" x="10" y="41"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Objectgroup" label="%FORM.OBJECTGROUP" name="objectgroup">
+      <Group alias="objectgroup" border="false" browser="objectgroupBrowser" label="%GROUP.OBJECTGROUP" name="objectgroupGroup">
+        <Dimension height="350" width="650" x="0" y="0"/>
+        <GuiElement name="objectgroupClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="90" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectgroupSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="10" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectgroupDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="174" y="5"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectgroupNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="260" y="5"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="objectgroupName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="320" x="10" y="55"/>
+              <Caption halign="left" label="%OBJECTGROUP.NAME" valign="top">
+                <Dimension height="20" width="171" x="10" y="36"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="objectgroupParentobjectgroup" visible="true">
+          <ForeignInputField browserToUse="parentobjectgroupBrowser" filldirection="both" foreignAlias="parentobjectgroup" foreignTableField="name" relationToUse="parentobjectgroup_objectgroup" relationset="local">
+            <Dimension height="20" width="200" x="377" y="55"/>
+            <Caption halign="left" label="%PARENTOBJECTGROUP" valign="top">
+              <Dimension height="20" width="138" x="377" y="36"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="objectgroupLongname" visible="true">
+          <LocalInputField tableField="longname">
+            <TextInput>
+              <Dimension height="20" width="564" x="13" y="110"/>
+              <Caption halign="left" label="%OBJECTGROUP.LONGNAME" valign="top">
+                <Dimension height="20" width="186" x="13" y="91"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Template" label="%FORM.TEMPLATE" name="template">
+      <Group alias="template" border="false" browser="templateBrowser" label="Template" name="templateGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="templateSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="templateName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="60"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="131" x="5" y="41"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="templateDocument" visible="true">
+          <LocalInputField tableField="document">
+            <DocumentInput>
+              <Dimension height="20" width="200" x="5" y="115"/>
+              <Caption halign="left" label="%TEMPLATE.DOCUMENT" valign="top">
+                <Dimension height="20" width="196" x="5" y="96"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Company" label="%FORM.COMPANY" name="company">
+      <Group alias="company" border="false" browser="companyBrowser" label="Company" name="companyGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="companyClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="85" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companySearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="165" y="5"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="245" y="5"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="companyName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="60"/>
+              <Caption halign="left" label="%COMPANY.NAME" valign="top">
+                <Dimension height="20" width="140" x="5" y="41"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Workgroup" label="%FORM.WORKGROUP" name="workgroup">
+      <Group alias="workgroup" border="false" browser="workgroupBrowser" label="Workgroup" name="workgroupGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="workgroupClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="85" y="5"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupSearchUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="5" y="5"/>
+            <Action>
+              <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupDeleteRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="165" y="5"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="245" y="5"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="workgroupName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="310" x="5" y="60"/>
+              <Caption halign="left" label="%WORKGROUP.NAME" valign="top">
+                <Dimension height="20" width="256" x="5" y="41"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="configuration" title="%DOMAIN.CONFIGURATION" visible="true">
+      <Form>template</Form>
+    </Domain>
+    <Domain name="audit" title="%DOMAIN.AUDIT" visible="true">
+      <Form>product</Form>
+    </Domain>
+    <Domain name="administration" title="Administration" visible="true">
+      <Form>user</Form>
+      <Form>workgroup</Form>
+      <Form>company</Form>
+      <Form>attribute</Form>
+      <Form>attributegroup</Form>
+      <Form>objectgroup</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="audittracker" title="audittracker Application">
+      <Domain>audit</Domain>
+      <Domain>administration</Domain>
+      <Domain>configuration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

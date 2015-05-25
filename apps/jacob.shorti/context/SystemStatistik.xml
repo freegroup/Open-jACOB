@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_SystemStatistik" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="name"/>
+            <parameter name="value"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="messageCount">
+					<question pattern="wieviel\s+nachrichten\s+wurden\s+versendet[?! ]*" defaultAnswer=""/>
+				</forward>
+			</node>
+
+			<node name="messageCount">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

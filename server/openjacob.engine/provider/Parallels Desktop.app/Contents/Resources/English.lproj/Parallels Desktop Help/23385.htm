@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta name="description" content="You can migrate the whole data of a VMware, Virtual PC, or VirtualBox virtual computers, as well as physical computers, to a Parallels virtual machine." />
+
+<title> Migrationsszenarien </title>
+<meta name="Keywords" content="Drittanbieter-Images, Parallels Transporter	Migration von einem Remotecomputer, Parallels Transporter	Migrationsszenarien, Parallels Transporter	migrieren (lokal), Parallels Transporter	von der Virtual Machine eines Drittanbieters migrieren" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="27222.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23541.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675166.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Migrationsszenarien</h3>
+<p class="bodytext">Parallels Transporter bietet je nach Übertragungszweck mehrere typische Szenarien. Wenn Sie sich für ein bestimmtes Szenario entschieden haben, können Sie der <em class="emphasis">Parallels Transporter-Hilfe</em> nähere Anweisungen zum ausgewählten Übertragungsszenario entnehmen.</p>
+<p class="bodytext">Mit Parallels Transporter können folgende Übertragungen durchgeführt werden:</p>
+<ul class="listbullet"><li class="listbullet">von einem entfernten Computer</li><li class="listbullet">von einer virtuellen Maschine eines anderen Herstellers</li></ul><p class="bodytext">Bei der Übertragung von einem entfernten Computer können Sie die Daten auf folgende Weise übertragen:</p>
+<ul class="listbullet"><li class="listbullet">Mit dem Parallels USB-Kabel. Das Kabel ist nicht im Lieferumfang von Parallels Desktop enthalten und muss extra erworben werden. Mit dieser Methode lässt sich die Übertragung am einfachsten durchführen, aber der Quell-Computer und der Mac müssen sich in räumlicher Nähe zueinander befinden.</li><li class="listbullet">Über ein Netzwerk. Bei der entfernten Übertragung über ein Netzwerk müssen der Quell- und Host-Computer über dasselbe Netzwerk miteinander verbunden sein. Sie können die Computer auch über ein FireWire-Kabel miteinander verbinden.</li><li class="listbullet">Über ein externes Speichergerät. Dieser Vorgang dauert länger als die Übertragung über ein Netzwerk oder mit Hilfe des Parallels USB-Kabels, stellt aber eine Alternative dar, wenn keine Möglichkeit besteht, den Quell- und Host-Computer miteinander zu verbinden.</li></ul><p class="bodytext">Wenn Sie Daten von einem entfernten Windows- oder Linux-Computer migrieren, überträgt Parallels Transporter die Daten von den angegebenen Volumes des Quell-Computers auf eine neu erstellte virtuelle Parallels-Festplatte (<code class="monospace">.hdd</code>) und erzeugt eine VM-Konfigurationsdatei (<code class="monospace">.pvs</code>). Diese beiden Dateien bilden gemeinsam eine einsatzbereite virtuelle Maschine. Im Verlauf der entfernten Migration wird nur das <em class="emphasis">aktive Volume</em> (das Startvolume des Quell-Computers) bootfähig gemacht. Die erzeugte virtuelle Maschine hat dasselbe Betriebssystem, das während der Migration aktiv war. Wenn Parallels Transporter das Quell-Betriebssystem nicht identifizieren kann, werden alle Quell-Volumes als Datendisks migriert.</p>
+<p class="subheading">Übertragung mit Parallels USB-Kabel</p>
+<p class="bodytext">Auf diese Weise lässt sich die Übertragung am einfachsten und schnellsten durchführen. Verbinden Sie vor der Übertragung den Host- und Quell-Computer über das Parallels USB-Kabel. Das Parallels USB-Kabel ist nicht im Lieferumfang von Parallels Desktop enthalten und muss extra erworben werden. Für dieses Übertragungsszenario müssen Sie das Kabel also kaufen. Auf dem Quell-Computer ist Parallels Transporter Agent installiert. Auf dem Host-Computer ist Parallels Transporter installiert.</p>
+<p class="bodytext">Vor Beginn der Übertragung starten Sie Parallels Transporter Agent auf dem Quell-Computer und Parallels Transporter auf dem Host-Computer. Parallels Transporter stellt eine Verbindung zu Parallels Transporter Agent her. Parallels Transporter Agent erfasst die Daten auf dem Quell-Computer und überträgt sie an Parallels Transporter. Parallels Transporter sichert die Daten des Quell-Computers in einer virtuellen Maschine oder auf einer virtuellen Festplatte von Parallels auf dem Host-Computer.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Dieses Übertragungsszenario steht nur für physische Quell-Computer mit Windows Vista, Windows XP und Windows 7 (experimentelle Unterstützung) zur Verfügung.</p>
+<p class="subheading">Übertragung über ein Netzwerk</p>
+<p class="bodytext">Bei der Übertragung über ein Netzwerk müssen der Quell-Computer und der Mac über dasselbe Netzwerk miteinander verbunden sein. Auf dem Quell-Computer ist Parallels Transporter Agent installiert. Auf dem Mac ist Parallels Transporter installiert.</p>
+<p class="bodytext">Vor Beginn der Übertragung starten Sie Parallels Transporter Agent auf dem Quell-Computer und Parallels Transporter auf dem Mac. Parallels Transporter stellt eine Verbindung zu Parallels Transporter Agent her. Parallels Transporter Agent erfasst die Daten auf dem Quell-Computer und überträgt sie an Parallels Transporter.</p>
+<p class="subheading">Übertragung über das FireWire-Kabel</p>
+<p class="bodytext">Für die Übertragung von Quell-Computern mit Windows XP kann auch die FireWire-Verbindung benutzt werden. Sie können versuchen, einen Quell-Computer mit einem Linux- oder anderen Windows-Betriebssystem per FireWire zu übertragen. Eventuell müssen dazu weitere Treiber installiert und bestimmte Einstellungen vorgenommen werden. Für die Übertragung per FireWire werden ein FireWire-Kabel sowie FireWire-Anschlüsse am Quell- und Host-Computer benötigt. Die Übertragung per FireWire entspricht im Wesentlichen der Übertragung über das Netzwerk.</p>
+<p class="subheading">Übertragung von einem entfernten Computer über ein externes Speichergerät</p>
+<p class="bodytext">Bei dieser Migrationsmethode migriert Parallels Transporter Agent die Daten von einem physischen Windows- oder Linux-Computer in eine Virtuelle Maschine, deren Dateien auf einem an den Quell-Computer angeschlossenen USB-Laufwerk oder einem Wechselspeichergerät gesichert sind. Dann schließen Sie dieses Speichergerät an den Host-Computer an und starten Parallels Transporter. Parallels Transporter migriert die erstellte Virtuelle Maschine oder virtuelle Festplatte auf den Host-Computer. Anschließend öffnen Sie die Virtuelle Maschine-Dateien in Parallels Desktop und arbeiten mit Ihrer Virtuelle Maschine oder binden die erstellte virtuelle Festplatte in eine vorhandene Virtuelle Maschine ein. Dieser Vorgang dauert länger als die Migration über ein Netzwerk, stellt aber eine Alternative dar, wenn keine Möglichkeit besteht, den Quell- und Host-Computer miteinander zu verbinden.</p>
+<p class="subheading">Übertragung von einer virtuellen Maschine eines anderen Herstellers</p>
+<p class="bodytext">Mit Parallels Transporter können Sie problemlos Daten von einer virtuellen Maschine bzw. virtuellen Festplatte des Typs Microsoft Virtual PC (einschließlich Virtual PCs mit vorinstallierter Testversion von Windows Vista oder Windows XP), VMware oder VirtualBox auf eine bootfähige virtuelle Maschine oder auf eine virtuelle Festplatte von Parallels übertragen. Parallels Transporter konvertiert die virtuelle Maschine des anderen Herstellers in das Parallels-Format. Programme und Daten bleiben dabei intakt. Im Verlauf der Übertragung erzeugt Parallels Transporter eine Konfigurationsdatei für die virtuelle Maschine (<code class="monospace">.pvs</code>) und eine virtuelle Festplattendatei (<code class="monospace">.hdd</code>). Diese beiden Dateien bilden gemeinsam eine einsatzbereite virtuelle Maschine. </p>
+<p class="bodytext">Wenn auf der Festplatte ein Betriebssystem installiert ist, können Sie auch eine virtuelle Festplatte des Typs Microsoft Virtual PC, VMware oder VirtualBox in eine bootfähige virtuelle Maschine von Parallels übertragen.</p>
+<p class="subheading">Migration von einer Boot Camp-Partition</p>
+<p class="bodytext">Mit Parallels Transporter können Sie Ihre Boot Camp-Partition auf eine bootfähige Parallels virtuelle Maschine oder eine virtuelle Festplatte von Parallels zur Verwendung in Parallels Desktop für Mac migrieren. Für die Migration von einer Boot Camp-Partition gibt es drei Möglichkeiten:</p>
+<ul class="listbullet"><li class="listbullet">Migration innerhalb der Boot Camp-Partition (mit Hilfe eines externen Speichermediums) oder</li><li class="listbullet">Migration mit der Boot Camp virtuellen Maschine oder</li><li class="listbullet">Migration von der Boot Camp-Partition eines Remote-Macs (die Standardvorgehensweise für die Remote Migration funktioniert mit Hilfe des Parallels USB-Kabels oder eines externen Speichergeräts oder über ein Netzwerk).</li></ul>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30434" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="db_field(doc_template.xsl_stylesheet)"?>
+
+<!-- result should be below 32 Kb, otherwise there will be error in yan -->
+
+<doc>
+  <control>
+    <original_to url=""/>
+    <copies>
+      <copy onSuccess ="true">
+      <to url="tts:/attachment?task_key=db_field(task.pkey)"/>
+      <stylesheet url="db_field(doc_template.xsl_stylesheet)"/>
+      </copy>
+    </copies>
+  </control>
+  <data>
+    <general>
+      <date>db_field(*Date)</date>
+      <time>db_field(*Time)</time>
+      <Info_Text>db_field(*ASK:Bemerkung:)</Info_Text>
+      <Auftraggeber_Name>db_field(*USERRECORD.fullname)</Auftraggeber_Name>
+      <Auftraggeber_Telefon>db_field(*USERRECORD.phonecorr)</Auftraggeber_Telefon>
+      <Auftraggeber_FAX>db_field(*USERRECORD.faxcorr)</Auftraggeber_FAX>
+      <Auftraggeber_Email>db_field(*USERRECORD.emailcorr)</Auftraggeber_Email>
+    </general>
+    <call>
+      <pkey>db_field(call.pkey)</pkey>
+      <mastercall_key>db_field(call.mastercall_key)</mastercall_key>
+      <agentcall>db_field(call.agentcall)</agentcall>
+      <employeecall>db_field(call.employeecall)</employeecall>
+      <categorycall>db_field(call.categorycall)</categorycall>
+      <workgroupcall>db_field(call.workgroupcall)</workgroupcall>
+      <callstatus>db_field(call.callstatus)</callstatus>
+      <problem>db_field(call.problem)</problem>
+    </call>
+    <task>
+      <pkey>db_field(task.pkey)</pkey>
+      <taskno>db_field(task.taskno)</taskno>
+    </task>
+  </data>
+</doc>

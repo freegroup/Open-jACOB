@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta name="description" content="You can choose to optimize the performance and power consumption for the virtual machine's applications or for those of Mac OS X." />
+
+<title> Optimierungseinstellungen </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="26728.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="26827.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675106.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Optimierungseinstellungen</h3>
+<p class="bodytext">Im Bereich <strong class="specialbold">Optimierung</strong> der Konfiguration der virtuellen Maschine können Sie Einstellungen für die Leistung der virtuellen Maschine konfigurieren.</p>
+<p class="bodytext">          <img src="pd_ce_optimization.gif" alt="CE - Optimierung" height="393" width="561" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="subheading">Verwenden des Anpassungsfähigen Hypervisors:</p>
+<p class="bodytext">Aktivieren Sie die Option <strong class="specialbold">Anpassungsfähiger Hypervisor</strong>, um die CPU-Ressourcen des Host-Computers automatisch den Programmen der virtuellen Maschine und denen von Mac OS X zu zuweisen - je nachdem, mit welchem Programm Sie gerade arbeiten. Wenn das Fenster der virtuellen Maschine sich im Vordergrund befindet, dann werden den Prozessen der virtuellen Maschine eine höhere Priorität als denen des Macs beigemessen. Im Ergebnis werden der virtuellen Maschine mehr CPU-Ressourcen zugewiesen. Wenn Sie zurück in das Fenster des primären Betriebssystems wechseln, dann werden den Programmen eine höhere Priorität beigemessen und die CPU-Ressourcen werden Mac OS X zur Verfügung gestellt.</p>
+<p class="subheading">Festplatte automatisch komprimieren</p>
+<p class="bodytext">Wenn Sie eine <a id="h27600" class="jumptemplate" title="Unterstützung für virtuelle und reale Festplatten" href="23580.htm" target="_self">expandierende</a> virtuelle Festplatte in der virtuellen Maschine verwenden, nimmt die Größe der Imagedatei auf der physischen Festplatte zu, je mehr Daten zur virtuellen Festplatte hinzugefügt werden. Beim Löschen von Daten auf der virtuellen Festplatte wird zwar nicht genutzter Speicherplatz freigegeben, doch der Speicherplatz, den die virtuelle Maschine auf der Festplatte des Mac belegt, verringert sich nicht. Um nicht genutzten Speicherplatz in regelmäßigen Abständen wieder auf dem Mac verfügbar zu machen, klicken Sie auf die Schaltfläche <strong class="specialbold">Automatisch komprimieren</strong>. Die virtuelle Festplatte im expandierenden Format wird zwei Mal täglich überprüft und wenn der ungenutzte Platz mehr als 50 Prozent der Festplattengröße einnimmt, dann wird die Festplatte komprimiert und die Dateigröße der Festplatte wird reduziert. Anschließend steht auf der Festplatte des Mac wieder mehr Speicherplatz zur Verfügung.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Die Option <strong class="specialbold">Automatisch komprimieren</strong> ist nur Windows virtuelle Maschinen verfügbar. Komprimierung kann nur für virtuelle Maschinen ohne <a id="h22610" class="jumptemplate" title="Arbeiten mit Snapshots" href="22609.htm" target="_self">Snapshots</a> durchgeführt werden und wenn die Option <a id="h30295" class="jumptemplate" title="Rückgängig-Datenträger" href="30294.htm" target="_self">Rückgängig-Datenträger</a> deaktiviert wurde.</p>
+<p class="bodytext">In dem Bereich <strong class="specialbold"><a id="h27018" class="jumptemplate" title="Festplatteneinstellungen" href="23215.htm" target="_self">Festplatte</a></strong>, können Sie die Festplatte nach Bedarf manuell komprimieren.</p>
+<p class="subheading">Feintunen Sie Windows</p>
+<p class="bodytext">Jetzt können Sie Ihre Windows virtuelle Maschine feintunen, indem Sie auf <strong class="specialbold">Windows beschleunigen</strong> klicken. Mit dieser Option werden einige Windows-Funktionen deaktiviert, die dazu neigen die Leistung von Windows zu verlangsamen.</p>
+<p class="subheading">Leistungsoptimierung</p>
+<p class="bodytext">Damit Ihre Windows virtuelle Maschine schneller hochfährt, wählen Sie die Option <strong class="specialbold">Windows beschleunigen</strong>. Somit werden einige zusätzliche Windows-Funktionen deaktiviert, die zu einer Überlastung des Systems führen könnten.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Diese Funktion steht für Windows XP und neueren Windows virtuellen Maschinen zur Verfügung.</p>
+<p class="bodytext">Über die Option <strong class="specialbold">Performance optimieren für</strong> können Sie festlegen, nach welchen Prioritäten die Speicherressourcen des physischen Computers verteilt werden sollen:</p>
+<ul class="listbullet"><li class="listbullet">Klicken Sie auf das Feld <strong class="specialbold">Performance optimieren für</strong> und wählen Sie <strong class="specialbold">Virtuelle Maschine</strong>, um der virtuellen Maschine und den darin ausgeführten Programmen mehr Speicherressourcen des physischen Computers zu zuordnen. So kann die Performance der virtuellen Maschine bedeutend gesteigert werden. Allerdings kann dadurch die Produktivität Ihrer Mac OS X-Programme verlangsamt werden.</li><li class="listbullet">Klicken Sie auf das Feld <strong class="specialbold">Performance optimieren für</strong> und wählen Sie <strong class="specialbold">Mac OS X-Programme</strong>, um dem physischen Computer und den darin ausgeführten Programmen mehr Speicherressourcen zu zuweisen. Auf diese Weise wird die Nutzung der Speicherressourcen optimiert, was zu einer Leistungssteigerung der Mac OS X-Programme führt.</li></ul><p class="subheading">Optimierung des Stromverbrauchs</p>
+<p class="bodytext">Diese Einstellungen ermöglichen die Steuerung des Stromverbrauchs der virtuellen Maschine, wenn Parallels Desktop auf einem Mac-Laptop-Computer (z. B. Mac Book Pro) im Akkubetrieb ausgeführt wird:</p>
+<ul class="listbullet"><li class="listbullet">Wenn Sie in dem Feld <strong class="specialbold">StromLängere Akkuleistung</strong> auswählen wird der Stromverbrauch automatisch reduziert, um so eine längere Akkuleistung Ihres Mac-Akkus zu gewährleisten.</li><li class="listbullet">Wenn Sie die Option <strong class="specialbold">Bessere Performance </strong>auswählen, werden die virtuelle Maschine und zugehörige Programme mit der maximalen Geschwindigkeit ausgeführt. Das Auswählen dieser Option kann jedoch die Batterieleistung Ihres Mac-Laptops bedeutend verringern.</li></ul><p class="bodytext">Durch Aktivieren der Option <strong class="specialbold">Akku in der virtuellen Maschine anzeigen</strong> wird der Akkustand in der virtuellen Maschine angezeigt, wenn Ihr Mac-Laptops im Akkubetrieb ausgeführt wird. Dieses Option ist nur auf Mac-Laptops verfügbar.</p>
+<p class="bodytext">          Wenn die Konfiguration der virtuellen Maschine vor weiteren, nicht authorisierten Änderungen geschützt werden soll, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Einstellungen in einem Bereich der Konfiguration der virtuellen Maschine ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30305" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

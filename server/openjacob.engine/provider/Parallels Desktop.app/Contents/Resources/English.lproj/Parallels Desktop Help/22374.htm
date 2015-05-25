@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta name="description" content="When you plug a USB device into your Mac while working in the virtual machine, you will be prompted to choose where to connect it." />
+
+<meta name="description" content="You can set up a USB printer in your virtual machine." />
+
+<title> Verbinden von USB-Geräten mit einer virtuellen Maschine </title>
+<meta name="Keywords" content="USB	USB-Geräte in Virtual Machines verwenden, USB	USB-Geräte verbinden, Virtual Machine	USB-Geräte verwenden" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23529.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="27893.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967570.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Verbinden von USB-Geräten mit einer virtuellen Maschine</h2>
+<p class="bodytext">          Mit Parallels Desktop können bis zu acht USB 2.0- sowie acht USB 1.1-Geräte in eine einzige virtuelle Maschine eingebunden werden. Sie können also acht USB 2.0-Geräte und acht USB 1.1-Geräte an den Ihr Mac anschließen und in der virtuellen Maschine benutzen. Zur Nutzung dieser Funktion muss ein USB-Controller zur <a id="h28326" class="jumptemplate" title="Konfiguration einer virtuellen Maschine" href="23076.htm" target="_self">Konfiguration der virtuellen Maschine</a> hinzugefügt werden. Wenn die Konfiguration der virtuellen Maschine bereits einen USB-Controller enthält, achten Sie darauf, dass er aktivert ist.</p>
+<p class="bodytext">Beim Anschluss eines USB-Gerätes an den Ihr Mac werden Sie standardmäßig über das Fenster <strong class="specialbold">Neues USB-Gerät</strong> gefragt, ob das Gerät an den Ihr Mac angeschlossen oder in die momentan laufenden virtuelle Maschine eingebunden werden soll.        </p>
+<ul class="listbullet"><li class="listbullet">Klicken Sie auf <strong class="specialbold">Mac OS</strong>, falls Sie dieses USB-Gerät in Mac OS X verwenden möchten.</li><li class="listbullet">Klicken Sie auf <strong class="specialbold">Virtuelle Maschine</strong>, wenn Sie dieses USB-Gerät in der virtuellen Maschine verwenden möchten, mit der Sie aktuell arbeiten.</li></ul><p class="note">          <strong class="buttons">Hinweis:</strong> Wenn das erkannte USB-Gerät in die virtuelle Maschine eingebunden und diese dann neu gestartet werden soll, wird das Fenster <strong class="specialbold">Neues USB-Gerät</strong> nach dem Neustart nicht mehr angezeigt. Das USB-Gerät ist daraufhin in diese virtuelle Maschine eingebunden.</p>
+<p class="bodytext">Wenn Parallels Desktop diese Wahl speichern soll, markieren Sie die Option <strong class="specialbold">Diese Zuordnung merken</strong>. Wenn Sie dieses USB-Gerät das nächste Mal an den Ihr Mac anschließen, wird es automatisch mit dem in diesem Dialog festgelegten Ziel verbunden. Zum Ändern des gewählten Ziels rufen Sie das Fenster <strong class="specialbold">USB-Einstellungen</strong> im Bereich <strong class="specialbold"><a id="h27171" class="jumptemplate" title="Konfiguration der Parallels Desktop-Einstellungen" href="22786.htm" target="_self">Einstellungen</a></strong> auf.        </p>
+<p class="bodytext">          <img src="pd_usb_connect.gif" alt="Anschließen - Neu - USB" height="229" width="449" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">          Wenn Parallels Desktop das Fenster nicht jedesmal anzeigen soll, wenn ein USB-Gerät an den Ihr Mac angeschlossen wird, nehmen Sie die entsprechende Einstellung in den<strong class="specialbold">USB-Einstellungen</strong> im Fenster <strong class="specialbold"><a id="h27171_2" class="jumptemplate" title="Konfiguration der Parallels Desktop-Einstellungen" href="22786.htm" target="_self">Einstellungen</a></strong> vor.</p>
+<p class="bodytext">Zur Nutzung des USB-Gerätes in der virtuellen Maschine müssen evtl. noch die erforderlichen Treiber im Gastbetriebssystem installiert werden. Normalerweise erhalten Sie diese Treiber beim Hersteller des betreffenden Gerätes.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Wenn Sie ein USB 1.1-Gerät an einen USB 2.0-Port anschließen, wird dieser Port als USB 1.1 erkannt.        </p>
+<p class="subheading">Verbinden Sie die iSight Kamera mit einer Windows virtuellen Maschine.</p>
+<p class="bodytext">Falls die iSight Kamera in Ihren Mac ist, können Sie sie in Ihrer Windows XP oder Windows Vista virtuellen Maschine verwenden. Bevor Sie die Kamera anschließen, sollten Sie den iSight-Treiber für Windows in Ihrer virtuellen Maschinen installieren. Es gibt verschiedene Möglichkeiten, um den Treiber zu installieren. Zum Beispiel können Sie den iSight-Treiber mit den Boot Camp-Treibern in Ihrer virtuellen Maschine installieren:</p>
+<ol class="listnumber"><li class="listnumber">Legen Sie den Mac OS X Leopard-Datenträger oder &quot;Mac OS X Installations-CD 1&quot; in Ihren Computer ein.</li><li class="listnumber">Starten Sie die Windows virtuelle Maschine.</li><li class="listnumber">Klicken Sie auf das CD/DVD-Symbol <img src="27629.gif" alt="CD/DVD-ROM-Symbol" height="20" width="21" vspace="0" hspace="0" align="bottom" border="0" /> in der Statusleiste der virtuellen Maschine, wählen Sie <strong class="specialbold">Reale CD/DVD</strong> und binden Sie den OS X-Installationsdatenträger.</li><li class="listnumber">Das Installationsprogramme für den Boot Camp-Treiber startet. Falls das Installationsprogramm nicht automatisch startet, suchen Sie in Windows Explorer nach dem Mac OS X-Datenträger und doppelklicken Sie in dem Boot Camp-Ordner auf die <code class="monospace">setup.exe</code>-Datei<code class="monospace">.</code></li><li class="listnumber">Befolgen Sie die Anweisungen des Installationsassistenten. Starten Sie nach erfolgreichem Installation die virtuelle Maschine neu.</li></ol><p class="note">          <strong class="buttons">Hinweis:</strong> Der iSight-Treiber für Windows ist nur für eingebaute Kameras geeignet. Externe Kameras werden nicht unterstützt.</p>
+<p class="bodytext">Um die iSight-Kamera zu verbinden, klicken Sie in der Symbolleiste der virtuellen Maschine auf das Symbol USB-Controller<img src="27633.gif" alt="USB-Controller für Statusleiste" height="21" width="20" vspace="0" hspace="0" align="bottom" border="0" /> und wählen Sie die iSight-Kamera aus der Liste aus.</p>
+<p class="subheading">Verbinden Sie einen USB-Drucker mit einer virtuellen Maschine</p>
+<p class="bodytext">Sie können einen USB-Drucker direkt mit der virtuellen Maschine verbinden. In dem Fall wird der Drucker nicht in Mac OS X verfügbar sein.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Falls der USB-Drucker sowohl in Mac als auch in der virtuellen Maschine zur Verfügung soll, müssen Sie den Drücker über einen Drucker-Port mit der virtuellen Maschine verbinden. Weitere Informationen finden Sie unter <strong class="specialbold"><a id="h27942" class="jumptemplate" title="Mac Drucker gemeinsam nutzen" href="23545.htm" target="_self">Einen Mac-Drucker gemeinsam nutzen</a></strong>.</p>
+<p class="bodytext">          Gehen Sie folgendermaßen vor, um einen USB-Drucker einzurichten</p>
+<ol class="listnumber"><li class="listnumber">Öffnen Sie die Konfiguration der virtuellen Maschine im <a id="h22172" class="jumptemplate" title="Konfiguration einer virtuellen Maschine" href="23076.htm" target="_self">Konfigurationseditor</a> und achten Sie darauf, dass sie einen USB-Controller enthält. Wenn nicht, fügen Sie einen hinzu. Weitere Informationen finden Sie unter USB-Controller hinzufügen.</li><li class="listnumber">Öffnen Sie den Tab USB-Optionen und achten Sie darauf, dass die Option <strong class="specialbold">Aktiviert</strong> markiert ist. Markieren Sie <strong class="specialbold">USB-Geräte beim Start automatisch einbinden</strong>, wenn der Drucker automatisch in die virtuelle Maschine eingebunden werden soll. Klicken Sie in <strong class="specialbold">OK</strong>, um den Konfigurationseditor zu schließen.</li><li class="listnumber">Starten Sie das Gastbetriebssystem.</li><li class="listnumber">Schließen Sie den USB-Drucker als USB-Gerät an. Weitere Informationen finden Sie unter USB-Geräte anschließen.</li><li class="listnumber">Installieren Sie den originalen Druckertreiber im Gastbetriebssystem.        </li></ol><p class="subheading">Einen Common Access Card-Reader anschließen</p>
+<p class="bodytext">Der Common Access Card (CAC)-Reader kann simultan in Mac OS X und in einer virtuellen Maschine verwendet werden. Schließen Sie ihn einfach an Ihren Mac an and wählen Sie in dem Gastbetriebssystem in dem Fenster <strong class="specialbold">Neues USB-Gerät</strong> die Option <strong class="specialbold">Mit virtueller Maschine verbinden</strong>. Parallels Desktop wird einen virtuellen Daemon für den CAC-Reader in der virtuellen Maschine erstellen. Der reale CAC-Reader wird weiterhin in dem Hostbetriebssystem funktionieren. </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+22374" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

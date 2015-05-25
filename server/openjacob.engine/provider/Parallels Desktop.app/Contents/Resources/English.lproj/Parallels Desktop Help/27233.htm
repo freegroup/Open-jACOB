@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta name="description" content="Virtual Machine templates can be useful when you need to create a number of identical virtual machines." />
+
+<title> Erstellen einer Vorlage für eine virtuelle Maschine </title>
+<meta name="Keywords" content="Assistent	In Virtual Machine-Vorlage klonen (Assistent)" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="27234.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23044.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675149.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Erstellen einer Vorlage für eine virtuelle Maschine</h3>
+<p class="bodytext">Wenn Sie mehrere virtuelle Maschinen mit einer ähnlichen Konfiguration erstellen möchten, können Sie eine Vorlage für eine virtuelle Maschine erstellen und die neuen virtuellen Maschinen dann mit dieser Vorlage erstellen.</p>
+<p class="bodytext">Eine Vorlage für eine virtuelle Maschine kann auf zwei Wegen erstellt werden:</p>
+<ul class="listbullet"><li class="listbullet">Vorhandene virtuelle Maschine in eine Vorlage für eine virtuelle Maschine konvertieren.</li><li class="listbullet">Vorhandene virtuelle Maschine in eine Vorlage für eine virtuelle Maschine klonen.</li></ul><p class="bodytext">Wenn Sie eine virtuelle Maschine in eine Vorlage konvertieren, ändert sich das Symbol des Betriebssystems dieser virtuellen Maschine in der Liste der virtuellen Maschinen in ein Vorlagensymbol und die virtuelle Maschine steht dann nur noch als Vorlage zur Verfügung. Als virtuelle Maschine kann sie dann nicht mehr ausgeführt werden.</p>
+<p class="bodytext">Wenn Sie eine virtuelle Maschine nicht in eine Vorlage konvertieren möchten, aber eine Kopie mit derselben Konfiguration benötigen, können Sie aus dieser virtuellen Maschine einen Klon erstellen und diesen dann als Vorlage verwenden.</p>
+<p class="bodytext">So wird eine vorhandene virtuelle Maschine in eine Vorlage konvertiert:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop.</li><li class="listnumber">Wählen Sie in der Liste der virtuellen Machinen von Parallels eine virtuelle Maschine aus, die in eine Vorlage konvertiert werden soll.</li><li class="listnumber">Wählen Sie <strong class="specialbold">In Vorlage konvertieren</strong> im Menü <strong class="specialbold">Datei</strong>.</li><li class="listnumber">Die virtuelle Maschine wird in eine Vorlage umgewandelt und erhält ein neues Symbol, das sie als Vorlage kennzeichnet.</li></ol><p class="bodytext">So wird eine virtuelle Maschine in eine Vorlage geklont:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop.</li><li class="listnumber">Wählen Sie in der Liste der virtuellen Maschinen von Parallels die virtuelle Maschine aus, die geklont werden soll.</li><li class="listnumber">Starten Sie den Assistenten In VM-Vorlage klonen über den Befehl <strong class="specialbold">In Vorlage klonen</strong> im Menü <strong class="specialbold">Datei</strong>.</li><li class="listnumber">Klicken Sie im Fenster <strong class="specialbold">Einführung</strong> auf <strong class="specialbold">Fortfahren</strong>. Wenn dieses Fenster beim nächsten Aufruf des Assistenten nicht angezeigt werden soll, markieren Sie die Option <strong class="specialbold">Einführung immer überspringen</strong>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Name und Ort</strong> den Namen und Speicherort der Vorlage für die virtuelle Maschine an und klicken Sie auf <strong class="specialbold">Klonen</strong>. Bei Bedarf können Sie den Speicherort mit der Taste <strong class="specialbold">Wählen</strong> ändern.<p class="listcontinue">Die Vorlagendateien der virtuellen Maschine werden standardmäßig in folgendem Ordner auf dem Mac gespeichert: <code class="monospace">/Benutzer/Benutzername/Dokumente/Parallels/&lt;Name der VM-Vorlage&gt;/.</code></p>
+<p class="listcontinue"><img src="pd_clone_to_templ.gif" alt="In Vorlage klonen - Name und Ort wählen" height="325" width="474" vspace="0" hspace="0" align="bottom" border="0" /></p>
+</li><li class="listnumber">Klicken Sie im Fenster <strong class="specialbold">Erstellen abgeschlossen</strong> auf <strong class="specialbold">Fertig</strong>, um den Assistenten zu schließen.</li></ol>
+<a name="o27232"></a><h3 class="heading3">Bereitstellen einer VM-Vorlage</h3>
+<p class="bodytext">Die VM-Vorlage kann nicht als virtuelle Maschine ausgeführt werden. Zum Ausführen der Vorlage als virtuelle Maschine müssen Sie eine virtuelle Maschine mit derselben Konfiguration wie die Vorlage erstellen.</p>
+<p class="bodytext">Es gibt zwei Optionen zum Erstellen einer virtuellen Maschine aus einer Vorlage:</p>
+<ul class="listbullet"><li class="listbullet">Konvertieren Sie eine Vorlage in eine virtuelle Maschine.</li><li class="listbullet">Stellen Sie eine Vorlage für eine virtuelle Maschine bereit.</li></ul><p class="bodytext">Wenn Sie eine VM-Vorlage in eine virtuelle Maschine konvertieren, wird das zugehörige Symbol aus der Vorlagenliste in die Liste der virtuellen Maschinen verschoben, sodass Sie die konvertierte Vorlage als virtuelle Maschine verwenden können.</p>
+<p class="bodytext">Wenn Sie eine VM-Vorlage für eine virtuelle Maschine bereitstellen, wird mit dem Assistenten <strong class="specialbold">VM-Vorlage bereitstellen</strong> eine neue virtuelle Maschine erstellt, die Vorlage wird jedoch nicht aus der Vorlagenliste entfernt.</p>
+<p class="bodytext">So konvertieren Sie eine VM-Vorlage in eine virtuelle Maschine:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop.</li><li class="listnumber">Wählen Sie in der Liste von Parallels virtuelle Maschinen die in eine virtuelle Maschine zu konvertierende VM-Vorlage aus.</li><li class="listnumber">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">In virtuelle Maschine konvertieren</strong> oder klicken Sie mit der rechten Maustaste auf das Vorlagensymbol, und wählen Sie im Kontextmenü den Befehl <strong class="specialbold">In virtuelle Maschine konvertieren</strong>.</li><li class="listnumber">Die VM-Vorlage wird in eine virtuelle Maschine konvertiert, und das zugehörige Symbol ändert sich entsprechend.</li></ol><p class="bodytext">So stellen Sie eine VM-Vorlage für eine neue virtuelle Maschine bereit:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop.</li><li class="listnumber">Wählen Sie in der Liste von Parallels virtuelle Maschinen die für eine virtuelle Maschine bereitzustellende VM-Vorlage aus.</li><li class="listnumber">Starten Sie den Assistenten <strong class="specialbold">VM-Vorlage bereitstellen</strong>, indem Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">In virtueller Maschine bereitstellen</strong> wählen.</li><li class="listnumber">Klicken Sie im Fenster <strong class="specialbold">Einführung</strong> auf <strong class="specialbold">Fortfahren</strong>. Wenn dieses Fenster beim nächsten Aufrufen des Assistenten nicht angezeigt werden soll, aktivieren Sie die Option <strong class="specialbold">Einführung immer überspringen</strong>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Name und Ort</strong> den Namen und Speicherort der VM-Vorlage an, und klicken Sie auf <strong class="specialbold">Bereitstellen</strong>. Sie können den Speicherort mit der Taste <strong class="specialbold">Wählen</strong> ändern.<p class="listcontinue">Per Voreinstellung werden die VM-Dateien auf Ihrem Mac im folgenden Ordner gespeichert: <code class="monospace">/Benutzer/Benutzername/Dokumente/Parallels/&lt;Name der VM-Vorlage&gt;/.</code></p>
+<p class="listcontinue">Wenn das Symbol der neu erstellten virtuellen Maschine auf Ihrem Desktop angezeigt werden soll, aktivieren Sie die Option <strong class="specialbold">Symbol auf dem Desktop anlegen</strong>.</p>
+<p class="listcontinue">Wenn Sie mit der virtuellen Maschine nach dem Erstellen sofort arbeiten möchten, aktivieren Sie die Option <strong class="specialbold">Kopie automatisch in neuem Fenster öffnen</strong>.</p>
+<p class="listcontinue"><img src="pd_deploy_to_templ.gif" alt="In Vorlage klonen - Name und Ort wählen" height="326" width="474" vspace="0" hspace="0" align="bottom" border="0" /></p>
+</li><li class="listnumber">Klicken Sie im Fenster <strong class="specialbold">Bereitstellen abgeschlossen</strong> auf <strong class="specialbold">Fertig</strong>, um den Assistenten zu schließen.</li></ol><p class="bodytext">Die neue virtuelle Maschine besitzt dieselbe Konfiguration wie die ursprüngliche Vorlage.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+27233" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

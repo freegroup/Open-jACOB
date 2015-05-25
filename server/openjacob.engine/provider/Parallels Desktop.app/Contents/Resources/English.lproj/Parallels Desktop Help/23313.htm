@@ -1,0 +1,65 @@
+<html>
+<head>
+<title> Windows 98 als Gastbetriebssystem installieren </title>
+<meta name="Keywords" content="Disketten-Image, Installieren	Windows 98" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22961.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22864.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675174.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Windows 98 als Gastbetriebssystem installieren</h2>
+<p class="bodytext">Zu allen Installationspaketen von Windows 95 und z. T. auch von Windows 98 gehört eine Startdiskette. Diese Diskette enthält MS-DOS-Befehle und dient zur Partitionierung und Formatierung der Festplatte. Da es bei modernen Macs keine Diskettenlaufwerke mehr gibt, benötigen Sie ein externes Diskettenlaufwerk oder ei Image einer bootfähigen Diskette. Solch ein Image kann mit Drittanbietertools erstellt werden.</p>
+<p class="bodytext">Wenn Sie eine bootfähige CD mit den Installationsdateien für Windows 98 besitzen, können Sie sie entweder direkt verwenden oder ein ISO-Image dieser CD erstellen.</p>
+<p class="bodytext">Im Folgenden beschreiben wird die Installation von Windows 98 mit Startdiskette und Installationsdateien auf CD-ROM. Die Installation von Windows 95 funktioniert entsprechend.</p>
+<p class="subheading">Virtuelle Maschine für die Installation von Windows 95/98 vorbereiten</p>
+<p class="bodytext">Wir empfehlen, eine virtuelle Maschine mit typischer Konfiguration für Windows 98 zu erstellen (128 MB RAM und 6 GB Festplatte). Wenn Sie eine eigene Konfiguration erstellt haben, achten Sie darauf, dass RAM und Festplattengröße den Anforderungen des jeweiligen Betriebssystems entsprechen.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Erstellen Sie für Windows 95 keine virtuelle Festplatte, die größer ist als 2 GB, da sie vom System nicht unterstützt würde.</p>
+<p class="bodytext">Gehen Sie mit einem startfähigen Disketten-Image folgendermaßen vor:</p>
+<ol class="listnumber"><li class="listnumber">Erstellen Sie eine typische Windows 98 virtuelle Maschine mit Hilfe des <a id="h22869" class="jumptemplate" title="Installationsmodus Typisch" href="22866.htm" target="_self"> Assistenten Neue Virtuelle Maschine</a>. Klicken Sie im letzten Schritt auf <strong class="specialbold">Abschließen</strong>.</li><li class="listnumber">Klicken Sie in der Liste mit den virtuellen Maschinen mit rechts auf den Namen der virtuellen Maschine und wählen Sie im Kontextmenü <strong class="specialbold">Entfernen</strong>. </li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Hardware</strong> &gt; <strong class="specialbold">Boot-Sequenz</strong> und wählen Sie die Boot-Sequenz <strong class="specialbold">Diskette, Festplatte, CD/DVD</strong>.</li><li class="listnumber">Klicken Sie in der Registerkarte <strong class="specialbold">Hardware</strong> auf <strong class="specialbold">Diskette</strong>, um die Einstellungen für das virtuelle Diskettenlaufwerk zu öffnen.</li><li class="listnumber">Achten Sie darauf, dass die Option <strong class="specialbold">Verbunden</strong> ausgewählt ist. Geben Sie im Bereich <strong class="specialbold">Quelle</strong> das Disketten-Image an.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>, um die Konfiguration der virtuellen Maschine zu speichern.</li></ol><p class="subheading">Erste Partitionierung und Formatierung</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie die virtuelle Maschine. Es erscheint ein schwarzer Bildschirm, auf dem Meldungen zum Bootvorgang von MS DOS angezeigt werden.</li><li class="listnumber">Geben Sie folgenden Befehl ein, wenn Sie dazu aufgefordert werden:<p class="preformattedbold">fdisk</p>
+<p class="listcontinue">Mit dem MS-DOS Hilfsprogramm Fdisk lassen sich Festplatten und Disketten partitionieren.</p>
+</li><li class="listnumber">Die <code class="monospace">Fdisk </code>-Optionen werden aufgelistet. Wählen Sie den auszuführenden Vorgang - standardmäßig ist 1 ausgewählt - und drücken Sie Return (Enter), um fortzufahren.</li><li class="listnumber">          <code class="monospace">Fdisk</code> fordert Sie auf, eine Partition zu erstellen. Wählen Sie die Option <strong class="specialbold">PrimäreDOS-Partition erstellen</strong>, wenn Sie nur eine oder weniger als vier Partitionen erstellen möchten.<p class="preformattedbold">1</p>
+<p class="listcontinue">Die anderen Möglichkeiten beziehen sich auf den Fall, in dem mehr als vier Partitionen erstellt werden sollen.</p>
+</li><li class="listnumber">Fdisk fordert Sie auf, die Größe der primären Partition einzugeben. Drücken Sie Enter, wenn die Partition in der maximal verfügbaren Größe erstellt werden soll.<p class="listcontinue">Wenn Sie eine andere Größe vorgeben möchten, geben Sie <code class="monospace">N </code> ein und drücken Enter. Sie werden aufgefordert, die gewünschte Größe einzugeben.</p>
+</li><li class="listnumber">Fdisk erstellt die Partition und fordert Sie zum Neustart des Computers (der virtuellen Maschine) auf.</li><li class="listnumber">Starten Sie die virtuelle Maschine mit demselben Image der Startdiskette neu. Drücken Sie dazu die Tasten Ctrl+Alt, um die Tastatur freizugeben und klicken Sie anschließend auf <strong class="specialbold">Herunterfahren</strong>, um die virtuelle Maschine anzuhalten. Klicken Sie dann auf <strong class="specialbold">Start</strong>.</li><li class="listnumber">Nach dem Start muss das Systemlaufwerk <code class="monospace">C:</code> formatiert werden. <p class="listcontinue">Geben Sie folgenden Befehl ein:</p>
+<p class="preformattedbold">format c:</p>
+<p class="listcontinue">Bestätigen Sie, dass Laufwerk <code class="monospace">C:</code> formatiert werden soll, wenn Sie dazu aufgefordert werden. Geben Sie <code class="monospace">y </code>ein und drücken Sie Enter.</p>
+<p class="listcontinue">Sie werden evtl. aufgefordert, auszuwählen, wie das Laufwerk formatiert werden soll. Windows 95/98 unterstützt die Dateisysteme FAT16 und FAT32.</p>
+<p class="listcontinue">Eine FAT16-Partition darf nicht größer sein als 2 GB. Größere Laufwerke können mit FAT32 formatiert werden. Benutzen Sie aber keine größeren Laufwerke, wenn Legacy-Programme ausgeführt werden sollen.</p>
+<p class="listcontinue">Das Programm beginnt mit der Formatierung von Laufwerk <code class="monospace">C:</code>.</p>
+<p class="listcontinue">Formatieren Sie die anderen Laufwerke ebenfalls (wenn Sie mehr als eine primäre Partition oder eine eigene virtuelle Maschine mit mehreren Festplatten erstellt haben). Benutzen Sie die Laufwerksbuchstaben E:, F:.</p>
+</li><li class="listnumber">Geben Sie für jedes Laufwerk einen Namen ein (bis zu 11 Zeichen). Der Name ist optional. Drücken Sie bei Bedarf auf Enter, um diesen Schritt zu überspringen. </li><li class="listnumber">Schalten Sie die virtuelle Maschine aus.</li></ol><p class="bodytext">Jetzt können Sie mit der Installation des Betriebssystems Windows 98 beginnen. </p>
+<p class="subheading">Allgemeine Schritte für die Installation von Windows 98</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie die virtuelle Maschine mit demselben Image der Startdiskette.</li><li class="listnumber">Legen Sie die Installations-CD für Windows 98 ein oder binden Sie das ISO-Image der Installations-CD über den Befehl <strong class="specialbold">CD/DVD</strong> &gt; <strong class="specialbold">Image einbinden </strong>im Menü <strong class="specialbold">Geräte</strong> ein.</li><li class="listnumber">Wenn Sie nur eine primäre Partition erstellt haben (Laufwerk C:), trägt das CD/DVD-Laufwerk standardmäßig den Laufwerksbuchstaben D:. Geben Sie folgenden Befehl ein:<p class="preformattedbold">D:\setup.exe</p>
+<p class="listcontinue">und drücken Sie Enter. Die Installation beginnt und die Dateien werden von der CD auf die virtuelle Festplatte kopiert.</p>
+</li><li class="listnumber">Folgen Sie den Anweisungen des Setups auf dem Bildschirm. Bitte beachten Sie, dass Sie später verschiedene Optionen hinzufügen und entfernen können.</li><li class="listnumber">Lesen und akzeptieren Sie den <strong class="specialbold">Lizenzvertrag</strong>. Geben Sie den Lizenzschlüssel ein.</li><li class="listnumber">Bestätigen Sie das Standard-Systemverzeichnis oder geben Sie ein anderes an.</li><li class="listnumber">In dem Dialogfenster <strong class="specialbold">Setup-Optionen</strong> wählen Sie den Installationstyp aus. <em class="emphasis">Typisch </em>wird empfohlen.</li><li class="listnumber">(nur für Windows 98) Wenn Sie ein Netzwerk benutzen möchten, wählen Sie die Netzwerkkarte, wenn Sie dazu aufgefordert werden.</li><li class="listnumber">Schalten Sie die virtuelle Maschine aus.</li><li class="listnumber">Werfen Sie die Installations-CD aus oder trennen Sie das ISO-Image.</li><li class="listnumber">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> &gt; <strong class="specialbold">Konfigurieren</strong> gehen Sie zu <strong class="specialbold">Hardware</strong> &gt; <strong class="specialbold">Boot-Sequenz</strong> und legen Sie als Boot-Sequenz <strong class="specialbold">Festplatte, Diskette, CD/DVD</strong> fest. Klicken Sie auf <strong class="specialbold">OK</strong>, um die Konfiguration zu speichern.</li><li class="listnumber">Starten Sie die virtuelle Maschine neu. Diesmal startet sie von der Festplatte.</li></ol>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30898" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

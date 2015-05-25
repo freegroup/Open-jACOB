@@ -1,0 +1,42 @@
+Von: michael.lebrecht@daimlerchrysler.com
+Gesendet: Donnerstag, 21. Juli 2005 16:29
+An: Matthias.Fraenzel@daimlerchrysler.com
+Cc: udo.guenther@daimlerchrysler.com
+Betreff: Zugang zu WhoIsWho via LDAP
+
+
+Sehr geehrter Herr Fraenzel,
+
+ich nehme bezug auf ein sehr kurzes Gespräch mit Herrn Guenther in bezug auf "Online-Zugriff auf den WhoIsWho-Datenbestand"
+
+1/ Kurze Information zur Anwendung
+Wir sind mit den Kollegen der FP-SNT zuständig für die Entwicklung, Planung und den Aufbau der Automatisierungs- und Steuerungstechnik für die Produktionsanlagen der Mercedes Car Group. Zur Optimierung der Supportprozesse im obengenannten Bereich werden wir bei der Umsetzung der neuen Anlagen der C.-Klasse erstmals ein webbasiertes CallCenter-System
+(Ticket-System) mit entsprechender Telefonieanbindung einsetzen.
+Dieses System benötigt zur Identifikation der Melder oder Kunden weltweit natürlich entsprechende Stammdaten - die aus unserer Sicht optimal bereits in WhoIsWho standardisiert und hinterlegt sind.
+
+2/ Ansatz - Datenpflege in WhoIsWho und Online-Zugriff des Ticketsystems auf WhoIsWho Um hier nicht - sinnloserweise-  doppelte Datenpflege zu betreiben, benötigen wir einen Zugriff auf den DC WhoIsWho-Datenbestand.
+Herr Guenther hat angedeutet, dass hierfür - bei entsprechender
+Berechtigung-  ein LDAP-Zugang zur Verfügung steht.
+
+3/ Die Bitte
+Ich würde mich freuen,
+- wenn Sie mir die notwendigen Formulare oder Links zur Beantragung der entsprechenden Zugriffs-Berechtigung zukommen lassen würden.
+- vielleicht bereits technische Informationen, Unterlagen zur Umsetzung des Zugriffs zusenden könnten (so erforderlich)
+- ggf. auch in Hinblick auf alternative Online-Zugriffsmethoden zu LDAP
+
+Herzlichen Dank im voraus - für Rückfragen stehe ich gerne zur Verfügung
+
+
+Mit freundlichen Grüßen/ Kind regards
+
+
+Michael Lebrecht
+DaimlerChrysler AG
+Produktionsplanung Mercedes-Benz PKW
+Automatisierungs- und Steuerungstechnik PWT-VAS HPC F151
+71059 Sindelfingen
+
+Phone +49 (0)7031/90-82055
+Fax +49 (0)711/3052-155009
+Mobile +49 (0)160/8609795
+E-Mail mailto:michael.lebrecht@daimlerchrysler.com

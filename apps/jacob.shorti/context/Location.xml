@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_Location" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="continent"/>
+            <parameter name="state"/>
+            <parameter name="country"/>
+            <parameter name="city"/>
+            <parameter name="plz"/>
+            <parameter name="distance"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+                <forward toNode="location">
+					<question pattern="wo\s+bin\s+ich(?:\\?)?"    	defaultAnswer="keine Ahnung wo du rumstehst"/>
+				</forward>
+			</node>
+
+			<node name="location">
+				<forward toNode="start">
+					<question pattern="danke"    defaultAnswer="Gern geschehen."/>
+					<question pattern="super"    defaultAnswer="Ich weiss."/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

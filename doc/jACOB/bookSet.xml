@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE set PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "file:///C:\java\docbook-4.4b1\docbookx.dtd" 
+[
+<!ENTITY guiProgramming                   SYSTEM "./GuiProgramming/book.xml">
+<!ENTITY guiProgramming_customUserDialogs SYSTEM "./GuiProgramming/customUserDialogs.xml">
+<!ENTITY guiProgramming_gridDialog        SYSTEM "./GuiProgramming/gridDialog.xml">
+<!ENTITY guiProgramming_messageDialog     SYSTEM "./GuiProgramming/messageDialog.xml">
+
+]>
+<set>
+  <title>jACOB Programming</title>
+
+  <setinfo>
+    <author>
+      <firstname>Andreas</firstname>
+      <surname>Herz</surname>
+    </author>
+  </setinfo>
+
+  &guiProgramming;
+</set>

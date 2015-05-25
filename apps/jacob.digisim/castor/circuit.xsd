@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/circuit" targetNamespace="http://www.example.org/circuit">
+	<element name="circuit">
+		<complexType>
+			<sequence>
+				<element name="part" type="tns:part" maxOccurs="unbounded" minOccurs="0"/>
+				<element name="connection" type="tns:connection" maxOccurs="unbounded" minOccurs="0"/>
+				<element name="annotation" type="tns:annotation" maxOccurs="unbounded" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	<complexType name="annotation">
+		<sequence>
+			<element name="x" type="int"></element>
+			<element name="y" type="int"></element>
+			<element name="width" type="int"></element>
+			<element name="height" type="int"></element>
+			<element name="data" type="string"></element>
+			<element name="color" type="string" minOccurs="0" maxOccurs="1"></element>
+		</sequence>
+	</complexType>
+	<complexType name="part">
+		<attribute name="id" type="string" use="required"/>
+		<attribute name="type" type="string" use="required"/>
+		<attribute name="x"  type="int" use="required"/>
+		<attribute name="y"  type="int" use="required"/>
+	</complexType>
+	<complexType name="connection">
+		<attribute name="sourcePartId"  type="string" use="required"/>
+		<attribute name="sourcePortId"  type="string" use="required"/>
+		<attribute name="targetPartId"   type="string" use="required"/>
+		<attribute name="targetPortId"   type="string" use="required"/>
+	</complexType>
+</schema>

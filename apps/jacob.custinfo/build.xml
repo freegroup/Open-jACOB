@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="jacob-application" default="all" basedir=".">
+<property file="build.properties" />
+
+<tstamp><format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+
+<!-- =================================================================== -->
+<!--  Configuration                                                      -->
+<!-- =================================================================== -->
+<property environment="env"/>
+<property name="etr.dir"             value="../etr"/>
+<property name="buildlib.dir"        value="../etr/lib/build"/>
+<property name="dist.dir"            value="./dist"/>
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+<property name="deploy.home"         value="${env.CATALINA_HOME}/webapps/jacob/WEB-INF/jacapp"/>
+
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${etr.dir}/dist">
+   	<include name="*.jar"/>
+   </fileset>
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- ALL                                                                 -->
+<!-- =================================================================== -->
+<target name="all"  depends="jacapp"  description="create the project">
+</target>
+
+
+
+<!-- =================================================================== -->
+<!-- jACAPP                                                               -->
+<!-- =================================================================== -->
+<target name="jacapp" depends="compile" description="create the .jacapp file for the application"  >
+
+	<mkdir dir="${dist.dir}/"/>
+	<jar destfile="${dist.dir}/${app.name}-${app.version}.jacapp" >
+		<fileset dir="./classes">
+			<exclude name="applications/${app.name}/**/*.java"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+			<attribute name="jACOB-Application-Version" value="${app.version}"/>
+			<attribute name="jACOB-Application-Name"    value="${app.name}"/>
+			<attribute name="jACOB-Application-State"   value="${app.state}"/>
+		</manifest>
+   </jar>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- CLEAN                                                               -->
+<!-- =================================================================== -->
+<target name="clean" depends="JAD.clean" description="Delete old build and dist directories">
+    <delete quiet="true" dir="./classes"/>
+    <delete quiet="true" dir="./dist"/>
+</target>
+
+<!-- =================================================================== -->
+<!-- JAD              /java/jacob/config/                                       -->
+<!-- =================================================================== -->
+<target name="JAD.clean" description="Delete jad-file">
+    <delete file="./${app.name}.jad"/>
+</target>
+
+<target name="JAD.create" depends="JAD.clean" description="Create jad-file from adl/adf">
+
+    <java 
+        classname="de.tif.qes.QeSFileApplicationProvider"
+        failonerror="true"
+        fork="true"
+        >
+        
+        <arg value="./qes/config.properties"/>
+        <arg value="./application.jad"/>
+        <arg value="-version"/>
+        <arg value="${app.version}"/>
+        <arg value="-default"/>
+        <arg value="${app.name}"/>
+        <arg value="-scripts"/>
+        <arg value="-tablerules"/>
+       	<classpath refid="compile.classpath" />
+    </java>
+
+</target>
+	
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean, JAD.create" description="Compile Java sources">
+
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+	<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true">
+	</copy>
+
+	<mkdir dir="./classes"/>
+	<!-- Compile Java classes as necessary -->
+	<javac srcdir="java" debug="on" destdir="./classes" >
+       <classpath refid="compile.classpath" />
+	</javac>
+
+	<!-- move the images to the class directory for the jar -->
+    <copy todir="./classes">
+		<fileset dir="./java">
+      		<include name="**"/>
+		</fileset>
+    </copy>
+	
+	<!-- move the jad-file to the required position -->
+	<copy file="./application.jad" toFile="./classes/jacob/config/${app.name}.jad" overwrite="true">
+	</copy>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- HOT DEPLOY                                                                 -->
+<!-- =================================================================== -->
+<target name="deploy" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)"  >
+	<copy file="${dist.dir}/${app.name}-${app.version}.jacapp" toFile="${deploy.home}/${app.name}-${app.version}.jacapp" overwrite="true">
+	</copy>
+</target>
+
+<!-- =================================================================== -->
+<!-- HOT DEPLOY                                                                 -->
+<!-- =================================================================== -->
+<target name="deployETR" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)"  >
+	<copy file="${dist.dir}/${app.name}-${app.version}.jacapp" toFile="${jacob.home}/${app.name}-${app.version}.jacapp" overwrite="true">
+	</copy>
+</target>
+
+</project>
+

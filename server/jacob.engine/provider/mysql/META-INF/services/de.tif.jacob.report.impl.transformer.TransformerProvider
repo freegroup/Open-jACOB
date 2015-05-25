@@ -1,0 +1,4 @@
+de.tif.jacob.report.impl.transformer.classic.ClassicTransformerProvider
+de.tif.jacob.report.impl.transformer.csv.CSVTransformerProvider
+de.tif.jacob.report.impl.transformer.xsl.XSLTransformerProvider
+de.tif.jacob.report.impl.transformer.base.BaseTransformerProvider

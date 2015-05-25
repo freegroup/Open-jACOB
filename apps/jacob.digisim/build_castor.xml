@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jacob.digisim" default="all" basedir=".">
+
+<property name="buildlib.dir"        value="./build"/>
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${buildlib.dir}">
+	   	<include name="*.jar"/>
+   </fileset>
+   <fileset dir="../de.tif.jacob.common/">
+   		<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+<!-- =================================================================== -->
+<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler" >
+<classpath>
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</classpath>	
+</taskdef>
+
+<target name="clean" description="clean the access classes for Ruleset definitions">
+    <!-- remove castor generated classes -->
+    <delete quiet="true" dir="./java/jacob/circuit/castor"/>
+    <delete quiet="true" dir="./java/jacob/backup/castor"/>
+</target>
+	
+<target name="castor" depends="clean" description="create the access classes for Ruleset definitions">
+    <!-- create the classes for the JAD definitions -->
+    <XSDCompiler 
+        package="jacob.circuit.castor"
+        schema="./castor/circuit.xsd"
+        force="true"
+        destDir="./java">
+    </XSDCompiler>
+
+
+    <XSDCompiler 
+        package="jacob.backup.castor"
+        schema="./castor/backup.xsd"
+        force="true"
+        destDir="./java">
+    </XSDCompiler>
+</target>
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="all" depends="castor" description="Build the modules jars">
+</target>
+
+</project>

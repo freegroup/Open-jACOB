@@ -1,0 +1,170 @@
+</body>
+
+<script>
+var def_cols=new Array();
+var def_rows=new Array();
+
+var min_height= new Array();
+var min_width = new Array();
+
+def_cols[0]=5;
+def_cols[1]=10;
+def_cols[2]=10;
+def_cols[3]=5;
+
+def_rows[0]=5;
+def_rows[1]=5;
+def_rows[2]=5;
+def_rows[3]=5;
+def_rows[4]=5;
+def_rows[5]=50;
+def_rows[6]=5;
+function layout()
+{
+
+   // angeforderte höhe copieren
+   for(var i=0;i<def_rows.length;i++)
+       min_height[i]= def_rows[i];
+       
+   for(var i=0;i<def_cols.length;i++)
+       min_width[i]= def_cols[i];
+       
+   var elements = document.getElementsByTagName("div");
+   // Die Grundweite und höhe der Elemente welche kein SPAN haben ermitteln.
+   for(var i=0;i<elements.length;i++)
+   {
+      var lObj = new LayerObject(elements[i].id);
+   		var x_pos = elements[i].getAttribute("x_pos");
+   		var y_pos = elements[i].getAttribute("y_pos");
+   		// ermitteln der derzeitig zur verfügung stehenden weite
+   		min_width[x_pos]=Math.max(min_width[x_pos],parseInt(lObj.width));
+   		min_height[y_pos]=Math.max(min_height[y_pos],parseInt(lObj.height));
+   }
+
+   for(var i=0;i<elements.length;i++)
+   {
+      var lObj = new LayerObject(elements[i].id);
+   		var x_pos  = parseInt(elements[i].getAttribute("x_pos"));
+   		var y_pos  = parseInt(elements[i].getAttribute("y_pos"));
+   		var x_span = parseInt(elements[i].getAttribute("x_span"));
+   		var y_span = parseInt(elements[i].getAttribute("y_span"));
+   		var width  = getWidth(x_pos,x_pos+x_span);
+   		var height = getHeight(y_pos,y_pos+y_span);
+   		lObj.css.width  = width+"px";
+   		lObj.css.height = height+"px";
+   		lObj.css.top    = getY(y_pos)+"px";
+   		lObj.css.left   = getX(x_pos)+"px";
+   }
+   drawGrid();
+   var pageSize = new PageSize();
+
+   var gridHeight= getGridHeight();
+   var gridWidth = getGridWidth();
+   if(parent.outerWidth)
+   {
+	   tmp1 = parent.outerWidth - parent.innerWidth;
+	   tmp2 = parent.outerHeight - parent.innerHeight;
+	   window.resizeTo(tmp1+gridWidth+1, tmp2+ gridHeight+1);
+	 }
+	 else
+	 {
+	   window.resizeBy(-(document.body.offsetWidth-gridWidth)+5,-(document.body.offsetHeight- gridHeight)+5);
+   }
+}
+
+function getX(col )
+{
+  var r=0;
+	for(var i=0;i<col;i++)
+	 r= r+min_width[i];
+	return r;
+}
+
+function getY(row )
+{
+  var r=0;
+	for(var i=0;i<row;i++)
+	 r= r+min_height[i];
+	return r;
+}
+
+function getWidth(from, to)
+{
+	var r =0;
+	for(var i=from;i<to;i++)
+	 r= r+min_width[i];
+  return r;
+}
+
+function getHeight(from, to)
+{
+	var r =0;
+	for(var i=from;i<to;i++)
+	 r= r+min_height[i];
+  return r;
+}
+
+function drawGrid()
+{
+		var gridHeight=getGridHeight();
+		var gridWidth=getGridWidth();
+
+    // draw the cols first
+    var x=0;
+    for(var i=0;i<=min_width.length;i++)
+    {
+       var newLine = addDiv();
+       var lobj = new LayerObject(newLine.id);
+       lobj.moveTo(x,0);
+       lobj.css.height=gridHeight+"px";
+       lobj.css.width="1px";
+       if(i<min_width.length)
+	       x=x+min_width[i];
+    }
+    
+    var y=0;
+    for(var i=0;i<=min_height.length;i++)
+    {
+       var newLine = addDiv();
+       var lobj = new LayerObject(newLine.id);
+       lobj.moveTo(0,y);
+       lobj.css.height="1px";
+       lobj.css.width=gridWidth+"px";
+       if(i<min_height.length)
+	       y=y+min_height[i];
+    }
+}
+
+function getGridWidth()
+{
+    var gridWidth=0;
+    for(var i=0;i<min_width.length;i++)
+        gridWidth=gridWidth+min_width[i];
+    return gridWidth;
+}
+
+function getGridHeight()
+{
+    var gridHeight=0;
+    for(var i=0;i<min_height.length;i++)
+        gridHeight=gridHeight+min_height[i];
+    return gridHeight;
+}
+
+var divCounter=0;
+function addDiv()
+{
+    var newDiv = document.createElement('div');
+    newDiv.id = "div_"+divCounter;
+    newDiv.style.backgroundColor = "red";
+    newDiv.style.position = "absolute";
+    newDiv.style.fontSize="0pt"; //IE hack. der IE verlangt sonst immer min. die Fonthöhe für das DIV
+    document.body.appendChild(newDiv);
+    divCounter++;
+    
+    return newDiv;
+}
+
+</script>
+</html>
+

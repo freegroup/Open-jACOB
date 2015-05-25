@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_Postleitzahl" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="state"/>
+            <parameter name="country"/>
+            <parameter name="city"/>
+            <parameter name="plz"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="city">
+					<question pattern="(?:postleitzahl\s+von)\s+([ßÄÖÜäöüa-zA-Z -.]+)[\s?!]*" defaultAnswer="Kein Ahnung"/>
+					<question pattern="(?:plz\s+von)\s+([ßÄÖÜäöüa-zA-Z -.]+)[\s?!]*" defaultAnswer="Kein Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="city">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

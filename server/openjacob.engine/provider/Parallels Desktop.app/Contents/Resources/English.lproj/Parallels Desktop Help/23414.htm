@@ -1,0 +1,59 @@
+<html>
+<head>
+<meta name="description" content="Learn the basics of using Boot Camp partitions inside Parallels virtual machines." />
+
+<title> Überblick </title>
+<meta name="Keywords" content="Benutzerdefinierte BootCamp-Konfiguration, BootCamp-Partition	als bootfähige Festplatte verwenden, BootCamp-Partition	als Datendisk verwenden" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22183.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23112.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675159.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Überblick</h2>
+<p class="bodytext">In der aktuellen Version von Parallels Desktop kann eine Boot Camp Windows Vista-, Windows XP- oder Windows 7-Partition in virtuellen Maschinen als bootfähiges Laufwerk oder als Datendisk verwendet werden.</p>
+<p class="warning">          <strong class="buttons">Achtung:</strong> Wenn in Ihrer Boot Camp-Partition nicht das Betriebssystem Windows XP, Windows Vista oder Windows 7 installiert ist, können Sie diese Installation beim Versuch, diese mit einer virtuellen Maschine von Parallels Desktop zu verwenden, beschädigen.</p>
+<p class="subheading">Verwenden der BootCamp-Partition als Datendisk</p>
+<p class="bodytext">Zur Verwendung der Boot Camp Windows-Partition als Datendisk fügen Sie diese als Festplatte zu einer vorhandenen virtuellen Maschine mit Windows XP, Windows Vista oder Windows 7 hinzu. Von den Windows-Betriebssystemen wird sie automatisch als neue Festplatte erkannt Weitere Informationen zum Hinzufügen von Festplatten zur Konfiguration einer virtuellen Maschine finden Sie unter <strong class="specialbold"><a id="h30518" class="jumptemplate" title="Hinzufügen und Entfernen von Geräten" href="30297.htm" target="_self">Geräte hinzufügen und entfernen</a></strong>.</p>
+<p class="subheading">Verwenden der BootCamp-Partition als bootfähige Festplatte</p>
+<p class="bodytext">Wenn Sie Parallels Desktop auf einem Mac-Computer mit einer Boot Camp Windows-Partition installieren und Parallels Desktop erkennt, dass auf dem Computer keine virtuellen Maschinen vorliegen, wird automatisch eine neue virtuelle Maschine für diese Boot Camp-Partition erstellt und am folgenden Speicherort abgelegt:</p>
+<p class="bodytext">          <code class="monospace">&lt;Benutzername&gt;/Dokumente/Parallels/Mein Boot Camp</code>        </p>
+<ul class="listbullet"><li class="listbullet">Wenn die Boot Camp-Partition auf dem Schreibtisch des Mac geladen wird, versucht Parallels Desktop, das auf der Partition installierte Betriebssystem zu erkennen, und erstellt eine entsprechende virtuelle Maschine für das erkannte Betriebssystem.</li><li class="listbullet">Wenn die Boot Camp-Partition nicht auf dem Schreibtisch des Mac geladen wird oder Parallels Desktop das Betriebssystem nicht erkennt, wird eine virtuelle Maschine für Windows XP erstellt. Wenn auf der Boot Camp-Partition Windows Vista oder Windows 7 installiert ist, müssen Sie im Fenster <strong class="specialbold"><a id="h27250" class="jumptemplate" title="Konfiguration einer virtuellen Maschine" href="23076.htm" target="_self">Konfiguration der virtuellen Maschine</a></strong> nur den Typ des Gastbetriebssystems für die virtuelle Maschine von Windows XP in Windows Vista oder Windows 7 abändern.</li></ul><p class="bodytext">Sie können eine virtuelle Maschine für Boot Camp mit Hilfe des Assistenten Neue virtuelle Maschine erstellen. Weitere Informationen finden Sie unter <strong class="specialbold"><a id="h26611" class="jumptemplate" title="Erstellen einer virtuellen Maschine für die BootCamp-Partition" href="23112.htm" target="_self">Erstellen einer virtuellen Maschinen für die Boot Camp-Partition</a></strong>.</p>
+<p class="bodytext">Alternativ können Sie die bootfähige virtuelle Festplatte einer Windows virtuellen Maschine mit der Boot Camp-Partition ersetzen. Benutzen Sie dazu das Fenster <strong class="specialbold"><a id="h27250_2" class="jumptemplate" title="Konfiguration einer virtuellen Maschine" href="23076.htm" target="_self">Konfiguration der virtuellen Maschine</a></strong>.</p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Sie müssen den Typ des Gastbetriebssystems in der virtuellen Maschine ordnungsgemäß entsprechend des auf der Boot Camp-Partition installierten Betriebssystems angeben.</p>
+<p class="bodytext">Beim ersten Start in Boot Camp Windows mit Parallels Desktop werden die <a id="h28127" class="jumptemplate" title="Installieren von Parallels Desktop" href="23292.htm" target="_self">Parallels Tools</a> installiert. </p>
+<p class="note">          <strong class="buttons">Hinweis:</strong> Die Ausführung von Boot Camp Windows in einer virtuellen Maschine kann die erneute Aktivierung des Gastbetriebssystems erfordern.</p>
+<p class="bodytext">Anschließend können Sie Boot Camp wie gewohnt zum Starten in die Windows-Partition verwenden, oder Sie können über die virtuelle Maschine in diese Partition starten (siehe <strong class="specialbold"><a id="h27323" class="jumptemplate" title="Starten mit der Parallels virtuellen Maschine" href="22241.htm" target="_self">Starten mit der virtuellen Maschine von Parallels</a></strong>.</p>
+<p class="subheading">Einschränkungen für Parallels virtuelle Maschinen bei Verwendung der BootCamp-Partition</p>
+<p class="bodytext">Für eine virtuelle Maschine von Parallels, die eine Boot Camp Windows-Partition als bootfähiges Laufwerk oder als Datendisk verwendet, gelten mehrere Einschränkungen:</p>
+<ul class="listbullet"><li class="listbullet">Sie kann nicht in den Standby- oder Pausen-Modus versetzt werden.</li><li class="listbullet">Von einer derartigen virtuellen Maschine können keine Snapshots erstellt werden und die Funktion <strong class="specialbold"><a id="h28948" class="jumptemplate" title="Verwenden des abgesicherten Modus" href="27366.htm" target="_self">Abgesicherter Modus</a></strong> lässt sich nicht aktivieren.</li><li class="listbullet">Es ist kein Komprimieren möglich.</li></ul><p class="note">          <strong class="buttons">Hinweis:</strong> In dieser Version von Parallels Desktop gibt es keine Einschränkungen für unterschiedliche Benutzertypen, die von einer virtuellen Maschine aus auf die Boot Camp Windows-Partition zugreifen können. Sie können sich auch ohne Administratorrechte bei Windows anmelden.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30632" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

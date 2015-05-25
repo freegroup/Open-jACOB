@@ -1,0 +1,112 @@
+top - 15:26:08 up  6:41,  5 users,  load average: 0.03, 0.09, 0.04
+Tasks: 104 total,   1 running, 103 sleeping,   0 stopped,   0 zombie
+Cpu(s):  8.4% us,  0.9% sy,  0.0% ni, 90.3% id,  0.3% wa,  0.0% hi,  0.0% si
+Mem:   2055496k total,  1507940k used,   547556k free,    77548k buffers
+Swap:  2650684k total,        0k used,  2650684k free,   822144k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                    
+    1 root      16   0   640  260  492 S  0.0  0.0   0:01.23 init                                                                       
+    2 root      34  19     0    0    0 S  0.0  0.0   0:00.00 ksoftirqd/0                                                                
+    3 root       5 -10     0    0    0 S  0.0  0.0   0:00.09 events/0                                                                   
+    4 root       6 -10     0    0    0 S  0.0  0.0   0:00.00 khelper                                                                    
+    5 root       6 -10     0    0    0 S  0.0  0.0   0:00.03 netlink/0                                                                  
+    6 root       8 -10     0    0    0 S  0.0  0.0   0:00.00 kacpid                                                                     
+   34 root       5 -10     0    0    0 S  0.0  0.0   0:00.11 kblockd/0                                                                  
+   46 root      20   0     0    0    0 S  0.0  0.0   0:00.00 pdflush                                                                    
+   47 root      15   0     0    0    0 S  0.0  0.0   0:00.78 pdflush                                                                    
+   49 root       7 -10     0    0    0 S  0.0  0.0   0:00.00 aio/0                                                                      
+   48 root      25   0     0    0    0 S  0.0  0.0   0:00.00 kswapd0                                                                    
+  633 root      25   0     0    0    0 S  0.0  0.0   0:00.00 kseriod                                                                    
+ 1345 root       5 -10     0    0    0 S  0.0  0.0   0:00.00 ata/0                                                                      
+ 1347 root      22   0     0    0    0 S  0.0  0.0   0:00.00 scsi_eh_0                                                                  
+ 1348 root      22   0     0    0    0 S  0.0  0.0   0:00.00 scsi_eh_1                                                                  
+ 1352 root      19   0     0    0    0 S  0.0  0.0   0:00.00 scsi_eh_2                                                                  
+ 1353 root      21   0     0    0    0 S  0.0  0.0   0:00.00 scsi_eh_3                                                                  
+ 1483 root       5 -10     0    0    0 S  0.0  0.0   0:00.08 reiserfs/0                                                                 
+ 2147 root       5 -10  2444  368 2280 S  0.0  0.0   0:00.00 udevd                                                                      
+ 2444 root      15   0     0    0    0 S  0.0  0.0   0:00.11 khubd                                                                      
+ 2845 root      15   0  2568  488 2276 S  0.0  0.0   0:00.00 hwscand                                                                    
+ 2877 root      15   0     0    0    0 S  0.0  0.0   0:00.00 khpsbpkt                                                                   
+ 2907 root      15   0     0    0    0 S  0.0  0.0   0:00.00 knodemgrd_0                                                                
+ 3991 root       5 -10  2568  476 2276 S  0.0  0.0   0:00.00 hwscand                                                                    
+ 4825 root      16   0  3548  660 3368 S  0.0  0.0   0:00.00 syslogd                                                                    
+ 4828 root      16   0  2720  744 2292 S  0.0  0.0   0:00.01 klogd                                                                      
+ 5224 root      16   0  8240  740 8064 S  0.0  0.0   0:00.00 resmgrd                                                                    
+ 5234 nobody    15   0  4560  548 4376 S  0.0  0.0   0:00.00 portmap                                                                    
+ 5282 root      18   0  7788 1364 7568 S  0.0  0.1   0:00.00 mysqld_safe                                                                
+ 5296 root      24   0 31268 2460  30m S  0.0  0.1   0:00.09 sshd                                                                       
+ 5304 mysql     15   0 32980  17m 5348 S  0.0  0.8   0:00.05 mysqld                                                                     
+ 5341 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.00 mysqld                                                                     
+ 5342 mysql     20   0 32980  17m 5348 S  0.0  0.8   0:00.00 mysqld                                                                     
+ 5343 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.00 mysqld                                                                     
+ 5348 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.00 mysqld                                                                     
+ 5349 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.01 mysqld                                                                     
+ 5424 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.05 mysqld                                                                     
+ 5425 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.04 mysqld                                                                     
+ 5432 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.06 mysqld                                                                     
+ 5438 mysql     16   0 32980  17m 5348 S  0.0  0.8   0:00.10 mysqld                                                                     
+ 5952 root      15   0  2468  552 2288 S  0.0  0.0   0:00.00 acpid                                                                      
+ 5968 root      18   0  8024 1296 7772 S  0.0  0.1   0:00.00 powersaved                                                                 
+ 6040 lp        16   0 24316 4476  19m S  0.0  0.2   0:00.13 cupsd                                                                      
+ 6069 root      17   0  8924  828 8732 S  0.0  0.0   0:00.00 kdm                                                                        
+ 6084 root      15   0  221m  78m 148m S  0.0  3.9  12:01.05 X                                                                          
+ 6085 root      16   0 27504 1768  26m S  0.0  0.1   0:00.01 kdm                                                                        
+ 6133 root      16   0 20016 1844  19m S  0.0  0.1   0:00.00 master                                                                     
+ 6160 root      16   0 49284  864 8132 S  0.0  0.0   0:00.00 nscd                                                                       
+ 6364 root      16   0  3768  636 3596 S  0.0  0.0   0:00.00 cron                                                                       
+ 6733 root      18   0  2904  644 2728 S  0.0  0.0   0:00.01 mingetty                                                                   
+ 6734 root      18   0  2904  644 2728 S  0.0  0.0   0:00.00 mingetty                                                                   
+ 6735 root      18   0  2904  644 2728 S  0.0  0.0   0:00.01 mingetty                                                                   
+ 6736 root      18   0  2904  644 2728 S  0.0  0.0   0:00.01 mingetty                                                                   
+ 6737 root      18   0  2904  644 2728 S  0.0  0.0   0:00.01 mingetty                                                                   
+ 6738 root      18   0  2904  644 2728 S  0.0  0.0   0:00.01 mingetty                                                                   
+ 6786 andherz   16   0  9208 1564 8732 S  0.0  0.1   0:00.06 startkde                                                                   
+ 6821 andherz   16   0 25680 1904  24m S  0.0  0.1   0:00.00 ssh-agent                                                                  
+ 6848 andherz   17   0 67040  14m  63m S  0.0  0.7   0:00.11 kdeinit                                                                    
+ 6851 andherz   16   0 63640  11m  61m S  0.0  0.6   0:00.23 kdeinit                                                                    
+ 6853 andherz   16   0 66820  13m  64m S  0.0  0.7   0:00.05 kdeinit                                                                    
+ 6856 andherz   15   0 82640  18m  77m S  0.0  0.9   0:00.29 kdeinit                                                                    
+ 6865 andherz  -51   0 59900  11m  43m S  0.0  0.6   0:01.42 artsd                                                                      
+ 6867 andherz   15   0 97.9m  21m  94m S  0.0  1.1   0:00.36 kdeinit                                                                    
+ 6868 andherz   16   0  2452  376 2280 S  0.0  0.0   0:00.00 kwrapper                                                                   
+ 6870 andherz   15   0 70072  16m  65m S  0.0  0.8   0:00.07 kdeinit                                                                    
+ 6871 andherz   16   0 82688  19m  76m S  0.0  1.0   0:11.22 kdeinit                                                                    
+ 6874 andherz   16   0 71876  16m  67m S  0.0  0.8   0:01.07 kdeinit                                                                    
+ 6875 andherz   16   0 82808  21m  76m S  0.0  1.1   0:07.41 kdeinit                                                                    
+ 6877 andherz   16   0  100m  24m  94m S  0.0  1.2   0:08.52 kdeinit                                                                    
+ 6881 andherz   15   0 79840  18m  74m S  0.0  0.9   0:01.70 kdeinit                                                                    
+ 6883 andherz   15   0 81924  18m  76m S  0.0  0.9   0:00.22 kdeinit                                                                    
+ 6886 andherz   15   0 80964  19m  75m S  0.0  1.0   0:00.34 kdeinit                                                                    
+ 6887 andherz   15   0 89548  21m  79m S  0.0  1.1   0:00.71 kdeinit                                                                    
+ 6891 andherz   15   0  154m  57m 124m S  0.0  2.8   0:03.93 kdeinit                                                                    
+ 6892 andherz   25  10 29040  16m  25m S  0.0  0.8   0:09.38 kooldock                                                                   
+ 6898 andherz   18   0  8952 1536 8732 S  0.0  0.1   0:00.00 thunderbird                                                                
+ 6910 andherz   18   0  9344 1564 8732 S  0.0  0.1   0:00.00 run-mozilla.sh                                                             
+ 6915 andherz   15   0 90204  50m  41m S  0.0  2.5   0:46.53 thunderbird-bin                                                            
+ 7875 andherz   18   0  8196 1544 8004 S  0.0  0.1   0:00.00 eclipse                                                                    
+ 7876 andherz   15   0  522m 228m 120m S  0.0 11.4   3:30.98 java                                                                       
+ 8111 andherz   16   0 47184 7584  45m S  0.0  0.4   0:00.00 kdesud                                                                     
+ 9469 postfix   16   0 20548 1872  19m S  0.0  0.1   0:00.00 qmgr                                                                       
+ 9745 andherz   15   0 92832  23m  83m S  0.0  1.2   0:03.03 kdeinit                                                                    
+ 9746 andherz   15   0  9972 2276 9068 S  0.0  0.1   0:00.03 bash                                                                       
+10918 andherz   15   0  117m  42m  96m S  0.0  2.1   0:09.18 kdeinit                                                                    
+10931 andherz   15   0 87656  20m  80m S  0.0  1.0   0:00.77 kdeinit                                                                    
+11986 andherz   16   0  176m  30m 137m S  0.0  1.5   0:00.65 kaffeine                                                                   
+14646 andherz   16   0 70032  15m  65m S  0.0  0.8   0:00.00 kdeinit                                                                    
+15931 andherz   19   0  8952 1528 8732 S  0.0  0.1   0:00.00 firefox                                                                    
+15934 andherz   20   0  9344 1564 8732 S  0.0  0.1   0:00.00 run-mozilla.sh                                                             
+15939 andherz   16   0 93636  57m  39m S  0.0  2.9   2:24.04 firefox-bin                                                                
+16076 andherz   16   0  9848 2204 8944 S  0.0  0.1   0:00.01 bash                                                                       
+16088 andherz   15   0 27472 2584  26m S  0.0  0.1   0:00.05 ssh                                                                        
+16114 andherz   16   0 72968  15m  64m S  0.0  0.8   0:01.69 gftp-gtk                                                                   
+17630 andherz   16   0  9852 2276 8944 S  0.0  0.1   0:00.14 bash                                                                       
+20086 andherz   22   0  706m  72m  52m S  0.0  3.6   0:12.05 java                                                                       
+20102 mysql     15   0 32980  17m 5348 S  0.0  0.8   0:00.29 mysqld                                                                     
+20189 mysql     15   0 32980  17m 5348 S  0.0  0.8   0:00.74 mysqld                                                                     
+22565 postfix   16   0 20504 1844  19m S  0.0  0.1   0:00.00 pickup                                                                     
+25007 andherz   20   0  217m  10m  49m S  0.0  0.5   0:00.15 java                                                                       
+25022 andherz   15   0  9216 1456 8732 S  0.0  0.1   0:00.00 sh                                                                         
+25024 andherz   17   0  3620  588 3452 S  0.0  0.0   0:00.00 cat                                                                        
+25027 andherz   17   0  9852 2276 8944 S  0.0  0.1   0:00.00 bash                                                                       
+25028 andherz   17   0  4196 1020 3980 R  0.0  0.0   0:00.00 top                                                                        
+

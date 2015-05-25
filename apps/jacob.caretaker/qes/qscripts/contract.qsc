@@ -1,0 +1,225 @@
+'NAME = "ContractTest"
+'TYPE = 0
+'TEMPLATE = "Sub ContractTest()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       Test script
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub Main()
+Dim iApp As Application
+Dim nVal As Boolean
+    Set iApp = GetApp
+
+    iApp.CreateTestContext "contract"
+    iApp.ContextGroup.TableRuleTest
+    'ContractUpdate
+
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ContractUpdate"
+'TYPE = 0
+'TEMPLATE = "Function ContractUpdate() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         ContractUpdate
+' Purpose:      Business rules to called when a contract is updated.
+'		This script is to be called from the GUI client only.
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Function ContractUpdate() As Boolean
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iRecord As DBRecord
+
+Dim vStartDate As Date
+Dim vDate As Date
+Dim sVar As String
+Dim sDuration As String
+' BEGIN modification by Jacek Margos
+Dim sSLA As String
+Dim sRLA As String
+' END   modification by Jacek Margos
+
+    ContractUpdate = False
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+    Set iRecord = iApp.ContextRecord
+
+    iRecord.SetValue "datemodified", CStr(Now())
+    iRecord.SetValue "modifiedby", iApp.DBUser
+
+	' BEGIN modification by Jacek Margos
+	' computing of two values into one field
+	sSLA = Format( iRecord.GetValue( "timetoclose" ),   "@@@@@@@@@" )
+	sRLA = Format( iRecord.GetValue( "timetorespond" ), "@@@@@@@@@" )
+	sSLA = sSLA & " / " & sRLA
+	iRecord.SetValue "sla_rla", sSLA
+	' END   modification by Jacek Margos
+
+    sVar = iRecord.GetValue("expirationdate")
+    If iRecord.Mode <> MODE_NEW And Len(sVar) Then
+        vStartDate = CDate(iRecord.GetValue("startdate"))
+        vDate = CDate(sVar)
+        If vDate < vStartDate Then
+'!!: iApp.UserMsg
+'            iApp.UserMsg "Expiration date must be later than Start date"
+	    iApp.UserMsg "Enddatum muß später als das Startdatum sein"
+            Exit Function
+        End If
+    End If						   
+    ' The rest of this script is only run for new contracts
+
+    ' Make sure that appropriate support block values are given
+    sVar = iRecord.GetValue("entitlementtype")
+    If sVar = "BOT" And iRecord.GetValue("bot") = "" Then
+'!!??: iApp.UserMsg
+'        iApp.UserMsg "Please enter a Block of Time for this contract"
+	iApp.UserMsg " Bitte geben Sie einen Block of Time für diesen Vertrag ein."
+        Exit Function
+    ElseIf sVar = "BOP" And iRecord.GetValue("bop") = "" Then
+'!!??: iApp.UserMsg
+'        iApp.UserMsg "Please enter a Block of Problems for this contract"
+	iApp.UserMsg "Bitte geben Sie einen Block of Problems für diesen Vertrag ein."
+        Exit Function
+'!!: "Unlimited" -> "unbegrenzt"
+    ElseIf sVar = "unbegrenzt" And iRecord.GetValue("duration") = "" Then
+'    ElseIf sVar = "Unlimited" And iRecord.GetValue("duration") = "" Then
+'!!: iApp.UserMsg
+'        iApp.UserMsg "Please enter the duration of this contract"
+	iApp.UserMsg " Bitte geben Sie die Dauer des Vertrages ein."
+        Exit Function
+    End If
+ 
+    ' Figure the expiration date, given the duration of the contract.
+    ' The current date is used if the starting date is missing
+    sVar = iRecord.GetValue("startdate")
+    If Len(sVar) Then
+    	vStartDate = CDate(sVar)
+    Else 
+        vStartDate = Date()
+    End If
+    iRecord.SetValue "startdate", CStr(vStartDate)
+
+    ' If the start date is after today, this contract is pending
+    If vStartDate > Date() Then
+'!!: "Pending" -> "Warten"
+        iRecord.SetValue "contractstatus", "Warten"
+'        iRecord.SetValue "contractstatus", "Pending"
+    Else ' it is active
+'!!: "Active" -> "aktiv"
+        iRecord.SetValue "contractstatus", "aktiv"
+'        iRecord.SetValue "contractstatus", "Active"
+    End If
+
+    sDuration = iRecord.GetValue("duration")
+
+    If Len(sDuration) Then
+        Select Case sDuration
+'!!: "30 days" -> "30 Tage"
+        Case "30 Tage"
+'        Case "30 days"
+            vDate = DateAdd("d", 30, vStartDate)
+'!!: "60 days" -> "60 Tage"
+        Case "60 Tage"
+'        Case "60 days"
+    	    vDate = DateAdd("d", 60, vStartDate)
+'!!: "90 days" -> "90 Tage"
+        Case "90 Tage"
+'        Case "90 days"
+    	    vDate = DateAdd("d", 90, vStartDate)
+'!!: "6 months" -> "6 Monate"
+        Case "6 Monate"
+'        Case "6 months"
+    	    vDate = DateAdd("m", 6, vStartDate)
+'!!: "1 year" -> "1 Jahr"
+        Case "1 Jahr"
+'        Case "1 year"
+    	    vDate = DateAdd("yyyy", 1, vStartDate)
+'!!: "2 years" -> "2 Jahre"
+        Case "2 Jahre"
+'        Case "2 years"
+    	    vDate = DateAdd("yyyy", 2, vStartDate)
+'!!: "3 years" -> "3 Jahre"
+        Case "3 Jahre"
+'        Case "3 years"
+    	    vDate = DateAdd("yyyy", 3, vStartDate)
+'!!: "4 years" -> "4 Jahre"
+        Case "4 Jahre"
+'        Case "4 years"
+    	    vDate = DateAdd("yyyy", 4, vStartDate)
+'!!: "5 years" -> "5 Jahre"
+        Case "5 Jahre"
+'        Case "5 years"
+    	    vDate = DateAdd("yyyy", 5, vStartDate)
+'!!: "lifetime" -> "unbefristet"
+        Case "unbefristet"
+'        Case "lifetime"
+    	    ' A lifetime only lasts until 31 Dec 2036
+			' BEGIN modification by Jacek Margos
+			' the date format was NOT german
+            'vDate = "31 Dec 2036"
+			vDate = "31 12 2036"
+			' END   modification by Jacek Margos
+        End Select
+
+        iRecord.SetValue "expirationdate", CStr(vDate)
+    End If
+    ContractUpdate = True
+End Function
+'-----------------------------------------------------------
+
+
+
+
+
+
+
+
+']]
+'NAME = "SpecialUpdate"
+'TYPE = 0
+'TEMPLATE = "Function SpecialUpdate() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         SpecialUpdate
+' Purpose:      Business rules to called when a contract is updated.
+'		This script is to be called from the GUI client only.
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Function SpecialUpdate() As Boolean
+Dim iApp As Application
+Dim iRecord As DBRecord
+
+    Set iApp = GetApp
+    Set iRecord = iApp.ContextRecord
+
+
+    iRecord.SetValue "datemodified", CStr(Now())
+    iRecord.SetValue "modifiedby", iApp.DBUser
+    SpecialUpdate = True
+End Function
+'-----------------------------------------------------------
+
+
+
+
+
+
+
+
+']]

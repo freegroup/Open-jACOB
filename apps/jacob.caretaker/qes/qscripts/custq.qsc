@@ -1,0 +1,3269 @@
+'NAME = "AfterLoginHook"
+'TYPE = 0
+'TEMPLATE = "Function AfterLoginHook() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	AfterLoginHook
+'Purpose:	This QScript runs after the Application logs into the DB.
+'			It can be used to change/specify a QConsole Layout to use.
+'			Returning False causes the application to shut down.
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function AfterLoginHook() As Boolean
+Dim iApp As Application
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+	Set iApp = GetApp
+
+	' Changing the iApp.Layout here will change/specify a QConsole layout
+	
+	' iApp.Layout = "layoutspec2use"
+	
+	AfterLoginHook = True
+
+    Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "AfterLoginHook error " & CStr(Err) & ": " & Error$, ebCritical + ebSystemModal
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "InitAppHook"
+'TYPE = 0
+'TEMPLATE = "Function InitAppHook() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	InitAppHook
+'Purpose:	QScript runs after the Application logs into the Database &
+'			a QConsole Layout is loaded (if applicable).
+'			It can be used to initialize any integrated components
+'			Returning False causes the application to shut down.
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function QConsole_InitializeComponents() As Boolean
+
+Declare Function QConsole_LoginComponents() As Boolean
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function InitAppHook() As Boolean
+Dim iApp As Application
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+	Set iApp = GetApp
+
+	' If the Layout property is set, then we have a layout and must
+	' initialize/login to QConsole components
+	If Len(iApp.Layout) > 0 Then
+		If Not QConsole_InitializeComponents Then Exit Function
+		
+		If Not QConsole_LoginComponents Then Exit Function	
+	End If
+	
+	InitAppHook = True
+
+    Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "InitAppHook error " & CStr(Err) & ": " & Error$, ebCritical + ebSystemModal
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ExitAppHook"
+'TYPE = 0
+'TEMPLATE = "Function ExitAppHook() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	ExitAppHook
+'Purpose:	QScript runs before the Application exits.
+'		It can be used to exit any integrated components
+'		Returning False prevents the application from shutting down.
+'Copyright:	Quintus Corporation, 2000
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function QConsole_ExitComponents() As Boolean
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function ExitAppHook() As Boolean
+Dim sDirectory As String
+
+Dim iApp As Application
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+	Set iApp = GetApp
+			If sDirectory = "" Then
+				sDirectory = Environ( "TMP" )
+			End If
+			If sDirectory = "" Then
+				sDirectory = "C:"
+			End If
+			If Right$( sDirectory, 1 ) <> "\" Then
+				sDirectory = sDirectory & "\"
+			End If
+			On Error Resume Next
+			kill sDirectory & "*.XML"
+			On Error GoTo ERROR_HANDLER
+
+
+	' If the Layout property is set, then we have a layout and must
+	' exit QConsole components
+	If Len(iApp.Layout) > 0 Then _
+		If Not QConsole_ExitComponents Then Exit Function
+	
+	ExitAppHook = True
+
+    Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "ExitAppHook error " & CStr(Err) & ": " & Error$, ebCritical + ebSystemModal
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetAddressInfo"
+'TYPE = 2
+'TEMPLATE = "Sub GetAddressInfo(iRecipientRecord As DBRecord, sTableName As String, iAddressInfo As ItemAddressInfo)"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	GetAddressInfo
+'Purpose:   	Hook called from SendLetterHook for filling Address Object with
+'				Address Info from Recipient Record.  This QScript should be 
+'				customized for individual applications where other aliases are
+'				introduced.
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Type ItemAddressInfo
+	Email As String
+	Fax As String
+	Title As String
+	Fullname As String
+	Organization As String
+	Address1 As String
+	Address2 As String
+	City As String
+	State As String
+	Zipcode As String
+	Country As String
+End Type
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+Sub ClearAddressInfo(iAddressInfo As ItemAddressInfo)
+	iAddressInfo.Email = ""
+	iAddressInfo.Fax = ""
+	iAddressInfo.Title = ""
+	iAddressInfo.Fullname = ""
+	iAddressInfo.Organization = ""
+	iAddressInfo.Address1 = ""
+	iAddressInfo.Address2 = ""
+	iAddressInfo.City = ""
+	iAddressInfo.State = ""
+	iAddressInfo.Zipcode = ""
+	iAddressInfo.Country = ""
+End Sub
+
+'---------------------------------------------------------------------------
+
+Function GetOrgRecord(iNetwork As DBNetwork, _
+						sOrgKey As String) As DBRecord
+Dim iOrgTable As DBTable
+
+	If Not iNetwork.HasTable("organization") Then Exit Function
+
+	Set iOrgTable = iNetwork.GetTable("organization")
+
+	iOrgTable.QBEClear
+	iOrgTable.QBESetKeyValue iOrgTable.PrimaryKeyName, sOrgKey
+
+	iOrgTable.Search
+
+	If iOrgTable.RecordCount > 0 Then
+		Set GetOrgRecord = iOrgTable.GetRecord(0)
+	Else
+		Set GetOrgRecord = Nothing
+	End If
+End Function
+
+'---------------------------------------------------------------------------
+
+Sub FillAddressInfoFromEmployee(iNetwork As DBNetwork, _
+								iRecipientTable As DBTable, _
+								iRecipientRecord As DBRecord, _
+								iAddressInfo As ItemAddressInfo) 
+Dim iOrgRecord As DBRecord
+Dim sOrgKey As String
+
+	' First put in the things that we can get directly
+	iAddressInfo.Email = iRecipientRecord.GetValue("emailcorr")
+	iAddressInfo.Fax = iRecipientRecord.GetValue("faxcorr")
+	iAddressInfo.Title = "" ' employee has no mr_ms
+	iAddressInfo.Fullname = iRecipientRecord.GetValue("fullname")
+
+	' Now try to get the organization
+	sOrgKey = iRecipientRecord.GetValue("orgemployee")
+
+	If Not Len(sOrgKey) = 0 Then Set iOrgRecord = GetOrgRecord(iNetwork, sOrgKey)
+
+	If iOrgRecord Is Nothing Then Exit Sub
+
+	iAddressInfo.Organization = iOrgRecord.GetValue("name")
+	iAddressInfo.Address1 = iOrgRecord.GetValue("mailingaddress1")
+	iAddressInfo.Address2 = iOrgRecord.GetValue("mailingaddress2")
+	iAddressInfo.City = iOrgRecord.GetValue("mailingcity")
+	iAddressInfo.State = iOrgRecord.GetValue("mailingstate")
+	iAddressInfo.Zipcode = iOrgRecord.GetValue("mailingzip")
+	iAddressInfo.Country = iOrgRecord.GetValue("mailingcountry")
+
+End Sub
+
+'---------------------------------------------------------------------------
+
+Sub FillAddressInfoFromOrganization(iNetwork As DBNetwork, _
+								iRecipientTable As DBTable, _
+								iRecipientRecord As DBRecord, _
+								iAddressInfo As ItemAddressInfo)
+	' First put in the things that we can get directly
+	iAddressInfo.Email = "" 'organization has no email
+	iAddressInfo.Fax = iRecipientRecord.GetValue("email")
+	iAddressInfo.Title = "" 'organization has no mr_ms
+	iAddressInfo.Fullname = iRecipientRecord.GetValue("email")
+	iAddressInfo.Organization = "" 'leave organization blank since we filled in fullname
+	iAddressInfo.Address1 = iRecipientRecord.GetValue("mailingaddress1")
+	iAddressInfo.Address2 = iRecipientRecord.GetValue("mailingaddress2")
+	iAddressInfo.City = iRecipientRecord.GetValue("mailingcity")
+	iAddressInfo.State = iRecipientRecord.GetValue("mailingstate")
+	iAddressInfo.Zipcode = iRecipientRecord.GetValue("mailingzip")
+	iAddressInfo.Country = iRecipientRecord.GetValue("mailingcountry")
+
+End Sub
+
+'---------------------------------------------------------------------------
+
+Sub FillAddressInfoFromCustomer(iNetwork As DBNetwork, _
+								iRecipientTable As DBTable, _
+								iRecipientRecord As DBRecord, _
+								iAddressInfo As ItemAddressInfo) 
+Dim iOrgRecord As DBRecord
+Dim sOrgKey As String
+
+	' First put in the things that we can get directly
+	iAddressInfo.Email = iRecipientRecord.GetValue("emailcorr")
+	iAddressInfo.Fax = iRecipientRecord.GetValue("faxcorr")
+	iAddressInfo.Title = "" ' employee has no mr_ms
+	iAddressInfo.Fullname = iRecipientRecord.GetValue("fullname")
+
+	' Now try to get the organization
+	sOrgKey = iRecipientRecord.GetValue("orgcustomer")
+
+	If Not Len(sOrgKey) = 0 Then Set iOrgRecord = GetOrgRecord(iNetwork, sOrgKey)
+
+	If iOrgRecord Is Nothing Then Exit Sub
+
+	iAddressInfo.Organization = iOrgRecord.GetValue("name")
+	iAddressInfo.Address1 = iOrgRecord.GetValue("mailingaddress1")
+	iAddressInfo.Address2 = iOrgRecord.GetValue("mailingaddress2")
+	iAddressInfo.City = iOrgRecord.GetValue("mailingcity")
+	iAddressInfo.State = iOrgRecord.GetValue("mailingstate")
+	iAddressInfo.Zipcode = iOrgRecord.GetValue("mailingzip")
+	iAddressInfo.Country = iOrgRecord.GetValue("mailingcountry")
+
+End Sub
+
+'---------------------------------------------------------------------------
+' Main Function
+'---------------------------------------------------------------------------
+Sub GetAddressInfo(iNetwork As DBNetwork, iRecipientRecord As DBRecord, _
+					iAddressInfo As ItemAddressInfo)
+Dim iApp As Application
+Dim iRecipientTable As DBTable
+Dim sRecipientTableType As String
+
+    On Error GoTo GetAddressInfo_ErrorHandler
+    '-------------------------------------------------
+
+	Set iApp = GetApp
+	Set iRecipientTable = iRecipientRecord.GetTable
+	
+	ClearAddressInfo iAddressInfo
+
+	sRecipientTableType = iRecipientTable.GetType
+	
+	Select Case sRecipientTableType
+		Case "employee"
+			FillAddressInfoFromEmployee iNetwork, iRecipientTable, iRecipientRecord, iAddressInfo
+		Case "organization"
+			FillAddressInfoFromOrganization iNetwork, iRecipientTable, iRecipientRecord, iAddressInfo
+		Case "customer"
+			FillAddressInfoFromCustomer iNetwork, iRecipientTable, iRecipientRecord, iAddressInfo
+	End Select
+
+	Exit Sub
+
+GetAddressInfo_ErrorHandler:
+    iApp.UserMsg "GetAddressInfo() error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetSubjectLine"
+'TYPE = 2
+'TEMPLATE = "Function GetSubjectLine() As String"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	GetSubjectLine
+'Purpose:   	Hook called for getting formatted subject line to be used in 
+'				emails and faxes from the application.  This QScript should be 
+'				customized for individual applications.
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+Function GetSubjectLine() As String
+Dim iApp As Application
+
+	Set iApp = GetApp
+	
+	GetSubjectLine = "FWT-SMC TTS"
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ItemPostAddToBatch"
+'TYPE = 1
+'TEMPLATE = "Sub ItemPostAddToBatch(iItemRecord As DBRecord, iLetter As SLetter)"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	ItemPostAddToBatch
+'Purpose:   	Hook called everytime an item is sent to a batch in the 
+'				application.  This QScript is used for updating other records 
+'				related to the item being sent to the batch.  This QScript 
+'				should be customized for individual applications. 
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+Sub ItemPostAddToBatch(iItemRecord As DBRecord, _
+						iLetter As SLetter)
+	
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ItemPostProcess"
+'TYPE = 1
+'TEMPLATE = "Function ItemPostProcess(sQWDocKey As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	ItemPostProcess
+'Purpose:   	Hook called everytime an item is processed in the application 
+'				This QScript is used for updating other records related to the
+'				item being processed.  This QScript should be customized for 
+'				individual applications. 
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+Function ItemPostProcess(sQWDocKey As String) As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iApp.ContextTable
+	Set iRecord = iApp.ContextRecord
+	ItemPostProcess = True
+	
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ValidRecipientAlias"
+'TYPE = 1
+'TEMPLATE = "Function ValidRecipientAlias(sTableAliasName As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	ValidRecipientAlias
+'Purpose:   	Hook called from SendLetterHook for validating table aliases
+'				used as recipients of Letters.  This QScript should be customized
+'				for individual applications where other aliases are introduced.
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+Function ValidRecipientAlias(sTableAliasName As String) As Boolean
+	
+	Select Case sTableAliasName
+		Case "customer"
+			ValidRecipientAlias = True
+		Case "employee"
+			ValidRecipientAlias = True
+		Case "organization"
+			ValidRecipientAlias = True
+		Case "approver"
+			ValidRecipientAlias = True
+		Case "confirmer"
+			ValidRecipientAlias = True
+		Case "resolver"
+			ValidRecipientAlias = True
+		Case "reporter"
+			ValidRecipientAlias = True
+		Case "requester"
+			ValidRecipientAlias = True
+		Case "owner"
+			ValidRecipientAlias = True
+		Case "agent"
+			ValidRecipientAlias = True
+		Case "primarycontact"
+			ValidRecipientAlias = True
+		Case "customerint"
+			ValidRecipientAlias = True
+		Case "manager"
+			ValidRecipientAlias = True
+		Case "salesrep"
+			ValidRecipientAlias = True
+		Case "fieldrep"
+			ValidRecipientAlias = True
+		Case Else
+			ValidRecipientAlias = False
+	End Select
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ItemPreProcess"
+'TYPE = 1
+'TEMPLATE = "Function ItemPreProcess() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:    	ItemPreProcess
+'Purpose:   	Hook called before everytime an item is printed by Batch Admin. 
+'				This QScript is used for updating other records related to the
+'				item being processed.  This QScript should be customized for 
+'				individual applications. 
+'Copyright:		Quintus Corporation, 1998
+'*****************************************************************************
+
+Function ItemPreProcess() As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iApp.ContextTable
+	Set iRecord = iApp.ContextRecord
+	ItemPreProcess = True
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetMailContext"
+'TYPE = 1
+'TEMPLATE = "Sub SetMailContext(sAddr As String, sCC As String, sSubject As String, sSender As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       SetMailContext
+'Purpose:      Fill mail context 
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub SetMailContext(ByRef sAddr As String, ByRef sCC As String, ByRef sSubject As String, ByRef sSender As String)
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim iLRec As DBRecord
+Dim nRecs As Long
+
+    On Error GoTo mail_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iFocus = iApp.ContextFocus()
+    'Set iForm = iApp.ContextForm()
+    Set iNetwork = iFocus.Network()
+
+    Select Case iFocus.Name
+        Case "Meldungsbearbeitung","FWT-SMC Meldungserfassung","FWT-SMC Meldungserfassung AK", "FWT-SMC Meldungsbearbeitung","Problemmanager"
+            Set iTable = iNetwork.GetTable("call")
+            nRecs = iTable.RecordCount
+            If nRecs = 1 Then
+                Set iRecord = iTable.GetRecord(0)
+                If iNetwork.HasTable("customerint") And _
+                   iRecord.HasLinkedRecord("customerint") Then
+                      Set iLRec = iRecord.GetLinkedRecord("customerint")
+                      sAddr = iLRec.GetValue("emailcorr")
+                End If
+
+                sSubject = "Meldung " & iRecord.GetKeyValue & ": "
+                sSubject = sSubject & iRecord.GetValue("problem")
+                sCC = iRecord.GetValue("cclist")
+            End If
+            sSender = iApp.CurrentUserEmail
+        Case Else
+            sSender = iApp.CurrentUserEmail
+    End Select 
+
+    Exit Sub
+
+mail_error_handler:
+    iApp.UserMsg "SetMailContext error " & CStr(Err) & " " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetFaxContext"
+'TYPE = 1
+'TEMPLATE = "Sub SetFaxContext(sPhone As String, sName As String, sSubject As String, sSender As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       SetFaxContext
+'Purpose:      Fill fax context 
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub SetFaxContext(ByRef sPhone As String, ByRef sName As String, ByRef sSubject As String, ByRef sSender As String)
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim iLRec As DBRecord
+Dim nRecs As Long
+
+    On Error GoTo fax_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iFocus = iApp.ContextFocus()
+    'Set iForm = iApp.ContextForm()
+    Set iNetwork = iFocus.Network()
+
+    Select Case iFocus.Name
+        Case "Meldungsbearbeitung", "FWT-SMC Meldungserfassung", "FWT-SMC Meldungserfassung AK", "FWT-SMC Meldungsbearbeitung","Problemmanager"
+            Set iTable = iNetwork.GetTable("call")
+            nRecs = iTable.RecordCount
+            If nRecs = 1 Then
+                Set iRecord = iTable.GetRecord(0)
+        
+                If iNetwork.HasTable("customerint") And _
+                   iRecord.HasLinkedRecord("customerint") Then
+                      Set iLRec = iRecord.GetLinkedRecord("customerint")
+                      sPhone = iLRec.GetValue("faxcorr")
+                      sName = iLRec.GetValue("fullname")
+                End If
+
+                sSubject = "Meldung " & iRecord.GetKeyValue & ": "
+                sSubject = sSubject & iRecord.GetValue("problem")
+            End If
+            sSender = CurrentUserEmail(iNetwork, "agent")
+
+        Case Else
+            sSender = iApp.CurrentUserName
+    End Select 
+
+    
+    Exit Sub    
+
+fax_error_handler:
+    iApp.UserMsg "SetFaxContext error " & CStr(Err) & " " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetPagerContext"
+'TYPE = 1
+'TEMPLATE = "Sub SetPagerContext(sPhone As String, sName As String, sSubject As String, sSender As String, sMsgBody As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       SetPagerContext
+'Purpose:      Fill Pager context 
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub SetPagerContext(ByRef sPhone As String, ByRef sName As String, ByRef sSubject As String, ByRef sSender As String, ByRef sMsgBody As String)
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim iLRec As DBRecord
+Dim nRecs As Long
+
+    On Error GoTo pager_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iFocus = iApp.ContextFocus()
+    'Set iForm = iApp.ContextForm()
+    Set iNetwork = iFocus.Network()
+
+    Select Case iFocus.Name
+        Case "Meldungsbearbeitung","FWT-SMC Meldungserfassung", "FWT-SMC Meldungserfassung AK","FWT-SMC Meldungsbearbeitung","Problemmanager"
+            Set iTable = iNetwork.GetTable("call")
+            nRecs = iTable.RecordCount
+            If nRecs = 1 Then
+                Set iRecord = iTable.GetRecord(0)
+        
+                If iNetwork.HasTable("customerint") And _
+                   iRecord.HasLinkedRecord("customerint") Then
+                      Set iLRec = iRecord.GetLinkedRecord("customerint")
+                      sPhone = iLRec.GetValue("phonecorr")
+                      sName = iLRec.GetValue("fullname")
+                End If
+
+                sSubject = "Meldung " & iRecord.GetKeyValue & ": "
+                sSubject = sSubject & iRecord.GetValue("problem")
+            End If
+            sSender = CurrentUserEmail(iNetwork, "agent")
+
+
+        Case Else
+            sSender = iApp.CurrentUserEmail
+    End Select 
+
+    Exit Sub    
+
+pager_error_handler:
+    iApp.UserMsg "SetPagerContext error " & CStr(Err) & " " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetPrintContext"
+'TYPE = 1
+'TEMPLATE = "Sub SetPrintContext(sPrinter As String, sName As String, sSubject As String, sSender As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:       SetPrintContext
+'Purpose:      Fill Printer context 
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub SetPrintContext(ByRef sPrinter As String, ByRef sName As String, ByRef sSubject As String, ByRef sSender As String)
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim iLRec As DBRecord
+Dim nRecs As Long
+
+    On Error GoTo print_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iFocus = iApp.ContextFocus()
+    'Set iForm = iApp.ContextForm()
+    Set iNetwork = iFocus.Network()
+
+    Select Case iFocus.Name
+        Case "Meldungsbearbeitung","FWT-SMC Meldungserfassung", "FWT-SMC Meldungserfassung AK","FWT-SMC Meldungsbearbeitung","Problemmanager"
+            Set iTable = iNetwork.GetTable("call")
+            nRecs = iTable.RecordCount
+            If nRecs = 1 Then
+                Set iRecord = iTable.GetRecord(0)
+        
+                If iNetwork.HasTable("customerint") And _
+                   iRecord.HasLinkedRecord("customerint") Then
+                      Set iLRec = iRecord.GetLinkedRecord("customerint")
+                      sPhone = iLRec.GetValue("phonecorr")
+                      sName = iLRec.GetValue("fullname")
+                End If
+
+                sSubject = "Meldung " & iRecord.GetKeyValue & ": "
+                sSubject = sSubject & iRecord.GetValue("problem")
+            End If
+            sSender = iApp.CurrentUserEmail
+
+        Case Else
+            sSender = iApp.CurrentUserEmail
+    End Select 
+
+    Exit Sub    
+
+print_error_handler:
+    iApp.UserMsg "SetPrintContext error " & CStr(Err) & " " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ScreenPop"
+'TYPE = 0
+'TEMPLATE = "Sub ScreenPop(sType As String, sTargetValue As String)"
+'TEXT = [[
+'*************************************************************************
+'Script:       ScreenPop
+'Purpose:      Executed when a Screen Pop is needed in Application
+'Copyright:    Quintus Corporation, 1999
+'*************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+'Following are Media Type Constants
+Const MT_VOICE = "voice"
+Const MT_EMAIL = "email"
+Const MT_CHAT = "chat"
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub ScreenPop(sType As String, sTargetValue As String)
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iNetwork As DBNetwork
+Dim iForm As SForm 
+Dim iBrowser1 As DBBrowser
+Dim iTable1 As DBTable
+Dim iGroup1 As SGroup
+
+Dim CUSTQ_FOCUS As String, CUSTQ_FORM As String
+Dim CUSTQ_RELATION1 As String
+Dim CUSTQ_GROUP1 As String
+Dim CUSTQ_TABLE1 As String
+Dim CUSTQ_FIELD1 As String
+
+Dim sFormattedValue As String
+
+    On Error GoTo ERROR_HANDLER
+    '---------------------------
+	Set iApp = GetApp()
+
+	CUSTQ_GROUP1 = "customer"
+	CUSTQ_FOCUS = "Call Entry"
+	CUSTQ_RELATION1 = "r_customer"
+	
+	' Based on the type of Screen Pop select the field and pre-format the value
+	Select Case LCase(sType)
+		Case "customer_key"
+			CUSTQ_FIELD1 = "pkey"
+			sFormattedValue = sTargetValue
+
+		Case MT_VOICE
+			CUSTQ_FIELD1 = "phone"
+			sFormattedValue = Format(sTargetValue, "(###) ###-####")
+		
+		Case MT_EMAIL
+			CUSTQ_FIELD1 = "email"
+			sFormattedValue = sTargetValue
+
+		Case MT_CHAT
+			CUSTQ_FIELD1 = "loginid"
+			sFormattedValue = sTargetValue
+			
+		Case Else
+			Exit Sub
+			
+	End Select
+
+	' Based on the App we will determine where to pop to
+	Select Case LCase(iApp.Name)
+		Case "customerq"
+			CUSTQ_FORM = "callEntryExt"
+			CUSTQ_TABLE1 = "customer"
+		Case "helpq"
+			CUSTQ_FORM = "callEntryInt"
+			CUSTQ_TABLE1 = "customerint"
+	End Select
+
+	'Get a clear focus
+	Set iFocus = iApp.GetClearFocus(CUSTQ_FOCUS)
+	If iFocus Is Nothing Then Exit Sub
+	
+	'Get the Form, Network and Tables
+	Set iForm = iFocus.GetForm(CUSTQ_FORM)
+	Set iNetwork = iFocus.Network()
+	Set iTable1 = iNetwork.GetTable(CUSTQ_TABLE1)
+
+	'Clear this form
+	iForm.Clear
+
+	'Set values into the GUI
+	Set iGroup1 = iForm.GetGroup(CUSTQ_GROUP1)
+
+	If Not Len(iGroup1.GUIName(CUSTQ_FIELD1)) = 0 Then _
+		iGroup1.SetValue iGroup1.GUIName(CUSTQ_FIELD1), sFormattedValue
+
+	'Get all the Browsers
+	Set iBrowser1 = iGroup1.GetActiveDBBrowser
+
+	'Set the search constraints (on DCO)
+	iTable1.QBESetValue CUSTQ_FIELD1, "=" & sFormattedValue
+
+	'Now do the actual search    
+	iBrowser1.Search CUSTQ_RELATION1, QW_DCO_FILL_BOTH
+
+	'Clear the QBE data for future search by GUI or anything else
+	iTable1.QBEClear
+
+	'Show the form
+	iFocus.ShowForm iForm.Name
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "ScreenPop error " & CStr(Err) & ": " & Error$, ebCritical
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TableUpdate"
+'TYPE = 0
+'TEMPLATE = "Function TableUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       TableUpdate
+'Purpose:      Business rules that are executed when a table is updated.
+'Copyright:    Quartess 2001
+'*****************************************************************************
+Function TableUpdate() As Boolean
+' Database record modifications.  No GUI required.
+Dim iApp As Application
+Dim iRec As DBRecord
+Dim bRes As Boolean
+
+    On Error GoTo update_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp
+    Set iRec = iApp.ContextRecord
+        bRes = iRec.WriteHistory("history")
+	
+		If bRes=False Then
+	  		TableUpdate = False
+			iApp.UserMsg "Failed to write history", ebCritical
+ 		Else
+	  		TableUpdate = True
+		End If
+
+    Exit Function
+
+update_error_handler:
+    iApp.UserMsg "TableUpdate error " & CStr(Err) & ": " & Error$
+	TableUpdate = False
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetAppProfileValue"
+'TYPE = 2
+'TEMPLATE = "Function GetAppProfileValue(iNetwork As DBNetwork, sFieldname As String) As String"
+'TEXT = [[
+'*****************************************************************************
+'File:		GetAppProfileValue
+'Purpose:	Get value for specified field from App Profile Table
+'Copyright:	Quintus Corporation, 1998
+'*****************************************************************************
+
+Function GetAppProfileValue(iNetwork As DBNetwork, sFieldname As String) As String
+'Dim iApp As Application
+Dim iAppProfileTable As DBTable
+Dim iAppProfileRecord As DBRecord
+
+	'Set iApp = GetApp
+	Set iAppProfileTable = iNetwork.GetTable("appprofile")
+
+	' Only search if there is no record backfilled
+    If iAppProfileTable.RecordCount = 0 Then iAppProfileTable.Search
+
+    ' There should only be one, search only if we don't already have it.
+    If iAppProfileTable.RecordCount = 1 Then
+        Set iAppProfileRecord = iAppProfileTable.GetRecord(0)
+
+		GetAppProfileValue = iAppProfileRecord.GetValue(sFieldname)
+    Else
+		GetAppProfileValue = ""
+    End If
+	Set iAppProfileRecord = Nothing
+    Set iAppProfileTable = Nothing
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "FormBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub FormBackfill()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       FormBackfill
+'Purpose:      GUI script to backfill Form after a jumb
+'Type:	       GUI Rule
+'Copyright:    Quartess MDo, 2002
+'*****************************************************************************
+
+Sub FormBackfill()
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iTable As DBTable
+Dim iGroup As SGroup
+Dim iIFBrowser As SIFBrowser
+Dim sGroupName As String
+Dim sGroupClearBtn As String
+Dim sGroupSearchBtn As String
+Dim sGroupFieldName As String
+Dim sGroupFieldValue As String
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+
+    Set iApp = GetApp
+	
+	'Set iFocus = iApp.ContextFocus
+	Set iForm = iApp.ContextForm
+	Select Case iForm.Name
+		Case "locationAK", "location","locationAgent"
+			sGroupName ="location"
+			sGroupClearBtn = "locationClear"
+			sGroupSearchBtn = "locationSearch"
+			sGroupFieldName = "locationPkey"
+
+		Case "objectAK","object"
+			sGroupName ="object"
+			sGroupClearBtn = "objectClear"
+			sGroupSearchBtn = "objectSearch"
+			sGroupFieldName = "objectPkey"	
+
+		Case "callMngrDocument"	 ,"UTcallMngrDocument"
+			sGroupName ="callEntry"
+			sGroupFieldName = "callkey"
+	   		Set iGroup = iForm.GetGroup( sGroupName )
+			If iGroup.Mode = MODE_NEW Or MODE_UPDATE Then Exit Sub
+			sGroupFieldValue = iGroup.GetValue(sGroupFieldName) 
+			If 	sGroupFieldValue <> "" And  sGroupFieldValue <>	"NULL" Then
+				iGroup.BtnClick "callRefresh"
+			End If
+			Exit Sub
+
+		Case "callduration"
+		Set iGroup = iForm.GetGroup( "callduration" )
+			Set iTable = iApp.ContextNetwork.GetTable("call")
+			If iTable.RecordCount = 1 Then
+			   sPkey = iTable.GetRecord(0).GetValue("pkey")
+			   iGroup.BtnClick "calldurationClear"
+			   iGroup.SetValue "calldurationCallcallduration"	, sPkey	  ' Backfill with better Relationset
+   		       iGroup.BtnClick "calldurationSearch"
+			End If
+			Exit Sub
+
+		Case Else
+			sGroupName =""
+			sGroupClearBtn = ""
+			sGroupSearchBtn = ""
+			sGroupFieldName = ""
+			Exit Sub
+	End Select
+	Set iGroup = iForm.GetGroup( sGroupName)
+	sGroupFieldValue = iGroup.GetValue(sGroupFieldName) 
+	If 	sGroupFieldValue <> "" And  sGroupFieldValue <>	"NULL" Then
+		If sGroupClearBtn = "ClearAll" Then 
+			iApp.ContextFocus.Clear
+		Else 
+			iGroup.BtnClick sGroupClearBtn
+		End If
+		iGroup.SetValue sGroupFieldName	, sGroupFieldValue	  ' Backfill with better Relationset
+   		iGroup.BtnClick sGroupSearchBtn
+	End If
+
+	Exit Sub
+ERROR_HANDLER:
+	iApp.UserMsg "FormBackfill error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ConvertFormular"
+'TYPE = 2
+'TEMPLATE = "Function ConvertFormular(iApp As Application, iNetwork As DBNetwork, sTemplateFile As String, bHTML As Boolean )  As String"
+'TEXT = [[
+'*****************************************************************************
+'File:		ConvertFormular
+'Purpose:	Convert a TemplateString to a Outputstring similar to iRec.ParseString()
+'Copyright:	Tarragon 2002
+'*****************************************************************************
+'Function ConvertFormular(iApp As Application, iNetwork As DBNetwork, sTemplateFile As String )  As String
+Declare Function ConvertToHTML( sImput As String) As String
+Dim bDoConvertToHTML As Boolean
+'------------------------------------------------------------------------
+
+Function CreateDBAttachment(iApp As Application, iNetwork As DBNetwork, sTo As String, sFileName As String) As String
+Dim sLinkedTable As DBTable
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim sAnswer As String
+Dim sCallKey As String
+Dim sTaskkey As String
+
+	Set iTable = iNetwork.GetTable("attachment")
+	If iNetwork.HasTable("call") Then
+   		Set iLinkedTable = iNetwork.GetTable("call")
+	   	If iLinkedTable.RecordCount = 1 Then
+			sCallKey = iLinkedTable.GetRecord(0).GetKeyValue()
+		Else
+			sCallKey = ""			
+		End If
+	End If
+	If iNetwork.HasTable("task") Then
+   		Set iLinkedTable = iNetwork.GetTable("task")
+	   	If iLinkedTable.RecordCount = 1 Then
+			sTaskKey = iLinkedTable.GetRecord(0).GetKeyValue()
+		Else
+			sTaskKey = ""			
+		End If
+	End If
+	Set iRecord = iTable.AddRecord
+	MsgOpen "Attachment werden in die Datenbank gespeichert",0,True,False
+	iRecord.SetLTValueFromFile "document", sFileName
+	Msg.Close
+
+	nIndex = InStr( sFileName, "\" )
+	While nIndex > 0
+		sFileName = Mid$( sFileName, nIndex + 1 )
+		nIndex = InStr( sFileName, "\" )
+	Wend
+   	iRecord.SetValue "datecreated", iTable.DBNow
+	iRecord.SetValue "filename", sFileName
+	iRecord.SetValue "docname", sFileName
+	iRecord.SetValue "docdescr",  sTo
+	iRecord.SetValue "callattachment", sCallKey
+	iRecord.SetValue "task_key", sTaskKey
+	iTable.Commit
+	CreateDBAttachment = "<attachment pkey=""" & iRecord.GetKeyValue	 & """ />"	  & Basic.Eoln$
+    Set iLinkedTable = 	Nothing
+	Set iRecord = Nothing
+	Set iTable = Nothing
+End Function
+'------------------------------------------------------------------------
+
+
+Function DBFieldValue(iApp As Application, iNetwork As DBNetwork, sFieldName As String ) As String
+Dim iTable As DBTable
+Dim iRecord	As DBRecord
+Dim nPos1 As Integer  ' position of "."
+Dim nPos2 As Integer  ' position of "-"
+Dim nPos3 As Integer  ' position of "," to limitate Stringlength
+Dim sTable As String
+Dim sField As String
+Dim sForeign As String
+Dim sString As String
+Dim sRet As String
+Dim n As Integer
+Dim nFieldlength As Integer
+Dim sQuestion As String
+Dim sFileName As String
+
+	On Error GoTo dbfieldvalue_error_handler
+    bDoConvertToHTML = True
+	' remove all blanks from the field definition
+	sField = ""
+	If Left$(sFieldName,5) <> "*ASK:"  Then
+
+  		For n = 1 To Len( sFieldName )
+   			sForeign = Mid$( sFieldName, n, 1 )
+   			If Not( sForeign = Chr$(13) Or sForeign = Chr$(10) Or sForeign = " " ) Then
+   				sField = sField & sForeign
+   			End If
+  		Next n
+		sFieldName = sField
+	End If
+
+	sForeign = ""
+	sField = ""
+	sRet = ""
+
+	' special functions - definition starts with an asterix (*)
+	If Left$( sFieldName, 1 ) = "*" Then
+		sField = Mid$( sFieldName, 2 )
+		nPos1 = InStr( sField, "-" )
+		If nPos1 > 0 Then
+			sFieldName = Mid$( sField, nPos1 + 1 )
+			sField = Mid$( sField, 1, nPos1 - 1 )
+		Else
+			sFieldName = ""
+		End If
+		Select Case sField
+			Case "Date", "DATE", "date"
+				sRet = CStr( Date() )
+			Case "Time", "TIME", "time"
+				sRet = CStr( Time() )
+		End Select
+		If Left$(sField,9) = "MapToInt<"  Then
+			sField =Mid(sField,10)
+			nPos1 = InStr( sField, "." )
+			If nPos1 > 0 Then
+				sTable = Mid$( sField, 1, nPos1 - 1 )
+				sField = Mid$( sField, nPos1 + 1)
+ 				nPos3 = InStr( sField, "," )
+ 				If nPos3 > 0 Then ' there is value of the length
+  				   nFieldlength =val( Mid$(	sField,nPos3+1)	)
+   				   sField = Left$(sField, nPos3-1)
+ 				Else
+   				   nFieldlength = 0
+   				End If 
+
+				If sTable <> "" Then
+		  			Set iTable = iNetwork.GetTable( sTable )
+					If sField <> "" Then
+					   sString = iTable.GetRecord(0).GetValue(sField)
+					   sRet = iTable.MapEnumStrToInt(sField, sString)
+					End If
+				Else
+					sRet = "*MapToInt< Fehler"
+				End If
+			Else
+				sRet = "*MapToInt< Fehler"
+			End If
+   			If nFieldlength > 0	Then
+		   		If Len(sRet) > nFieldlength Then 
+					sRet =Left$(sRet,nFieldlength)
+				Else
+					sRet = sRet & Space$( nFieldlength-Len(sRet))   
+	   			End If
+			End If
+		End If
+		If Left$(sField,4) = "ASK:"  Then
+			sQuestion = Mid$(sField,5)
+			sRet = Inputbox$(sQuestion,"Frage für das Dokument","-")
+			If sRet = "" Then sRet = "-"
+		End If	
+		If Left$(sField,10) = "ATTACHMENT"  Then
+			Dim sAttachmentsList As String
+				sAttachmentsList= "" 
+			Do
+		 		sFileName = OpenFileName$( "Anhang zur Vorlage" )
+		  		If sFileName <> "" Then
+
+		   		 	sRet =  CreateDBAttachment(iApp, iNetwork, "Anhang aus Dokumentvorlage ", sFileName) 
+					sAttachmentsList = sAttachmentsList & sRet
+		   		Else
+			 		sRet = "No Attachments"
+		  		End If 
+		   Loop Until  sFileName = ""
+		   If sAttachmentsList <> "" Then 
+				sRet = sAttachmentsList
+   			    bDoConvertToHTML = False
+
+		   End If
+		End If	
+
+		If Left$(sField,11) = "USERRECORD."  Then   '  Hol die Employee Tabelle mit constraint login User
+				sField = Mid$( sField, 12)
+				Set iTable = iNetwork.GetTable( "dbuser" )
+				iTable.Clear
+				iTable.QBEClear
+				iTable.QBESetValue "loginname", iApp.DBUser
+
+				iTable.Search
+				If iTable.RecordCount = 1 Then
+			   		sRet = iTable.GetRecord(0).GetValue(sField)
+				Else
+					sRet = iApp.DBUser
+				End If
+		End If	
+
+		If sRet = "" Then 
+			sRet = "Unknown function ""*" & sField & """"
+		End If 
+
+		If sRet = "No Attachments" Then 
+			sRet = ""
+		End If 
+	End If
+	If ( sFieldName = "" ) Then
+		DBFieldValue = sRet
+		Exit Function
+	'Else
+		' loop
+	End If
+	nPos3 = InStr( sFieldName, "," )
+	If nPos3 > 0 Then ' there is value of the length
+	   nFieldlength =val( Mid$(	sFieldName,nPos3+1)	)
+	   sFieldName = Left$(sFieldName, nPos3-1)
+	Else
+	   nFieldlength = 0
+	End If 
+
+	' and now go on - loop through the definition
+	' table_1.fkey_1_to_2 - table_2.fkey_2_to_3 - table_3.field
+	n = 0
+	Do
+		nPos1 = InStr( sFieldName, "." )
+		nPos2 = InStr( sFieldName, "-" )
+		If nPos2 > 0 Then
+			If nPos1 > nPos2 Then
+				nPos1 = 0
+			End If
+			sForeign = Mid$( sFieldName, nPos2 + 1 )
+			If nPos1 > 0 Then
+				sTable = Mid$( sFieldName, 1, nPos1 - 1 )
+				sField = Mid$( sFieldName, nPos1 + 1, nPos2 - nPos1 - 1 )
+			Else
+				sTable = ""
+				sField = sFieldName
+			End If
+		Else
+			sForeign = ""
+			If nPos1 > 0 Then
+				sTable = Mid$( sFieldName, 1, nPos1 - 1 )
+				sField = Mid$( sFieldName, nPos1 + 1 )
+			Else
+				sTable = ""
+				sField = sFieldName
+			End If
+		End If
+		If sTable <> "" Then
+			Set iTable = iNetwork.GetTable( sTable )
+		Else
+			DBFieldValue = "Error: missing table in the definition"
+			Exit Function
+		End If
+		If sRet <> "" Then
+			' we have been searching for a value in a previous loop
+			' it was a foreign key - now take it as primary key
+			sRet = iTable.GetValueWhere( sField, iTable.KeyName, "=" & sRet )
+			' Note GetValueWhere does not destroy any selections in DCO
+		Else
+			' the first loop
+			n = iTable.RecordCount
+			If n = 1 Then
+				' we got it
+				Set iRecord = iTable.GetRecord(0)
+				' we have the record - now get the value
+				sRet = iRecord.GetValue( sField )
+			Else
+				' not backfilled or not found
+				DBFieldValue = ""
+				Exit Function
+			End If
+		End If
+		sFieldName = sForeign
+	Loop Until sFieldName = "" Or sRet = "" ' ForeignField is NULL if not linked
+	If nFieldlength < 1	Then
+		DBFieldValue = sRet
+	Else
+		If Len(sRet) > nFieldlength Then 
+			DBFieldValue =Left$(sRet,nFieldlength)
+		Else
+			DBFieldValue = sRet & Space$( nFieldlength-Len(sRet))   
+		End If
+	End If
+	Set iRecord = Nothing
+	Set iTable = Nothing
+	Exit Function
+
+dbfieldvalue_error_handler:
+	Set iRecord = Nothing
+	Set iTable = Nothing
+	DBFieldValue = "" ' empty if error
+	Exit Function
+End Function
+
+'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+' takes the DBFieldValue of the passed parameter and
+' decides if it is true or false - 
+' for expressions "a?b:c"
+
+Function Answer( iApp As Application, iNetwork As DBNetwork, sField As String ) As Boolean
+Dim sRet As String
+	sRet = DBFieldValue( iApp,iNetwork,sField )
+	If ( ( sRet = "-1" ) Or ( sRet = "" ) ) Then
+		Answer = False
+	Else
+		Answer = True
+	End If
+End Function
+
+'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+' takes the expression "a?b:c" or "a|b"
+' where b and c can also be an expression
+' (expressions can be nested)
+' b := d?e:f or b := d|e|f
+' Note: a cannot be an expression
+'
+' a ? b : c means
+' IF a THEN b ELSE c
+' a | b | c means
+' a or (if a = "" ) b or (if b = "") c
+
+Function Value(iApp As Application,iNetwork As DBNetwork, sField As String ) As String
+Dim nPos1 As Integer     ' position of "?"
+Dim nPos2 As Integer     ' position of ":"
+Dim sQuestion As String  ' expression before  "?"
+Dim sCaseTrue As String  ' expression between "?" and ":"
+Dim sCaseFalse As String ' expression after   ":"
+Dim bAnswer As Boolean
+Dim i As Integer
+
+Const ERROR_NESTING         = 601
+Const OR_SEPARATOR = "|"
+
+	On Error GoTo value_error_handler
+	If Left$( sField, 1 ) = "*" Then
+		Value  = DBFieldValue(iApp,iNetwork, sField )
+		Exit Function
+	End If
+	If ItemCount( sField, "?" ) <> ItemCount( sField, ":" )   Then
+		Err.Raise ERROR_NESTING
+	End If
+
+	nPos1 = InStr( sField, "?" )
+	If nPos1 <> 0 Then
+		' IF..THEN..ELSE  (a ? b : c)
+		sQuestion = Mid$( sField, 1, nPos1 - 1 )
+		nPos2 = InStr( nPos1, sField, ":" )
+		i = InStr( nPos1 + 1, sField, "?" )
+		While( ( i < nPos2 ) And ( i > 0 ) )
+			nPos2 = InStr( nPos2 + 1, sField, ":" )
+			i = InStr( i + 1, sField, "?" )
+		Wend
+		If nPos2 <= 0 Then
+			Err.Raise ERROR_NESTING
+		End If
+		sCaseTrue = Mid$( sField, nPos1 + 1, nPos2 - nPos1 - 1 )
+		sCaseFalse = Mid$( sField, nPos2 + 1 )
+		Err.Number = 0
+		bAnswer = Answer(iApp,iNetwork, sQuestion )
+		If Err.Number <> 0 Then
+			Err.Raise Err.Number
+		End If
+		If bAnswer Then
+			Value = Value ( iApp,iNetwork, sCaseTrue )
+		Else
+			Value = Value(iApp,iNetwork, sCaseFalse )
+		End If
+		Exit Function
+	Else
+		If InStr( sField, ":" ) > 0 Then
+			Err.Raise ERROR_NESTING
+		End If
+		i = 0
+		' OR  (a | b | c)
+		Do
+			i = i + 1
+			sQuestion = Item$( sField, i, i, OR_SEPARATOR )
+			Err.Number = 0
+			sQuestion = DBFieldValue(iApp,iNetwork, sQuestion )
+			If Err.Number <> 0 Then
+				Err.Raise Err.Number
+			End If
+		Loop Until  ( ( sQuestion <> "" ) Or ( i >= ItemCount( sfield, OR_SEPARATOR ) ))
+		Value = sQuestion
+		Exit Function
+	End If
+	' cannot happen
+	Value = "Logical error in Function Value()"
+	Exit Function
+
+value_error_handler:
+	If Err.Number = ERROR_NESTING Then
+		Err.Description  = "Invalid nesting: Too many ""?"" or "":"""
+	End If
+	Value = "Error " & CStr( Err.Number ) & " (" & Err.Description & ")"
+	Exit Function
+End Function
+
+'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+' the subroutine opens the template 
+' and copies the template to the outputstring
+' replacing "db_field(...)" with the corresponding value
+
+Function ConvertFormular(iApp As Application, iNetwork As DBNetwork, sTemplateFile As String, bHTML As Boolean )  As String
+Dim sBuffer        As String
+Dim iBufferCache,i   As Long
+Dim nBufferMinimum As Long
+Dim isLong_text    As Boolean
+Dim sField         As String
+Dim nPos1 As Integer
+Dim nPos2 As Integer
+Dim nPos3 As Integer
+Dim sOutputFile     As String
+Dim sDummy As String
+
+
+nBufferMinimum  = 21	   'len("db_field...) at the End of sBuffer
+
+	If  ( sTemplateFile = "" )  Then
+		ConvertFormular = ""
+		Exit Function
+	End If
+
+	On Error GoTo convertformular_error_handler
+
+
+	sOutputFile = ""
+	sBuffer = sTemplateFile
+
+	While( Len( sBuffer ) <> 0 )
+		nPos1=0
+		nPos2=0
+		nPos3=0
+		nPos1 = InStr( 1, sBuffer, "db_field" )
+		If nPos1 <> 0 Then
+			'sDummy=Mid( sBuffer, 1, nPos1 - 1 )
+			' flush the data before "db_field(...)"
+			sOutputFile = sOutputFile & Mid$( sBuffer, 1, nPos1 - 1 )
+			nPos2 = InStr( nPos1, sBuffer, ")" )
+ 			nPos2 = InStr( nPos1, sBuffer, "(" ) + 1 	
+			nPos3 = InStr( nPos2, sBuffer, ")" )
+			If ( ( nPos2 <> 0 ) And ( nPos3 <> 0 ) ) Then
+				' we have got a complete "db_field(...)" definition
+				sField = Mid( sBuffer, nPos2, nPos3 - nPos2 ) 'Fieldname definition
+			'***********************************************************************
+				If bHTML Then
+					sDummy = Value(iApp,iNetwork, sField )
+					If bDoConvertToHTML Then
+				   		sOutputFile = sOutputFile & ConvertToHTML(sDummy)
+			   		Else
+				   		sOutputFile = sOutputFile & sDummy
+			   		End If
+				Else
+					sOutputFile = sOutputFile & Value(iApp,iNetwork, sField )
+				End If
+			'***********************************************************************
+				sBuffer=Mid( sBuffer, nPos3 + 1 )
+			Else
+				' we have got only the beginning of "db_field(...)"
+				' free buffer and loop
+				sBuffer=Mid$( sBuffer, nPos1 - 1 )
+			End If
+		Else
+			i = Len( sBuffer )
+			If ( i > nBufferMinimum ) Then
+				' flush some data
+				sOutputFile = sOutputFile &  Mid$( sBuffer, 1, i - nBufferMinimum ) 'writing Buffer-len( "db_field...." )
+				sBuffer = Mid$( sBuffer, i - nBufferMinimum + 1 )
+			Else
+				' we will never get more data - EOF
+				' flush everything
+				sOutputFile = sOutputFile &  sBuffer
+				sBuffer = ""
+			End If
+		End If
+	Wend
+
+	ConvertFormular = sOutputFile
+
+	Exit Function
+
+convertformular_error_handler:
+	MsgBox "Error " & CStr( Err.Number ) & " (" & Err.Description & ")"
+	ConvertFormular="Error"	& CStr( Err.Number ) & " (" & Err.Description & ")"
+End Function
+
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "MessagePostSendHook"
+'TYPE = 1
+'TEMPLATE = "Function MessagePostSendHook() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       MessagePostSendHook
+'Purpose:      Capture the outgoing email, store in the document table
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function GetGlobalErrorHandler(nErr As String, sErr As String, sContextFocus As String,sContextForm As String, _
+                                          sContextGroup As String, sContextScript As String) As Boolean
+
+Declare Function SaveMessage( iNetwork As DBNetwork, sTo As String, sSubject As String, sMsg As String, sStylesheet As String, sTable As String,_
+							 sKey As String) As Boolean
+
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+Declare Function ConvertToHTML( sImput As String) As String
+ 
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+Function CreateDBAttachment(iNetwork As DBNetwork, sTo As String, sFileName As String) As String
+Dim sLinkedTable As DBTable
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim sAnswer As String
+Dim sCallKey As String
+Dim sTaskkey As String
+
+	Set iTable = iNetwork.GetTable("attachment")
+	If iNetwork.HasTable("call") Then
+   		Set iLinkedTable = iNetwork.GetTable("call")
+	   	If iLinkedTable.RecordCount = 1 Then
+			sCallKey = iLinkedTable.GetRecord(0).GetKeyValue()
+		Else
+			sCallKey = ""			
+		End If
+	End If
+	If iNetwork.HasTable("task") Then
+   		Set iLinkedTable = iNetwork.GetTable("task")
+	   	If iLinkedTable.RecordCount = 1 Then
+			sTaskKey = iLinkedTable.GetRecord(0).GetKeyValue()
+		Else
+			sTaskKey = ""			
+		End If
+	End If
+	Set iRecord = iTable.AddRecord
+	MsgOpen "Attachment werden in die Datenbank gespeichert",0,True,False
+	iRecord.SetLTValueFromFile "document", sFileName
+	Msg.Close
+
+	nIndex = InStr( sFileName, "\" )
+	While nIndex > 0
+		sFileName = Mid$( sFileName, nIndex + 1 )
+		nIndex = InStr( sFileName, "\" )
+	Wend
+   	iRecord.SetValue "datecreated", iTable.DBNow
+	iRecord.SetValue "filename", sFileName
+	iRecord.SetValue "docname", sFileName
+	iRecord.SetValue "docdescr", "Anhang an einer Nachricht an "  & sTo
+	iRecord.SetValue "callattachment", sCallKey
+	iRecord.SetValue "task_key", sTaskKey
+	iTable.Commit
+	CreateDBAttachment = iRecord.GetKeyValue
+End Function
+'------------------------------------------------------------------------
+Function CreateDocument(iNetwork As DBNetwork, iMsg As SMessage, sCallKey As String) As Boolean
+Dim iDocTbl As DBTable
+Dim sDocKey As String
+Dim sTempFile As String
+Dim sAttachments As String
+Dim sMsg As String
+Dim sDoc As String
+Dim sTo As String
+Dim sStylesheet As String
+Dim iTaskTable As DBTable
+Dim sTaskKey As String
+Dim i As Integer
+
+CRLF =  Basic.eoln$
+
+On Error GoTo attachmentadd_error_handler
+    Set iDocTbl = iNetwork.GetTable("attachment")
+	sTaskKey = ""
+	If iNetwork.HasTable("task") Then
+		Set iTaskTable = iNetwork.GetTable("task")
+		If iTaskTable.RecordCount=1 Then
+			sTaskKey= iTaskTable.GetRecord(0).GetKeyValue()
+		End If
+	End If
+
+	' based on what method we are sending, we want to change the description
+	Select Case iMsg.MsgTransport
+		Case MSG_ESEMAIL, MSG_MAPIEMAIL
+			sTo = "email://"  & iMsg.MsgTo
+   			sStylesheet = GetAppProfileValue(iNetwork,"defaultxsl")
+ 
+		Case MSG_ESFAX, MSG_MAPIFAX
+			sTo = "rightfax://"  & iMsg.MsgTo 
+			sStylesheet = GetAppProfileValue(iNetwork,"faxdefaultxsl")
+
+		Case   MSG_ESPAGER
+			sTo = "sms://"  & iMsg.MsgTo
+			sStylesheet = GetAppProfileValue(iNetwork,"smsdefaultxsl")
+			iMsg.MsgNoteText = iMsg.MsgSubject
+ 
+		Case Else
+			sTo = "remoteprint://"  & iMsg.MsgTo 
+   			sStylesheet = GetAppProfileValue(iNetwork,"defaultxsl")
+
+	End Select
+    ' Write the message into the document table
+	sMsg = "<?xml version=""1.0"" encoding=""ISO-8859-1"" standalone=""no""?>" & CRLF
+	sMsg = sMsg & "<?xml-stylesheet type=""text/xsl"" href=""" & sStylesheet & """?>"	 & CRLF
+
+	sMsg = sMsg & "<doc>"  & CRLF
+	sMsg = sMsg & "  <control>"  & CRLF
+   	sMsg = sMsg & "    <original_to url=""""/>" & CRLF
+	sMsg = sMsg & "    <copies>"  & CRLF
+  	sMsg = sMsg & "    <copy onSuccess =""true"">"  & CRLF
+	If sTaskKey <> "" Then
+		'Funktioniert nicht richtig	  YAN kann nicht 2Parameter bearbeiten 
+   		'sMsg = sMsg & "     <to url=""tts://attachment?callattachment=" & sCallKey & "&task_key=" & sTaskKey & """/>" & CRLF
+
+   		sMsg = sMsg & "     <to url=""tts://attachment?callattachment=" & sCallKey &  """/>" & CRLF
+
+	Else
+   		sMsg = sMsg & "<to url=""tts://attachment?callattachment=" & sCallKey & """/>" & CRLF
+	End If
+   	sMsg = sMsg &      "<stylesheet url=""http://s59bas06.pcd.daimler-benz.com/yan/copy_manuell_succsess.xsl""/>" & CRLF
+   	sMsg = sMsg & "    </copy>"  & CRLF
+
+
+	If iMsg.MsgCC<> "" And (iMsg.MsgTransport=MSG_ESEMAIL Or iMsg.MsgTransport=MSG_MAPIEMAIL) Then
+		For i =1 To ItemCount(iMsg.MsgCC,",")
+  			sMsg = sMsg & "    <copy onSuccess =""true"">"  & CRLF
+   			sMsg = sMsg & "<to url=""" & "email://" & Item$(iMsg.MsgCC,i,,",") & """/>" & CRLF
+   			sMsg = sMsg & "<stylesheet url=""" & sStylesheet & """/>" & CRLF
+   			sMsg = sMsg & "    </copy>"  & CRLF
+		Next i
+	End If
+	sMsg = sMsg & "		</copies>"  & CRLF
+	If iMsg.AttachmentCount > 0 Then 
+   		sMsg = sMsg & "     <attachments>"	& CRLF
+   		For i = 1 To iMsg.AttachmentCount
+	 		iMsg.AttachmentIndex = i
+	   		sMsg = sMsg &  "       <attachment pkey=""" & CreateDBAttachment(iNetwork,iMsg.MsgTo,iMsg.AttachmentPathName) & """/>"  & CRLF
+		Next I
+   		sMsg = sMsg & "     </attachments>"	 & CRLF
+	End If
+	sMsg = sMsg & "   </control>"  & CRLF
+	sMsg = sMsg & "   <data>"  & CRLF
+    sMsg = sMsg & "     <from>" & ConvertToHTML( iMsg.MsgFrom)	& "</from>" & CRLF
+   	sMsg = sMsg & "     <to>" &ConvertToHTML( sTo )  & "</to>" & CRLF
+	sMsg = sMsg & "     <cc>" & iMsg.MsgCc & "</cc>" & Basic.Eoln$
+    sMsg = sMsg & "     <date>" &  ConvertToHTML( Format$(Now, "General Date"))	 & "</date>" &  CRLF
+    sMsg = sMsg & "     <subject>"  & ConvertToHTML( iMsg.MsgSubject)  & "</subject>" &  CRLF
+    sMsg = sMsg & "     <body>" & ConvertToHTML( iMsg.MsgNoteText ) & "</body>"	 ' Ist nicht lokalisiert!
+	sMsg = sMsg & "   </data>"  & CRLF
+	sMsg = sMsg & "</doc>"  & CRLF
+CreateDocument = SaveMessage( iNetwork, sTo, iMsg.MsgSubject, sMsg, sStylesheet, "call" , sCallKey)
+	Exit Function
+
+attachmentadd_error_handler:
+CreateDocument	= False
+	If Err <> 18 Then
+		Msgbox "AttachmentAdd error" & CStr(Err) & ": " & Error$
+	End If
+End Function
+
+
+'---------------------------------------------------------------------------
+' Main Function
+'---------------------------------------------------------------------------
+Function MessagePostSendHook() As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iMsg As SMessage
+Dim iCustomerDocLinkTbl As DBTable
+Dim iCallTbl As DBTable
+Dim iCustomerTbl As DBTable
+Dim iCallBrowser As DBBrowser
+Dim iCallRec As DBRecord
+Dim iCustomerRec As DBRecord
+Dim iCustomerDocLinkRec As DBRecord
+Dim sRequestKey As String
+Dim sDocKey As String
+Dim CustomerKeys() As String
+Dim bResult As Boolean
+Dim nCtr As Integer
+Dim bRes As Boolean
+
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+    Set iMsg = iApp.ContextMessage
+
+	If iNetwork.HasTable("call")  Then
+	    Set iCallTbl = iNetwork.GetTable("call")
+		If iCallTbl.RecordCount = 1 Then 
+			Set iCallRec = iCallTbl.GetRecord(0)
+ 			sMode =	iCallRec.Mode
+			' We can't link a document to a record unless it is filled
+			If  sMode = MODE_NEW Then
+			'   iApp.UserMsg "Please Update the Request before sending this message.", _
+			'					ebExclamation
+				iApp.UserMsg "Bitte die Meldung speichern bevor eine Nachricht gesendet werden kann.", _
+								ebExclamation
+ 							MessagePostSendHook = False
+				Exit Function
+			End If
+
+			 bRes = CreateDocument(iNetwork, iMsg,  iCallRec.GetKeyValue) 
+
+    		MessagePostSendHook = False ' Es soll mit YAN versendet werden True
+			AppClose
+    		Exit Function
+  		Else
+			Msgbox "Um eine Nachricht zu senden muss eine Meldung im Focus selektiert sein.",ebInformation  	
+		End If
+	Else
+		Msgbox "Um eine Nachricht zu senden muss eine Meldung im Focus selektiert sein.",ebInformation
+	End If
+
+
+    MessagePostSendHook = True ' Es soll mit YAN versendet werden True
+	Exit Function
+
+ERROR_HANDLER:
+	Dim nErr As Long
+	nErr = Err And &H7FFF
+	If nErr = 10024 Then ' we have failed to propagate due to being in Update Mode
+		Resume Next
+	Else
+bRes = GetGlobalErrorHandler(CStr(Err), Error$, iApp.ContextFocus.Name, "", _
+                                          "", "MessagePostSendHook")
+    	MessagePostSendHook = False
+	End If
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetAccountingcode"
+'TYPE = 2
+'TEMPLATE = "Function GetAccountingcode( iApp As Application, iCustomerRec As DBRecord) As String"
+'TEXT = [[
+Function GetAccountingcode( iApp As Application, iCustomerRec As DBRecord) As String
+
+Dim iNetwork As DBNetwork
+Dim iSearchTable As DBTable
+Dim sHPC As String
+Dim sOldHPC As String
+Dim sSitekey As String
+Dim bFoundAccountingcode As Boolean
+
+    On Error GoTo error_handler
+	GetAccountingcode = ""
+	Set iNetwork = iApp.CreateNetwork("q_accounting","q_accounting")
+	Set iSearchTable = iNetwork. GetTable("sitehpcaccounting")
+	sHPC = iCustomerRec.GetValue("hpccorr")
+	sSitekey = iCustomerRec.GetValue("emplsite_keycorr")
+	If sSitekey = "" Then sSitekey = "NULL" ' keine Werkszuordnung
+	bFoundAccountingcode = false
+	Do
+	  sOldHPC = sHPC
+		  iSearchTable.Clear
+		  iSearchTable.QBEClear
+		  	iSearchTable.QBESetvalue "employeesite_key", sSitekey
+		  If sHPC <> "" Then	
+		  iSearchTable.QBESetvalue "hpc_initial", "^" & sHPC
+		  End If
+		  iSearchTable.Search
+		  If iSearchTable.RecordCount = 1 Then
+				bFoundAccountingcode = True
+				GetAccountingcode = iSearchTable.GetRecord(0).GetValue("accountingcode_key")
+		  Else
+				If Len(sHPC) >0 Then
+					sHPC =left$(sHPC,(Len(sHPC)-1))
+				End If
+				If  sOldHPC = sHPC Then bFoundAccountingcode = True 
+		  End If	
+	Loop Until bFoundAccountingcode
+	Set iNetwork = Nothing
+	Set iSearchTable = Nothing
+Exit Function
+error_handler:
+	Set iNetwork = Nothing
+	Set iSearchTable = Nothing
+    iApp.UserMsg "GetAccountingcode error " & CStr(Err) & ": " & Error$
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CheckEmailAddress"
+'TYPE = 2
+'TEMPLATE = "Function CheckEmailAddress(sStr As String ) As Boolean"
+'TEXT = [[
+' ****************************************************************************
+' Purpose:      Check syntax of an email address
+' Author(s):    MDo
+' Created:      1 Jun, 2003
+' Copyright:    Tarragon
+' ****************************************************************************
+Function CheckEmailAddress(sStr As String ) As Boolean
+Dim sDummy As String
+
+ On Error GoTo Error_handler
+ If Instr(sStr," ") >0 Then GoTo Exit_Function
+ If Instr(sStr,";") >0 Then GoTo Exit_Function
+ If Instr(sStr,",") >0 Then GoTo Exit_Function
+ If Instr(sStr,"@") = 0  Then GoTo Exit_Function
+ If Len (sStr) < 5 Then GoTo Exit_Function 
+ sDummy = Right$(sStr,Len(sStr)-Instr(sStr,"@"))
+ If Instr(sDummy,".") = 0 Then GoTo Exit_Function
+ CheckEmailAddress = True
+ Exit Function
+	
+Exit_Function:
+   CheckEmailAddress = False
+   MsgBox "Email Adresse ist ungültig"
+ Exit Function
+
+Error_handler:
+    Msgbox "CheckEmailAdress error " & CStr(Err) & ": " & Error$ 
+   CheckEmailAddress = False
+ 
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "DeleetLock"
+'TYPE = 0
+'TEMPLATE = "Sub DeleteLock()"
+'TEXT = [[
+
+
+'*****************************************************************************
+' File:         DeleteLocks
+' Purpose:      Sricpt for deleting dead locks the reason of is locks is unknown
+' Copyright:    Tarragon, 2003
+' *****************************************************************************
+
+Dim Locks$()
+Dim Tablename$()
+Dim pkey$()
+Dim index As Integer
+Dim sPkey As String
+Dim sBearb As String
+
+'-------------------------------------------------------
+Function Dlg_Fkt( ControlName$, Action%, SuppValue% )
+	If Action% = 2 And ControlName$ = "Locks" Then
+		index = SuppValue% + 1
+	End If
+End Function
+'-------------------------------------------------------
+Function SearchDlg_Fkt( ControlName$, Action%, SuppValue% )
+	If Action% = 2 And ControlName$ = "Search" Then
+		sPkey = DlgText$("Key")
+		sBearb = DlgText$("User")
+	End If
+End Function
+'-------------------------------------------------------
+Begin Dialog LockDialog ,,318,100,"Datensatz löschen",.Dlg_Fkt
+	PushButton 270,8,44,14,"Löschen",.Delete
+	PushButton 270,28,44,14,"Abbrechen",.Cancel
+	ListBox 8,8,256,80,Locks$,.Locks
+End Dialog
+
+'-------------------------------------------------------
+Begin Dialog SearchDialog ,,250,60,"Locks suchen",.SearchDlg_Fkt
+	PushButton 183,8,44,14,"Suchen",.Search
+	PushButton 183,32,44,14,"Abbrechen",.Cancel
+	TextBox 68,32,88,12,.User
+	TextBox 68,12,88,12,.Key
+	Text 16,13,32,8,"PKey",.Text1,,,ebBold
+	Text 18,34,32,8,"User",.Text2,,,ebBold
+End Dialog
+'------------------------------------------------	
+
+Sub DeleteLock()
+Dim Dlg As LockDialog
+Dim SearchDlg As SearchDialog
+Dim sControlName As String
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As  DBTable
+Dim iRecord As  DBRecord
+Dim n As Long
+Dim i As Long
+Dim r As Integer
+
+On Error GoTo Search_error_handler
+	r% = Dialog( SearchDlg )
+	If r% = 2 Then ' Cancel clicked
+		Exit Sub
+	End If
+    Set iApp = GetApp
+    Set iNetwork = iApp.SysNetwork
+	Set iTable = iNetwork.GetTable( "qw_locks" )
+	iTable.MaxRecords = -1
+	iTable.QBEClear
+	iTable.QBESetValue "keyvalue", sPkey
+	iTable.QBESetValue "username", sBearb
+	iTable.Search
+	n = iTable.RecordCount
+	If n <= 0 Then
+		MsgBox "nicht möglich - keine Locks gefunden"
+		Exit Sub
+	End If
+	ReDim Locks$( 1 To n )
+	ReDim Tablename$( 1 To n )
+	ReDim pkey$( 1 To n )
+	For i = 1 To n
+		Set iRecord = iTable.GetRecord( i - 1 )
+		Tablename$( i ) = iRecord.GetValue( "tablename" )
+		pkey$( i ) = iRecord.GetValue( "keyvalue" )
+		Locks$( i ) =  Tablename$( i ) & "   " & Chr$(9) & "ID:" & pkey( i )  &  Chr$(9) & " gelockt von " & iRecord.GetValue( "username" )
+	Next i
+	index = 1
+	r% = Dialog( Dlg )
+	If r% = 1 Then ' OK clicked
+		iTable.DeleteRecord Index-1
+		iTable.Commit
+	End If
+exit_Sub:
+	 Set iTable = Nothing
+	 Set iRecord = Nothing ' DBRecord
+	
+	Exit Sub
+
+Search_error_handler:
+	MsgBox "Fehler bei der Locks-Suche! Fehler-Code:" & CStr(Err) & " : " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

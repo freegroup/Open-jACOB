@@ -1,0 +1,247 @@
+/*
+     This file is part of jACOB
+     Copyright (C) 2005-2009 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+*/
+
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import de.tif.jacob.core.exception.InvalidExpressionException;
+	
+parser code  {: 
+	static private final transient Log logger = LogFactory.getLog(RTEParser.class);
+
+	static public final transient String RCS_ID = "$Id: rte.cup,v 1.6 2009/12/22 03:36:32 ibissw Exp $";
+	static public final transient String RCS_REV = "$Revision: 1.6 $";
+	
+	protected IRTEPrinter printer;
+	protected IRTEFunctionResolver resolver;
+	private String text;
+
+	public static void printTextExpression(IRTEPrinter printer, IRTEFunctionResolver resolver, String text) throws Exception
+	{
+		Reader reader = new StringReader(text);
+		try
+		{
+			RTEScanner scanner = new RTEScanner(reader);
+			scanner.setOriginalText(text);
+			RTEParser parser = new RTEParser(scanner);
+			parser.printer = printer;
+			parser.resolver = resolver;
+			parser.text = text;
+			parser.parse();
+		}
+		catch (Exception ex)
+		{
+			if (logger.isDebugEnabled())
+			{
+				logger.debug("Can not parse report text expression \"" + text + "\": " + ex.getMessage());
+			}
+			throw new InvalidExpressionException(text, ex);
+		}
+		finally
+		{
+			reader.close();
+		}
+	}
+  
+	private String errorMessage(String message, Object info)
+	{
+		StringBuffer m = new StringBuffer("Error ");
+
+		if (info instanceof java_cup.runtime.Symbol)
+			m.append("(").append(info.toString()).append(")");
+
+		m.append(": ").append(message);
+
+		return m.toString();
+	}
+
+	public void report_error(String message, Object info)
+	{
+		logger.error(errorMessage(message, info));
+	}
+
+	public void report_fatal_error(String message, Object info)
+	{
+		logger.fatal(errorMessage(message, info));
+		throw new RuntimeException("Syntax error in \"" + text + "\"");
+	}
+:};
+
+action code  {: 
+:};
+
+terminal LF;
+terminal PAGEBREAK;
+terminal IGNORE;
+terminal TAB;
+terminal PAGE;
+terminal DATE;
+terminal TIME;
+terminal NAME;
+terminal COUNT;
+terminal VALUE;
+terminal DB_FIELD;
+terminal LEFT, CENTER, RIGHT;
+
+terminal AVERAGE;
+terminal SUM;
+terminal MIN;
+terminal MAX;
+
+terminal COMMA;
+terminal TILDE;
+
+terminal java.lang.String	TEXT_DATA;
+terminal java.lang.String	ARG;
+
+non terminal RTE		rte;
+non terminal 			rte_parts_opt;
+non terminal 			rte_parts;
+non terminal 			rte_part;
+non terminal 			rte_function;
+
+start with rte;
+
+
+/* ------------------- */
+/* General declaration */
+/* ------------------- */
+
+rte ::=
+	rte_parts_opt
+{:
+	RESULT = null;
+:} 
+;
+
+rte_parts_opt ::=
+	|	rte_parts
+	;
+
+rte_parts ::=
+		rte_part
+	|	rte_parts rte_part
+	;
+
+rte_part ::= 
+		TEXT_DATA:text
+{:
+	parser.printer.print(text);
+:} 
+	|	rte_function
+	;
+
+rte_function ::= 
+		TILDE LF
+{:
+	parser.printer.printLinefeed();
+:} 
+	|	LF
+{:
+	parser.printer.printLinefeed();
+:} 
+	|	TILDE PAGEBREAK
+{:
+	parser.printer.printPagebreak();
+:} 
+	|	TILDE TAB
+{:
+	parser.printer.print(parser.resolver.tab());
+:} 
+	|	TAB
+{:
+	parser.printer.print(parser.resolver.tab());
+:} 
+	|	TILDE TAB ARG:num
+{:
+	parser.printer.print(parser.resolver.tab(num));
+:} 
+	|	TILDE DATE
+{:
+	parser.printer.print(parser.resolver.date());
+:} 
+	|	TILDE TIME
+{:
+	parser.printer.print(parser.resolver.time());
+:} 
+	|	TILDE PAGE
+{:
+	parser.printer.printPageNumber();
+:} 
+	|	TILDE NAME
+{:
+	parser.printer.print(parser.resolver.name());
+:} 
+	|	TILDE COUNT
+{:
+	parser.printer.print(parser.resolver.count());
+:} 
+	|	TILDE COUNT ARG:field
+{:
+	parser.printer.print(parser.resolver.count(field));
+:} 
+	|	TILDE VALUE ARG:field
+{:
+	parser.printer.print(parser.resolver.value(field));
+:} 
+	|	DB_FIELD ARG:field
+{:
+	parser.printer.print(parser.resolver.value(field));
+:} 
+	|	TILDE AVERAGE ARG:field
+{:
+	parser.printer.print(parser.resolver.average(field));
+:} 
+	|	TILDE SUM ARG:field
+{:
+	parser.printer.print(parser.resolver.sum(field));
+:} 
+	|	TILDE MIN ARG:field
+{:
+	parser.printer.print(parser.resolver.min(field));
+:} 
+	|	TILDE MAX ARG:field
+{:
+	parser.printer.print(parser.resolver.max(field));
+:} 
+	|	TILDE LEFT
+{:
+	parser.printer.markLeftAligned();
+:} 
+	|	TILDE CENTER
+{:
+	parser.printer.markCentered();
+:} 
+	|	TILDE RIGHT
+{:
+	parser.printer.markRightAligned();
+:} 
+	|	TILDE TILDE
+{:
+	parser.printer.print(parser.resolver.tilde());
+:} 
+	|	TILDE IGNORE
+{:
+	parser.printer.print(parser.resolver.ignore());
+:} 
+	;
+

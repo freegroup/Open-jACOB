@@ -1,0 +1,1947 @@
+'NAME = "PersonTest"
+'TYPE = 0
+'TEMPLATE = "Sub TestScript()"
+'TEXT = [[
+
+
+'*****************************************************************************
+'Script:       Test script
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub Main()
+Dim iApp As Application
+Dim nVal As Boolean
+    Set iApp = GetApp
+
+    iApp.CreateTestContext "employee"
+    'iApp.CreateTestContext "agent"
+    'iApp.ContextGroup.TableRuleTest
+    ForceUpperCase
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "EmployeeUpdate"
+'TYPE = 0
+'TEMPLATE = "Function EmployeeUpdate() As Boolean"
+'TEXT = [[
+
+
+'*****************************************************************************
+' File:         EmployeeUpdate
+' Purpose:      Business rules to for updating an employee record
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Function EmployeeUpdate() As Boolean
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iEmpRec As DBRecord
+Dim sFirstname As String
+Dim sLastname As String
+Dim sNameStr As String
+Dim sEmpID As String
+Dim bRes As Boolean
+
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+    Set iEmpRec = iApp.ContextRecord
+	' Begin changes Mike Doering
+    ' If loginname or enployee-id has changed, check to be sure this is not a duplicate
+    Set iTable = iApp.ContextTable
+    sNameStr = iEmpRec.GetValue("loginname")
+    sEmpID = iEmpRec.GetValue("employeeid")
+    
+   If iEmpRec.HasChanged("loginname") Then
+         'Set iTable = iNetwork.GetTable("employee")
+         If iTable.InDatabase("loginname", sNameStr) Then
+	     iApp.UserMsg "TTS Login existiert bereits:" & sNameStr
+             EmployeeUpdate = False
+             Exit Function
+         End If
+    End If
+    If  iEmpRec.HasChanged("employeeid")  Then
+         If iTable.InDatabase("employeeid", sEmpID) Then
+	     iApp.UserMsg "Pers.Nr. existiert bereits:" & sEmpID
+             EmployeeUpdate = False
+             Exit Function
+         End If
+    End If
+    If  iEmpRec.HasChanged("employeestatus") Then
+		If iEmpRec.Mode = MODE_NEW Then
+		  iEmpRec.SetValue "employeestatus", "von Hand"	
+		Else
+		   If iEmpRec.GetOldValue("employeestatus") ="DBCS" Then	
+	     	 iApp.UserMsg "Mitarbeiter Status DBCS darf nicht geändert werden"
+             iEmpRec.SetValue "employeestatus", "DBCS"
+		   End If	
+		   If iEmpRec.GetOldValue("employeestatus") ="DBCS Gelöscht" and iEmpRec.GetValue("employeestatus") <> "DBCS" Then	
+	     	 iApp.UserMsg "Mitarbeiter Status 'DBCS gelöscht' darf nur nach 'DBCS' geändert werden"
+             iEmpRec.SetValue "employeestatus", "DBCS"
+		   End If	
+
+         End If
+    End If
+
+   If iEmpRec.HasChanged("admin_role") Or iEmpRec.HasChanged("supportrole") Or iEmpRec.HasChanged("sdadmin_role") Or iEmpRec.HasChanged("bp_role")  Then
+         'Set iTable = iNetwork.GetTable("employee")
+			If InStr(iApp.GetUserGroups,"CQ_ADMIN") =0 Then
+				If Not (iEmpRec.Mode = MODE_NEW And iEmpRec.GetValue("admin_role") = 0 And iEmpRec.GetValue("supportrole") = 0 And iEmpRec.GetValue("sdadmin_role") = 0 And iEmpRec.GetValue("bp_role") = 0) Then
+	     			iApp.UserMsg "Nur Administratoren' dürfen die administrative Rollen ändern", ebInformation
+             		EmployeeUpdate = False
+             		Exit Function
+				End If
+           End If
+    End If
+    If  iEmpRec.GetValue("communicatepref") = "Email"  And iEmpRec.GetValue("emailcorr") = ""  Then
+			iEmpRec.SetValue "communicatepref", "keine"
+    End If
+    If  iEmpRec.GetValue("communicatepref") = "FAX"  And iEmpRec.GetValue("faxcorr") = ""  Then
+			iEmpRec.SetValue "communicatepref", "keine"
+    End If
+    If  iEmpRec.GetValue("communicatepref") = "SMS"  And iEmpRec.GetValue("phonecorr") = ""  Then
+			iEmpRec.SetValue "communicatepref", "keine"
+    End If
+
+    sFirstname = iEmpRec.GetValue("firstnamecorr")
+    sLastname =  iEmpRec.GetValue("lastnamecorr")
+
+    ' We construct fullname only for new records
+    If iEmpRec.Mode = MODE_NEW Then
+        ' Set the fullname from first and last names
+
+        'iEmpRec.SetValue "fullname", sFirstname & " " & sLastname 
+        iEmpRec.SetValue "employeestatus","von Hand"
+    End If
+         'Set the fullname from first and last names
+	 If iEmpRec.HasChanged("firstnamecorr") Or iEmpRec.HasChanged("lastnamecorr") Then
+        iEmpRec.SetValue "fullname", sFirstname & " " & sLastname 
+	End If 
+    ' Force the first and last name to uppercase so that searching
+    ' will use any indexes.  
+    iEmpRec.SetValue "firstnamecorr", UCase$(sFirstname)
+    iEmpRec.SetValue "lastnamecorr",  UCase$(sLastname)
+	If iEmpRec.Mode = MODE_NEW Then
+    	iEmpRec.SetValue "firstname", UCase$(sFirstname)
+    	iEmpRec.SetValue "lastname",  UCase$(sLastname)
+	End If
+
+    ' Set the soundex code to permit soundex searches
+    iEmpRec.SetValue "soundex", iApp.MakeSoundex(sLastname) 
+    bRes = iEmpRec.WriteHistory("history")
+    EmployeeUpdate = bRes
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ForceUpperCase"
+'TYPE = 0
+'TEMPLATE = "Sub ForceUpperCase()"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         ForceUpperCase
+' Purpose:      Search on tables where fields will be indexed
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Sub ForceUpperCase()
+
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim sField As String
+Dim sStr As String
+
+	'MDo it is not case sensitve
+Exit Sub
+
+    On Error GoTo index_error_handler
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+
+    ' To ensure that the DB indexes are used, we force all strings
+    ' to uppercase, then do an exact (case sensitive) match
+
+    sField = iGroup.GUIName("firstname")
+    If Len(sField) Then
+        sStr = UCase$(iGroup.GetValue(sField))
+        iGroup.SetValue sField, sStr
+    End If
+
+    sField = iGroup.GUIName("lastname")
+    If Len(sField) Then
+        sStr = UCase$(iGroup.GetValue(sField))
+        iGroup.SetValue sField, sStr
+    End If
+
+    'sField = iGroup.GUIName("fullname")
+    'If Len(sField) Then
+    '    sStr = UCase$(iGroup.GetValue(sField))
+    '    iGroup.SetValue sField, sStr
+    'End If
+
+    Exit Sub
+
+index_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "ForceUpperCase error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SoundexSearch"
+'TYPE = 0
+'TEMPLATE = "Function SoundexSearch() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         SoundexSearch
+' Purpose:      Search using the soundex routine
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Function SoundexSearch() As Boolean
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iGroup As SGroup
+Dim iTable As DBTable
+Dim iBrowser As DBBrowser
+Dim sNameStr As String
+
+    On Error GoTo soundex_error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork
+
+    Set iGroup = iApp.ContextGroup
+    Set iTable = iNetwork.GetTable(iGroup.TableName)
+    If iNetwork.HasTable("customer") Then
+        Set iBrowser = iNetwork.GetBrowser("customerBrowser")
+    ElseIf iNetwork.HasTable("customerint") Then
+        Set iBrowser = iNetwork.GetBrowser("customerintBrowser")
+    Else
+        '...your browser here
+        Set iBrowser = iNetwork.GetBrowser("customerBrowser")
+    End If
+
+    sNameStr = "=" + iApp.MakeSoundex(iGroup.GetValue("customerLastname"))
+    iTable.QBESetValue "soundex", sNameStr
+
+    iBrowser.Search "r_customer"
+
+    ' Clear the QBE data for iTable before exiting
+    iTable.QBEClear
+
+    ' Return False to not do any normal Search button processing
+    SoundexSearch = False
+    Exit Function
+
+soundex_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "SoundexSearch error " & CStr(Err) & ": " & Error$
+
+    ' Clear the QBE data before exiting
+    If Not iTable Is Nothing Then
+        iTable.QBEClear
+    End If
+
+    ' Return False to not do any normal Search button processing
+    SoundexSearch = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CustomerUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub CustomerUpdate()"
+'TEXT = [[
+
+
+'*****************************************************************************
+' File:         CustomerUpdate
+' Purpose:      Business rules to for updating a customer record
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Sub CustomerUpdate()
+
+'  only for for table customer !
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ToggleAvailability"
+'TYPE = 0
+'TEMPLATE = "Sub ToggleAvailability()"
+'TEXT = [[
+
+
+'*****************************************************************************
+' File:         ToggleAvailability
+' Purpose:      Toggles the Availability flag for an Agent or Owner record
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Sub ToggleAvailability()
+
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim sGUIName As String
+Dim sVal As String
+
+    On Error GoTo toggleavailability_error_handler
+
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+    If iGroup.Mode <> MODE_FILLED Then
+        iApp.ContextFocus.Message "No record to update"
+    Else
+        sGUIName = iGroup.GUIName("availability")
+        sVal = iGroup.GetValue(sGUIName)
+        iGroup.Change
+        iGroup.SetValue sGUIName, IIf(sVal="0", "1", "0")
+        iGroup.Update
+    End If
+    Exit Sub
+
+toggleavailability_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "ToggleAvailability error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CustomerSearch"
+'TYPE = 0
+'TEMPLATE = "Function CustomerSearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CustomerSearch
+'Purpose:      Before searching in the customer table:
+'              check the GUI object customerAktiv.
+'              Set the object to "Ja" if it has not been set by the user
+'              to avoid selecting inactive customers.
+'              BUT WE HAVE TO CONVERT NAMES INTO UPPERCASE, TOO
+'Notes:        GUI, accesses the GUI objects,
+'              appended to the button "customerSearch"
+'Copyright:    Quartess, 1999
+'*****************************************************************************
+
+Function CustomerSearch() As Boolean
+
+Dim iApp As Application
+Dim iFocus As SFocus
+Dim iForm As SForm
+Dim iBrowser As DBBrowser
+Dim iGroup As SGroup
+Dim iTable As DBTable
+Dim sField As String
+Dim sStr As String
+
+	On Error GoTo customersearch_error_handler
+
+	Set iApp = GetApp()
+	Set iFocus = iApp.ContextFocus
+	Set iForm = iApp.ContextForm
+    Set iBrowser = iApp.ContextBrowser
+    Set iTable = iApp.ContextTable
+	Set iGroup = iApp.ContextGroup
+
+    sField = iGroup.GUIName("firstname")
+    If Len(sField) Then
+        sStr = UCase$(iGroup.GetValue(sField))
+        iGroup.SetValue sField, sStr
+    End If
+
+    sField = iGroup.GUIName("lastname")
+    If Len(sField) Then
+        sStr = UCase$(iGroup.GetValue(sField))
+        iGroup.SetValue sField, sStr
+    End If
+
+    CustomerSearch = True
+    iFocus.ApplyCurrentConstraints "r_customer"
+
+
+   ' iBrowser.Search "r_customer"
+
+
+	Exit Function
+
+customersearch_error_handler:
+	iApp.UserMsg "CustomerSearch error " & CStr(Err) & ": " & Error$
+	CustomerSearch = False ' to avoid standard search
+	Exit Function
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CustomerPreUpdate"
+'TYPE = 0
+'TEMPLATE = "Function CustomerPreUpdate() As Boolean "
+'TEXT = [[
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Global nResult As Integer
+Global nSelection As Integer
+
+Const nCancel = 0
+Const nAccept = 1
+Const nDetails = 2
+Const nSelect = 3
+Dim iDupCustomerTbl As DBTable
+Dim iDupCustomerRec As DBRecord
+
+Function DupCustomer(id$, action%, suppval%)
+    Select Case action
+        Case 2
+            If id$ = "Cancel" Then
+                nResult = nCancel
+            ElseIf id$ = "Details" Then 
+                nResult = nDetails
+                nSelection = CInt(DlgValue("CustomerList"))
+                Set iDupCustomerRec = iDupCustomerTbl.GetRecord(nSelection)
+                ShowCustomerDetails iDupCustomerTbl, iDupCustomerRec
+				DupCustomer = 1
+            ElseIf id$ = "Accept" Then 
+                nResult = nAccept
+            ElseIf id$ = "Select" Then 
+                nResult = nSelect
+                nSelection = CInt(DlgValue("CustomerList"))
+            End If
+    End Select
+    DupCustomer = 0
+End Function
+
+Sub DupDialog(iGroup As SGroup, iTable As DBTable)
+Dim iNetwork As DBNetwork
+Dim iCustomerRec As DBRecord
+Dim i As Integer
+Dim nRecs As Integer
+Dim sMsg As String
+Dim sName As String
+Dim sPhone As String
+Dim sGewerk As String
+Dim sNewCustomer As String
+Dim CustomerList() As String
+
+    sName =   iGroup.GetValue(iGroup.GUIName("firstnamecorr")) & " " & _
+            iGroup.GetValue(iGroup.GUIName("lastnamecorr"))
+    sPhone = iGroup.GetValue(iGroup.GUIName("phonecorr"))
+	If iGroup.Name ="customer" Then
+   			sGewerk =iGroup.GetForeignKey("customerintSiteFkey") 
+	Else
+   			sGewerk =iGroup.GetForeignKey("employeeDefaultSiteFkey") 
+	End If
+    sNewCustomer = sName & ", Werk: " & sGewerk & ", Tel.: " & sPhone
+
+    nRecs = iTable.RecordCount
+    sMsg = "Bestehende Kunden: " & CStr(nRecs) & " mögliche Treffer"
+'    sMsg = "Existing Customers: " & CStr(nRecs) & " possible match(es)"
+    ReDim CustomerList(nRecs - 1)
+
+	'Set iTable = GetApp.ContextNetwork.GetTable("customer")
+
+    For i = 0 To nRecs - 1
+        Set iCustomerRec = iTable.GetRecord(i)
+ 
+        sName = iCustomerRec.GetValue("lastnamecorr") & ", " & iCustomerRec.GetValue("firstnamecorr") 
+        sPhone = iCustomerRec.GetValue("phonecorr")
+		If iGroup.Name ="customer" Then
+   			sGewerk =iGroup.GetForeignKey("customerintSiteFkey") 
+		Else
+   			sGewerk =iGroup.GetForeignKey("employeeDefaultSiteFkey") 
+		End If
+			
+        CustomerList(i) = sName & ", Werk: " & sGewerk & ", Tel.: " & sPhone
+    Next i
+
+Begin Dialog UserDialog ,,206,153,"Doppelte Kunden",.DupCustomer
+	GroupBox 3,-2,195,34,"",.GroupBox1
+	Text 8,4,88,8,"Neuer Kunde:",.Text5
+	Text 8,16,164,12,sNewCustomer,.NewCustomer
+	PushButton 16,127,44,14,"&Übernehmen",.Select
+	PushButton 76,127,50,14,"&Neu anlegen",.Accept
+	GroupBox 3,29,195,91,"",.GroupBox2
+	Text 8,41,140,8,sMsg,.Msg
+	ListBox 8,58,185,32,CustomerList,.CustomerList
+	PushButton 16,100,44,14,"&Details",.Details
+	Text 77,103,116,8,"Details des vorhanden Kunden",.Text1
+	PushButton 138,127,44,14,"&Abbrechen",.Cancel
+End Dialog
+Dim d As UserDialog
+    Dialog d
+End Sub
+
+Const nName  = 0
+Const nLabel = 1
+Const nType  = 2
+
+Sub ShowCustomerDetails(iTbl As DBTable, iRec As DBRecord)
+Dim nFields As Integer
+Dim sLine As String
+Dim sMsg As String
+Dim sValue As String
+Dim nFieldType As Integer
+Dim i As Integer
+
+    sMsg = ""
+    sMsg = sMsg & "Titel:" & iRec.GetValue("title") & ebCR
+    sMsg = sMsg & "Name :" & iRec.GetValue("fullname") & ebCR
+    sMsg = sMsg & "Tel. :" & iRec.GetValue("phonecorr") & ebCR
+    sMsg = sMsg & "Werk :" & iRec.GetValue("emplsite_keycorr") & ebCR
+    sMsg = sMsg & "Email:" & iRec.GetValue("emailcorr") & ebCR
+    sMsg = sMsg & "Typ:" & iRec.GetValue("employeetype") & ebCR
+    sMsg = sMsg & ebCR
+
+    MsgBox sMsg,, "Kunden Details"
+End Sub
+
+'****************************** CustomerPreUpdate *********************
+
+Function CustomerPreUpdate() As Boolean
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+Dim iCustomerTable As DBTable
+Dim iCustomerRec As DBRecord
+Dim sCustKey As String
+Dim nRows As Integer
+Dim nRecs As Integer
+Dim sKey As String
+Dim sFirst As String
+Dim sLast As String
+Dim bIsExtern As Boolean
+Dim sOldCustomerKey As String
+    Set iApp = GetApp
+    Set iGroup = iApp.ContextGroup
+	Set iForm = iApp.ContextForm
+    Set iNetwork = iApp.ContextNetwork
+    Set iCustomerRec = iApp.ContextRecord
+	
+	bIsExtern = False
+    ' Rule(CustomerPreUpdate1): New customers are checked as duplicate candidates
+    sSoundex = iApp.MakeSoundex(iGroup.GetValue(iGroup.GUIName("lastnamecorr")))' & _
+              ' iApp.MakeSoundex(iGroup.GetValue(iGroup.GUIName("firstname")))
+
+	' If the soundex changes then we have to do a dup check to see if there is a match.
+	' This works for both new and updated records.
+	If sSoundex <> iCustomerRec.GetValue("soundex") and iGroup.Mode = MODE_NEW Then
+        ' Then perform the duplicate check
+         Set iDupCustomerTbl = iNetwork.GetTable("dupcustomer")
+       ' iDupCustomerTbl.QBESetValue "soundex", "=" & sSoundex
+		sFirst = iGroup.GetValue(iGroup.GUIName("firstnamecorr"))
+		sLast = iGroup.GetValue(iGroup.GUIName("lastnamecorr"))
+        iDupCustomerTbl.QBESetValue "firstnamecorr", UCase$(sFirst)
+        iDupCustomerTbl.QBESetValue "lastnamecorr",  UCase$(sLast)
+        iDupCustomerTbl.Search
+        iDupCustomerTbl.QBEClear
+        nRecs = iDupCustomerTbl.RecordCount
+        If nRecs > 0 Then ' possible candidates
+			Do
+            	DupDialog iGroup, iDupCustomerTbl
+			Loop Until nResult <> nDetails
+            If nResult = nCancel Then
+                CustomerPreUpdate = False
+                iCustomerRec.SetValue "soundex", ""
+                Exit Function
+            ElseIf nResult = nSelect Then
+				' versuchen bestehenden Kunden zu bernehmen
+				   sOldCustomerKey = iDupCustomerTbl.GetRecord(nSelection).GetKeyValue
+					If iDupCustomerTbl.GetRecord(nSelection).GetValue("employeestatus") = "DBCS Gelöscht" or   iDupCustomerTbl.GetRecord(nSelection).GetValue("employeestatus") = "von Hand gelöscht" Then
+					   iDupCustomerTbl.GetRecord(nSelection).SetValue "employeestatus", "von Hand"
+					   iDupCustomerTbl.Commit
+					End If 
+					Set iFocus = iApp.ContextFocus
+					Set iForm = iApp.ContextForm
+					Set iGroup = iApp.ContextGroup
+					iGroup.Clear True
+					iGroup.SetValue "customerintPkey", sOldCustomerKey
+   					nRec= iGroup.Search( "r_customer", 2)
+				    CustomerPreUpdate =True
+				    Exit Function	
+            ElseIf nResult = nAccept Then
+	  			nRes =iApp.UserResponseMsg( "Wollen Sie den Melder wirklich anlegen?",ebQuestion + ebYesNo,"Melder anlegen"	)
+   				If nRes = ebNo Then
+               		 CustomerPreUpdate = False
+               		 iCustomerRec.SetValue "soundex", ""
+               		 Exit Function
+				End If
+            End If
+        End If
+    End If
+
+	 If iGroup.GetValue(iGroup.GUIName("employeetype")) = "Extern" Then
+		bIsExtern = True
+		If Len(iGroup.GetValue("customerOrgexternal"))=0 Then 
+			iApp.UserMsg "Mitarbeiter vom Typ 'Extern' benötigen eine Fremdfirma"
+			CustomerPreUpdate =False
+		Else
+			CustomerPreUpdate =True
+		End If
+	 Else
+		If Len(iGroup.GetValue("customerOrgexternal")) >0 Then 
+			sExernaltKey =iGroup.GetForeignKey("customerOrgexternal")
+			If sExernaltKey <> "NULL" Then 
+	  			iGroup.SetForeignValue "customerOrgexternal", "NULL","NULL"
+   			End If
+			CustomerPreUpdate =True
+		Else
+			CustomerPreUpdate =True
+		End If
+	 End If	
+ 	 'Änderung Validität 14.8.2002 Achim Böken
+
+	 	sdialog = "" 
+	   '	If iGroup.GetValue(igroup.guiname("emailcorr")) = "" then
+	   '		CustomerPreUpdate = False
+	   '		sdialog = "E-mail Adresse"		
+	   '	End If
+		If iGroup.GetValue(igroup.guiname("communicatepref")) = "" Then
+			CustomerPreUpdate = False
+			If sdialog = "" Then
+				sdialog = sdialog & "Rückmeldung"
+			Else	
+				sdialog = sdialog & ", Rückmeldung"
+			End If 
+	
+		End If
+
+		stest = iGroup.GetValue(igroup.guiname("phonecorr"))
+		If iGroup.GetValue(igroup.guiname("phonecorr")) = "" Then
+			CustomerPreUpdate = False
+			If sdialog = "" Then
+				sdialog = sdialog & "Telefon"
+			Else	
+				sdialog = sdialog & ", Telefon"
+			End If 
+	
+		End If
+		If iGroup.Mode = MODE_NEW And iGroup.Name = "customer" Then
+			
+	  	   If (iGroup.GetForeignKey("customerintSiteFkey") = "") And Not bIsExtern Then
+				CustomerPreUpdate = False
+				If sdialog = "" Then
+			  		sdialog = sdialog & "Werk"
+				Else	
+			 		sdialog = sdialog & ", Werk"
+		   		End If 
+	
+			End If
+		End If
+		If iGroup.Mode = MODE_NEW And iGroup.Name <> "customer" Then
+ 
+	  	   If (iGroup.GetForeignKey("employeeDefaultSiteFkey") = "") And Not bIsExtern Then
+				CustomerPreUpdate = False
+				If sdialog = "" Then
+			  		sdialog = sdialog & "Werk"
+				Else	
+			 		sdialog = sdialog & ", Werk"
+		   		End If 
+	
+			End If
+
+		End If
+
+		If sdialog <> "" Then
+			sdialog = "Bitte " & sdialog & " eingeben!"
+			iApp.UserMsg sdialog
+			Exit Function
+		End If
+		sType =	iGroup.GetValue(igroup.guiname("communicatepref"))
+		Select Case	sType
+			Case "Keine"
+			Case "SMS"
+				If  iGroup.GetValue(igroup.guiname("phonecorr")) = ""  Then
+					iApp.UserMsg " Für die Rückmeldung durch SMS muß die Telefonnummer bekannt sein"
+					CustomerPreUpdate  = False
+				End If	
+			Case "Telefon"
+			Case "Email"
+				If  iGroup.GetValue(igroup.guiname("emailcorr")) = ""  Then
+					iApp.UserMsg " Für die Rückmeldung durch Email muß die Emailadresse bekannt sein"
+					CustomerPreUpdate  = False
+				End If	
+			Case "FAX"
+				If  iGroup.GetValue(igroup.guiname("faxcorr")) = ""  Then
+					iApp.UserMsg " Für die Rückmeldung durch FAX muß die FAX-Nummer bekannt sein"
+					CustomerPreUpdate  = False
+				End If	
+
+		End Select
+	 
+Exit Function
+
+  ERROR_HANDLER:
+	CustomerPreUpdate  = False
+    iApp.UserMsg "CustomerPreUpdate error " & Err & " " & Error$
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WorkgroupUpdate"
+'TYPE = 0
+'TEMPLATE = "Function WorkgroupUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         WorkgroupUpdate
+' Purpose:      Business rules to set notification address in depend of the notification method
+' Copyright:    Quartess 2002
+' *****************************************************************************
+Function WorkgroupUpdate() As Boolean
+
+Dim iApp As Application
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim sMethod As String
+Dim sHwg_name As String
+
+    WorkgroupUpdate = True
+    Set iApp = GetApp
+    Set iTable = iApp.ContextTable
+    Set iRecord = iApp.ContextRecord
+	If  iRecord.HasChanged( "notifymethod" ) Then
+		sMethod = iRecord.GetValue("notifymethod")
+		Select Case sMethod
+	   		Case "Bearbeiter"
+	  	 		iRecord.SetValue "notificationaddr", ""
+	 		Case "Signal"
+	  		Case "Email"
+	  			 iRecord.SetValue "notificationaddr", iRecord.GetValue("email")
+	  		Case "FAX" 
+	  			 iRecord.SetValue "notificationaddr", iRecord.GetValue("fax")
+	  		Case "Funkruf"
+	   			 iRecord.SetValue "notificationaddr", iRecord.GetValue("phone")
+
+	  		Case  "Drucker"
+	   		Case Else
+	   		iRecord.SetValue "notificationaddr", ""
+		End Select
+	End If
+	If iRecord.HasChanged( "hwg_name" ) Then
+		sHwg_name = iRecord.GetValue("hwg_name")
+		If sHwg_name <> "" And iTable.InDatabase("hwg_name",sHwg_name) Then
+			iApp.UserMsg "Der EDVIN HWG Name muß eindeutig sein. ",ebOKonly, "Doppelter Wert in der Datenbank"
+    		WorkgroupUpdate = False
+
+		End If	
+	End If	
+
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WorkgroupHWGUpdate"
+'TYPE = 0
+'TEMPLATE = "Function WorkgroupHWGUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         WorkgroupHWGUpdate
+' Purpose:      Business rules to check the selected workroup a AK
+' Copyright:    Quartess 2002
+' *****************************************************************************
+
+Function WorkgroupHWGUpdate() As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iRecord As DBRecord
+Dim iTable As DBTable
+Dim sMethod As String
+    WorkgroupHWGUpdate = True
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+    Set iRecord = iApp.ContextRecord
+	Set iTable = iNetwork.GetTable("workgroup")
+	If (iTable.GetValueWhere("wrkgrptype","pkey",iRecord.GetValue("workgroup_key") ) <> "AK") And _
+	   (iTable.GetValueWhere("wrkgrptype","pkey",iRecord.GetValue("workgroup_key") ) <> "OWNER") Then
+		iApp.UserMsg "Handwerkergruppen können nur an Auftragskoordinatoren zuweisen werden"
+    	WorkgroupHWGUpdate = False
+	End If
+
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WorkgroupPreUpdate"
+'TYPE = 0
+'TEMPLATE = "Function WorkgroupPreUpdate() As Boolean"
+'TEXT = [[
+Function WorkgroupPreUpdate() As Boolean
+
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "BeforeCallWorkgroupSearch"
+'TYPE = 0
+'TEMPLATE = "Sub BeforeCallWorkgroupSerarch()"
+'TEXT = [[
+'*****************************************************************************
+' File:         BeforeCallWorkgroupSerarch
+' *****************************************************************************
+Public bManuellSearch As Boolean
+Sub BeforeCallWorkgroupSerarch()
+Dim iApp As Application
+Dim iTable As DBTable
+	bManuellSearch = True
+    Set iApp = GetApp()
+	Set iTable = iApp.ContextNetwork.GetTable("callworkgroup")
+	If iTable.RecordCount <> 1 Then	   ' Wenn keiner selektiert dann nur normale AK anzeigen
+   		iTable.QBESetValue "groupstatus","gültig"
+   		iTable.QBESetValue "wrkgrptype","AK"
+	End If
+	
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "EmployeeMerge"
+'TYPE = 0
+'TEMPLATE = "Sub EmployeeMerge()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       DebugScript
+'Purpose:      Script to to develop or Debug other scripts
+'Copyright:    Quartess, 2002
+'*****************************************************************************
+'Option Explicit
+
+'Global Varibles
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+
+Dim Employees$()
+Dim Fullname$()
+Dim pkey$()
+Dim index As Integer
+Dim sMasterKey As String
+Dim sDeleteKey As String
+Dim sDeleteName As String
+Dim sMasterName As String
+
+'-------------------------------------------------------
+Sub ShowEmployeeDetails( sPkey As String)
+Dim sMsg As String
+Dim  iBrowser As  DBBrowser
+Dim iTable As  DBTable
+Dim iRec As  DBRecord
+Dim n As Integer
+On Error GoTo error_handler
+	Set iBrowser = iNetwork.GetBrowser( "employeeBrowser" )
+	Set iTable = iNetwork.GetTable( "employee" )
+	iBrowser.MaxRecords = 2
+	iTable.QBEClear
+	iTable.QBESetValue "pkey", sPkey
+	iBrowser.Search "cqlocal", 1, True, False
+	iTable.QBEClear
+	n = iBrowser.RecordCount
+	If n <> 1 Then
+		MsgBox " Datensatz ist nicht eindeutig", EbInformation
+		Exit Sub
+	End If
+	Set iRec = iBrowser.GetTableRecord(0,iTable)
+    sMsg = ""
+    sMsg = sMsg & "Name:       " & iRec.GetValue("fullname") & ebCR
+    sMsg = sMsg & "LoginID:    " & iRec.GetValue("loginname") & ebCR
+    sMsg = sMsg & "Tel. :      " & iRec.GetValue("phonecorr") & ebCR
+    sMsg = sMsg & "Werk :      " & iRec.GetValue("emplsite_keycorr") & ebCR
+    sMsg = sMsg & "Email:      " & iRec.GetValue("emailcorr") & ebCR
+    sMsg = sMsg & "Personalnr.:" & iRec.GetValue("employeeid") & ebCR
+    sMsg = sMsg & "Status.:    " & iRec.GetValue("employeestatus") & ebCR
+    sMsg = sMsg & ebCR
+	
+    MsgBox sMsg,, "Mitarbeiter Details"
+
+	Set iBrowser = Nothing
+	 Set iTable = Nothing
+	 Set iRec = Nothing ' DBRecord
+	
+	 Exit Sub
+error_handler:
+	MsgBox "Fehler bei der Mitarbeiter-Info Fehler-Code:" & CStr(Err) & " : " & Error$
+End Sub
+
+'-------------------------------------------------------
+Function Dlg_Fkt( ControlName$, Action%, SuppValue% )
+	If Action% = 2 And ControlName$ = "Employees" Then
+		index = SuppValue% + 1
+	End If
+End Function
+'-------------------------------------------------------
+Begin Dialog EmployeeDialog ,,241,100,"Mitarbeiter wählen", .Dlg_Fkt,, 2
+	OKButton 196,8,40,14
+	CancelButton 196,28,40,14
+	ListBox 8,8,180,80,Employees$,.Employees
+End Dialog
+
+'-------------------------------------------------------
+Sub EmployeeSearch( sPkey As String, sBearb As String )
+Dim Dlg As EmployeeDialog
+Dim sControlName As String
+Dim  iBrowser As  DBBrowser
+Dim iTable As  DBTable
+Dim iRecord As  DBRecord
+Dim n As Long
+Dim i As Long
+Dim r As Integer
+
+On Error GoTo Search_error_handler
+
+	Set iBrowser = iNetwork.GetBrowser( "employeeBrowser" )
+	Set iTable = iNetwork.GetTable( "employee" )
+	iBrowser.MaxRecords = -1
+	iTable.QBEClear
+	iTable.QBESetValue "fullname", sBearb
+	iTable.QBESetValue "pkey", sPkey
+	iBrowser.Search "cqlocal", 1, True, False
+	iTable.QBEClear
+	n = iBrowser.RecordCount
+	If n <= 0 Then
+		MsgBox "nicht möglich - keine Mitarbeiter gefunden"
+		Exit Sub
+	End If
+	If n = 1 Then
+		Set iRecord = iBrowser.GetRecord(0)
+		sBearb = iRecord.GetValue( "fullname" )
+		sPkey = iRecord.GetValue( "pkey" )
+
+ 		GoTo Exit_Sub
+	End If
+	ReDim Employees$( 1 To n )
+	ReDim Fullname$( 1 To n )
+	ReDim pkey$( 1 To n )
+	For i = 1 To n
+		Set iRecord = iBrowser.GetRecord( i - 1 )
+		Fullname$( i ) = iRecord.GetValue( "fullname" )
+		pkey$( i ) = iRecord.GetValue( "pkey" )
+		Employees$( i ) =  Fullname$( i ) & "   " & Chr$(9) & "     ID:. " & pkey( i )
+	Next i
+	index = 1
+	r% = Dialog( Dlg )
+	If r% = -1 Then ' OK clicked
+		sBearb = Fullname$( index ) 
+	   sPkey=pkey$( index ) 
+	End If
+exit_Sub:
+	Set iBrowser = Nothing
+	 Set iTable = Nothing
+	 Set iRecord = Nothing ' DBRecord
+	
+	Exit Sub
+
+Search_error_handler:
+	MsgBox "Fehler bei der Mitarbeiter-Suche! Fehler-Code:" & CStr(Err) & " : " & Error$
+End Sub
+'-------------------------------------------------------
+Function UserDlg_Fkt( ControlName$, Action%, SuppValue% )
+	Select Case Action%
+		Case 1 ' First time open Dialog
+			 DlgText "OldFullname", sDeleteName
+			 DlgText "Fullname", sMasterName
+			 DlgText "OldKey", sDeleteKey
+			 DlgText "Key", sMasterKey
+
+		Case 2 ' something clicked
+			Select Case ControlName$
+				Case "OK"
+					 sMasterKey = DlgText$("Key")
+					 sDeleteKey = DlgText$("OldKey")
+				Case "Cancel"
+					 sMasterKey = ""
+					 sDeleteKey = ""
+
+				Case "OldSearch"
+					' UserDlg_Fkt = 1
+					 sDeleteKey = DlgText$("OldKey")
+					 sDeleteName  = DlgText$("OldFullname")
+					If (sDeleteKey & sDeleteName) = "" Then UserDlg_Fkt= 1
+
+				Case "Search"
+					' UserDlg_Fkt = 1
+					 sMasterKey = DlgText$("Key")
+					 sMasterName  = DlgText$("Fullname")
+					If (sMasterName & sMasterkey) = "" Then UserDlg_Fkt= 1
+				Case "OldInfo"
+					 UserDlg_Fkt = 1
+					 sDeleteKey = DlgText$("OldKey")
+					 If (sDeleteKey) <> "" Then
+						ShowEmployeeDetails sDeletekey
+					 End If	
+				Case "Info"
+					 UserDlg_Fkt = 1
+					 sMasterKey = DlgText$("Key")
+					 If (sMasterKey) <> "" Then
+						ShowEmployeeDetails sMasterKey
+					 End If	
+
+			End Select
+	End Select
+End Function
+'-------------------------------------------------------
+Begin Dialog UserDialog ,,279,96,"Mitarbeiter löschen",.UserDlg_Fkt
+	OKButton 90,72,40,14
+	CancelButton 136,72,40,14
+	Text 4,4,88,8,"Zu löschender Datensatz",.Text1
+	Text 4,24,16,8,"ID",.Text2
+	TextBox 28,48,36,12,.Key
+	TextBox 72,21,100,12,.OldFullname
+	PushButton 178,20,44,14,"Suchen",.OldSearch
+	PushButton 228,20,44,14,"Info",.OldInfo
+	PushButton 229,48,44,14,"Info",.Info
+	PushButton 178,48,44,14,"Suchen",.Search
+	TextBox 72,48,100,12,.Fullname
+	TextBox 28,21,36,12,.OldKey
+	Text 4,50,16,8,"ID",.Text3
+	Text 4,37,88,8,"Zieldatensatz",.Text4
+End Dialog
+
+
+'-------------------------------------------------------
+Sub MergeRecords( sDeleteKey As String, sMasterKey As String)
+Dim sGroupmemberTable As DBTable
+Dim iwebqTable As  DBTable
+Dim sCallTable As  DBTable
+Dim iEmployeeTable As DBTable
+Dim nRecs As Integer
+Dim i As Integer
+Dim sMsg As String
+ On Error GoTo Error_Handler
+	Msg.Open "Die WebQzuordnung wird gelöscht ...",0,False,False
+	Set iwebqTable = iNetwork.GetTable( "webqauthint" )
+	iwebqTable.QBEClear
+	iwebqTable.SetWhere "webqauthint.agentwebqauth=" & sDeleteKey &  " Or webqauthint.employeewebqauth=" & sDeleteKey 
+	iwebqTable.Search 
+   sMsg ="Löschen der WebQzuordnung fehlgeschlagen"
+	iwebqTable.SetWhere ""
+	nRecs = iwebqTable.RecordCount
+	For i = 1 To nRecs
+		iwebqTable.DeleteRecord 0
+  		iwebqTable.Commit
+	Next i
+	Msg.Text = "Die Gruppenmitgliederzuordnung wird gelöscht ...."
+	Set sGroupmemberTable = iNetwork.GetTable( "groupmember" )
+	sGroupmemberTable.QBEClear
+	sGroupmemberTable.QBESetValue "employeegroup", "=" & sDeleteKey
+	sGroupmemberTable.Search 
+   sMsg ="Löschen der Gruppenmitgliederzuordnung fehlgeschlagen"
+
+	nRecs = sGroupmemberTable.RecordCount
+	For i = 1 To nRecs
+		sGroupmemberTable.DeleteRecord 0
+  		sGroupmemberTable.Commit
+	Next i
+
+	Msg.Text = "Die Meldungen werden umgehangen ..."
+	Set sCallTable = iNetwork.GetTable( "employeecalls" )
+	sCallTable.QBEClear
+	sCallTable.QBESetValue "employeecall", "=" & sDeleteKey
+	sCallTable.Search 
+	nRecs = sCallTable.RecordCount
+		sMsg =" Abspeichern der Meldungsdaten fehlgeschlagen"
+	For i = 1 To nRecs
+		sCallTable.GetRecord(i-1).SetValue "employeecall", sMasterKey
+		sCallTable.Commit
+	Next i
+	sCallTable.Clear
+	sCallTable.QBEClear
+	sCallTable.QBESetValue "affectedperson_key", "=" & sDeleteKey
+	sCallTable.Search 
+	nRecs = sCallTable.RecordCount
+		sMsg =" Abspeichern der Meldungsdaten fehlgeschlagen"
+	For i = 1 To nRecs
+		sCallTable.GetRecord(i-1).SetValue "affectedperson_key", sMasterKey
+		sCallTable.Commit
+	Next i
+	sCallTable.Clear
+	sCallTable.QBEClear
+	sCallTable.QBESetValue "agentcall", "=" & sDeleteKey
+	sCallTable.Search 
+	nRecs = sCallTable.RecordCount
+		sMsg =" Abspeichern der Meldungsdaten fehlgeschlagen"
+	For i = 1 To nRecs
+		sCallTable.GetRecord(i-1).SetValue "agentcall", sMasterKey
+		sCallTable.Commit
+	Next i
+
+	Msg.Text = "Alter Datensatz wird gelöscht ..."
+
+	Set iEmployeeTable = iNetwork.GetTable( "dupcustomer" )
+	iEmployeeTable.QBEClear
+	iEmployeeTable.QBESetValue "pkey", "=" & sDeleteKey
+	iEmployeeTable.Search 
+	nRecs = iEmployeeTable.RecordCount
+		sMsg =" Löschen des alten Mitarbeiterdatensatzes ist fehlgeschlagen"
+  If nRecs = 1 Then
+		' Löschen ist nicht so gut, da referenzen in KANA seien können
+		' iEmployeeTable.DeleteRecord 0
+		iEmployeeTable.GetRecord(0).SetValue "employeestatus", "von Hand gelöscht"
+		iEmployeeTable.Commit
+  Else
+	  MsgBox "Alter Datensatz war nicht eindeutig"
+  End If
+	Msg.Close
+	Set sGroupmemberTable = Nothing
+	Set sCallTable = Nothing
+	Set iEmployeeTable = Nothing
+	Set iwebqTable = Nothing
+	Msgbox sDeletename & " mit ID " & sDeleteKey & " erfolgreich gelöscht." , ebInformation
+Exit Sub
+Error_Handler:
+	Msgbox "MergeRecords: " & sMsg	
+	Msg.Close
+	Set sGroupmemberTable = Nothing
+	Set sCallTable = Nothing
+	Set iEmployeeTable = Nothing
+	Set iwebqTable = Nothing
+End Sub 
+'-------------------------------------------------------
+Sub EmployeeMerge()
+Dim r1 As Integer
+    On Error GoTo ERRORHANDLER 
+	Dim iUserDialog As UserDialog
+	 sMasterKey = ""
+	 sDeleteKey = ""
+	 sDeleteName  = ""
+	 sMasterName = ""
+    Set iApp = GetApp
+    Set iNetwork = iApp.ContextNetwork
+	Do
+		r1% = Dialog( iUserDialog )
+		If r1% = 1 Then EmployeeSearch sDeleteKey ,sDeleteName
+		If r1% = 4 Then EmployeeSearch sMasterKey ,sMasterName
+
+	Loop Until r1% < 1
+	
+	If r1 = -1 And 	sDeleteKey <> "" And  sMasterKey <> ""Then
+		MergeRecords sDeleteKey	, sMasterKey
+	End If
+ 	iApp.ContextFocus.Clear
+	Exit Sub
+
+ERRORHANDLER:
+	MsgBox "MergeEmployees error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+Sub Main()
+ Initialize
+ MergeEmployees
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GotoWebQAuth"
+'TYPE = 0
+'TEMPLATE = "Sub GotoWebQAuth()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       GotoWebQAuth
+'Purpose:      GUI script to jump to WebQAuth form 
+'Type:	       GUI Rule
+'Copyright:    Tarragon MDo, 2004
+'*****************************************************************************
+Sub GotoWebQAuth()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iTable As DBTable
+Dim sName As String
+Dim iCustomerintTable As DBTable
+Dim iBrowser As DBBrowser
+Dim sKey As String
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	sKey = iApp.ContextRecord.GetKeyValue
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable("webqauthint")
+	Set iCustomerintTable = iNetwork.GetTable("customerint")
+	Set iForm = iApp.ContextFocus.GetForm( "webqauthInt" )
+	iApp.ContextFocus.ShowForm "webqauthInt"
+	Set iGroup = iForm.GetGroup("webqauth")
+	If iGroup.Mode = MODE_FILLED Then  Exit Sub
+	sName = iCustomerintTable.GetValueWhere("fullname","pkey",skey) 
+    iGroup. SetForeignValue "webqauthEmployee",sName,skey
+	If iGroup.Mode <> MODE_CLEAR Then  Exit Sub
+    iGroup.BtnClick "webqauthSearch"
+	'Set iBrowser = iNetwork.GetBrowser("webqauthintBrowser")
+
+   '	iTable.QBESetValue "employeewebqauth", sKey
+	'iBrowser.Search "r_webqauth", 1
+	'iTable.QBEClear
+Exit Sub
+Error_handler:
+    iApp.UserMsg "GotoWebQAuth error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+']]

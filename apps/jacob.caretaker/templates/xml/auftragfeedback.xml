@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="db_field(doc_template.xsl_stylesheet)"?>
+<doc>
+   <data>
+   	<general>
+   	<date>db_field(*Date)</date>
+   	<time>db_field(*Time)</time>	
+   	</general>
+	<task>
+		<pkey>db_field(task.taskno)</pkey>
+		<summary>db_field(task.summary)</summary>
+		<taskstatus>db_field(task.taskstatus)</taskstatus>
+	</task>
+ </data>
+</doc>
+
+
+
+
+
+
+

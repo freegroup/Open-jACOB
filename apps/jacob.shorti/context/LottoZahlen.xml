@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_LottoZahlen" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="start">
+					<question pattern="lottozahlen[?!]?"  defaultAnswer="Leider noch nicht verfügbar"/>
+					<question pattern="lotto[?!]?"        defaultAnswer="Kenne leider die Lottozahlen noch nicht"/>
+					<question pattern="lotto[?!]?"        defaultAnswer="Kenne leider die Lottozahlen noch nicht"/>
+					<question pattern="tottozahlen[?!]?"  defaultAnswer="Leider noch nicht verfügbar"/>
+					<question pattern="totto[?!]?"        defaultAnswer="Kenne leider die Tottozahlen noch nicht"/>
+					<question pattern="totto[?!]?"        defaultAnswer="Kenne leider die Tottozahlen noch nicht"/>
+				</forward>
+			</node>
+
+			<node name="end">
+				<forward toNode="start">
+					<question pattern="super"   defaultAnswer="Ich weiss."/>
+					<question pattern="danke"   defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

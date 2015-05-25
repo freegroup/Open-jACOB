@@ -1,0 +1,20 @@
+Softwarelieferung: db_field(*Date)
+
+Betreff: db_field(milestone.subject)
+Beschreibung: db_field(milestone.description)
+
+In der Lieferung für den db_field(milestone.plandone) werden folgende Features
+oder Defekts für den Kunden behoben.
+
+startForEach(incident)
+------------------------------------------------------------------------------
+Betreff: db_field(subject)
+
+Nr: db_field(pkey)
+Angelegt am: db_field(create_date)
+Status: Status: db_field(state)
+
+Beschreibung: 
+db_field(description)
+
+endForEach(incident)

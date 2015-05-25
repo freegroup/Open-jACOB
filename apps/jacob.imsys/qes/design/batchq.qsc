@@ -1,0 +1,721 @@
+'NAME = "batchq_add"
+'TYPE = 0
+'TEMPLATE = "Sub batchq_add()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       BatchQ : batchq_add
+'Author:       Richard Southwick
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+
+Sub batchq_add() 
+
+   Dim iSession As RuleServerQ.Session
+   Dim iApp As Application
+   Dim iNet As DBNetwork
+   Dim iTargetTable As DBTable
+   Dim iTargetRec As DBRecord
+   Dim sTargetTableName As String
+
+   Dim nParams As Integer 
+   Dim sParam As String
+   Dim sTableName As String
+   Dim sFieldName As String
+   Dim sValue As String
+   Dim iForeignTable As DBTable
+   Dim sFTableName() As String
+   Dim sFTableWhere() As String
+'   Dim iForeignTable() As DBTable
+   Dim iForeignRec As DBRecord
+   Dim sMsg As String
+   Dim sLocalMsg As String
+   Dim bLocErr As Boolean
+   Dim bCheckInput As Boolean
+   Dim sWork As String
+   Dim sNetworkName As String
+
+   Dim i As Integer 
+   Dim j As Integer 
+   Dim n As Integer ' foreign table count
+   Dim nRecs As Integer
+   Dim nPos As Integer
+   Dim bFound As Boolean
+   Dim b As Boolean
+
+   On Error GoTo batchq_add_error_handler
+   '-------------------------------------------------
+   sLocalMsg=""
+   blocErr=False
+   bCheckInput=False
+   sWork=""
+   Set iSession = GetSession()
+   sTargetTableName = iSession.GetStrVar("bq_tablename")
+
+   Set iApp = GetApp
+   Set iNet = iApp.ContextNetwork
+   Set iTargetTable = iNet.GetTable(sTargetTableName)
+
+   ' Create a new (empty) record
+   Set iTargetRec = iTargetTable.AddRecord
+
+   ' Get the number of parameters
+   nParams = iSession.GetStrVarCount
+
+   ' Allocate arrays for foreign fields. Sized to param count as upper limit
+   ReDim sFTableName(nParams)
+   ReDim sFTableWhere(nParams)
+
+   n = 0
+   For i = 0 To nParams-1
+      bCheckInput=True
+      ' All values are returned as strings, regardless of type
+      b = iSession.GetStrVarByIndex(i, sParam, sValue) 'by ref    
+      ' Split sParam into tablename and fieldname, if necessary
+      nPos = InStr(sParam, ".")
+      If nPos = 0 Then
+          ' Parameter is the fieldname - table is target table
+          sTableName = sTargetTableName
+          sFieldName = sParam
+      Else
+          sTableName = Left(sParam, nPos-1)
+          sFieldName = Mid(sParam, nPos+1)
+      End If
+
+      If sFieldName = "bq_focusname" Then
+		  sNetWorkName=sValue
+      End If
+      If (sFieldName = "bq_focusname") Or _
+		 (sFieldName = "bq_scriptname") Or _
+		 (sFieldName = "bq_tablename") Or _
+         (sFieldName = "bq_pkey") Then
+             ' Skip these special fields
+      Else
+          If sTableName = sTargetTableName Then
+              ' this is a field in the target table
+	          If Left$(sFieldName, 6) = "PARAM_" Then
+                  ' This is a masked field. Get real name
+                  sFieldName = Mid(sFieldName, 7)
+	          End If	
+              If Left$(sFieldName, 5) = "PLUS_" Then
+                  ' This is a longtext field. Set value with append mode
+                  sFieldName = Mid(sFieldName, 6)
+                  iTargetRec.SetLTValue sFieldName, sValue
+              ElseIf Left$(sFieldName, 6) = "PLUSB_" Then
+                  ' This is a longtext binary field. Set value with file
+                  sFieldName = Mid(sFieldName, 7)
+                  iTargetRec.SetLTValueFromFile sFieldName, sValue
+				  Kill sValue
+	    	  Else
+				  Dim nIndex as Integer
+				  Dim nType As Integer
+				  nIndex = iTargetTable.GetFieldIndex(sFieldName)
+				  If nIndex < 0 Then
+					sWork="Invalid field name " & sFieldName & " in the Table " & sTableName
+					sLocalMsg=sLocalMsg & Chr$(10) & sWork
+					bLocErr=True
+					goto NextLabel
+				  End If
+				  nType =  iTargetTable.GetFieldInfo(nIndex, FIELDINFO_TYPE)
+                  If nType = 14 Then
+                    nIndex=iTargetTable.MapEnumStrToInt(sFieldName,sValue)
+                    If nIndex < 0 Then
+					    sWork="Value " & sValue & " is not enumerated for " & sFieldName
+					    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+					    bLocErr=True
+					    goto NextLabel
+                    End If
+                  End If
+				  If nType = 10 Then
+        	          iTargetRec.SetLTValue sFieldName, sValue
+				  Else
+                	  iTargetRec.SetValue sFieldName, sValue
+	              End If
+			  End If
+          Else ' this is a foreign field, and must be searched for
+	          if Not iNet.HasTable(sTableName) Then
+			    sWork="Network " & sNetworkName & " does not contain the Table " & sTableName
+			    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+			    bLocErr=True
+			    goto NextLabel
+	          End If
+	          bFound = False
+	          ' look to see whether we've hit this foreign table already
+	          For j = 0 To nParams-1
+	              If sTableName = sFTableName(j) Then
+	                  ' previously encountered, set the search constraint
+                      sWork=sFTableWhere(j)
+					  sFTableWhere(j)=sWork + "&"+sFieldName + "=" +sValue
+					  'iForeignTable(j).QBESetValue sFieldName, sValue
+		              bFound = True
+                      Exit For
+	              End If
+	          Next j
+	          ' not previously encountered, get the foreign table object
+	          If Not bFound Then
+				  sWork= sFieldName + "=" + sValue
+				  sFTableWhere(n)=sWork
+                  sFTableName(n) = sTableName
+	    	      n = n+1
+	          End If
+          End If
+      End If 
+	NextLabel:
+   Next i
+   bCheckInput=False
+
+
+   For i = 0 To n-1  ' for each foreign table
+	    sTableName=sFTableName(i)
+        sWork=sFTableWhere(i)
+        Set iForeignTable = iNet.GetTable(sTableName)
+        iForeignTable.Clear
+        iForeignTable.QBEClear
+        Dim sLeft As String
+		Dim sRight As String
+		Dim sQBE As String
+		sRight=sWork
+		sQBE=sWork
+        while Len(sRight) >0
+        	nPos = InStr(sWork, "&")
+            If nPos < 1 then
+		        sLeft=sWork
+				sRight=""
+            Else
+				sLeft=Left(sWork,nPos-1)
+				sRight=Mid(sWork,nPos+1)
+			End If
+			nPos=InStr(sLeft,"=")
+			sFieldName=Left(sLeft,nPos-1)
+			sValue=Mid(sLeft,nPos+1)
+			iForeignTable.QBESetValue sFieldName, sValue
+			sWork=sRight
+		wend
+      	iForeignTable.Search
+       	nRecs = iForeignTable.RecordCount
+        If nRecs = 1 Then ' unique result of search
+            Set iForeignRec = iForeignTable.GetRecord(0)
+            b = iTargetRec.SetForeignKeyValue(iForeignRec)
+       	ElseIf nRecs = 0 Then
+           ' No records matched
+	        sWork ="Search on " & sTableName & " with QBE " & sQBE & " resulted in no matches" 
+'iApp.GetMessageText("Common_batchq_add_1", sTableName,sQBE)
+		    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+		    bLocErr=True
+        Else
+           ' Too many records matched
+	        sWork ="Search on " & sTableName & " with QBE " & sQBE & " failed to find unique record"
+'iApp.GetMessageText("Common_batchq_add_2", sTableName,sQBE)
+		    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+		    bLocErr=True
+        End If	
+   Next i
+
+
+   If bLocErr then
+	   	Err.Raise 2000, "","" 
+		'goto  batchq_add_error_handler
+   End If	
+   iTargetTable.Commit
+
+
+   sWork="New record " & iTargetRec.GetKeyValue & " added to Table " & sTargetTableName
+'iApp.GetMessageText("Common_batchq_add_8", iTargetRec.GetKeyValue,sTargetTableName)
+   iSession.SetResult sWork
+   'iSession.SetResult "New record " & iTargetRec.GetKeyValue & _
+   '                  " added to " & sTargetTableName & " table"
+
+   Exit Sub
+batchq_add_error_handler:
+    If Err <> 2000 Then
+       sWork = "Error " & Str(Err.Number) & " in the line " & Str(Erl) & " (" & Err.Description & ")"
+'iApp.GetMessageText("Common_batchq_add_7", Str(Err.Number), Str(Erl), Err.Description)
+	   '	"Error: in the line "& Str(Erl) & _
+ 	   '		" Error # " & Str(Err.Number) & " " & Err.Description
+       If bCheckInput Then
+	     Resume NextLabel
+         sLocalMsg=sLocalMsg & Chr$(10) & sWork
+	     bLocErr=True
+       End If
+    End if
+	sMsg="Failed to add record to Table " & sTargetTableName & " because of errors: " & sLocalMsg
+'iApp.GetMessageText("Common_batchq_add_3", sTargetTableName, sLocalMsg)
+	'sMsg = "Failed to add record: in the line "& Str(Erl) & _
+ 	 '		" Error # " & Str(Err.Number) & " " & Err.Description & _
+	 '		sLocalMsg         
+	
+    iSession.SetError sMsg
+
+
+End Sub
+
+
+
+
+']]
+'NAME = "batchq_update"
+'TYPE = 0
+'TEMPLATE = "Sub batchq_update()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       BatchQ : batchq_update
+'Author:       Richard Southwick
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+
+Sub batchq_update() 
+
+   Dim iSession As RuleServerQ.Session
+   Dim iApp As Application
+   Dim iNet As DBNetwork
+   Dim iTargetTable As DBTable
+   Dim iTargetRec As DBRecord
+   Dim sTargetTableName As String
+   Dim sTargetKeyValue As String
+
+
+   Dim nParams As Integer 
+   Dim sParam As String
+   Dim sTableName As String
+   Dim sFieldName As String
+   Dim sValue As String
+   Dim iForeignTable As DBTable
+   Dim sFTableName() As String
+   Dim sFTableWhere() As String
+'   Dim iForeignTable() As DBTable
+   Dim iForeignRec As DBRecord
+   Dim sMsg As String
+   Dim sLocalMsg As String
+   Dim bLocErr As Boolean
+   Dim bCheckInput As Boolean
+   Dim sWork As String
+   Dim sNetworkName As String
+
+   Dim i As Integer 
+   Dim j As Integer 
+   Dim n As Integer ' foreign table count
+   Dim nRecs As Integer
+   Dim nPos As Integer
+   Dim bFound As Boolean
+   Dim b As Boolean
+
+   On Error GoTo batchq_update_error_handler
+   '-------------------------------------------------
+
+   sLocalMsg=""
+   blocErr=False
+   bCheckInput=False
+   bGetKey=True
+   sWork=""
+
+   Set iSession = GetSession()
+   sTargetTableName = iSession.GetStrVar("bq_tablename")
+   sTargetKeyValue = iSession.GetStrVar("bq_pkey")
+   sNetworkName = iSession.GetStrVar("bq_focusname")
+
+   Set iApp = GetApp
+   Set iNet = iApp.ContextNetwork
+   Set iTargetTable = iNet.GetTable(sTargetTableName)
+
+   ' Locate target record (using target key)
+   iTargetTable.QBESetValue iTargetTable.KeyName, sTargetKeyValue
+   iTargetTable.Search
+   nRecs = iTargetTable.RecordCount
+   If nRecs = 0 Then
+      ' No records matched
+      sMsg ="Search failed for " & sTargetTableName & " with key " & sTargetKeyValue 
+'iApp.GetMessageText("Common_batchq_update_9", sTargetTableName, sTargetKeyValue)
+      iSession.SetError sMsg
+      Exit Sub
+   Else
+      Set iTargetRec = iTargetTable.GetRecord(0)
+   End If
+
+   bGetKey=False
+
+   ' Get the number of parameters
+   nParams = iSession.GetStrVarCount
+
+   ' Allocate arrays for foreign fields. Sized to param count as upper limit
+   ReDim sFTableName(nParams)
+   ReDim sFTableWhere(nParams)
+
+   n = 0
+   For i = 0 To nParams-1
+      bCheckInput=True
+      ' All values are returned as strings, regardless of type
+      b = iSession.GetStrVarByIndex(i, sParam, sValue) 'by ref    
+      ' Split sParam into tablename and fieldname, if necessary
+      nPos = InStr(sParam, ".")
+      If nPos = 0 Then
+          ' Parameter is the fieldname - table is target table
+          sTableName = sTargetTableName
+          sFieldName = sParam
+      Else
+          sTableName = Left(sParam, nPos-1)
+          sFieldName = Mid(sParam, nPos+1)
+      End If
+
+      If sFieldName = "bq_focusname" Then
+		  sNetWorkName=sValue
+      End If
+      If (sFieldName = "bq_focusname") Or _
+		 (sFieldName = "bq_scriptname") Or _
+		 (sFieldName = "bq_tablename") Or _
+         (sFieldName = "bq_pkey") Then
+             ' Skip these special fields
+      Else
+          If sTableName = sTargetTableName Then
+              ' this is a field in the target table
+	          If Left$(sFieldName, 6) = "PARAM_" Then
+                  ' This is a masked field. Get real name
+                  sFieldName = Mid(sFieldName, 7)
+	          End If	
+              If Left$(sFieldName, 5) = "PLUS_" Then
+                  ' This is a longtext field. Set value with append mode
+                  sFieldName = Mid(sFieldName, 6)
+                  iTargetRec.SetLTValue sFieldName, sValue
+              ElseIf Left$(sFieldName, 6) = "PLUSB_" Then
+                  ' This is a longtext binary field. Set value with file
+                  sFieldName = Mid(sFieldName, 7)
+                  iTargetRec.SetLTValueFromFile sFieldName, sValue
+				  Kill sValue
+	    	  Else
+				  Dim nIndex as Integer
+				  Dim nType As Integer
+				  nIndex = iTargetTable.GetFieldIndex(sFieldName)
+				  If nIndex < 0 Then
+					sWork="Invalid field name " & sFieldName & " in the Table " & sTableName
+'iApp.GetMessageText("Common_batchq_update_4", Invalid field name %1 in the Table %2, sTableName)
+					sLocalMsg=sLocalMsg & Chr$(10) & sWork
+					bLocErr=True
+					goto NextLabel
+					'Err.Raise 2000, "BatchQ_update", "Invalid field name <" & sFieldName & "> in Table <" & sTargetTableName & ">"
+				  End If
+				  nType =  iTargetTable.GetFieldInfo(nIndex, FIELDINFO_TYPE)
+                  If nType = 14 Then
+                    nIndex=iTargetTable.MapEnumStrToInt(sFieldName,sValue)
+                    If nIndex < 0 Then
+					    sWork="Value " & sValue & " not enumerated for " & sFieldName & sTableName
+					    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+					    bLocErr=True
+					    goto NextLabel
+                    End If
+                  End If
+
+				  If nType = 10 Then
+        	          iTargetRec.SetLTValue sFieldName, sValue
+				  Else
+                	  iTargetRec.SetValue sFieldName, sValue
+	              End If
+			  End If
+          Else ' this is a foreign field, and must be searched for
+	          if Not iNet.HasTable(sTableName) Then
+			    sWork="Network " & sNetworkName & "does not contain the Table " & sTableName
+'iApp.GetMessageText("Common_batchq_update_6", sNetworkName, sTableName)
+			    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+			    bLocErr=True
+			    goto NextLabel
+	             'Err.Raise 2000, "BatchQ_update", "Invalid table name <" & sTableName & ">"
+	          End If
+	          bFound = False
+	          ' look to see whether we've hit this foreign table already
+	          For j = 0 To nParams-1
+	              If sTableName = sFTableName(j) Then
+	                  ' previously encountered, set the search constraint
+                      sWork=sFTableWhere(j)
+					  sFTableWhere(j)=sWork + "&"+sFieldName + "=" +sValue
+					  'iForeignTable(j).QBESetValue sFieldName, sValue
+		              bFound = True
+                      Exit For
+	              End If
+	          Next j
+	          ' not previously encountered, get the foreign table object
+	          If Not bFound Then
+				  sWork= sFieldName + "=" + sValue
+				  sFTableWhere(n)=sWork
+                  sFTableName(n) = sTableName
+	    	      n = n+1
+	          End If
+          End If
+      End If 
+	NextLabel:
+   Next i
+   bCheckInput=False
+
+
+   For i = 0 To n-1  ' for each foreign table
+	    sTableName=sFTableName(i)
+        sWork=sFTableWhere(i)
+        Set iForeignTable = iNet.GetTable(sTableName)
+        iForeignTable.Clear
+        iForeignTable.QBEClear
+        Dim sLeft As String
+		Dim sRight As String
+		Dim sQBE As String
+		sRight=sWork
+		sQBE=sWork
+        while Len(sRight) >0
+        	nPos = InStr(sWork, "&")
+            If nPos < 1 then
+		        sLeft=sWork
+				sRight=""
+            Else
+				sLeft=Left(sWork,nPos-1)
+				sRight=Mid(sWork,nPos+1)
+			End If
+			nPos=InStr(sLeft,"=")
+			sFieldName=Left(sLeft,nPos-1)
+			sValue=Mid(sLeft,nPos+1)
+			iForeignTable.QBESetValue sFieldName, sValue
+			sWork=sRight
+		wend
+      	iForeignTable.Search
+       	nRecs = iForeignTable.RecordCount
+        If nRecs = 1 Then ' unique result of search
+            Set iForeignRec = iForeignTable.GetRecord(0)
+            b = iTargetRec.SetForeignKeyValue(iForeignRec)
+       	ElseIf nRecs = 0 Then
+           ' No records matched
+	        sWork ="Search on " & sTableName & "with QBE " & sQBE & " resulted in no matches" 
+'iApp.GetMessageText("Common_batchq_update_1", sTableName,sQBE)
+		    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+		    bLocErr=True
+        Else
+           ' Too many records matched
+	        sWork ="Search on " & sTableName & " with QBE " & sQBE & " failed to find unique record" 
+'iApp.GetMessageText("Common_batchq_update_2", sTableName,sQBE)
+		    sLocalMsg=sLocalMsg & Chr$(10) & sWork
+		    bLocErr=True
+        End If	
+   Next i
+
+
+   If bLocErr then
+	   	Err.Raise 2000, "","" 
+		'goto  batchq_update_error_handler
+   End If	
+   iTargetTable.Commit
+
+
+   sWork="Record " & iTargetRec.GetKeyValue & " been updated succesfully in Table " & sTargetTableName
+'iApp.GetMessageText("Common_batchq_update_8", iTargetRec.GetKeyValue,sTargetTableName)
+   iSession.SetResult sWork
+   'iSession.SetResult "New record " & iTargetRec.GetKeyValue & _
+   '                  " added to " & sTargetTableName & " table"
+
+   Exit Sub
+batchq_update_error_handler:
+    If Err <> 2000 Then
+       sWork ="Error " & Str(Err.Number) & " in the line " & Str(Erl) & " (" & Err.Description & ")" 
+'iApp.GetMessageText("Common_batchq_update_7", Str(Err.Number), Str(Erl), Err.Description)
+	   '	"Error: in the line "& Str(Erl) & _
+ 	   '		" Error # " & Str(Err.Number) & " " & Err.Description
+       If bCheckInput Then
+	     Resume NextLabel
+         sLocalMsg=sLocalMsg & Chr$(10) & sWork
+	     bLocErr=True
+       End If
+	   If bGetKey Then
+			sLocalMsg=sLocalMsg & Chr$(10) & sWork
+	   End If
+    End if
+	sMsg="Failed to update Table " &sTargetTableName & " because of errors: " & sLocalMsg
+'iApp.GetMessageText("Common_batchq_update_3", sTargetTableName, sLocalMsg)
+	'sMsg = "Failed to add record: in the line "& Str(Erl) & _
+ 	 '		" Error # " & Str(Err.Number) & " " & Err.Description & _
+	 '		sLocalMsg         
+	
+    iSession.SetError sMsg
+
+
+End Sub
+
+
+']]
+'NAME = "batchq_delete"
+'TYPE = 0
+'TEMPLATE = "Sub batchq_delete()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       BatchQ : batchq_delete
+'Author:       Richard Southwick
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+
+Sub batchq_delete() 
+
+   Dim iSession As RuleServerQ.Session
+   Dim iApp As Application
+   Dim iNet As DBNetwork
+   Dim iTargetTable As DBTable
+   Dim iTargetRec As DBRecord
+   Dim sTargetTableName As String
+   Dim sTargetKeyValue As String
+
+   Dim sMsg As String
+   Dim nRecs As Integer
+
+   On Error GoTo batchq_delete_error_handler
+   '-------------------------------------------------
+
+   Set iSession = GetSession()
+   sTargetTableName = iSession.GetStrVar("bq_tablename")
+   sTargetKeyValue = iSession.GetStrVar("bq_pkey")
+
+   Set iApp = GetApp
+   Set iNet = iApp.ContextNetwork
+   Set iTargetTable = iNet.GetTable(sTargetTableName)
+
+   ' Locate target record (using target key)
+   iTargetTable.QBESetValue iTargetTable.KeyName, sTargetKeyValue
+   iTargetTable.Search
+   nRecs = iTargetTable.RecordCount
+   If nRecs = 0 Then
+      ' No records matched
+      sMsg = "Search failed for " & sTargetTableName & " with key " & sTargetKeyValue & " - could not delete"
+      iSession.SetError sMsg
+      Exit Sub
+   Else
+      Set iTargetRec = iTargetTable.GetRecord(0)
+   End If
+
+   iTargetRec.Delete
+   iTargetTable.Commit
+
+   iSession.SetResult sTargetTableName & " record " & _
+                      sTargetKeyValue & " deleted successfully"
+
+   Exit Sub
+batchq_delete_error_handler:
+   sMsg = "Failed to delete record: Error # " & Str(Err.Number) & " " & Err.Description         
+   iSession.SetError sMsg
+
+End Sub
+
+
+
+
+
+']]
+'NAME = "batchq_report"
+'TYPE = 0
+'TEMPLATE = "Sub batchq_report()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       BatchQ : batchq_report
+'Author:       Vijay Gullapalli
+'Copyright:    Quintus Corporation, 1997
+'*****************************************************************************
+
+Sub batchq_report() 
+
+    Dim iSession As RuleServerQ.Session
+    Dim iApp As Application
+    Dim iSysNet As DBNetwork
+    Dim iEventsTable As DBTable
+    Dim iEventRec As DBRecord
+    Dim iReportSchedTable As DBTable
+    Dim iReportSchedRec As DBRecord
+    Dim iReportsTable As DBTable
+    Dim iReportRec As DBRecord
+    Dim sParam As String
+    Dim sFieldName As String
+    Dim sFieldValue As String
+    Dim sReportName As String
+    Dim sReportKeyValue As String
+    Dim nParams As Integer
+    Dim i As Integer 
+    Dim b As Boolean
+    Dim sMsg As String
+
+    On Error GoTo batchq_report_error_handler
+    '-------------------------------------------------
+
+    Set iSession = GetSession()
+    'sReportName = iSession.GetStrVar("bq_reportname")
+    sReportKeyValue = iSession.GetStrVar("bq_reportpkey")
+
+    Set iApp = GetApp
+    Set iSysNet = iApp.SysNetwork
+
+    ' Get qw_events table and add a new event record
+    Set iEventsTable = iSysNet.GetTable("qw_events")
+    Set iEventRec = iEventsTable.AddRecord
+
+    ' Get qw_rptsched table and add a new report record
+    Set iReportSchedTable = iSysNet.GetTable("qw_rptsched")
+    Set iReportSchedRec = iReportSchedTable.AddRecord
+
+    ' Locate report record
+    Set iReportsTable = iSysNet.GetTable("qw_reports")
+    iReportsTable.Clear
+    iReportsTable.QBESetValue iReportsTable.KeyName, sReportKeyValue
+    iReportsTable.Search
+    nRecs = iReportsTable.RecordCount
+    If nRecs = 0 Then
+        ' No records matched
+        sMsg = "Search failed for qw_reports record using key " & sReportKeyValue
+        iSession.SetError sMsg
+        Exit Sub
+    Else
+        Set iReportRec = iReportsTable.GetRecord(0)
+        sReportName = iReportRec.GetValue("reportname")
+    End If
+
+
+    ' Set shceduledrptkey in qw_reports record
+    iReportSchedRec.SetValue "scheduledrptkey", sReportKeyValue
+     
+    ' Get the number of parameters
+    nParams = iSession.GetStrVarCount
+    For i = 0 To nParams-1
+        ' All values are returned as strings, regardless of type
+        b = iSession.GetStrVarByIndex(i, sParam, sFieldValue) 'by ref    
+
+        If (sParam = "bq_reportpkey") Then
+            ' Skip these special fields
+        Else
+            ' Split sParam into tablename and fieldname, if necessary
+            nPos = InStr(sParam, ".")
+            If nPos = 0 Then
+                ' Parameter is the fieldname
+                sFieldName = sParam
+            Else
+                sFieldName = Mid(sParam, nPos+1)
+            End If
+
+            iReportSchedRec.SetValue sFieldName, sFieldValue
+        End If
+    Next i
+
+    ' Set values into the new event record
+    'iEventRec.SetValue "action", "X" 'VJ: Not needed for reports
+    iEventRec.SetValue "agent", iApp.ReportServerAgent
+    iEventRec.SetValue "when", "now"
+    iEventRec.SetValue "rptschedkey", iReportSchedRec.GetKeyValue
+    iEventRec.SetValue "state", "0" '0 = New state
+    iEventRec.SetValue "datemodified", "now"
+    iEventRec.SetValue  "sender", "batchq_report"
+
+    iReportSchedTable.Commit
+    iEventsTable.Commit
+
+    iSession.SetResult " Report " & _
+                      sReportName & " scheduled successfully"
+
+    iReportsTable.QBEClear
+    iReportSchedTable.QBEClear
+    iEventsTable.QBEClear
+
+    Exit Sub
+batchq_report_error_handler:
+    sMsg = "Failed to schedule report: Error # " & Str(Err.Number) & " " & Err.Description         
+    iSession.SetError sMsg
+
+End Sub
+
+
+
+
+
+']]

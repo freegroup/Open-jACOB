@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta name="description" content="Explore the ways of connecting your virtual machine to a network printer." />
+
+<title> Netzwerk-Drucker einrichten </title>
+<meta name="Keywords" content="Drucken	drucken, Drucken	in FreeBSD drucken, Drucken	in Windows drucken, FreeBSD	Netzwerkdrucker einrichten, Linux	drucken, Windows	in Windows drucken" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23533.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22374.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967585.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Netzwerk-Drucker einrichten</h3>
+<p class="bodytext">Der Netzwerkdrucker kann direkt in einem Gastbetriebssystem installiert werden.</p>
+<p class="bodytext">Überprüfen Sie vor der Installation eines Netzwerkdruckers in einem Windows-Gastbetriebssystem Folgendes:</p>
+<ul class="listbullet"><li class="listbullet">Im primären und im Gastbetriebssystem ist ein Netzwerk konfiguriert.</li><li class="listbullet">Der Netzwerk-Adapter der virtuellen Maschine ist in die entsprechende virtuelle Maschine eingebunden und wurde aktiviert. Gehen Sie dazu folgendermaßen vor:<ul class="listbullet2"><li class="listbullet2">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">Konfigurieren</strong>.</li><li class="listbullet2">Klicken Sie auf <strong class="specialbold">Hardware</strong>, um dier Geräte der virtuellen Maschine anzuzeigen.</li><li class="listbullet2">Klicken Sie auf der linken Seite in <strong class="specialbold">Netzwerk-Adapter</strong>.</li><li class="listbullet2">Achten Sie darauf, dass die Option <strong class="specialbold">Verbunden</strong> ausgewählt ist. </li></ul></li><li class="listbullet">Das Benutzerkonto im Gastbetriebssystem, mit dem Sie den Drucker einrichten möchten, muss über die erforderlichen Zugriffsrechte für den Netzwerkdrucker verfügen.</li><li class="listbullet">Die IP-Adresse Ihres Druckers ist Ihnen bekannt.</li></ul><p class="bodytext">Anschließend können Sie sich beim Gastbetriebssystem anmelden und einen Netzwerkdrucker installieren.</p>
+<p class="subheading">          In einem Windows-Gastbetriebssystem</p>
+<p class="bodytext">Bevor Sie einen Netzwerkdrucker zu Windows hinzufügen, müssen Sie den entsprechenden Druckertreiber herunterladen und installieren. Informationen zur Installation des Druckertreibers finden Sie in der Dokumentation des Druckerherstellers.</p>
+<p class="bodytext">Netzwerkdrucker werden in allen Windows-Gastbetriebssystemen auf dieselbe Art und Weise hinzugefügt. So wird ein Netzwerkdrucker in Windows XP oder Windows Vista hinzugefügt:</p>
+<ol class="listnumber"><li class="listnumber">Wählen Sie im Gastbetriebssystem im Menü <strong class="specialbold">Start</strong> die Option <strong class="specialbold">Systemsteuerung</strong>.</li><li class="listnumber">Klicken Sie in Windows XP auf <strong class="specialbold">Drucker und Faxgeräte</strong> oder auf <strong class="specialbold">Drucker</strong> in Windows Vista.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Drucker hinzufügen</strong>.</li><li class="listnumber">Klicken Sie im Einführungsfenster des Assistenten <strong class="specialbold">Drucker hinzufügen</strong> auf <strong class="specialbold">Weiter</strong>.</li><li class="listnumber">Wählen Sie in Windows XP die Option <strong class="specialbold">Lokaler Drucker, der an den Computer angeschlossen ist</strong> und deaktivieren Sie die Option <strong class="specialbold">Plug &amp; Play-Drucker automatisch ermitteln und installieren</strong>. <p class="listcontinue">Wählen Sie in Windows Vista die Option <strong class="specialbold">Lokalen Drucker hinzufügen</strong>.</p>
+</li><li class="listnumber">Wählen Sie <strong class="specialbold">Neuen Port erstellen</strong> und geben Sie als Porttyp <strong class="specialbold">Standard TCP/IP-Port</strong> an.<p class="listcontinue">Klicken Sie auf <strong class="specialbold">Weiter</strong>.</p>
+</li><li class="listnumber">Geben Sie im nächsten Fenster die IP-Adresse des Druckers ein und klicken Sie auf <strong class="specialbold">Weiter</strong>.</li><li class="listnumber">Wenn Sie zur Eingabe weiterer Port-Informationen aufgefordert werden, wählen Sie <strong class="specialbold">Standard</strong> und wählen in der Liste <strong class="specialbold">Standard-Netzwerk</strong>.</li><li class="listnumber">Klicken Sie im nächsten Fenster auf <strong class="specialbold">Fertig stellen</strong>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Druckersoftware installieren</strong> den Hersteller des Druckers an und wählen Sie das Modell Ihres Netzwerkdruckers.<p class="listcontinue">Wenn das Druckermodell nicht aufgeführt wird, klicken Sie auf <strong class="specialbold">Diskette</strong> und geben den Pfad zur <code class="monospace">.inf</code>-Datei im Installationsordner des Druckers ein.</p>
+<p class="listcontinue">Klicken Sie danach auf <strong class="specialbold">Weiter</strong>.</p>
+</li><li class="listnumber">Folgen Sie den Anweisungen des Assistenten, um die Installation abzuschließen.</li></ol><p class="subheading">In einem Linux- oder FreeBSD-Gastbetriebssystem</p>
+<p class="bodytext">Achten Sie darauf, dass folgende Komponenten in Ihrem Linux- oder FreeBSD-Gastbetriebssystem installiert sind:</p>
+<ul class="listbullet"><li class="listbullet">Common UNIX Printing System (CUPS). Eine Installationsanleitung finden Sie auf der <a class="externalhyperlinktemplate" title="Common UNIX Printing System-Website" href="http://cups.org/documentation.php" target="_blank">CUPS-Website</a>.</li><li class="listbullet">Samba-Dienst. Eine Installationsanleitung finden Sie auf der <a class="externalhyperlinktemplate" title="Samba-Website" href="http://us4.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html" target="_blank">Samba-Website</a>.</li><li class="listbullet">Ein Webbrowser, da CUPS über ein Webinterface bedient wird.</li></ul><p class="note"><strong class="buttons">Hinweis:</strong> Zur Einrichtung eines Netzwerkdruckers sind <code class="monospace">root</code>-Rechte erforderlich.</p>
+<p class="bodytext">Bevor Sie einen Netzwerkdrucker zu Linux hinzufügen, müssen Sie den entsprechenden Druckertreiber herunterladen und installieren. Informationen zur Installation des Druckertreibers finden Sie in der Dokumentation des Druckerherstellers.</p>
+<p class="bodytext">Gehen Sie folgendermaßen vor, um in einem Linux- oder FreeBSD-Gastbetriebssystem einen Netzwerk-Drucker einzurichten:</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Ihre virtuelle Maschine mit Linux oder FreeBSD.</li><li class="listnumber">Starten Sie das Common UNIX Printing System.<p class="listcontinue">Geben Sie im Terminal folgenden Befehl ein:</p>
+<p class="preformattedbold">/etc/init.d/cups start</p>
+</li><li class="listnumber">Starten Sie den Webbrowser und geben Sie die IP-Adresse Ihrer virtuellen Maschine oder <code class="monospace">http://127.0.0.1:631</code> ein.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Add Printer</strong>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Add New Printer</strong> einen Namen, einen Speicherort und eine Beschreibung für den Drucker ein.</li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">Device for &lt;Druckername&gt;</strong> die Option <code class="monospaceitalics">Windows Printer via Samba&gt;</code>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Device URI  for &lt;Druckername&gt;</strong> den Pfad zum Netzwerkdrucker in folgendem Format ein:<p class="listcontinue"><code class="monospace">smb://&lt;Computername&gt;/&lt;Druckername&gt;</code></p>
+</li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">Make/Manufacturer for &lt;Druckername&gt;</strong> das Modell Ihres Druckers aus.</li><li class="listnumber">Geben Sie das <code class="monospace">root</code>-Kennwort ein, wenn Sie dazu aufgefordert werden.</li><li class="listnumber">CUPS führt die Installation aus. Nach erfolgreicher Installation wird die Meldung &quot;<code class="monospace">Printer &lt;Name&gt; has been added successfully</code>&quot; angezeigt.        </li></ol>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30528" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

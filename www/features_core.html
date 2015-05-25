@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Open-jACOB</title>
+  <link  type="text/css"  rel="stylesheet" href="main.css" />
+	<script type="text/javascript" src="common.js"></script>
+</head>
+<body>
+<div class="headline">
+	<table  width="100%"><tr>
+	<td valign="top"  width="100%">
+<h1>Buildin Features of <i><b>Open-jACOB</b></i></h1>
+            <a class="button selected" href="features_core.html" target="content">Core Engine</a>
+            <a class="button" href="features_rule.html" target="content">Rule Engine</a>
+            <a class="button" href="features_report.html" target="content">Reporting</a>
+            <a class="button" href="features_designer.html" target="content">Designer</a>
+            <a class="button" href="features_db.html" target="content">DB-Layer</a>
+            <a class="button" href="features_ui.html" target="content">UI</a>
+	</td>
+	<td>
+	    <a target="_blank" href="http://www.eclipse.org"><img border="0" src="images/build_eclipse.jpg"/></a><br>
+            <br>
+            <br>
+            <div style="font-size:8pt;white-space:nowrap">Contact: <b>info</b> <i>AT</i> <b>openjacob</b> <i>DOT</i> <b>org</b></div>
+	</td>
+	</tr>
+	</table>
+</div>
+<table class="content_table">
+<tr>
+	<td class="middle_column">
+		 <div class="content">
+
+<table>
+
+
+<tr><td valign="top">
+<div class="capital">
+Hot deployment of Applications</div>
+<img  class="feature_image" src="images/feature_hotdeployment.png">
+</td><td valign="top">
+Hot deployment is VERY hot for development. The time savings you will realize when your developers can simply 
+run their build and have the new code auto-deploy instead of build, shutdown, startup is massive.
+<br>
+It is possible to upload a new jACOB application at runtime. Neither the WebApplication must stop/start nor 
+do any user have to logout and interrupting the current work.
+</td></tr>
+
+
+<tr><td valign="top">
+<div class="capital">
+Load Balancing (*)</div>
+<img  class="feature_image" src="images/feature_cluster.png">
+</td><td valign="top">
+One major issue for large Internet sites is how to handle the load of the large number of visitors 
+they receive. This is routinely encountered as a scalability problem as a site grows.
+The <a href="http://en.wikipedia.org/wiki/Load_balancing_%28computing%29" class="external" target="_blank">load balancing</a> methods in a <b><i>Open-jACOB</i></b> 
+Cluster (Open-jACOB can be run in a cluster too!!) manage the  selection of an appropriate jACOB server in a <a href="http://en.wikipedia.org/wiki/Computer_cluster#Load-balancing_clusters" class="external" target="_blank">cluster</a>.
+By means of a load balancer user sessions could be uniformly distributed across all Open-jACOB nodes.
+<br>
+<br>
+<small>(*) only in the enterprise edition</small>
+</td></tr>
+
+
+<tr><td valign="top">
+<div class="capital">
+Job Scheduling</div>
+<img  class="feature_image" src="images/feature_cluster.png">
+</td><td valign="top">
+Jobs are scheduled to run when a given Trigger occurs. Triggers can be created with nearly any combination of the following directives:
+<ul>
+<li>at a certain time of day (to the millisecond)</li>
+<li>on certain days of the week</li>
+<li>on certain days of the month</li>
+<li>on certain days of the year</li>
+<li>not on certain days listed within a registered Calendar (such as business holidays)</li>
+<li>repeated a specific number of times</li>
+<li>repeated until a specific time/date</li>
+<li>repeated indefinitely</li>
+<li>repeated with a delay interval</li>
+</ul>
+Jobs are given names by their creator and can also be organized into named groups.
+<br>
+Any job can be run <b>once</b> for:
+<ul>
+<li>each user</li>
+<li>each application</li>
+<li>each cluster node</li>
+<li>each cluster</li>
+</ul>
+<br>
+<br>
+</td></tr>
+
+<tr><td valign="top">
+<div class="capital">
+Multiple Database Support (*)</div>
+<img  class="feature_image" src="images/feature_multiple_db.png">
+</td><td valign="top">
+One Application in <i><b>Open-jACOB</b></i> can access multiple and different type of databases at the same time and
+in the same UI, without any line of code. The data source could be a persistent store like a RDBMS, an external service 
+like a B2B exchange, or a repository like an LDAP database.
+The business component that relies on the Open-jACOB data access layer, uses the simpler interface exposed by the data layer for its clients. 
+The data layer completely hides the data source implementation details from its clients. Because the interface exposed by the
+data layer to clients does not change when the underlying data source implementation changes, this pattern allows to 
+adapt to different storage schemes without affecting its clients or business components. 
+<br>
+<br>
+ <small>(*) SQL-Server, Oracle, Informix, DB2 and mySQL only in the enterprise edition</small>
+</td></tr>
+
+
+
+<tr><td valign="top">
+<div class="capital">
+Changeable User Authentification</div>
+<img  class="feature_image" src="images/feature_login.png">
+</td><td valign="top">
+You can automatically add end-user authentication (sign-in) and role-based access control 
+as a standard feature to your applications. This authentication feature is based on your 
+own user and role data in your database, making it easy to set up and administer.
+</td></tr>
+
+
+
+<tr><td valign="top">
+<div class="capital">
+Monitor your Application</div>
+<img  class="feature_image" src="images/feature_monitor.png">
+</td><td valign="top">
+<b>TODO:</b> Describe this feature
+</td></tr>
+
+</table>
+
+
+<h2></h2>   
+   		</div>
+	</td>
+
+</tr></table>
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s28.sitemeter.com/js/counter.js?site=s28openjacob">
+</script>
+<noscript>
+<a href="http://s28.sitemeter.com/stats.asp?site=s28openjacob" target="_top">
+<img src="http://s28.sitemeter.com/meter.asp?site=s28openjacob" alt="Site Meter" border="0"/>ssss</a>
+</noscript>
+<!-- Copyright (c)2006 Site Meter -->
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/Strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Workflow Editor</title>
+        <!-- common, all times required, imports -->
+	<SCRIPT src="./draw2d/wz_jsgraphics.js"></SCRIPT>
+	<SCRIPT src="./draw2d/events.js"></SCRIPT>
+	<SCRIPT src="./draw2d/debug.js"></SCRIPT>
+	<SCRIPT src="./draw2d/dragdrop.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Color.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Point.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Border.js"></SCRIPT>
+	<SCRIPT src="./draw2d/LineBorder.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Figure.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Label.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Oval.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Circle.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Rectangle.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Node.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Image.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Port.js"></SCRIPT>
+	<SCRIPT src="./draw2d/InputPort.js"></SCRIPT>
+	<SCRIPT src="./draw2d/OutputPort.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Line.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Connection.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Annotation.js"></SCRIPT>
+	<SCRIPT src="./draw2d/ResizeHandle.js"></SCRIPT>
+	<SCRIPT src="./draw2d/LineStartResizeHandle.js"></SCRIPT>
+	<SCRIPT src="./draw2d/LineEndResizeHandle.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Canvas.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Workflow.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Window.js"></SCRIPT>
+	<SCRIPT src="./draw2d/ToolGeneric.js"></SCRIPT>
+	<SCRIPT src="./draw2d/ToolPalette.js"></SCRIPT>
+	<SCRIPT src="./draw2d/Dialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/InputDialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/PropertyDialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/AnnotationDialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/PropertyWindow.js"></SCRIPT>
+	<SCRIPT src="./draw2d/ColorDialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/LineColorDialog.js"></SCRIPT>
+	<SCRIPT src="./draw2d/BackgroundColorDialog.js"></SCRIPT>
+
+        <!-- workflow specific imports -->
+	<SCRIPT src="autosuggest.js"></SCRIPT>
+	<SCRIPT src="WorkflowSerializer.js"></SCRIPT>
+	<SCRIPT src="DecisionBoolean.js"></SCRIPT>
+	<SCRIPT src="DecisionEnum.js"></SCRIPT>
+	<SCRIPT src="Start.js"></SCRIPT>
+	<SCRIPT src="BusinessObject.js"></SCRIPT>
+	<SCRIPT src="UserExceptionBO.js"></SCRIPT>
+	<SCRIPT src="UserInformation.js"></SCRIPT>
+	<SCRIPT src="NOP.js"></SCRIPT>
+	<SCRIPT src="End.js"></SCRIPT>
+	<SCRIPT src="Funnel.js"></SCRIPT>
+	<SCRIPT src="Email.js"></SCRIPT>
+	<SCRIPT src="FieldModifier.js"></SCRIPT>
+	<SCRIPT src="FieldModifierDialog.js"></SCRIPT>
+	<SCRIPT src="EmailDialog.js"></SCRIPT>
+	<SCRIPT src="DecisionDialog.js"></SCRIPT>
+	<SCRIPT src="WorkflowPropertyWindow.js"></SCRIPT>
+	<SCRIPT src="EnumDialog.js"></SCRIPT>
+	<SCRIPT src="ToolDecisionBoolean.js"></SCRIPT>
+	<SCRIPT src="ToolDecisionEnum.js"></SCRIPT>
+	<SCRIPT src="ToolNOP.js"></SCRIPT>
+	<SCRIPT src="ToolEnd.js"></SCRIPT>
+	<SCRIPT src="ToolFunnel.js"></SCRIPT>
+	<SCRIPT src="ToolUserExceptionBO.js"></SCRIPT>
+	<SCRIPT src="ToolUserInformation.js"></SCRIPT>
+	<SCRIPT src="ToolSave.js"></SCRIPT>
+	<SCRIPT src="ToolEmail.js"></SCRIPT>
+	<SCRIPT src="ToolBusinessObject.js"></SCRIPT>
+	<SCRIPT src="ToolAnnotation.js"></SCRIPT>
+	<SCRIPT src="ToolFieldModifier.js"></SCRIPT>
+	<SCRIPT src="WorkflowPalette.js"></SCRIPT>
+</head>
+<body onselectstart="return false;" style="margin:0px;padding:0px;" onkeydown="">
+<div id="paintarea" style="position:absolute;left:0px;top:0px;width:3000px;height:3000px" >
+</div>
+<script>
+  var workflow  = new Workflow("paintarea");
+
+  // Add the Tool Window to the screen
+  //
+  var w = new WorkflowPalette();
+  workflow.setToolWindow(w);
+
+  // Add a simple PropertyDialog to the Canvas
+  // This will display the properties of the current select object
+  //
+  var dialog = new WorkflowPropertyWindow();
+  workflow.addFigure(dialog,400,10);
+
+
+/* Create the used objects */
+var objectMap = new Object();
+var object = null;
+object = new Start();
+object.setProperty("businessClass","unused");
+object.setProperty("methodName","unused");
+object.setProperty("ruleId","start");
+objectMap['start'] = object;
+object = new DecisionBoolean();
+object.setProperty("parameter_0","s");
+object.setProperty("decisionClass","de.tif.jacob.ruleengine.decision.StringDecision");
+object.setProperty("methodName","hasZeroLenght");
+object.setProperty("signature","undefined");
+object.setProperty("ruleId","zKMqfxLkwQ");
+objectMap['zKMqfxLkwQ'] = object;
+object = new DecisionEnum();
+object.setProperty("parameter_0","bug");
+object.setProperty("parameter_1","grade");
+object.setEnumValues(new Array("Missing Functionality","Remark","Cosmetic","Crash","Wrong Behaviour","Bug"));
+object.setProperty("decisionClass","de.tif.jacob.ruleengine.decision.EnumDecision");
+object.setProperty("methodName","equals");
+object.setProperty("signature","undefined");
+object.setProperty("ruleId","RPKVuLh0qH");
+objectMap['RPKVuLh0qH'] = object;
+object = new DecisionBoolean();
+object.setProperty("decisionClass","de.tif.jacob.ruleengine.decision.BooleanDecision");
+object.setProperty("methodName","equals");
+object.setProperty("signature","undefined");
+object.setProperty("ruleId","bL8pOXesAI");
+objectMap['bL8pOXesAI'] = object;
+
+
+/* Add the objects to the workflow */
+workflow.addFigure(objectMap['start'],110,205);
+workflow.addFigure(objectMap['zKMqfxLkwQ'],237,205);
+workflow.addFigure(objectMap['RPKVuLh0qH'],370,200);
+workflow.addFigure(objectMap['bL8pOXesAI'],603,199);
+
+
+/* Create the connections between this objects */
+var connection = null;
+connection = new Connection();
+connection.setSource(objectMap['start'].getOutputPort());
+connection.setTarget(objectMap['zKMqfxLkwQ'].getInputPort());
+workflow.addFigure(connection);
+connection = new Connection();
+connection.setSource(objectMap['RPKVuLh0qH'].getPort("Missing Functionality"));
+connection.setTarget(objectMap['bL8pOXesAI'].getInputPort());
+workflow.addFigure(connection);
+
+
+</script>
+
+
+
+</body>
+</html>

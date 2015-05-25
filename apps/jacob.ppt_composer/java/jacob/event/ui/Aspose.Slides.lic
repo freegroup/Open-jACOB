@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<License>
+  <Data>
+    <LicensedTo>FreeGroup</LicensedTo>
+    <DevelopersNote>Limited to 1 developer.</DevelopersNote>
+    <OemNote>This is a non-redistributable license.</OemNote>
+    <Products>
+      <Product>Aspose.Slides for Java</Product>
+    </Products>
+    <EditionType>Enterprise</EditionType>
+    <SerialNumber>2294af19-f700-4a29-86ef-4541131d01f5</SerialNumber>
+    <SubscriptionExpiry>20080306</SubscriptionExpiry>
+    <LicenseVersion>2.0</LicenseVersion>
+  </Data>
+  <Signature>KTIlcJhs4IzNOGP9LYk5y3y8+o7L344C39+wnSpX5RsxmHBDY1CpdFlCNNQQquqlMs8HtlB0BmrIEiJvPAJUTNhx4mPy5VY5y0eRw5nyQX937lbiBFfk9jtRrtwy9qGwz38G+hb//ezdi/5NnmlSONY092vEbzi4AyUuYGnvzVA=</Signature>
+</License>

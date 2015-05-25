@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>jacob.custinfo</name>
+	<comment></comment>
+	<projects>
+		<project>ETR</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>custinfo1.0-tomcat</name>
+			<type>2</type>
+			<location>J:/jakarta-tomcat-4.1.27/webapps/jacob/WEB-INF/jacob/custinfo/1.0</location>
+		</link>
+	</linkedResources>
+</projectDescription>

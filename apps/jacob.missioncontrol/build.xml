@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="jacob-application" default="all" basedir=".">
+<property file="build.properties" />
+
+<tstamp><format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+
+<!-- =================================================================== -->
+<!--  Configuration                                                      -->
+<!-- =================================================================== -->
+<property environment="env"/>
+<property name="buildlib.dir"        value="./lib"/>
+<property name="dist.dir"            value="./dist"/>
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</path>
+	<!-- =================================================================== -->
+	<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+	<!-- =================================================================== -->
+	<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler" >
+	<classpath>
+	   <fileset dir="./lib">
+	   	<include name="*.jar"/>
+	   </fileset>
+	</classpath>	
+	</taskdef>
+
+	<target name="castor.clean" description="clean the access classes for the DAKS CTI outbound call">	
+	    <!-- remove castor generated classes -->
+	    <delete quiet="true" dir="./java/jacob/common/ui/castor"/>
+	</target>
+
+	<target name="castor" depends="" description="create the access classes for the DAKS CTI outbound call">
+	    <XSDCompiler 
+	        package="jacob.common.ui.castor"
+	        schema="./castor/daksCTI.xsd"
+	        force="true"
+	        destDir="./java">
+	    </XSDCompiler>
+	</target>
+<!-- =================================================================== -->
+<!-- ALL                                                                 -->
+<!-- =================================================================== -->
+<target name="all"  depends="jacapp"  description="create the project">
+</target>
+
+<!-- =================================================================== -->
+<!-- jACAPP                                                               -->
+<!-- =================================================================== -->
+<target name="jacapp" depends="compile" description="create the .jacapp file for the jACOB-Application server"  >
+
+	<mkdir dir="${dist.dir}/"/>
+	<jar compress="true"  destfile="${dist.dir}/${app.name}-${app.version}.jacapp" >
+		<fileset dir="./classes">
+			<exclude name="applications/${app.name}/**/*.java"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+			<attribute name="jACOB-Application-Version" value="${app.version}"/>
+			<attribute name="jACOB-Application-Name"    value="${app.name}"/>
+		</manifest>
+   </jar>
+</target>
+
+	<!-- =================================================================== -->
+	<!-- DEPLOY and CONFIGURATION                                            -->
+	<!-- =================================================================== -->
+	<target name="deploy_configure" depends="deploy, configure" description="deploy AND configure your application to the jACOB-Application server"  >
+	</target>
+		
+	<!-- =================================================================== -->
+	<!-- DEPLOY                                                               -->
+	<!-- =================================================================== -->
+	<target name="deploy" depends="jacapp, checkProperties" description="deploy the jacapp to the jACOB-Application server"  >
+
+		<echo message="=============================================================================================" />
+		<echo message="|| deploy file: ${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp" />
+	    <get src="http://localhost:${tomcat.port}/jacob/cmdenter?entry=DeployLocalJacapp&amp;app=admin&amp;user=${admin.username}&amp;pwd=${admin.passwd}&amp;jacappPath=${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp"
+		     dest="deploy.log"
+		 verbose="true"/>
+		 <loadfile property="deployMessage"    srcFile="deploy.log"/>
+		<echo message="${deployMessage}"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- CONFIGURE                                                           -->
+	<!-- =================================================================== -->
+	<target name="configure" depends="jacapp, checkProperties" description="deploy the jacapp to the jACOB-Application server"  >
+
+		<echo message="=============================================================================================" />
+		<echo message="|| configure application: ${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp" />
+	    <get src="http://localhost:${tomcat.port}/jacob/cmdenter?entry=ReconfigureDatasource&amp;app=admin&amp;user=${admin.username}&amp;pwd=${admin.passwd}&amp;applicationName=${app.name}&amp;applicationVersion=${app.version}&amp;dataSource=${app.ds}"
+		     dest="configure.log"
+		 verbose="true"/>
+		 <loadfile property="configureMessage"  srcFile="configure.log"/>
+		<echo message="${configureMessage}"/>
+		<echo message="DB configure done."/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Property check for deploy and configure                             -->
+	<!-- =================================================================== -->
+	<target name="checkProperties">	
+		<fail unless="tomcat.port">
+	Error		
+	============================================================================
+	    Please add the property 'tomcat.port' to your build.properties file!!
+	    example:
+			tomcat.port=8080
+	=============================================================================
+			</fail>
+
+		<fail unless="app.ds">
+	Error		
+	============================================================================
+	    Need the application data source name for configure
+		Please add the property 'app.ds' into the build.properties file
+			
+	    example:
+			app.ds=${app.name}DataSource
+	=============================================================================
+			</fail>
+
+		
+
+		<fail unless="admin.username">
+	Error		
+	============================================================================
+		Please insert the property 'admin.username' to your build.properties file!!
+			
+		It must be the username and password the the adminstation application
+		of your local jACOB server.
+			
+	    example:
+			admin.username=AdminUserName
+			admin.passwd=SECRET:-)
+	=============================================================================
+			</fail>
+	</target>
+
+
+<!-- =================================================================== -->
+<!-- CLEAN                                                               -->
+<!-- =================================================================== -->
+<target name="clean" depends="castor.clean" description="Delete old build and dist directories">
+    <delete quiet="true" dir="./classes"/>
+    <delete quiet="true" dir="./dist"/>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean, castor" description="Compile Java sources">
+
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+	<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true">
+	</copy>
+
+	<mkdir dir="./classes"/>
+	<!-- Compile Java classes as necessary -->
+	<javac srcdir="java" debug="on" destdir="./classes" >
+       <classpath refid="compile.classpath" />
+	</javac>
+
+	<!-- move the images to the class directory for the jar -->
+    <copy todir="./classes">
+		<fileset dir="./java">
+      		<include name="**"/>
+		</fileset>
+    </copy>
+
+	<!-- move the jad-file to the required position -->
+	<copy file="./application.jad" toFile="./classes/jacob/config/application.jad" overwrite="true">
+	</copy>
+</target>
+</project>
+

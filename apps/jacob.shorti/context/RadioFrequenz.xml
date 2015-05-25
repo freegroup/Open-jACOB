@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_RadioFrequenz" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="sender">
+					<question pattern="(?:frequenz)\s+([ßÄÖÜäöüa-zA-Z -.]+)" defaultAnswer="Kein Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="sender">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

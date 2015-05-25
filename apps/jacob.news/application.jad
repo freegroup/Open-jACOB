@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="news" engineVersion="2.3" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="newsDataModel">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles/>
+  <Tables>
+    <Table datasource="newsDataModel" dbName="group" name="group">
+      <Field dbName="pkey" history="false" label="%GROUP_PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%GROUP_NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="false" label="%GROUP_DESCRIPTION" name="description" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="200" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="newsDataModel" dbName="article" name="article">
+      <Field dbName="pkey" history="false" label="%ARTICLE_PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="body" history="false" label="%ARTICLE_BODY" name="body" readonly="false" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="subject" history="false" label="%ARTICLE_SUBJECT" name="subject" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="group_key" history="false" label="%ARTICLE_GROUP_KEY" name="group_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="from" history="false" label="%ARTICLE_FROM" name="from" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="1100" searchMode="unbound"/>
+      </Field>
+      <Field dbName="date" history="false" label="%ARTICLE_DATE" name="date" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="message_id" history="false" label="%ARTICLE_MESSAGE_ID" name="message_id" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="200" searchMode="unbound"/>
+      </Field>
+      <Field dbName="parent_article_key" history="false" label="%ARTICLE_PARENT_ARTICLE_KEY" name="parent_article_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="reference" history="false" label="%ARTICLE_REFERENCE" name="reference" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="xref" history="false" label="%ARTICLE_XREF" name="xref" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="group_FKey">
+        <Field>group_key</Field>
+      </ForeignKey>
+      <ForeignKey name="parent_article_FKey">
+        <Field>parent_article_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="newsDataModel" dbName="attachment" name="attachment">
+      <Field dbName="pkey" history="false" label="%ATTACHMENT_PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="file" history="false" label="%ATTACHMENT_FILE" name="file" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="article_key" history="false" label="%ATTACHMENT_ARTICLE_KEY" name="article_key" readonly="false" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="article_FKey">
+        <Field>article_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="group" table="group"/>
+    <TableAlias name="article" table="article"/>
+    <TableAlias name="parent_article" table="article"/>
+    <TableAlias name="attachment" table="attachment"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="group" name="groupBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Description" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="article" name="articelBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Head" name="browserHead" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+    </Browser>
+    <Browser alias="parent_article" name="parent_articleBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Subject" name="browserSubject" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+    </Browser>
+    <Browser alias="attachment" name="attachmentBrowser" type="inform">
+      <Field label="PKey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="File" name="browserFile" visible="true">
+        <TableField tableField="file"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="group_articel">
+      <OneToMany fromAlias="group" toAlias="article" toKey="group_FKey"/>
+    </Relation>
+    <Relation name="parent_article_articel">
+      <OneToMany fromAlias="parent_article" toAlias="article" toKey="parent_article_FKey"/>
+    </Relation>
+    <Relation name="article_attachment">
+      <OneToMany fromAlias="article" toAlias="attachment" toKey="article_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="groupRelationset">
+      <Relation>group_articel</Relation>
+      <Relation>parent_article_articel</Relation>
+      <Relation>article_attachment</Relation>
+      <Property>
+        <Name>articel.x</Name>
+        <Value>305</Value>
+      </Property>
+      <Property>
+        <Name>articel.y</Name>
+        <Value>135</Value>
+      </Property>
+      <Property>
+        <Name>articel.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>articel.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>group.x</Name>
+        <Value>79</Value>
+      </Property>
+      <Property>
+        <Name>group.y</Name>
+        <Value>422</Value>
+      </Property>
+      <Property>
+        <Name>group.width</Name>
+        <Value>191</Value>
+      </Property>
+      <Property>
+        <Name>group.height</Name>
+        <Value>54</Value>
+      </Property>
+      <Property>
+        <Name>parent_article.x</Name>
+        <Value>79</Value>
+      </Property>
+      <Property>
+        <Name>parent_article.y</Name>
+        <Value>61</Value>
+      </Property>
+      <Property>
+        <Name>parent_article.width</Name>
+        <Value>191</Value>
+      </Property>
+      <Property>
+        <Name>parent_article.height</Name>
+        <Value>54</Value>
+      </Property>
+      <Property>
+        <Name>article.x</Name>
+        <Value>79</Value>
+      </Property>
+      <Property>
+        <Name>article.y</Name>
+        <Value>211</Value>
+      </Property>
+      <Property>
+        <Name>article.width</Name>
+        <Value>191</Value>
+      </Property>
+      <Property>
+        <Name>article.height</Name>
+        <Value>54</Value>
+      </Property>
+      <Property>
+        <Name>attachment.x</Name>
+        <Value>378</Value>
+      </Property>
+      <Property>
+        <Name>attachment.y</Name>
+        <Value>211</Value>
+      </Property>
+      <Property>
+        <Name>attachment.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>attachment.height</Name>
+        <Value>-1</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="News" name="news">
+      <Group alias="group" browser="groupBrowser" label="%GROUP_GROUP" name="groupGroup">
+        <Dimension height="133" width="721" x="12" y="12"/>
+        <GuiElement name="groupButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="556" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="636" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="636" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="556" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="groupName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="340" x="84" y="55"/>
+              <Caption halign="right" label="%GROUP_NAME" valign="top">
+                <Dimension height="20" width="70" x="9" y="55"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="groupPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="340" x="84" y="25"/>
+              <Caption halign="right" label="%GROUP_PKEY" valign="top">
+                <Dimension height="20" width="70" x="9" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="groupDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="340" x="84" y="84"/>
+              <Caption halign="right" label="%GROUP_DESCRIPTION" valign="top">
+                <Dimension height="20" width="70" x="9" y="84"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+      <Group alias="article" browser="articelBrowser" label="%GROUP_ARTICLE" name="articelGroup">
+        <Dimension height="541" width="721" x="12" y="156"/>
+        <GuiElement name="articelButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="556" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="articelButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="636" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="articelButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="636" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="articelGroup" visible="true">
+          <ForeignInputField browserToUse="groupBrowser" filldirection="backward" foreignAlias="group" foreignTableField="name" relationToUse="group_articel" relationset="local">
+            <Dimension height="20" width="354" x="84" y="55"/>
+            <Caption halign="right" label="%GROUP_PARENT" valign="top">
+              <Dimension height="20" width="70" x="9" y="55"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="articelPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="24"/>
+              <Caption halign="right" label="%ARTICLE_PKEY" valign="top">
+                <Dimension height="20" width="70" x="9" y="24"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articelSubject" visible="true">
+          <LocalInputField tableField="subject">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="228"/>
+              <Caption halign="right" label="%ARTICLE_SUBJECT" valign="top">
+                <Dimension height="20" width="79" x="0" y="228"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articelBody" visible="true">
+          <LocalInputField tableField="body">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="121" width="622" x="84" y="252"/>
+              <Caption halign="right" label="%ARTICLE_BODY" valign="top">
+                <Dimension height="20" width="79" x="0" y="252"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articelParent_article" visible="true">
+          <ForeignInputField browserToUse="parent_articleBrowser" filldirection="backward" foreignAlias="parent_article" foreignTableField="subject" relationToUse="parent_article_articel" relationset="local">
+            <Dimension height="20" width="354" x="84" y="82"/>
+            <Caption halign="right" label="%ARTICLE_PARENT" valign="top">
+              <Dimension height="20" width="79" x="0" y="82"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="articelFrom" visible="true">
+          <LocalInputField tableField="from">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="204"/>
+              <Caption halign="right" label="%ARTICLE_FROM" valign="top">
+                <Dimension height="20" width="79" x="0" y="204"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articelDate" visible="true">
+          <LocalInputField tableField="date">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="113"/>
+              <Caption halign="right" label="%ARTICLE_DATE" valign="top">
+                <Dimension height="20" width="79" x="0" y="113"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articleXref" visible="true">
+          <LocalInputField tableField="xref">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="180"/>
+              <Caption halign="right" label="%ARTICLE_XREF" valign="top">
+                <Dimension height="20" width="79" x="0" y="180"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articleReference" visible="true">
+          <LocalInputField tableField="reference">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="156"/>
+              <Caption halign="right" label="%ARTICLE_REFERENCE" valign="top">
+                <Dimension height="20" width="79" x="0" y="156"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articleMessage_id" visible="true">
+          <LocalInputField tableField="message_id">
+            <TextInput>
+              <Dimension height="20" width="354" x="84" y="132"/>
+              <Caption halign="right" label="%ARTICLE_MESSAGE_ID" valign="top">
+                <Dimension height="20" width="79" x="0" y="132"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="articleAttachmentBrowser" visible="true">
+          <InFormBrowser browserToUse="attachmentBrowser" deleteMode="false" newMode="false" relationToUse="article_attachment" updateMode="false">
+            <Dimension height="145" width="622" x="84" y="384"/>
+            <Caption halign="right" label="Attachment" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Button label="%BUTTON_COMMON_DELETE">
+            <Dimension height="20" width="70" x="556" y="55"/>
+            <Action>
+              <DeleteRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="news" title="Administration" visible="true">
+      <Form>news</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="news" title="news Application">
+      <Domain>news</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

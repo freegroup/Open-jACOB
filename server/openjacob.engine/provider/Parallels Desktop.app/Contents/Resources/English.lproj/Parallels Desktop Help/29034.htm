@@ -1,0 +1,57 @@
+<html>
+<head>
+<title> Installation der Parallels Tools in OS/2- und eComStation-Gastbetriebssystemen </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="27001.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23666.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967559.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Installation der Parallels Tools in OS/2- und eComStation-Gastbetriebssystemen</h3>
+<p class="bodytext">Alle Tools für OS/2 und eComStation können über das CD-Image <code class="monospace">prl-tools-other.iso</code> installiert werden. Die Netzwerk-Treiber lassen sich auch während der Installation des Betriebssystems über die Disketten-Imagedatei <code class="monospace">prl-tools-os2.fdd</code> installieren. Letzteres geht in den meisten Fällen einfacher.</p>
+<p class="bodytext">Binden Sie vor Beginn der Installation das CD-ROM-Image der Parallels Tools in das CD-ROM-Laufwerk Ihrer virtuellen Maschine ein. Wählen Sie <strong class="specialbold">Parallels Tools installieren</strong> im Menü <strong class="specialbold">Virtuelle Maschine</strong>.</p>
+<p class="subheading">Installation des Tools Maus-Synchronisierung</p>
+<p class="bodytext">Das Tool Maus-Synchronisierung enthält einen Maustreiber und einen Grafikfilter.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong>Wenn Sie das Tool Maus-Synchronisierung installieren möchten, muss zuvor ein VESA-Grafiktreiber wie SDD oder GENGRADD installiert worden sein. Hinweise zur Installation dieses Grafiktreibers finden Sie in der Dokumentation von OS/2.</p>
+<p class="bodytext">So wird das Tool Maus-Synchronisierung installiert:</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie in der Systemsteuerung auf das Symbol <strong class="specialbold">Laufwerke</strong>. Wählen Sie das CD-ROM-Laufwerk und suchen Sie das Verzeichnis <code class="monospace">&lt;</code><code class="monospace">CD-ROM-Laufwerk&gt;\Drivers\Mouse\OS2</code>.<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn Sie den Treiber auf eComStation 1.2 installieren, wählen Sie das Verzeichnis <code class="monospace">&lt;</code><code class="monospace">CD-ROM-Laufwerk&gt;\Drivers\Mouse\ECS12</code>.</p>
+</li><li class="listnumber">Rufen Sie die Batchdatei <code class="monospace">INSTALL.CMD</code> auf. Das Programm <code class="monospace">INSTALL.CMD</code> kopiert die Dateien und nimmt die erforderlichen Änderungen an der Datei <code class="monospace">CONFIG.SYS</code> vor.</li><li class="listnumber">Starten Sie das Gastbetriebssystem OS/2 neu.</li></ol><p class="subheading">Installation des Tools Zwischenablage-Synchronisierung</p>
+<p class="bodytext">In OS/2 und eComStation müssen Sie das Tool Zwischenablage-Synchronisierung manuell aufrufen. Bei diesem Tool handelt es sich um ein normales Programm, das entsprechend behandelt werden muss. Wenn das Tool Zwischenablage-Synchronisierung automatisch mit dem Gastbetriebssystem gestartet werden soll, kopieren Sie die Tooldatei <code class="monospace"> PrlClip.exe</code> auf die Festplatte der virtuellen Maschine und fügen es zur Autostart-Gruppe hinzu <code class="monospace">(Datei startup.cmd </code>oder eine andere Datei, die im Gastbetriebssystem die entsprechenden Funktionen erfüllt´).</p>
+<p class="bodytext">Das Tool Zwischenablage-Synchronisierung befindet sich im Verzeichnis <code class="monospace">&lt;</code><code class="monospace">CD-ROM-Laufwerk&gt;\ClipBrd\OS2</code> im CD-Image mit den Parallels Tools.</p>
+<p class="subheading">Installation des Sound-Treibers</p>
+<p class="bodytext">Vor der Installation des Sound-Treibers muss im Gastbetriebssystem OS/2 die Multimedia-Unterstützung installiert worden sein. </p>
+<p class="bodytext">So wird der Sound-Treiber installiert:</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie in der Systemsteuerung auf das Symbol <strong class="specialbold">System Setup</strong>. </li><li class="listnumber">Wählen Sie <strong class="specialbold">Install/Remove</strong> und anschließend <strong class="specialbold">Multimedia Application Install</strong>.</li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">IBM Multimedia Presentation Manager/2 - Installation</strong> das CD-ROM-Laufwerk aus und anschließend das Verzeichnis <code class="monospace">&lt;</code><code class="monospace">CD-ROM-Laufwerk&gt;\Drivers\Sound\OS2</code>. Wählen Sie den  <strong class="specialbold">ALC Codec</strong> aus und klicken Sie auf<strong class="specialbold"> Install</strong>.</li><li class="listnumber">Starten Sie das Gastbetriebssystem OS/2 neu.</li></ol><p class="subheading">Installation des Netzwerk-Treibers</p>
+<p class="bodytext">So wird der Realtek RTL8029-Treiber in OS/2 Warp Version 4.5 installiert:</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie in der Systemsteuerung auf das Symbol <strong class="specialbold">System Setup</strong>.</li><li class="listnumber">Klicken Sie auf das Symbol <strong class="specialbold">MPTS Network Adapters and Protocol Services</strong>, um das Fenster <strong class="specialbold">Multi-Protocol Transport Services</strong> zu öffnen.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Configure</strong>.</li><li class="listnumber">Klicken Sie im angezeigten Fenster erneut auf <strong class="specialbold">Konfigurieren</strong>. </li><li class="listnumber">Klicken Sie im Fenster <strong class="specialbold">Adapter and Protocol Configuration</strong> auf die Taste <strong class="specialbold">Other adapters</strong> unter dem Abschnitt <strong class="specialbold"> Network Adapters</strong>.</li><li class="listnumber">Geben Sie im Fenster <strong class="specialbold">Copy Additional Network Adapter Drivers</strong> den Pfad zum Parallels-Treiber im CD-ROM-Image ein. Der Pfad sieht aus wie folgt:<p class="listcontinue"><code class="monospace">&lt;</code><code class="monospace">CD-ROM-Laufwerk&gt;\Drivers\Network\RTL8029\NDIS2OS2</code></p>
+</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>. Der Netzwerk-Adapter-Treiber von Parallels wird kopiert. Anschließend finden Sie den Eintrag <strong class="specialbold">RTL8029 PCI Ethernet Adapter</strong> in der Liste <strong class="specialbold">Network Adapters</strong>. Wählen Sie diesen Eintrag aus.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Change</strong> im Abschnitt <strong class="specialbold">Network Adapters</strong>, um den aktuellen Netzwerk-Adapter durch den ausgewählten zu ersetzen.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>, wenn folgende Meldung angezeigt wird: <code class="monospace">Are you sure you want to change this network adapter?</code>. Nachdem Sie auf OK geklickt haben, erscheint der<strong class="specialbold"> RTL8029 PCI Ethernet Adapter</strong> im entsprechenden Feld im Abschnitt <strong class="specialbold">Current Configuration</strong> des Fensters. Wenn Sie jetzt auf <strong class="specialbold">Edit</strong> im Abschnitt <strong class="specialbold">Current Configuration</strong> klicken, sehen Sie, dass die Treiber-Eigenschaften nicht konfiguriert werden müssen, da der Treiber sich selbst konfiguriert.</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>.</li><li class="listnumber">Schließen Sie die Fenster <strong class="specialbold">Configure</strong> und <strong class="specialbold">Multi-Protocol Transport Services</strong>. </li><li class="listnumber">Klicken Sie auf <strong class="specialbold">Exit</strong> im Fenster <strong class="specialbold">Update CONFIG.SYS</strong>.</li><li class="listnumber">Beenden Sie das Konfigurationsprogramm und starten Sie das Gastbetriebssystem neu.</li></ol>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+29034" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

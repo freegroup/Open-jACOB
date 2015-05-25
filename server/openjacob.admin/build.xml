@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- 
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+-->
+<project name="openjacob.admin" default="all">
+	<property file="build.properties"/>
+	<property name="openjacob.home" value="${basedir}/../openjacob.engine"/>
+	<property file="${openjacob.home}/build.properties"/>
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/>
+	</tstamp>
+	<!-- =================================================================== -->
+	<!--  Configuration                                                      -->
+	<!-- =================================================================== -->
+	<property name="dist.dir" value="./dist"/>
+	<property name="compile.debug" value="true"/>
+	<property name="compile.deprecation" value="false"/>
+	<property name="compile.optimize" value="true"/>
+	<property environment="env"/>
+	<!-- =================================================================== -->
+	<!-- Classpath                                                           -->
+	<!-- =================================================================== -->
+	<path id="compile.classpath">
+		<fileset dir="${openjacob.home}/dist">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${openjacob.home}/lib/build">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${openjacob.home}/webapp/WEB-INF/lib">
+			<include name="*.jar"/>
+			<!-- es muss die Castor Version aus dem lib/build Verzeichnis genommen werden, da diese
+			     einen Patch für die Codegenerierung enthält. -->
+			<exclude name="castor-0.9.6.jar"/>
+		</fileset>
+	</path>
+	<!-- =================================================================== -->
+	<!-- Version                                                                 -->
+	<!-- =================================================================== -->
+	<target name="version" description="generate a property file with the admin.version and load them">
+		<java classname="de.tif.jacob.core.Version" output="runtime.properties">
+			<classpath refid="compile.classpath"/>
+    </java>
+		<loadproperties srcFile="runtime.properties"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- ALL                                                                 -->
+	<!-- =================================================================== -->
+	<target name="all" depends="jacapp" description="create the project"/>
+	<!-- =================================================================== -->
+	<!-- jACAPP                                                               -->
+	<!-- =================================================================== -->
+	<target name="jacapp" depends="compile" description="create the .jacapp file for the application">
+		<mkdir dir="${dist.dir}/"/>
+		<jar compress="true" destfile="${dist.dir}/${app.name}-${admin.version}.jacapp">
+			<fileset dir="./classes">
+				<exclude name="applications/${app.name}/**/*.java"/>
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+				<attribute name="Built-Time" value="${build.time}"/>
+				<attribute name="jACOB-Application-Version" value="${admin.version}"/>
+				<attribute name="jACOB-Application-Name" value="${app.name}"/>
+			</manifest>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- CLEAN                                                               -->
+	<!-- =================================================================== -->
+	<target name="clean" description="Delete old build and dist directories">
+		<delete quiet="true" dir="./classes"/>
+		<delete quiet="true" dir="./dist"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Compile                                                             -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="clean, version" description="Compile Java sources">
+		<filter token="VERSION" value="${admin.version}"/>
+		<filter token="APPLICATION" value="${app.name}"/>
+		<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true"/>
+		<mkdir dir="./classes"/>
+		<!-- Compile Java classes as necessary -->
+		<javac encoding="ISO-8859-1" srcdir="java" debug="on" destdir="./classes">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<!-- move the images to the class directory for the jar -->
+		<copy todir="./classes">
+			<fileset dir="./java">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+	<!-- =================================================================== -->
+	<!-- INTEGRATE ADMIN INTO JACOB                                          -->
+	<!--   Property: webapp.home                                             -->
+	<!-- =================================================================== -->
+	<target name="integrate" depends="jacapp" description="Integrates the admin application into jACOB runtime">
+		<!-- copy the admin jacapp-file to the required position -->
+		<copy file="${dist.dir}/${app.name}-${admin.version}.jacapp" toFile="${webapp.home}/WEB-INF/jacapp/${app.name}-${admin.version}.jacapp" overwrite="true"/>
+		<!-- copy the admin jad-file to the required position -->
+		<copy file="./application.jad" toFile="${webapp.home}/WEB-INF/classes/de/tif/jacob/core/definition/impl/admin/admin.jad" overwrite="true"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- CATALINA DEPLOY                                                     -->
+	<!-- =================================================================== -->
+	<target name="catalina.jacob.deploy" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)">
+		<copy file="${dist.dir}/${app.name}-${admin.version}.jacapp" toFile="${catalina.home}/webapps/jacob/WEB-INF/jacapp/${app.name}-${admin.version}.jacapp" overwrite="true"/>
+	</target>
+	<target name="catalina.openjacob.deploy" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)">
+		<copy file="${dist.dir}/${app.name}-${admin.version}.jacapp" toFile="${catalina.home}/webapps/openjacob/WEB-INF/jacapp/${app.name}-${admin.version}.jacapp" overwrite="true"/>
+	</target>
+</project>

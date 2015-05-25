@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta name="description" content="With Parallels Image Tool, you can change the virtual hard disk type, split it into parts or merge them, and merge snapshots." />
+
+<title> Verwalten der Eigenschaften der virtuellen Festplatte </title>
+<meta name="Keywords" content="Parallels Image Tool	Festplatteneigenschaften verwalten, Verwalten von Festplatteneigenschaften, Virtuelle Festplatte	Eigenschaften verwalten" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="27058.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23614.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675171.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Verwalten der Eigenschaften der virtuellen Festplatte</h3>
+<p class="bodytext">          Mit Parallels Image Tool lassen sich die Eigenschaften von Festplatten der virtuellen Maschinen ändern. Sie können den Typ der virtuellen Festplatte von <em class="emphasis">Einfach</em> in <em class="emphasis">Expandierend</em> ändern und umgekehrt, die Festplatte aufteilen oder Teile zusammenführen oder Snapshots der virtuellen Maschine zusammenführen, die diese virtuelle Festplatte verwendet.</p>
+<p class="bodytext">So ändern Sie den Typ der virtuellen Festplatte:</p>
+<ol class="listnumber"><li class="listnumber">          <a id="h30192" class="jumptemplate" title="Parallels Image Tool verwenden" href="27313.htm" target="_self">Starten Sie Parallels Image Tool.</a>        </li><li class="listnumber">In dem Fenster <strong class="specialbold">Einführung</strong> klicken Sie auf <strong class="specialbold">&lt;</strong><strong class="specialbold">Fortfahren&gt;</strong>.</li><li class="listnumber">Geben Sie im Fenster <code class="monospace">Virtuelle Quell-Festplatte</code> die Quell-Imagedatei der virtuellen Festplatte mit dem Suffix <strong class="specialbold">.hdd</strong> an. Sie können den Pfad und den Dateinamen eingeben oder in die Taste <strong class="specialbold">Wählen</strong> klicken, um nach der Datei zu suchen. Die Imagedatei der virtuellen Festplatte befindet sich im PVM-Paket der virtuellen Maschine. PVM-Bündel werden standardmäßig gespeichert unter:<ul class="listbullet2"><li class="listbullet2">in Mac OS X im Ordner <code class="monospace">/&lt;Benutzername&gt;/Dokumente/Parallels/</code>;</li><li class="listbullet2">in dem primären Betriebssystem Windows im Ordner <code class="monospace">C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Eigene Dokumente\Parallels\</code>;</li><li class="listbullet2">in dem primären Betriebssystem Linux in dem Verzeichnis <code class="monospace">/&lt;Benutzername&gt;/parallels</code>.<p class="listnote">          <strong class="buttons">Hinweis:</strong> Die virtuelle Maschine, die diese virtuelle Festplatte benutzt, muss vor der Verarbeitung angehalten werden.</p>
+</li></ul></li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">Aktion auswählen</strong> die Option <strong class="specialbold">Festplatten-Eigenschaften verwalten</strong>.</li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">Vorgänge auswählen</strong> einen oder mehrere der folgenden auf der Festplatte auszuführenden Vorgänge aus, und klicken Sie auf <strong class="specialbold">Start</strong>:<p class="listnote">          <strong class="buttons">Hinweis:</strong> Die Vorgänge für die virtuelle Festplatte können nicht rückgängig gemacht werden.</p>
+<ul class="listbullet2"><li class="listbullet2">Wenn das von Ihnen angegebene Image der virtuellen Festplatte eine <em class="emphasis">expandierende</em> virtuelle Festplatte ist, ist die Option <strong class="specialbold">Imagedatei der virtuellen Festplatte aufteilen</strong> standardmäßig aktiviert.</li><li class="listbullet2">Wenn es sich um eine <em class="emphasis">expandierende</em> Festplatte handelt, können Sie die Option <strong class="specialbold">In Format Einfach konvertieren</strong> auswählen.</li><li class="listbullet2">Wenn es sich um eine <em class="emphasis">einfache</em> Festplatte handelt, ist standardmäßig die Option <strong class="specialbold">In Format Expandierend konvertieren</strong> aktiviert.</li><li class="listbullet2">Wenn das ausgewählte Festplatten-Image Snapshots besitzt, ist standardmäßig die Option <strong class="specialbold">Snapshots zusammenführen</strong> aktiviert. Sie können diese Option nicht deaktivieren.<p class="listnote">          <strong class="buttons">Hinweis: </strong>Beim Zusammenführen werden alle Snapshots mit Ausnahme des letzten gelöscht.</p>
+</li></ul><p class="listcontinue">Parallels Image Tool muss sämtliche Snapshots der aktuellen virtuellen Festplatte zusammenführen, bevor weitere Aktionen ausgeführt werden können. Die Informationen von allen Snapshots werden im letzen Snapshot zusammengeführt und alle anderen Snapshots werden gelöscht. Parallels Image Tool ändert die Snapshot-Baumstruktur im Snapshot-Manager nicht. Wenn Sie also zu einem Snapshot der Baumstruktur zurückkehren möchten, kann nicht mehr darauf zugegriffen werden und Sie können ihn manuell entfernen.        </p>
+<p class="listcontinue">Der Fortschritt des Vorgangs wird im zugehörigen Fenster <strong class="specialbold">Datei wird verarbeitet</strong> angezeigt. Sie brechen den Vorgang ab, indem Sie in <strong class="specialbold">Abbrechen</strong> klicken.</p>
+</li><li class="listnumber">Nach dem erfolgreichen Ändern des Festplatten-Image wird das Fenster <strong class="specialbold">Vorgang abgeschlossen</strong> angezeigt. Klicken Sie auf <strong class="specialbold">Abschließen</strong>, um Parallels Image Tool zu schließen.</li></ol>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30272" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<msg>
+<entrypoint>
+	<url>http://localhost:8080/etr/</url>
+	<name>QualitMaster</name>
+</entrypoint>
+<request>
+	<pkey>34</pkey>
+	<description>ddddd</description>
+	<html_descriptiontext>Dies ist der Textk</html_descriptiontext>
+	<plantime/>
+	<actualtime/>
+	<requeststatus>New</requeststatus>
+	<priority>Low</priority>
+	<reporter_key>8</reporter_key>
+	<buildreport_key/>
+	<approver_key>8</approver_key>
+	<buildapprove_key/>
+	<builddone_key/>
+	<tester_key/>
+	<datereported>2004-04-30 15:47:00.0</datereported>
+	<owner_key/>
+	<modul_key/>
+	<requesttype>Bug</requesttype>
+	<category_key/>
+	<reporter>
+		<pkey>8</pkey>
+		<fullname>Andreas Herz</fullname>
+		<email>a.herz@freegroup.de</email>
+		<phone/>
+		<mobile/>
+		<loginname>andherz</loginname>
+	</reporter>
+	<approver>
+		<pkey>8</pkey>
+		<fullname>Andreas Herz</fullname>
+		<email>a.herz@freegroup.de</email>
+		<phone/>
+		<mobile/>
+		<loginname>andherz</loginname>
+	</approver>
+</request>
+</msg>

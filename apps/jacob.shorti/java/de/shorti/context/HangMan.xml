@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_HangMan" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="char" >
+					<question pattern="hangman?[?!]?"                                                       defaultAnswer="Schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="galgenbaum[?!]?"                                                     defaultAnswer="Schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="galgenman+[?!]?"                                                     defaultAnswer="Schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="eine\s+runde\s+hangman+[?!]?"                                      defaultAnswer="Gerne - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kann?st\s+du\s+hangman+[?!]?"                                      defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kann?st\s+du\s+galgenbaum[?!]?"                                    defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kann?st\s+du\s+galgenman+[?!]?"                                    defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kenn?st\s+du\s+hangman+[?!]?"                                      defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kenn?st\s+du\s+galgenbaum[?!]?"                                    defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kann?st\s+du\s+galgenman+(n)?[?!]?"                                defaultAnswer="Klar - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kenn?st\s+du\s+galgenman+(n)?[?!]?"                                defaultAnswer="Na sicher - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="wie\s+kann\s+((ich)|(wir)|(man))*\s+galgenmann+\s+spielen?[?!]?" defaultAnswer="Na sicher - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="wie\s+kann\s+((ich)|(wir)|(man))*\s+hangman+\s+spielen?[?!]?"    defaultAnswer="Na sicher - schick mir ein Buchstaben und schon geht es los."/>
+					<question pattern="kann\s+((ich)|(wir)|(man))*\s+hangma[n]+\s+spielen+[?!]?"         defaultAnswer="Na sicher - schick mir ein Buchstaben und schon geht es los."/>
+				</forward>
+			</node>
+
+			<node name="char">
+				<forward toNode="char">
+					<alternative node="win"/>
+					<alternative node="lost"/>
+					<question pattern="([a-z]{1,1})" defaultAnswer="" />
+				</forward>
+
+				<forward toNode="word" >
+					<alternative node="win"/>
+					<alternative node="lost"/>
+					<question pattern="([a-z]{2,30})"  defaultAnswer="" />
+				</forward>
+			</node>
+
+			<node name="word">
+				<forward toNode="char">
+					<alternative node="win"/>
+					<alternative node="lost"/>
+					<question pattern="([a-z]{1,1})"  defaultAnswer="" />
+				</forward>
+				<forward toNode="word" >
+					<alternative node="win"/>
+					<alternative node="lost"/>
+					<question pattern="([a-z]{2,30})" defaultAnswer="" />
+				</forward>
+			</node>
+
+			<node name="win">
+				<forward toNode="char" >
+					<question pattern="ja!*"  defaultAnswer="Na gut - schick mir ein Buchstaben und schon geht es los." />
+					<question pattern="jo+!*" defaultAnswer="Na dann - dann schick mir mal den ersten Buchstaben." />
+				</forward>
+				<forward toNode="start">
+					<question pattern="nein!*"        defaultAnswer="Schade." />
+					<question pattern="nö+!*"         defaultAnswer="Schade." />
+					<question pattern="(?:n|N)e{1,5}" defaultAnswer="Schade." />
+				</forward>
+			</node>
+
+			<node name="lost">
+				<forward toNode="char">
+					<question pattern="(?:j|J)a"       defaultAnswer="Na gut - schick mir ein Buchstaben und schon geht es los." />
+					<question pattern="(?:j|J)o"       defaultAnswer="Na dann - dann schick mir mal den ersten Buchstaben." />
+				</forward>
+				<forward toNode="start">
+					<question pattern="(?:n|N)ein"     defaultAnswer="Schade -und Ende" />
+					<question pattern="(?:n|N)ö"       defaultAnswer="Feigling.......und Tschüß  ;-)" />
+					<question pattern="(?:n|N)e{1,5}"  defaultAnswer=".....grumpf - Schade und Tschüß." />
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

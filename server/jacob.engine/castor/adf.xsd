@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="ADL">
+		<xs:complexType>
+			<xs:attribute name="RelationSet" type="xs:string"/>
+			<xs:attribute name="FillDirection" type="xs:string"/>
+			<xs:attribute name="Table" type="xs:string"/>
+			<xs:attribute name="Field" type="xs:string"/>
+			<xs:attribute name="Default" type="xs:string"/>
+			<xs:attribute name="Browser" type="xs:string"/>
+			<xs:attribute name="Relation" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Caption">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Position" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="Value" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Events">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Event" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="Type" type="xs:string" use="required"/>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="File" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ActiveXEvents">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Event" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="Type" type="xs:string" use="required"/>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="File" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Forms">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Form" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Caption"/>
+							<xs:element name="WebQPages" minOccurs="0">
+								<xs:complexType>
+									<xs:attribute name="Select" type="xs:string" use="required"/>
+									<xs:attribute name="Query" type="xs:string" use="required"/>
+									<xs:attribute name="New" type="xs:string"/>
+									<xs:attribute name="Alias" type="xs:string" use="required"/>
+									<xs:attribute name="Update" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element ref="Scripts"/>
+							<xs:element name="Groups">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Group" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element ref="Caption"/>
+													<xs:element ref="Position"/>
+													<xs:element name="Browsers">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Browser" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element ref="Scripts"/>
+													<xs:element name="Menus">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="MenuItem" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="Clazz" type="xs:string" use="required"/>
+																		<xs:attribute name="ScriptName" type="xs:string"/>
+																		<xs:attribute name="File" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Objects">
+														<xs:complexType>
+															<xs:choice maxOccurs="unbounded">
+																<xs:element name="Button" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL" minOccurs="0"/>
+																			<xs:element ref="Events" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Clazz" type="xs:string"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Text" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="DisplayType" type="xs:string"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																		<xs:attribute name="Uppercase" type="xs:string"/>
+																		<xs:attribute name="Maillink" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Label" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="CheckBox" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Combo" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element name="Items" minOccurs="0">
+																				<xs:annotation>
+																					<xs:documentation>Anmerkung: Mußte optional gemacht werden, da QDesigner beim Konvertieren von ADF5.0 Mist macht!</xs:documentation>
+																				</xs:annotation>
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Item" maxOccurs="unbounded">
+																							<xs:complexType>
+																								<xs:attribute name="Value" type="xs:string" use="required"/>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																				</xs:complexType>
+																			</xs:element>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Foreign" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																			<xs:element ref="Events" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="Clazz" type="xs:string" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																		<xs:attribute name="DisplayType" type="xs:string"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="TargetForm" type="xs:string" use="optional"/>
+																		<xs:attribute name="Inline" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="DateTime" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="LongText" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="LongTextMode" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="IFB" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Events" minOccurs="0"/>
+																			<xs:element name="IfbModes" minOccurs="0">
+																				<xs:complexType>
+																					<xs:attribute name="New" type="xs:string"/>
+																					<xs:attribute name="Delete" type="xs:string"/>
+																					<xs:attribute name="Update" type="xs:string"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="TargetForm" type="xs:string"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="MtoN" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="DisplayType" type="xs:string" use="optional"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="TargetForm" type="xs:string" use="optional"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Masked" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ADL"/>
+																			<xs:element ref="Modes" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="Mask" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="Invisible" type="xs:string"/>
+																		<xs:attribute name="DisplayType" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="QControl" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="Position"/>
+																			<xs:element ref="Caption"/>
+																			<xs:element ref="ActiveXEvents" minOccurs="0"/>
+																		</xs:sequence>
+																		<xs:attribute name="Name" type="xs:string" use="required"/>
+																		<xs:attribute name="TabIndex" type="xs:int" use="required"/>
+																		<xs:attribute name="ProgID" type="xs:string" use="required"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="Name" type="xs:string" use="required"/>
+												<xs:attribute name="Alias" type="xs:string" use="required"/>
+												<xs:attribute name="Type" type="xs:string" use="required"/>
+												<xs:attribute name="ActiveBrowser" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Tableset" type="xs:string" use="required"/>
+						<xs:attribute name="Width" type="xs:long" use="required"/>
+						<xs:attribute name="Height" type="xs:long" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Version" type="xs:decimal" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Modes">
+		<xs:complexType>
+			<xs:attribute name="New" type="xs:string"/>
+			<xs:attribute name="Query" type="xs:string"/>
+			<xs:attribute name="Update" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Position">
+		<xs:complexType>
+			<xs:attribute name="Left" type="xs:long" use="required"/>
+			<xs:attribute name="Top" type="xs:long" use="required"/>
+			<xs:attribute name="Width" type="xs:long" use="required"/>
+			<xs:attribute name="Height" type="xs:long" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Scripts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Script" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Event" type="xs:string" use="required"/>
+						<xs:attribute name="File" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

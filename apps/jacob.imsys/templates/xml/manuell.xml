@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="http://s59bas06.pcd.daimler-benz.com/yan/fax_manuell.xsl"?>
+<doc>
+  <control>
+       <original_to url="test"/>
+    <copies>
+    <copy onSuccess ="true">
+<to url="db://attachment?callattachment=176582"/>
+<stylesheet url="http://s59bas06.pcd.daimler-benz.com/yan/fax_manuell.xsl"/>
+    </copy>
+    <copy onSuccess ="true">
+<to url="ANDREAS SCHWANDT"/>
+<stylesheet url="http://s59bas06.pcd.daimler-benz.com/yan/fax_manuell.xsl"/>
+    </copy>
+		</copies>
+   </control>
+   <data>
+     <from></from>
+     <to>rightfax://47192</to>
+     <cc>ANDREAS SCHWANDT</cc>
+     <date>02.04.03 18:41:07</date>
+     <subject>Meldung 176582: test fuer user loeschen</subject>
+
+     <body>test
+test</body>   </data>
+</doc>

@@ -1,0 +1,484 @@
+/***TREE***/
+    /* Control how "spaced out" the tree is */
+    ul.mktree, ul.mktree ul , ul.mktree li 
+    { 
+    	margin-left:10px; padding:1px; 
+    }
+	
+	     /* Format menu items differently depending on what level of the tree they are in */
+    ul.mktree  li { font-size: 12pt; font-family: Arial, Helvetica, sans-serif; font-weight: bold;}
+    ul.mktree  li ul li { font-size: 10pt; font-weight: normal; color:blue;}
+    ul.mktree  li ul li ul li { font-size: 9pt; color:#1E90FF; }
+    ul.mktree  li ul li ul li ul li { font-size: 8pt; color:#008B8B;}
+}
+.waitDiv
+{
+   border:solid 3 green;
+}
+.divider
+{
+  border-left:       2px solid #8e8f94;
+  border-right:      1px solid #8e8f94;
+  border-top:        2px solid #8e8f94;
+  border-bottom:     1px solid #8e8f94;
+} 
+.divider_over
+{
+  border-left:       2px solid #DBE3E8;
+  border-right:      1px solid #DBE3E8;
+  border-top:        2px solid #DBE3E8;
+  border-bottom:     1px solid #DBE3E8;
+} 
+.Multiselection_Button 
+{
+    border:         1px solid black;
+margin-left: 2px;
+
+
+
+}
+
+.Multiselection_Title
+{
+    border: 1 solid black;
+}
+.Multiselection_Title_focus
+{
+    border: 2 solid black;
+}
+.Multiselection_Body
+{
+    border: 1 solid black;
+}
+.Multiselection_ItemTitle
+{
+    font-size:      8pt;
+}
+.Multiselection_ItemTitleOver
+{
+    font-size:      8pt;
+}
+.Multiselection_ItemIcon
+{
+    font-size:      8pt;
+}
+div.wizard_info
+{
+    background-color:#89A2B3;
+} 
+div.wizard_content
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+}
+.sbh
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    color:black;
+    background-color:#ACBECA;
+    border-width:2;
+}
+.sbh_icon
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#008000;
+    border-width:2;
+}
+.sbh_counter
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	 color: black;
+}
+.sbc
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font-size:      8pt;
+	 
+}
+.sbr_s
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFD876;
+}
+.sbr_o
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color: #CDCDCF;
+}
+.sbr_e
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	 background-color: #DBE3E8;
+}
+.sbr_h
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFEEC4;
+}
+.sbr_u
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    cursor:hand;
+    background-color:#0080FF;
+}
+.outlookbar
+{
+    width:110px;
+}
+.outlookbarPaneSelected 
+{
+   font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    text-decoration:underline;
+    background-image:url("images/OutlButSel.gif");
+    color: black;
+}
+.outlookbarPane
+{
+  font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+  border-left:       2px solid #002D40;
+  border-right:      1px solid #002D40;
+  border-top:        2px solid #E6EDF0;
+  border-bottom:     1px solid #002D40;
+  background-image:url("images/OutlButNor.gif");
+  cursor:           hand;
+  cursor:           pointer;
+  color:             black;
+}
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color: #FFFFF6;
+}
+.outlookbarButtonLabel
+{
+  font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+  font-size:        8pt;
+  color:             black;
+}
+.outlookbarButtonDown
+{
+    border-width:5;
+    border-style:inset;
+    border-color:8aa9e5;
+    color:white;
+    width:30px;
+}
+.outlookbarButtonSelected
+{
+    border-width:3;
+    border-style:inset;
+    border-color:8aa9e5;
+    width:30px;
+}
+.outlookbarButtonOver
+{
+    border-width:3;
+    border-style:outset;
+    border-color:8aa9e5;
+    width:30px;
+}
+.outlookbarButtonNormal
+{
+    width:30px;
+    margin:3;
+}
+img.outlookbarButtonSelected{ margin-top: 8 ;}
+img.outlookbarButtonDown{ margin-top: 8 ;}
+img.outlookbarButtonNormal{ margin-top: 8 ;}
+img.outlookbarButtonOver{ margin-top: 8 ;}
+tr.outlookbarButtonAreaNormal
+{
+    height:70px;
+}
+body.contentBody
+{
+    background-color: #EFEFEF;
+}
+td.locationbar 
+{
+   background-color: black;
+   font-size:      8pt;
+   padding-right: 18px;
+	height: 0px;
+	border: 0px;
+	
+	
+}
+td.toolbar 
+{
+    padding:    1px 0px 1px 0px;
+	 background-color: Black;
+    font-size:      8pt;
+	 border: 0;
+	 
+}
+.toolbarButton_disabled
+{
+    font: Arial;
+    color : silver;
+    font-size:      8pt;
+    width:100%px;
+    height: 15px;
+    border: none;
+	background-color: transparent;
+}
+.toolbarButton_normal_left
+{
+
+	background-image: url(images/arrtoolbar.gif);
+	background-repeat: no-repeat;
+	width: 10px;
+}
+.toolbarButton_normal
+{
+    font: Arial;
+    color : white;
+    font-size:      8pt;
+
+    height: 15px;
+    border: none;
+	background-color: transparent;
+	text-align: left;
+	width: 80px;
+	
+
+}
+.toolbarButton_normal_right
+{
+
+}
+.text_disabled
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:rgb( 252, 252, 254 );
+    height: 20;
+    padding: 0 2 0 5;
+    color: gray;
+    border: 1 solid gray;
+    font-size:      8pt;
+}
+.text_normal
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFFFFF;
+    color:rgb( 0, 0, 0 );
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #000000;
+    font-size:      8pt;
+}
+textarea.longtext_disabled
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFFFFF;
+    color:rgb( 0, 0, 0 );
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #000000;
+    font-size:      8pt;
+}
+textarea.longtext_normal
+{
+  font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+  font : normal 11px ;
+}
+textarea.longtextdialog_disabled
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFFFFF;
+    color:rgb( 0, 0, 0 );
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #000000;
+    font-size:      8pt;
+}
+textarea.longtextdialog_normal
+{
+  font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+  font : normal 11px ;
+}
+input.foreign_disabled
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:rgb( 252, 252, 254 );
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #909CAE;
+    font-size:      8pt;
+}
+input.foreign_normal
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    background-color:#FFFFFF;
+    color:rgb( 0, 0, 0 );
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #000000;
+    font-size:      8pt;
+}
+a.foreign_normal
+{
+}
+.button_disabled
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font-size:      8pt;
+	 border: 0;
+    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#EFEFEF,endColorStr=#AFBFD2);
+    color:#a0a0a0;
+
+    text-decoration:none;
+}
+.button_normal
+{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font-size:      8pt;
+    color:#000000;
+	 border: 0;
+    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#EFEFEF,endColorStr=#AFBFD2);
+    text-decoration:none;
+}
+.caption_normal_update 
+{
+    font-size:      8pt;
+}
+.caption_normal_new 
+{
+    font-size:      8pt;
+}
+.caption_normal_search 
+{
+    font-size:      8pt;
+}
+.caption_normal_selected
+{
+    font-size:      8pt;
+}
+.caption_linked_update 
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_linked_new 
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_linked_search 
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_linked_selected
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_linked_required_update 
+{
+    font-size:      8pt;
+    color:red;
+}
+.caption_linked_required_new 
+{
+    font-size:      8pt;
+    color:red;
+}
+.caption_linked_required_search 
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_linked_required_selected
+{
+    font-size:      8pt;
+    color:blue;
+}
+.caption_required_search 
+{
+    font-size:      8pt;
+}
+.caption_required_selected
+{
+    font-size:      8pt;
+}
+.caption_required_update 
+{
+    font-size:     8pt;
+    color:red;
+}
+.caption_required_new 
+{
+    font-size:     8pt;
+    color:red;
+}
+fieldset.group_disabled
+{
+    font-size:      8pt;
+}
+fieldset.group_normal
+{
+    font-size:      8pt;
+	 border-color: #66676A;
+}
+input.datetime_disabled
+{
+    background-color:rgb( 252, 252, 254 );
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #909CAE;
+    font-size:      8pt;
+}
+input.datetime_normal
+{
+    background-color:#FFFFFF;
+    color:rgb( 0, 0, 0 );
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    height: 20;
+    padding: 0 2 0 5;
+    border: 1 solid #000000;
+    font-size:      8pt;
+}
+div.dialog_content
+{
+    font-size:70%;
+    background-color: #EFEFEF;
+
+}
+div.dialog_buttonbar
+{
+    background-color: #DBE3E8;
+	 color: White;
+}
+td.searchTabFooter
+{
+
+    background-color:#EFEFEF;
+}
+.downtab
+{
+    width:              150px;
+    height:             17px;
+    background-image:   url( "images/downtab.png" );
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font:           11px ;
+}
+.downtabSelected
+{
+    width:              150px;
+    height:             17px;
+    background-image:   url( "images/downtab.active.png" );
+}
+.downtab:hover
+{
+    width:              150px;
+    height:             17px;
+    background-image:   url( "images/downtab.hover.png" );
+}
+table.contextMenu
+{
+    background-image:url("images/normal_bg.bmp");
+}
+a.contextMenuItem:hover
+{
+    background-image: url("images/outlook_bg.bmp");
+}

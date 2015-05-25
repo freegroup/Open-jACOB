@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_SysAdmin" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="restart">
+					<question pattern="(bitte\s+)?starte\s+(bitte\s+)?short-?i\s+(bitte\s+)?((neu)|(durch))(\s+bitte)?[!.]*"         defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?starte\s+(bitte\s+)?das\s+program+\s+(bitte\s+)?((neu)|(durch))(\s+bitte)?[!.]*"  defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?restarte?\s+(bitte\s+)?short-?i(\s+bitte)?[!.]*"                                     defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?restarte?\s+(bitte\s+)?das\s+program+(\s+bitte)?[!.]*"                              defaultAnswer="OK"/>
+				</forward>
+				<forward toNode="rebuild">
+					<question pattern="(bitte\s+)?(re)?bu?ilde?\s+(bitte\s+)?(die\s+)?d(aten)?b(ank)?(\s+bitte)?(\s+neu)?(\s+bitte)?[!.]*"  defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?baue?\s+(bitte\s+)?die\s+d(aten)?b(ank)?(\s+bitte)?(\s+neu)?(\s+auf)?(\s+bitte)?[!.]*"  defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?setze\s+(bitte\s+)?die\s+d(aten)?b(ank)?(\s+bitte)?(\s+neu)?(\s+auf)?(\s+bitte)?[!.]*"  defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?erstelle\s+(bitte\s+)?die\s+d(aten)?b(ank)?(\s+bitte)?(\s+neu)?(\s+bitte)?[!.]*"  defaultAnswer="OK"/>
+				</forward>
+				<forward toNode="exit">
+					<question pattern="(bitte\s+)?stoppe?\s+(bitte\s+)?short-?i(\s+bitte)?[!.]*"            defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?stoppe?\s+(bitte\s+)?das\s+program+(\s+bitte)?[!.]*"            defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?beende\s+(bitte\s+)?short-?i(\s+bitte)?[!.]*"             defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?beende\s+(bitte\s+)?das\s+program+(\s+bitte)?[!.]*"             defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?exit\s+(bitte\s+)?short-?i(\s+bitte)?[!.]*"               defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?verlasse\s+(bitte\s+)?short-?i(\s+bitte)?[!.]*"           defaultAnswer="OK"/>
+					<question pattern="(bitte\s+)?verlasse\s+(bitte\s+)?das\s+program+(\s+bitte)?[!.]*"           defaultAnswer="OK"/>
+				</forward>
+			</node>
+			<node name="restart">
+			</node>
+			<node name="rebuild">
+			</node>
+			<node name="exit">
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

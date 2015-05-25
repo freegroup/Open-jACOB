@@ -1,0 +1,501 @@
+'NAME = "GetBMSStatus"
+'TYPE = 0
+'TEMPLATE = "Sub GetBMSStatus()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       RuleServer: GetBMSStatus
+'Author:       Mike Döring
+'Purpose:      Scan the BMS tasks where reloved in IMSYS and change the Status
+'Copyright:    Tarragon, 2003
+'*****************************************************************************
+'Option explicit
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+'----------------------------------------------------------------
+' global DCO data declaration
+Const TASK = 1
+Const BMSID = 2
+Const STATUS = 3
+Dim sTasklist() As String
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskTbl As DBTable
+Dim iTaskRec As DBRecord
+Dim iTaskBrowser As DBBrowser
+Dim sMediatorRoot	As String
+Dim sSequencesRoot As String	
+Dim sFaultkeys As String
+
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver				
+
+Dim sLogFile As String
+Dim sLockFile As String
+Dim nLogLevel As Integer
+Dim sInfo As String
+Dim sName As String 
+Dim nError As Long
+
+' administrator's info
+Dim bAdminEmailOnErrors As Boolean
+Dim sAdminEmailSubject As String
+Dim sAdminEmailAddr As String
+Dim sAdminFullName As String
+Dim nRepeatInterval As Integer
+Dim bNewErrors As Boolean
+'-------------------------------------------------------------------------
+
+' KONSTANTEN
+Const IniFile = "RuleServer.ini"
+Const LOGFILE = "D:\Quintus\QeS55\logs\BMS-IMSYS.log"
+Const INISection = "BMS"
+'-------------------------------------------------------------------------
+
+Sub WriteLog( nLevel As Integer, sMessage As String )
+Dim sDate As String
+Dim nChanel As Integer
+
+	On Error Resume Next
+	If ( nLevel > nLogLevel ) Then Exit Sub
+	If ( Len( sLogfile ) = 0 ) Then Exit Sub 
+	sDate = CStr( Date() + Time() )
+	nChanel = FreeFile()
+	Open sLogFile For Append Lock Write As nChanel
+	Print # nChanel, "[" & sDate & "] - " & sMessage
+	Close nChanel
+End Sub
+
+'-------------------------------------------------------------------------
+
+
+Sub SendAdminEmail( )
+Dim i As Integer
+Dim sBody As String
+Dim bRes As Boolean
+	On Error Resume Next ' just to be sure no errors can stop me now
+	sBody = "BMS Schnitstelle hat einen Fehler gemeldet. vgl. auch " & sLogFile	
+	WriteLog 3, "Email an Administrator: " & sAdminEmailAddr & ": " &  sAdminEmailSubject	
+	bRes =iApp.SendMail( sAdminEmailAddr, sAdminEmailSubject,, sBody)
+	If bRes = True Then
+		WriteLog 3, "gesendet."	
+	Else 
+		WriteLog 3, "nicht gesendet."
+	End If	
+End Sub
+
+'-------------------------------------------------------------------------
+
+Sub LogError( nNumber As Long )
+Dim sMsg As String
+	On Error GoTo logerror_error_handler
+	If nNumber > 0 Then 
+		sMsg = "Error " & CStr( nNumber ) & ": " & Error$( nNumber )
+	Else 
+		sMsg = " Unknown error in Script GetBMSStatus"
+	End If
+	WriteLog 0, sMsg
+logerror_error_handler:
+	Exit Sub
+End Sub
+'---------------------------------------------------------------
+'---------------------------------------------------------------
+Function GetXML(sSequence As String) As String
+  Dim xmlhttp As Object
+  Dim loc As String
+  Dim sStr As String
+
+  On Error GoTo GetXML_error
+
+   sMediatorRoot = GetAppProfileValue(iNetwork,"mediatorroot")
+   sSequencesRoot = GetAppProfileValue(iNetwork,"sequenceroot")
+
+   WriteLog 3, "Verbindung zu DB wird aufgebaut .."
+   loc =sMediatorRoot & "?xbd.sequence.uri=" & sSequencesRoot & sSequence 
+   writeLog 3, "URL: " & loc
+  Set xmlhttp = CreateObject("Microsoft.XMLHTTP")
+  xmlhttp.Open "GET", loc, false 
+
+  'xmlhttp.setRequestHeader "Content-Type", "text/xml"
+
+  xmlhttp.Send
+
+  sStr = xmlhttp.responseText
+  WriteLog 3, sStr	
+  GetXML = sStr
+
+
+ Exit Function	 
+
+ GetXML_error:
+	GetXML = "<error>" & " GetXML Error " & CStr(Err) & ": " & Error$ & "</error>"
+	WriteLog 0, "<error>" & " GetXML Error " & CStr(Err) & ": " & Error$ & "</error>"
+End Function
+'----------------------------------------------------------------
+Function GetBMSList()   As Boolean
+Dim iParser As Object
+Dim iDoc As Object
+Dim bRef As Boolean
+Dim iNodeList As Object
+Dim iNode As Object
+Dim iElement As Object
+Dim sXMLText As String
+Dim sAnswer As String
+Dim sSequence As String
+Dim i As Long
+Dim nRows As Long
+
+On Error GoTo ERRORHANDLER
+	ReDim Preserve sTasklist(3,0)
+
+	GetBMSList = True
+
+	Set iParser = GetObject( "", "QXMLParse.QXMLParser" )
+	sSequence =  "bms/getBMSStatusList.seq.xml&Date=" & Time()
+
+	sXMLText = GetXML(sSequence)
+ 
+	bref = iParser.parseString(sXMLText) 
+	
+	Set iDoc = iParser.Document
+
+ '	Exit Function
+
+' Ist alles OK mit dem Dokument?
+Set iNodeList = iDoc.getElementsByTagName("error")
+If iNodeList.Length > 0 Then
+	GetBMSList= False	
+   GoTo Cancel_Function 
+End If
+Set iNodeList = iDoc.getElementsByTagName("result")
+If iNodeList.Length = 0 Then 
+	GetBMSList= False
+	WriteLog 3, " Es ist kein DB2 Datensatz gefunden worden weil: " & Basic.Eoln$ & sXMLText
+	GoTo Cancel_Function
+End If
+
+Set iNode = iNodeList.item(0)
+If iNode.hasChildNodes  Then
+	Set iNodeList = iNode.ChildNodes
+   	nRows = iNodeList.Length ' row
+	ReDim Preserve sTasklist(3,nRows)
+	For i=1 To iNodeList.Length
+		Set iElement = iNodeList.item(i-1).CXMLElement
+		sTasklist(TASK,i) = iElement.GetAttribute("SMCAUFTRAGSNR") 
+		sTasklist(BMSID,i) = iElement.GetAttribute("BMSKONFIGNR") 
+		sTasklist(STATUS,i) = iElement.GetAttribute("STATUS_BMS") 
+	Next i
+Else
+   	nRows = 0 ' row
+	ReDim Preserve sTasklist(3,nRows)
+End If
+Cancel_Function:
+
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	Exit Function
+
+ERRORHANDLER:
+	WriteLog 0, "IsValidEdvinField error " & CStr(Err) & ": " & Error$
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	GetBMSList= False
+
+End Function
+' ----------------------------------------------------------------------
+Function SetBMSStatus(sTaskkey As String, sBMSID As String)   As Boolean
+Dim iParser As Object
+Dim iDoc As Object
+Dim bRef As Boolean
+Dim iNodeList As Object
+Dim iNode As Object
+Dim iElement As Object
+Dim sXMLText As String
+Dim sAnswer As String
+Dim sSequence As String
+Dim i As Integer
+
+On Error GoTo ERRORHANDLER
+
+	Set iParser = GetObject( "", "QXMLParse.QXMLParser" )
+	sSequence =  "bms/setBMSStatus.seq.xml&taskkey=" & sTaskkey & "&bmsid=" & sBMSID & "&Date=" & Time()
+
+	sXMLText = GetXML(sSequence)
+ 	WriteLog 3	, sXMLText
+	bref = iParser.parseString(sXMLText) 
+	
+	Set iDoc = iParser.Document
+
+ '	Exit Function
+
+' Ist alles OK mit dem Dokument?
+Set iNodeList = iDoc.getElementsByTagName("error")
+If iNodeList.Length > 0 Then
+  	 WriteLog 1,  " Es ist ein Fehler bei der Verbindung zu BMS aufgetreten."
+	SetBMSStatus= False	
+   GoTo Cancel_Function 
+End If
+Set iNodeList = iDoc.getElementsByTagName("result")
+If iNodeList.Length = 0 Then 
+	 WriteLog 3	, sXMLText
+	SetBMSStatus= False	
+	GoTo Cancel_Function
+End If
+
+sAnswer = "0"
+Set iNode = iNodeList.item(0)
+
+If iNode.hasChildNodes  Then
+		sAnswer= iNode.FirstChild.NodeValue
+End If
+
+Select Case sAnswer
+	Case "0"
+	 SetBMSStatus= False
+	Case "1","ok"
+	 SetBMSStatus= True
+	Case Else
+	 SetBMSStatus= False
+End Select
+
+Cancel_Function:
+
+
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	Exit Function
+
+ERRORHANDLER:
+	LogError(Err) 
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	SetBMSStatus= False
+
+End Function
+' ----------------------------------------------------------------------
+
+Function UpdateTask( sTaskkey As String, sBMSKey As String, sNewTaskStatus As String) As Boolean
+Dim sTaskStatus As String
+Dim sErrorMsg As String	
+Dim bIsDokumented As Boolean
+Dim sErrorText As String
+Dim nREcs As Integer
+	On Error GoTo updatetask_error_handler
+	UpdateTask = False
+
+' Status Fertig gemeldet setzen
+	WriteLog 3, "PROZEDUR UpdateTask"
+	If Instr(sFaultkeys, "|" & sTaskkey & "|") >0 Then
+		UpdateTask = True
+		WriteLog 3, "Auftrag " & sTaskkey & " konnte in diesem Lauf nicht aktualisiert werden."
+		Exit Function
+	End If
+	iTaskTbl.Clear
+	iTaskTbl.QBEClear
+	iTaskTbl.QBESetValue "pkey", "=" & sTaskkey 	
+	iTaskTbl.QBESetValue "extsystem_id",  sBMSKey 	
+	iTaskBrowser.Search	 "r_task", 2,True,false
+	nREcs =	iTaskBrowser.RecordCount
+	If nREcs > 1 Then
+		   WriteLog 0, "Datensatz nicht eindeutig in DB mit Key: " & sTaskkey  & " und BMS ID : " &	sBMSKey
+		   sErrorMsg = "Datensatz nicht eindeutig in DB"	
+		   UpdateTask = False
+			SendAdminEmail
+		   Exit Function	
+	End If
+	If nREcs = 0 Then
+		   WriteLog 0, "Datensatz nicht in DB mit Key: " & sTaskkey  & " und BMS ID : " &	sBMSKey
+		   sErrorMsg = "Datensatz nicht  in DB"	
+		   UpdateTask = False
+		   SendAdminEmail	
+		   Exit Function	
+	End If
+	Set iTaskRec = iTaskBrowser.GetTableRecord(0,iTaskTbl)
+	' Erst fertig melden
+	sTaskStatus = iTaskRec.GetValue("taskstatus")
+	If sTaskStatus = "In Arbeit" Or sTaskStatus = "Angelegt" Then
+		sErrorMsg = "Datensatz ist gelockt"
+	 	iTaskRec.SetValue "taskstatus", sNewTaskStatus
+	 	WriteLog 1, "Es wurde der Auftrag " & sTaskKey & " auf '" & sNewTaskStatus & "' gesetzt."
+		sErrorMsg = "Auf '" & sNewTaskStatus & "' setzen ist fehlgeschlagen"
+	 	iTaskTbl.Commit
+		WriteLog 3, "commit"
+		UpdateTask = True
+	Else
+	 	WriteLog 1, "der Auftrag " & sTaskKey & " hat einen Status der nicht änderbar ist: " & sTaskStatus
+	End If
+
+	bCalledFromRuleServer = False
+	Exit Function
+
+updatetask_error_handler:
+	nError = int(Err.Number)
+	On Error Resume Next
+	LogError nError
+	iTaskTbl.Clear
+	UpdateTask = False
+End Function
+
+'-------------------------------------------------------------------------
+
+Function GetIniInfo( sSection, sItem, sDefault ) As String
+Dim sRet As String
+	On Error GoTo getiniinfo_error_handler
+	sRet = ReadIni$( sSection, sItem, IniFile )
+	If sRet <> "" Then
+		GetIniInfo = sRet
+	Else
+		GetIniInfo = sDefault
+	End If
+	Exit Function
+getiniinfo_error_handler:
+	GetIniInfo = sDefault
+End Function
+
+'-------------------------------------------------------------------------
+
+Function CBool( sStr As String ) As Boolean
+	On Error GoTo cbool_error_handler
+	If UCase$( sStr ) = "TRUE" _
+	Or UCase$( sStr ) = "WAHR" Then
+		CBool = True
+		Exit Function
+	End If
+cbool_error_handler:
+	CBool = False
+End Function
+
+'-------------------------------------------------------------------------
+Sub Initialize
+	Set iApp = GetApp ' LogError uses SendEmail, SendEmail uses iApp
+
+	ReDim Preserve sTasklist(3,0)
+
+	nLogLevel = CInt( GetIniInfo( INISection, "LogLevel","3" ) )
+	sLogFile = GetIniInfo( INISection, "LogFile", LOGFILE)
+	WriteLog 3, "PROZEDUR GetBMSStatus"
+	WriteLog 3, "Script Started"
+	sAdminFullName = GetIniInfo( INISection, "sAdminFullName", "Andreas Schwandt" )
+	sAdminEmailAddr = GetIniInfo( INISection, "AdminEmailAddr", "andreas.schwandt@daimlerchrysler.com" )
+	bAdminEmailOnErrors = CBool( GetIniInfo( INISection, "AdminEmailOnErrors", "True" ) )
+	sAdminEmailSubject = GetIniInfo( INISection, "AdminEmailSubject", "QGateway-ERROR: Konnte BMS-Aufträge nicht bearbeiten" )
+	Set iNetwork = iApp.CreateNetwork( "f_ut_callmanage", "f_ut_callmanage" )
+	Set iTaskTbl = iNetwork.GetTable( "task" )
+	Set iTaskBrowser = iNetwork.GetBrowser("taskBrowser")	
+End Sub
+'-------------------------------------------------------------------------
+Sub GetBMSStatus()
+Dim nRows As Long
+Dim i As Long
+Dim sFaultNo As Long
+
+	On Error GoTo GetBMSStatus_error_handler
+	bNewErrors = False
+' For Tasks
+	Initialize 
+	nRows = 0
+	sFaultNo = 0
+	sFaultkeys ="|"
+	Do
+   		If Not GetBMSList  Then 
+			 bNewErrors= True
+		End If
+		nRows = UBound(	sTasklist,2)
+		For i =1 To nRows
+			WriteLog 3, " Debug Script bearbeite Task : "	& sTasklist(TASK,i)	& " im neuen Status " &  sTasklist(STATUS,i)
+			Select Case sTasklist(STATUS,i)
+				Case "AKT"
+ 					If Not UpdateTask(sTasklist(TASK,i), sTasklist(BMSID,i), "In Arbeit") Then
+  						WriteLog 1, "Auftrag " & sTasklist(TASK,i) & " konnte nicht gespeichert werden."
+						sFaultkeys = sFaultkeys & sTasklist(TASK,i) & "|"
+						sFaultNo = sFaultNo + 1
+  				 		bNewErrors= True
+					Else
+						If Not SetBMSStatus( sTasklist(TASK,i), sTasklist(BMSID,i)) Then
+  				 			WriteLog 0, "Auftrag " & sTasklist(TASK,i) & " mit BMS Auftrag " & sTasklist(BMSID,i) & " konnte nicht in DB2 geändert werden."	
+					  		sFaultNo = sFaultNo + 1
+  				 			bNewErrors= True
+						End If
+  					End If
+
+				Case "ABG"
+ 					If Not UpdateTask(sTasklist(TASK,i), sTasklist(BMSID,i), "Fertig gemeldet") Then
+  						WriteLog 1, "Auftrag " & sTasklist(TASK,i) & " konnte nicht gespeichert werden."
+						sFaultkeys = sFaultkeys & sTasklist(TASK,i) & "|"
+						sFaultNo = sFaultNo + 1
+  				 		bNewErrors= True
+					Else
+						If Not SetBMSStatus( sTasklist(TASK,i), sTasklist(BMSID,i)) Then
+  				 			WriteLog 0, "Auftrag " & sTasklist(TASK,i) & " mit BMS Auftrag " & sTasklist(BMSID,i) & " konnte nicht in DB2 geändert werden."	
+					  		sFaultNo = sFaultNo + 1
+  				 			bNewErrors= True
+						End If
+  					End If
+
+				Case "STO"
+ 					If Not UpdateTask(sTasklist(TASK,i), sTasklist(BMSID,i), "Storniert") Then
+  						WriteLog 0, "Auftrag " &  sTasklist(TASK,i) & " konnte nicht gespeichert werden."
+						sFaultkeys = sFaultkeys & sTasklist(TASK,i) & "|"
+						sFaultNo = sFaultNo + 1
+  				 		bNewErrors= True
+					Else
+						If Not SetBMSStatus( sTasklist(TASK,i), sTasklist(BMSID,i)) Then
+  				 			WriteLog 1, "Auftrag " & sTasklist(TASK,i) & " mit BMS Auftrag " & sTasklist(BMSID,i) & " konnte nicht in DB2 geändert werden."	
+					  		sFaultNo = sFaultNo + 1
+  				 			bNewErrors= True
+						End If
+					End If
+
+				Case Else  'AKT oder UEBG
+						If Not SetBMSStatus( sTasklist(TASK,i), sTasklist(BMSID,i)) Then
+  				 			WriteLog 0, "Auftrag " & sTasklist(TASK,i) & " mit BMS Auftrag " & sTasklist(BMSID,i) & " konnte nicht in DB2 geändert werden."	
+					  		sFaultNo = sFaultNo + 1
+  				 			bNewErrors= True
+						End If
+			End Select
+		Next i
+	Loop Until nRows = 0  Or nRows = sFaultNo 
+	If bAdminEmailOnErrors And bNewErrors Then SendAdminEmail 
+	
+Exit_sub:
+	WriteLog 3, "Script Terminated"
+
+	' clean up
+		iTaskTbl.Clear
+	Set iTaskBrowser = Nothing
+	Set iTaskTbl = Nothing
+	Set iTaskRec = Nothing
+	Set iNetwork = Nothing
+	Set iApp = Nothing
+
+	Exit Sub
+
+GetBMSStatus_error_handler:
+	nError = Err.Number
+	On Error Resume Next
+	LogError nError
+	GoTo Exit_sub
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+']]

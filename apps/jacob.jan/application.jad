@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="jan" engineVersion="3.0" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="jacobPersistentDataSource" reconfigure="none" type="sql"/>
+    <DataSource name="janConfigurationDataSource" reconfigure="full" type="sql"/>
+    <DataSource name="jacobTransientDataSource" reconfigure="none" type="sql"/>
+  </DataSources>
+  <Roles/>
+  <Tables>
+    <Table datasource="jacobPersistentDataSource" dbName="yan_queue" description="Queue for the jAN" name="jan_queue">
+      <Field dbName="sender" label="Sender" name="sender" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="200" searchMode="unbound"/>
+      </Field>
+      <Field dbName="senderAddr" history="false" label="Sender address" name="senderAddr" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="200" searchMode="unbound"/>
+      </Field>
+      <Field dbName="message" label="Message" name="message" readonly="false" required="true">
+        <LongText changeHeader="true"/>
+      </Field>
+      <Field dbName="state" label="Status" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>New</Default>
+          <Value>New</Value>
+          <Value>Error</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="errorMessage" label="Error message" name="errorMessage" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="500" searchMode="unbound"/>
+      </Field>
+      <Field dbName="sourceApp" label="Application" name="sourceApp" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pkey" label="ID" name="pkey" readonly="true" required="true">
+        <Integer autoincrement="true" dbincrement="false"/>
+      </Field>
+      <Field dbName="url" label="URL" name="url" readonly="false" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="255" searchMode="unbound"/>
+      </Field>
+      <Field dbName="urlComplete" history="false" label="URL" name="urlComplete" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>since jACOB 2.9 to have no limitation for amount of recipients</Value>
+        </Property>
+      </Field>
+      <Field dbName="created" label="Created" name="created" readonly="true" required="true">
+        <Timestamp resolution="minbase">
+          <Default>now</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="errorAt" history="false" label="Error time" name="errorAt" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="tries" history="false" label="Tries" name="tries" readonly="false" required="true">
+        <Integer autoincrement="false" min="0">
+          <Default>0</Default>
+        </Integer>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Tries how often sending has already failed</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="pkey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="jacobPersistentDataSource" dbName="yan_attachment" name="jan_attachment">
+      <Field dbName="message_key" history="false" label="Message" name="message_key" readonly="true" required="true">
+        <Integer autoincrement="false"/>
+      </Field>
+      <Field dbName="attachnbr" history="false" label="Nbr." name="attachnbr" readonly="true" required="true">
+        <Integer autoincrement="false" min="1"/>
+      </Field>
+      <Field dbName="document" history="false" label="Document" name="document" readonly="true" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="mimetype" history="false" label="Mime type" name="mimetype" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>message_key</Field>
+        <Field>attachnbr</Field>
+      </PrimaryKey>
+      <ForeignKey name="jan_queue_FKey">
+        <Field>message_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="jacobTransientDataSource" dbName="enginetask" description="transient engine task entries" name="enginetask">
+      <Field dbName="taskid" label="Task-ID" name="taskid" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="true" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="schedulerid" label="Scheduler-ID" name="schedulerid" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="true" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="created" label="Created" name="created" readonly="true" required="true">
+        <Timestamp resolution="minbase">
+          <Default>now</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="lastexecution" label="Last execution" name="lastexecution" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="nextexecution" label="Next execution" name="nextexecution" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="taskstatus" label="Status" name="taskstatus" readonly="false" required="true">
+        <Enumeration>
+          <Value>scheduled</Value>
+          <Value>hibernated</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="duration_ms" label="Duration" name="duration_ms" readonly="true" required="false">
+        <Integer autoincrement="false" dbincrement="false"/>
+      </Field>
+      <Field dbName="errorMessage" label="Error message" name="errorMessage" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="500" searchMode="unbound"/>
+      </Field>
+      <Field dbName="name" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="128" searchMode="unbound"/>
+      </Field>
+      <Field dbName="applicationname" label="Application" name="applicationname" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="applicationversion" label="Version" name="applicationversion" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="ownerid" label="Ownerid" name="ownerid" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="50" searchMode="unbound"/>
+      </Field>
+      <Field dbName="taskdetails" label="Taskdetails" name="taskdetails" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="scope" label="Scope" name="scope" readonly="true" required="false">
+        <Enumeration>
+          <Value>cluster</Value>
+          <Value>node</Value>
+          <Value>session</Value>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="prim">
+        <Field>schedulerid</Field>
+        <Field>taskid</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="jacobPersistentDataSource" dbName="enginetaskstatus" description="persistent task status" name="enginetaskstatus">
+      <Field dbName="taskstatus" label="Taskstatus" name="taskstatus" readonly="true" required="true">
+        <Enumeration>
+          <Value>scheduled</Value>
+          <Value>hibernated</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="applicationname" label="Applicationname" name="applicationname" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="taskname" label="Taskname" name="taskname" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="128" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="prim">
+        <Field>applicationname</Field>
+        <Field>taskname</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="janConfigurationDataSource" dbName="emailProperties" name="emailProperties">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>inactive</Default>
+          <Value>active</Value>
+          <Value>inactive</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="port" history="false" label="Port" name="port" readonly="false" required="true">
+        <Integer autoincrement="false" max="65535" min="0">
+          <Default>25</Default>
+        </Integer>
+      </Field>
+      <Field dbName="server" history="false" label="Server" name="server" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="user" history="false" label="User" name="user" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="defOriginator" history="false" label="Default Originator" name="defOriginator" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="defOriginatorAddr" history="false" label="Default Originator Address" name="defOriginatorAddr" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="maxRetries" history="false" label="Max. Retries" name="maxRetries" readonly="false" required="true">
+        <Enumeration>
+          <Default>5</Default>
+          <Value>1</Value>
+          <Value>5</Value>
+          <Value>10</Value>
+          <Label>1</Label>
+          <Label>5</Label>
+          <Label>10</Label>
+        </Enumeration>
+      </Field>
+      <Field dbName="retryTimespan" history="false" label="Retry Timespan" name="retryTimespan" readonly="false" required="true">
+        <Enumeration>
+          <Default>1</Default>
+          <Value>1</Value>
+          <Value>5</Value>
+          <Value>10</Value>
+          <Value>30</Value>
+          <Label>1</Label>
+          <Label>5</Label>
+          <Label>10</Label>
+          <Label>30</Label>
+        </Enumeration>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Retry timespan in mins</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="name_uidx">
+        <Field>name</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="janConfigurationDataSource" dbName="taskProperties" name="taskProperties">
+      <Field dbName="taskname" history="false" label="Task name" name="taskname" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="128" searchMode="unbound"/>
+      </Field>
+      <Field dbName="taskinterval" history="false" label="Task interval" name="taskinterval" readonly="false" required="true">
+        <Integer autoincrement="false" min="0">
+          <Default>60</Default>
+        </Integer>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>taskname</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="janConfigurationDataSource" dbName="directoryProperties" name="directoryProperties">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="state" history="false" label="State" name="state" readonly="false" required="true">
+        <Enumeration>
+          <Default>inactive</Default>
+          <Value>active</Value>
+          <Value>inactive</Value>
+          <Label>active</Label>
+          <Label>inactive</Label>
+        </Enumeration>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="root" history="false" label="Root Directory" name="root" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="128" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="emailProperties" table="emailProperties"/>
+    <TableAlias name="jan_queue" table="jan_queue"/>
+    <TableAlias name="jan_attachment" table="jan_attachment"/>
+    <TableAlias name="messagetask" table="enginetask">
+      <Condition>applicationname = 'jan' AND scope = 'cluster'</Condition>
+    </TableAlias>
+    <TableAlias name="taskProperties" table="taskProperties"/>
+    <TableAlias name="enginetaskstatus" table="enginetaskstatus"/>
+    <TableAlias name="directoryProperties" table="directoryProperties"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="emailProperties" name="emailPropertiesBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field configureable="false" label="Name" name="browserName" visible="true">
+        <TableField sortOrder="ascending" tableField="name"/>
+      </Field>
+      <Field label="State" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="Server" name="browserServer" visible="true">
+        <TableField tableField="server"/>
+      </Field>
+      <Field label="Port" name="browserPort" visible="true">
+        <TableField tableField="port"/>
+      </Field>
+      <Field label="Default Originator" name="browserDefOriginator" visible="false">
+        <TableField tableField="defOriginator"/>
+      </Field>
+      <Field label="Default Originator Email" name="browserDefOriginatorAddr" visible="true">
+        <TableField tableField="defOriginatorAddr"/>
+      </Field>
+      <Field label="Max. Retries" name="browserMaxRetries" visible="false">
+        <TableField tableField="maxRetries"/>
+      </Field>
+      <Field label="Retry Timespan" name="browserRetryTimespan" visible="false">
+        <TableField tableField="retryTimespan"/>
+      </Field>
+    </Browser>
+    <Browser alias="jan_queue" name="jan_queueBrowser" type="inform">
+      <Field label="ID" name="browserPkey" visible="true">
+        <TableField sortOrder="descending" tableField="pkey"/>
+      </Field>
+      <Field label="Status" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="Created" name="browserCreated" visible="true">
+        <TableField tableField="created"/>
+      </Field>
+      <Field label="Sender" name="browserSender" visible="true">
+        <TableField tableField="sender"/>
+      </Field>
+      <Field label="Sender address" name="browserSenderAddr" visible="true">
+        <TableField tableField="senderAddr"/>
+      </Field>
+      <Field label="Application" name="browserSourceApp" visible="true">
+        <TableField tableField="sourceApp"/>
+      </Field>
+      <Field label="URL" name="browserUrl" visible="true">
+        <TableField tableField="url"/>
+      </Field>
+    </Browser>
+    <Browser alias="jan_attachment" name="jan_attachmentIFBrowser" type="inform">
+      <Field configureable="false" label="Nbr." name="browserAttachnbr" visible="true">
+        <TableField sortOrder="ascending" tableField="attachnbr"/>
+      </Field>
+      <Field label="Document" name="browserDocument" visible="true">
+        <TableField tableField="document"/>
+      </Field>
+      <Field label="Mime type" name="browserMimetype" visible="true">
+        <TableField tableField="mimetype"/>
+      </Field>
+    </Browser>
+    <Browser alias="messagetask" name="messageTaskConfigBrowser" type="inform">
+      <Field configureable="false" label="Name" name="browserName" visible="true">
+        <TableField sortOrder="ascending" tableField="name"/>
+      </Field>
+      <Field label="Protocol" name="browserTaskdetails" visible="true">
+        <TableField tableField="taskdetails"/>
+      </Field>
+    </Browser>
+    <Browser alias="messagetask" name="messagetaskBrowser" type="inform">
+      <Field label="Task-ID" name="browserTaskid" visible="true">
+        <TableField tableField="taskid"/>
+      </Field>
+      <Field label="Protocol" name="browserTaskdetails" visible="true">
+        <TableField tableField="taskdetails"/>
+      </Field>
+      <Field label="Scheduler-ID" name="browserSchedulerid" visible="true">
+        <TableField tableField="schedulerid"/>
+      </Field>
+      <Field label="Task status" name="browserTaskstatus" visible="true">
+        <TableField tableField="taskstatus"/>
+      </Field>
+      <Field label="Last execution" name="browserLastexecution" visible="true">
+        <TableField tableField="lastexecution"/>
+      </Field>
+      <Field label="Duration" name="browserDuration_ms" visible="true">
+        <TableField tableField="duration_ms"/>
+      </Field>
+      <Field label="Next execution" name="browserNextexecution" visible="true">
+        <TableField tableField="nextexecution"/>
+      </Field>
+    </Browser>
+    <Browser alias="enginetaskstatus" name="enginetaskstatusBrowser" type="inform">
+      <Field label="Taskstatus" name="browserTaskstatus" visible="true">
+        <TableField tableField="taskstatus"/>
+      </Field>
+    </Browser>
+    <Browser alias="directoryProperties" name="directoryPropertiesBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="true">
+        <TableField sortOrder="ascending" tableField="name"/>
+      </Field>
+      <Field label="State" name="browserState" visible="true">
+        <TableField tableField="state"/>
+      </Field>
+      <Field label="Root Directory" name="browserRoot" visible="true">
+        <TableField tableField="root"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="jan_queue_jan_attachment">
+      <OneToMany fromAlias="jan_queue" toAlias="jan_attachment" toKey="jan_queue_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="r_jan">
+      <Relation>jan_queue_jan_attachment</Relation>
+      <Property>
+        <Name>jan_queue.x</Name>
+        <Value>242</Value>
+      </Property>
+      <Property>
+        <Name>jan_queue.y</Name>
+        <Value>186</Value>
+      </Property>
+      <Property>
+        <Name>jan_attachment.x</Name>
+        <Value>229</Value>
+      </Property>
+      <Property>
+        <Name>jan_attachment.y</Name>
+        <Value>52</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="eMail Channel" name="smtp">
+      <Group alias="emailProperties" border="false" browser="emailPropertiesBrowser" label="SMTP Server" name="emailPropertiesGroup">
+        <Dimension height="561" width="696" x="5" y="5"/>
+        <GuiElement name="emailPropertiesStaticImage" visible="true">
+          <StaticImage src="form_smtp.png">
+            <Dimension height="60" width="60" x="5" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="emailPropertiesPort" tabIndex="3" visible="true">
+          <LocalInputField tableField="port">
+            <TextInput>
+              <Dimension height="20" width="46" x="300" y="215"/>
+              <Caption halign="left" label="Port" valign="top">
+                <Dimension height="20" width="35" x="300" y="196"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesServer" tabIndex="2" visible="true">
+          <LocalInputField tableField="server">
+            <TextInput>
+              <Dimension height="20" width="275" x="17" y="215"/>
+              <Caption halign="left" label="SMTP Host" valign="top">
+                <Dimension height="20" width="70" x="17" y="196"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesUser" tabIndex="5" visible="true">
+          <LocalInputField tableField="user">
+            <TextInput>
+              <Dimension height="20" width="139" x="17" y="265"/>
+              <Caption halign="left" label="SMTP User" valign="top">
+                <Dimension height="20" width="70" x="17" y="246"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesName" tabIndex="1" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="31" width="282" x="10" y="105"/>
+              <Caption halign="left" label="Configuration Name" valign="top">
+                <Dimension height="20" width="228" x="10" y="86"/>
+              </Caption>
+              <Font family="sans-serif" size="12" style="normal" weight="normal"/>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="defaultName" visible="true">
+          <Heading>
+            <Caption halign="left" label="Server Configuration" valign="top">
+              <Dimension height="20" width="402" x="10" y="170"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="emailPropertiesPassword" tabIndex="6" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="210" x="180" y="265"/>
+              <Caption halign="left" label="SMTP Password" valign="top">
+                <Dimension height="20" width="70" x="180" y="246"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesState" tabIndex="4" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="21" width="71" x="312" y="105"/>
+              <Value>active</Value>
+              <Value>inactive</Value>
+              <Caption halign="left" label="State" valign="top">
+                <Dimension height="20" width="70" x="313" y="86"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesHeading" visible="true">
+          <Heading>
+            <Caption halign="left" label="'From' Configuration" valign="top">
+              <Dimension height="20" width="402" x="10" y="315"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="emailPropertiesDefOriginator" tabIndex="7" visible="true">
+          <LocalInputField tableField="defOriginator">
+            <TextInput>
+              <Dimension height="20" width="266" x="17" y="356"/>
+              <Caption halign="left" label="From Name" valign="top">
+                <Dimension height="22" width="70" x="17" y="335"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesDefOriginatorAddr" tabIndex="8" visible="true">
+          <LocalInputField tableField="defOriginatorAddr">
+            <TextInput>
+              <Dimension height="20" width="266" x="17" y="404"/>
+              <Caption halign="left" label="From eMail" valign="top">
+                <Dimension height="21" width="70" x="17" y="384"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesHeading2" visible="true">
+          <Heading>
+            <Caption halign="left" label="Retry Configuration" valign="top">
+              <Dimension height="20" width="402" x="10" y="451"/>
+              <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+            </Caption>
+          </Heading>
+        </GuiElement>
+        <GuiElement name="emailPropertiesRetryTimespanMinsLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="[min]" valign="top">
+              <Dimension height="20" width="38" x="221" y="490"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="emailPropertiesButtonBar" visible="true">
+          <FlowLayoutContainer orientation="vertical">
+            <Dimension height="419" width="181" x="470" y="105"/>
+            <GuiElement name="emailPropertiesSearchUpdateRecordButton" visible="true">
+              <Button label="%BUTTON_COMMON_SEARCH">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="emailPropertiesButtonNewRecord" tabIndex="13" visible="true">
+              <Button label="%BUTTON_COMMON_NEW">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <NewRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="emailPropertiesButtonClearGroup" tabIndex="12" visible="true">
+              <Button label="%BUTTON_COMMON_CLEAR">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <ClearGroup/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="emailPropertiesDeleteRecordButton" visible="true">
+              <Button label="%BUTTON_COMMON_DELETE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <DeleteRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+          </FlowLayoutContainer>
+        </GuiElement>
+        <GuiElement name="emailPropertiesLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Outgoing eMail Configuration" valign="top">
+              <Dimension height="26" width="352" x="64" y="22"/>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="emailPropertiesMaxRetries" visible="true">
+          <LocalInputField tableField="maxRetries">
+            <ComboBox>
+              <Dimension height="20" width="91" x="17" y="490"/>
+              <Value>1</Value>
+              <Value>5</Value>
+              <Value>10</Value>
+              <Caption halign="left" label="Max. Retries" valign="top">
+                <Dimension height="20" width="70" x="17" y="470"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="emailPropertiesRetryTimespan" visible="true">
+          <LocalInputField tableField="retryTimespan">
+            <ComboBox>
+              <Dimension height="20" width="82" x="135" y="490"/>
+              <Value>1</Value>
+              <Value>5</Value>
+              <Value>10</Value>
+              <Value>30</Value>
+              <Caption halign="left" label="Retry Intervall" valign="top">
+                <Dimension height="20" width="70" x="135" y="471"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Messages" name="messages">
+      <Group alias="jan_queue" border="false" browser="jan_queueBrowser" label="jAN Message" name="jan_queueGroup">
+        <Dimension height="525" width="766" x="5" y="5"/>
+        <GuiElement name="jan_queueButtonSearch" tabIndex="8" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="610" y="25"/>
+            <Action>
+              <Search filldirection="both" relationset="r_jan" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="jan_queueButtonClearGroup" tabIndex="9" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="685" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="jan_queueButtonUpdateRecord" tabIndex="11" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="685" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="jan_queueButtonNewRecord" tabIndex="10" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="610" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="jan_queuePkey" tabIndex="1" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="80" x="90" y="25"/>
+              <Caption halign="right" label="ID" valign="top">
+                <Dimension height="20" width="85" x="0" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueState" tabIndex="2" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="100" x="265" y="25"/>
+              <Value>New</Value>
+              <Value>Error</Value>
+              <Caption halign="right" label="Status" valign="top">
+                <Dimension height="20" width="85" x="175" y="25"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueCreated" tabIndex="3" visible="true">
+          <LocalInputField tableField="created">
+            <TimestampInput>
+              <Dimension height="20" width="150" x="440" y="25"/>
+              <Caption halign="right" label="Created" valign="top">
+                <Dimension height="20" width="70" x="365" y="25"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueSender" tabIndex="5" visible="true">
+          <LocalInputField tableField="sender">
+            <TextInput>
+              <Dimension height="20" width="200" x="90" y="115"/>
+              <Caption halign="right" label="Sender" valign="top">
+                <Dimension height="20" width="85" x="0" y="115"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueSenderAddr" tabIndex="7" visible="true">
+          <LocalInputField tableField="senderAddr">
+            <TextInput>
+              <Dimension height="20" width="500" x="90" y="140"/>
+              <Caption halign="right" label="Sender address" valign="top">
+                <Dimension height="20" width="85" x="0" y="140"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueSourceApp" tabIndex="6" visible="true">
+          <LocalInputField tableField="sourceApp">
+            <TextInput>
+              <Dimension height="20" width="200" x="390" y="115"/>
+              <Caption halign="right" label="Application" valign="top">
+                <Dimension height="20" width="90" x="295" y="115"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="jan_queueContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="346" width="665" x="90" y="170"/>
+            <Pane alias="jan_queue" browser="jan_queueBrowser" label="Message" name="jan_queueGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="jan_queueMessage" visible="true">
+                <LocalInputField tableField="message">
+                  <LongTextInput contentType="text/plain" htmlInput="false" inForm="true" mode="fulledit">
+                    <Dimension height="300" width="646" x="10" y="10"/>
+                    <Caption halign="right" label=" " valign="top">
+                      <Dimension height="20" width="70" x="-65" y="10"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="jan_queue" browser="jan_queueBrowser" label="Attachments" name="jan_queueGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement eventHandler="jacob.event.ui.jan_queue.Jan_queueJan_attachmentBrowser" name="jan_queueJan_attachmentBrowser" visible="true">
+                <InFormBrowser browserToUse="jan_attachmentIFBrowser" deleteMode="true" newMode="true" relationToUse="jan_queue_jan_attachment" updateMode="true">
+                  <Dimension height="301" width="641" x="10" y="9"/>
+                  <Caption halign="right" label="Message Attachments" valign="top">
+                    <Dimension height="50" width="200" x="0" y="0"/>
+                  </Caption>
+                </InFormBrowser>
+              </GuiElement>
+            </Pane>
+            <Pane alias="jan_queue" browser="jan_queueBrowser" label="Error" name="jan_queueGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="jan_queueErrorAt" visible="true">
+                <LocalInputField tableField="errorAt">
+                  <TimestampInput>
+                    <Dimension height="20" width="150" x="100" y="10"/>
+                    <Caption halign="right" label="Error time" valign="top">
+                      <Dimension height="20" width="90" x="5" y="10"/>
+                    </Caption>
+                  </TimestampInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="jan_queueTries" visible="true">
+                <LocalInputField tableField="tries">
+                  <TextInput>
+                    <Dimension height="20" width="100" x="350" y="10"/>
+                    <Caption halign="right" label="Tries" valign="top">
+                      <Dimension height="20" width="70" x="275" y="10"/>
+                    </Caption>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="jan_queueErrorMessage" visible="true">
+                <LocalInputField tableField="errorMessage">
+                  <LongTextInput contentType="text/plain" htmlInput="false" inForm="true" mode="fulledit" wordWrap="true">
+                    <Dimension height="276" width="421" x="100" y="39"/>
+                    <Caption halign="right" label="Error message" valign="top">
+                      <Dimension height="20" width="90" x="5" y="39"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.jan_queue.Jan_queueRecordSendButton" name="jan_queueRecordSendButton" visible="true">
+                <Button label="Retry Sending">
+                  <Dimension height="20" width="100" x="550" y="10"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.jan_queue.Jan_queueRecordResetErrorButton" name="jan_queueRecordResetErrorButton" visible="true">
+                <Button label="Reset Error">
+                  <Dimension height="20" width="100" x="550" y="60"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.jan_queue.Jan_queueResetAllErrorsButton" name="jan_queueResetAllErrorsButton" visible="true">
+                <Button label="Reset All Errors">
+                  <Dimension height="20" width="100" x="550" y="85"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.jan_queue.Jan_queueUrlComplete" name="jan_queueUrlComplete" tabIndex="4" visible="true">
+          <LocalInputField tableField="urlComplete">
+            <LongTextInput contentType="text/plain" htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="60" width="500" x="90" y="50"/>
+              <Caption halign="right" label="URL" valign="top">
+                <Dimension height="20" width="70" x="15" y="50"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="deleteContextMenuEntry" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+        <ContextMenuEntry eventHandler="jacob.event.ui.jan_queue.DeleteBrowserContextMenuEntry" label="Delete Browser" name="deleteBrowserContextMenuEntry" visible="true">
+          <Action>
+            <Generic/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form label="Tasks" name="taskconfig">
+      <Group alias="messagetask" border="false" browser="messageTaskConfigBrowser" label="Message Task Configuration" name="messageTaskGroup">
+        <Dimension height="251" width="601" x="5" y="5"/>
+        <GuiElement name="messageTaskSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="436" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="messageTaskClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="516" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.messagetask.MessageTaskUpdateRecordButton" name="messageTaskUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="516" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="messagetaskName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="266" x="94" y="25"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="84" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskTaskdetails" visible="true">
+          <LocalInputField tableField="taskdetails">
+            <TextInput>
+              <Dimension height="20" width="266" x="94" y="50"/>
+              <Caption halign="right" label="Protocol" valign="top">
+                <Dimension height="20" width="84" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.messagetask.MessagetaskInterval" name="messagetaskInterval" visible="true">
+          <LocalInputField>
+            <TextInput>
+              <Dimension height="21" width="87" x="94" y="75"/>
+              <Caption halign="right" label="Task Interval" valign="top">
+                <Dimension height="20" width="84" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskIntervalSecs" visible="true">
+          <Label>
+            <Caption halign="left" label="secs" valign="top">
+              <Dimension height="20" width="46" x="185" y="75"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Tasks" name="tasks">
+      <Group alias="messagetask" border="false" browser="messagetaskBrowser" label="Message Task" name="messagetaskGroup">
+        <Dimension height="221" width="766" x="5" y="5"/>
+        <GuiElement name="messagetaskSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="610" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="messagetaskClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="685" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="messagetaskUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="685" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="messagetaskName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="250" x="90" y="25"/>
+              <Caption halign="right" label="Name" valign="top">
+                <Dimension height="20" width="85" x="0" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskSchedulerid" visible="true">
+          <LocalInputField tableField="schedulerid">
+            <TextInput>
+              <Dimension height="20" width="120" x="440" y="25"/>
+              <Caption halign="right" label="Scheduler-ID" valign="top">
+                <Dimension height="20" width="90" x="345" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskTaskdetails" visible="true">
+          <LocalInputField tableField="taskdetails">
+            <TextInput>
+              <Dimension height="20" width="250" x="90" y="50"/>
+              <Caption halign="right" label="Protocol" valign="top">
+                <Dimension height="20" width="85" x="0" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskDuration_ms" visible="true">
+          <LocalInputField tableField="duration_ms">
+            <TextInput>
+              <Dimension height="20" width="60" x="320" y="75"/>
+              <Caption halign="right" label="Duration" valign="top">
+                <Dimension height="20" width="70" x="245" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskErrorMessage" visible="true">
+          <LocalInputField tableField="errorMessage">
+            <LongTextInput contentType="text/plain" htmlInput="false" inForm="true" mode="fulledit" wordWrap="true">
+              <Dimension height="81" width="470" x="90" y="125"/>
+              <Caption halign="right" label="Error message" valign="top">
+                <Dimension height="20" width="85" x="0" y="125"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskNextexecution" visible="true">
+          <LocalInputField tableField="nextexecution">
+            <TimestampInput>
+              <Dimension height="20" width="150" x="90" y="100"/>
+              <Caption halign="right" label="Next execution" valign="top">
+                <Dimension height="20" width="85" x="0" y="100"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskLastexecution" visible="true">
+          <LocalInputField tableField="lastexecution">
+            <TimestampInput>
+              <Dimension height="20" width="150" x="90" y="75"/>
+              <Caption halign="right" label="Last execution" valign="top">
+                <Dimension height="20" width="85" x="0" y="75"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskTaskstatus" visible="true">
+          <LocalInputField tableField="taskstatus">
+            <ComboBox>
+              <Dimension height="20" width="120" x="440" y="50"/>
+              <Value>scheduled</Value>
+              <Value>hibernated</Value>
+              <Caption halign="right" label="Task status" valign="top">
+                <Dimension height="20" width="90" x="345" y="50"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="messagetaskDurationMsLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="ms" valign="top">
+              <Dimension height="20" width="20" x="389" y="75"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Directory" name="directory">
+      <Group alias="directoryProperties" border="false" browser="directoryPropertiesBrowser" label="Directory" name="directoryPropertiesGroup">
+        <Dimension height="136" width="600" x="5" y="5"/>
+        <GuiElement name="directoryPropertiesSearchButton" tabIndex="11" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="436" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="local" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesUpdateRecordButton" tabIndex="14" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="516" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesClearGroupButton" tabIndex="12" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="516" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesNewRecordButton" tabIndex="13" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="436" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesName" tabIndex="1" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="266" x="94" y="25"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="19" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesRoot" tabIndex="2" visible="true">
+          <LocalInputField tableField="root">
+            <TextInput>
+              <Dimension height="20" width="266" x="94" y="50"/>
+              <Caption halign="left" label="Root Directory" valign="top">
+                <Dimension height="20" width="70" x="19" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="directoryPropertiesState" tabIndex="3" visible="true">
+          <LocalInputField tableField="state">
+            <ComboBox>
+              <Dimension height="20" width="100" x="94" y="75"/>
+              <Value>active</Value>
+              <Value>inactive</Value>
+              <Caption halign="left" label="State" valign="top">
+                <Dimension height="20" width="70" x="19" y="75"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="queue" title="Queue" visible="true">
+      <Form>messages</Form>
+      <Form>tasks</Form>
+    </Domain>
+    <Domain name="channel_configuration" title="Channel Configuration" visible="true">
+      <Form>smtp</Form>
+      <Form>directory</Form>
+      <Form>taskconfig</Form>
+    </Domain>
+    <Domain name="administration" title="Administration" visible="true"/>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="jan" title="jAN">
+      <Domain>queue</Domain>
+      <Domain>channel_configuration</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

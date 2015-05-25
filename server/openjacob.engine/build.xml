@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- 
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2009 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+-->
+<project name="openjacob.engine" default="all">
+	<property file="build.properties"/>
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/>
+	</tstamp>
+	<!-- =================================================================== -->
+	<!--  Configuration                                                      -->
+	<!-- =================================================================== -->
+	<property name="openjacob.admin.home" value="${basedir}/../openjacob.admin"/>
+	<property name="buildlib.dir" value="./lib/build"/>
+	<property name="dist.dir" value="./dist"/>
+	<property name="compile.debug" value="true"/>
+	<property name="compile.deprecation" value="false"/>
+	<property name="compile.optimize" value="true"/>
+	<property environment="env"/>
+	<property name="webapp.dir" value="./webapp"/>
+	<!-- for the js compressed version -->
+	<property name="prepared.dir" value="./webappTMP"/>
+	
+	<property name="openjacob.war" value="${dist.dir}/${engine.name}-${engine.version}.war"/>
+	<property name="debug_openjacob.war" value="${dist.dir}/debug_${engine.name}-${engine.version}.war"/>
+	
+	<property name="jacobbase.jar" value="${dist.dir}/jacobBase.jar"/>
+	<property name="doclet.jar" value="${dist.dir}/doclet.jar"/>
+	
+	<!-- Tomcat deploy properties -->
+	<property name="catalina.context" value="openjacob"/>
+	<property name="catalina.work.dir" value="${catalina.home}/work/Catalina/localhost/${catalina.context}"/>
+	<property name="catalina.deploy.dir" value="${catalina.home}/webapps/${catalina.context}"/>
+
+	
+	<!-- =================================================================== -->
+	<!-- Classpath                                                           -->
+	<!-- =================================================================== -->
+	<path id="compile.classpath">
+		<fileset dir="${buildlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${webapp.dir}/WEB-INF/lib">
+			<include name="*.jar"/>
+			<!-- es muss die Castor Version aus dem lib/build Verzeichnis genommen werden, da diese
+			     einen Patch für die Codegenerierung enthält. -->
+			<exclude name="castor-0.9.6.jar"/>
+		</fileset>
+	</path>
+	<path id="compile.admin.classpath">
+		<path refid="compile.classpath"/>
+		<pathelement path="${webapp.dir}/WEB-INF/classes"/>
+	</path>
+	<path id="compile.javadoc.classpath">
+		<path refid="compile.classpath"/>
+		<fileset dir="${dist.dir}">
+			<include name="jacobBase.jar"/>
+		</fileset>
+	</path>
+	<!-- =================================================================== -->
+	<!-- Public sources, i.e. sources delivered with jacobBase.jar           -->
+	<!-- =================================================================== -->
+	<patternset id="public.sources">
+		<include name="de/tif/jacob/core/data/*.java"/>
+		<include name="de/tif/jacob/core/data/index/*.java"/>
+		<include name="de/tif/jacob/core/data/event/IDataBrowserModifiableRecord.java"/>
+		<include name="de/tif/jacob/core/data/impl/index/event/*.java"/>
+		<include name="de/tif/jacob/core/data/impl/index/update/IIndexUpdateContext.java"/>
+		<include name="de/tif/jacob/core/definition/*.java"/>
+		<exclude name="de/tif/jacob/core/definition/FieldType.java"/>
+		<exclude name="de/tif/jacob/core/definition/ActionType.java"/>
+		<exclude name="de/tif/jacob/core/definition/IApplicationProvider.java"/>
+		<include name="de/tif/jacob/core/definition/fieldtypes/LongTextEditMode.java"/>
+		<include name="de/tif/jacob/core/Version.java"/>
+		<include name="de/tif/jacob/i18n/Message.java"/>
+		<include name="de/tif/jacob/i18n/ApplicationMessage.java"/>
+		<include name="de/tif/jacob/messaging/*.java"/>
+		<include name="de/tif/jacob/scheduler/ScheduleIterator.java"/>
+		<include name="de/tif/jacob/scheduler/SchedulerTask.java"/>
+		<include name="de/tif/jacob/scheduler/iterators/*.java"/>
+		<include name="de/tif/jacob/screen/*.java"/>
+		<exclude name="de/tif/jacob/screen/ApplicationProvider.java"/>
+		<exclude name="de/tif/jacob/screen/RuntimeProperty.java"/>
+		<exclude name="de/tif/jacob/screen/IActionTypeHandler.java"/>
+		<include name="de/tif/jacob/screen/dialogs/*.java"/>
+		<include name="de/tif/jacob/screen/dialogs/form/*.java"/>
+		<include name="de/tif/jacob/screen/event/*.java"/>
+		<include name="de/tif/jacob/security/*.java"/>
+		<exclude name="de/tif/jacob/security/UserManagement.java"/>
+		<include name="de/tif/jacob/entrypoint/*.java"/>
+		<exclude name="de/tif/jacob/entrypoint/CmdEntryPointManager.java"/>
+	</patternset>
+	<!-- =================================================================== -->
+	<!-- JavaDoc sources, i.e. sources to generate API documentation         -->
+	<!-- =================================================================== -->
+	<patternset id="javadoc.sources">
+		<!-- We want API docu for all public sources ! -->
+		<patternset refid="public.sources"/>
+		<include name="de/tif/jacob/core/data/event/*.java"/>
+		<exclude name="de/tif/jacob/core/data/event/DataEventHandler.java"/>
+		<!--                 
+		<include name="de/tif/jacob/core/data/xml/*.java"/>
+	-->
+		<include name="de/tif/jacob/core/exception/*.java"/>
+		<exclude name="de/tif/jacob/core/exception/SQLException.java"/>
+		<!--                 
+		<include name="de/tif/jacob/security/impl/*.java"/>
+	-->
+		<include name="de/tif/jacob/report/birt/*.java"/>
+		<include name="de/tif/jacob/scheduler/Scheduler.java"/>
+		<include name="de/tif/jacob/util/*Util.java"/>
+	</patternset>
+	
+	
+		
+	<!-- Additional Task definitions -->
+	<taskdef name="compress-js" classname="com.webpanes.tools.ant.taskdefs.CompressJS">
+		<classpath refid="compile.classpath"/>
+	</taskdef>
+
+	<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler">
+		<classpath refid="compile.classpath"/>
+	</taskdef>
+
+	<!-- =================================================================== -->
+	<!-- ALL                                                                 -->
+	<!-- =================================================================== -->
+	<target name="all" depends="cleanAll, jacobBase.jar, javadoc, openjacob.war" description="create the project">
+	</target>
+	<!-- =================================================================== -->
+	<!-- CLEAN                                                               -->
+	<!-- =================================================================== -->
+	<target name="clean" description="Delete old build and dist directories">
+		<delete quiet="true" dir="${prepared.dir}"/>
+		<delete quiet="true" dir="${webapp.dir}/WEB-INF/classes"/>
+		<delete quiet="true" dir="${webapp.dir}/WEB-INF/jacapp"/>
+		<delete quiet="true" file="${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+	</target>
+	<target name="cleanAll" depends="clean, QBEParser.clean, RTEParser.clean, AliasConditionParser.clean, castor.clean" description="Delete all temporary and generated data">
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${dist.dir}" includes="**/*" />
+		</delete>
+	</target>
+	<!-- =================================================================== -->
+	<!-- PREPARE                                                             -->
+	<!-- =================================================================== -->
+	<target name="prepare" depends="clean" description="Delete old build and dist directories">
+		<mkdir dir="${webapp.dir}/WEB-INF/classes"/>
+		<mkdir dir="${dist.dir}"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+	<!-- =================================================================== -->
+	<target name="castor.clean" depends="castor.jad.clean, castor.report.clean, castor.theme.clean, castor.flow.clean"/>
+	<target name="castor" depends="castor.jad, castor.report, castor.theme, castor.flow"/>
+	<target name="castor.theme.clean" description="clean the access classes for Theme definitions">
+		<!-- remove castor generated classes -->
+		<delete quiet="true" dir="./java/de/tif/jacob/screen/impl/theme/castor"/>
+	</target>
+	<target name="castor.theme" depends="castor.theme.clean" description="create the access classes for Theme definitions">
+		<!-- create the classes for the JAD definitions -->
+		<XSDCompiler package="de.tif.jacob.screen.impl.theme.castor" schema="./castor/theme.xsd" force="true" destDir="./java"/>
+	</target>
+	<target name="castor.jad.clean" description="clean the access classes for JAD definitions">
+		<!-- remove castor generated classes -->
+		<delete quiet="true" dir="./java/de/tif/jacob/core/definition/impl/jad/castor"/>
+	</target>
+	<target name="castor.jad" depends="castor.jad.clean" description="create the access classes for JAD definitions">
+		<!-- create the classes for the JAD definitions -->
+		<XSDCompiler package="de.tif.jacob.core.definition.impl.jad.castor" schema="./castor/jad.xsd" force="true" destDir="./java"/>
+	</target>
+	<target name="castor.report.clean" description="clean the access classes for the reports">
+		<!-- remove castor generated classes -->
+		<delete quiet="true" dir="./java/de/tif/jacob/report/impl/castor"/>
+	</target>
+	<target name="castor.report" depends="castor.report.clean" description="create the access classes for the reports">
+		<!-- create the classes for the report persistence -->
+		<XSDCompiler package="de.tif.jacob.report.impl.castor" schema="./castor/reportdefinition.xsd" force="true" destDir="./java"/>
+	</target>
+
+	<target name="castor.flow.clean" description="clean the access classes for Flow Workflow schema definitions">
+		<!-- remove castor generated classes -->
+		<delete quiet="true" dir="./java/de/tif/jacob/util/flow/castor"/>
+	</target>
+
+	<target name="castor.flow" depends="castor.flow.clean" description="create the access classes for Flow Workflow definitions">
+		<!-- create the classes for the JAD definitions -->
+		<XSDCompiler package="de.tif.jacob.util.flow.castor" schema="./castor/flow.xsd" force="true" destDir="./java"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- JFLEX Task Definition                                               -->
+	<!-- =================================================================== -->
+	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask">
+		<classpath>
+			<fileset dir="${buildlib.dir}">
+				<include name="JFlex.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
+	<!-- =================================================================== -->
+	<!-- GENERATE QBE Parser                                                 -->
+	<!-- =================================================================== -->
+	<target name="QBEParser.clean" description="Delete parser for QBE specifications">
+		<delete file="./java/de/tif/jacob/core/data/impl/qbe/QBEScanner.java"/>
+		<delete file="./java/de/tif/jacob/core/data/impl/qbe/QBEParser.java"/>
+		<delete file="./java/de/tif/jacob/core/data/impl/qbe/QBESym.java"/>
+	</target>
+	<target name="QBEParser.create" depends="QBEParser.clean" description="Create parser for QBE specifications">
+		<!-- generate CUP parser -->
+		<java classname="java_cup.Main" failonerror="true" fork="true" dir="./java/de/tif/jacob/core/data/impl/qbe">
+			<arg value="-package"/>
+			<arg value="de.tif.jacob.core.data.impl.qbe"/>
+			<arg value="-parser"/>
+			<arg value="QBEParser"/>
+			<arg value="-symbols"/>
+			<arg value="QBESym"/>
+			<arg value="-interface"/>
+			<arg value="../../../../../../../../JFlex/qbe.cup"/>
+			<classpath>
+				<pathelement location="${webapp.dir}/WEB-INF/lib/javacup.jar"/>
+			</classpath>
+		</java>
+		<!-- generate JFlex scanner -->
+		<jflex file="./JFlex/qbe.flex" destdir="./java"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- GENERATE RTE Parser                                                 -->
+	<!-- =================================================================== -->
+	<target name="RTEParser.clean" description="Delete parser for RTE (report text expression)">
+		<delete file="./java/de/tif/jacob/report/impl/transformer/base/rte/RTEScanner.java"/>
+		<delete file="./java/de/tif/jacob/report/impl/transformer/base/rte/RTEParser.java"/>
+		<delete file="./java/de/tif/jacob/report/impl/transformer/base/rte/RTESym.java"/>
+	</target>
+	<target name="RTEParser.create" depends="RTEParser.clean" description="Create parser for RTE (report text expression)">
+		<!-- generate CUP parser -->
+		<java classname="java_cup.Main" failonerror="true" fork="true" dir="./java/de/tif/jacob/report/impl/transformer/base/rte">
+			<arg value="-package"/>
+			<arg value="de.tif.jacob.report.impl.transformer.base.rte"/>
+			<arg value="-parser"/>
+			<arg value="RTEParser"/>
+			<arg value="-symbols"/>
+			<arg value="RTESym"/>
+			<arg value="-interface"/>
+			<arg value="../../../../../../../../../JFlex/rte.cup"/>
+			<classpath>
+				<pathelement location="${webapp.dir}/WEB-INF/lib/javacup.jar"/>
+			</classpath>
+		</java>
+		<!-- generate JFlex scanner -->
+		<jflex file="./JFlex/rte.flex" destdir="./java"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- GENERATE ALIAS CONDITION Parser                                     -->
+	<!-- =================================================================== -->
+	<target name="AliasConditionParser.clean" description="Delete parser for alias conditions">
+		<delete file="./java/de/tif/jacob/core/definition/impl/aliascondition/AliasConditionScanner.java"/>
+		<delete file="./java/de/tif/jacob/core/definition/impl/aliascondition/AliasConditionParser.java"/>
+		<delete file="./java/de/tif/jacob/core/definition/impl/aliascondition/AliasConditionSym.java"/>
+	</target>
+	<target name="AliasConditionParser.create" depends="AliasConditionParser.clean" description="Create parser for alias conditions">
+		<!-- generate CUP parser -->
+		<java classname="java_cup.Main" failonerror="true" fork="true" dir="./java/de/tif/jacob/core/definition/impl/aliascondition">
+			<arg value="-package"/>
+			<arg value="de.tif.jacob.core.definition.impl.aliascondition"/>
+			<arg value="-parser"/>
+			<arg value="AliasConditionParser"/>
+			<arg value="-symbols"/>
+			<arg value="AliasConditionSym"/>
+			<arg value="-interface"/>
+			<arg value="../../../../../../../../JFlex/aliascondition.cup"/>
+			<classpath>
+				<pathelement location="${webapp.dir}/WEB-INF/lib/javacup.jar"/>
+			</classpath>
+		</java>
+		<!-- generate JFlex scanner -->
+		<jflex file="./JFlex/aliascondition.flex" destdir="./java"/>
+	</target>
+	
+	
+	<!-- =================================================================== -->
+	<!-- Generate Java Sources                                               -->
+	<!-- =================================================================== -->
+	<target name="generate" depends="castor, QBEParser.create, RTEParser.create, AliasConditionParser.create" description="Generate Java sources">
+		<!-- Generate Version source -->
+		<filter token="VERSION" value="${engine.version}"/>
+		<filter token="ENGINE" value="${engine.name}"/>
+		<copy file="./java/de/tif/jacob/core/Version.template" toFile="./java/de/tif/jacob/core/Version.java" filtering="true" overwrite="true"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Compile                                                             -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare" description="Compile Java sources">
+		<!-- Generate Java sources first -->
+		<antcall target="generate"/>
+		<!-- Compile Java classes as necessary. The TAG-Classes are required for the jspC -->
+		<javac encoding="ISO-8859-1" srcdir="java" debug="on"  destdir="${webapp.dir}/WEB-INF/classes">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<!-- Move resources to the classes directory -->
+		<copy todir="${webapp.dir}/WEB-INF/classes">
+			<fileset dir="./java">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- JACOBBASE.JAR                                                       -->
+	<!-- =================================================================== -->
+	<target name="jacobBase.jar" depends="compile" description="Build jacobBase.jar">
+		<jar destfile="${jacobbase.jar}">
+			<fileset dir="${webapp.dir}/WEB-INF/classes">
+				<include name="**"/>
+				<exclude name="**/*.exe"/>
+			</fileset>
+			<fileset dir="./java">
+				<patternset refid="public.sources"/>
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+				<attribute name="Built-Time" value="${build.time}"/>
+				<attribute name="jACOB-Engine-Version" value="${engine.version}"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="doclet.jar" depends="compile" description="Build doclet.jar">
+		<jar destfile="${doclet.jar}">
+			<fileset dir="${webapp.dir}/WEB-INF/classes">
+				<include name="**/doclet/*"/>
+			</fileset>
+		</jar>
+	</target>
+
+				<!-- =================================================================== -->
+	<!-- OPENJACOB.WAR                                                       -->
+	<!-- =================================================================== -->
+	<target name="openjacob.war" depends="compile" description="Build openjacob.war">
+		<!-- integrate jACOB admin application -->
+		<ant dir="${openjacob.admin.home}" target="integrate" inheritAll="false">
+			<property name="webapp.home" value="${basedir}/${webapp.dir}"/>
+			<reference refid="compile.admin.classpath" torefid="compile.classpath"/>
+		</ant>
+		<!-- create jar to register default jacob service providers -->
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar" update="false">
+			<fileset dir="./provider"/>
+		</jar>
+		<!-- create the war itself -->
+		<jar destfile="${debug_openjacob.war}">
+			<fileset dir="${webapp.dir}"/>
+		</jar>
+		
+		<!-- prepare the compressed javascript version -->
+		<antcall target="prepare-compressed"/>
+		
+		<!-- create the compress-js war itself -->
+		<jar destfile="${openjacob.war}">
+			<fileset dir="${prepared.dir}"/>
+		</jar>
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- Prepare Compressed JavaScript Version                               -->
+	<!-- =================================================================== -->
+<target name="prepare-compressed" description="Erzeugt die komprimierte JavaScript Version von jACOB">
+	<!-- create the compressed version of the jACOB stuff -->
+  <mkdir  dir="${prepared.dir}"/>
+  <copy todir="${prepared.dir}" filtering="true">
+		<fileset dir="${webapp.dir}"/>
+  </copy>
+	<!-- Alle js Dateien komprimieren -->
+  <compress-js todir="${prepared.dir}" stripCR="false" copyright="">
+     <fileset dir="${webapp.dir}">
+        <include name="**/javascript/*.js"/>
+      <exclude name="**/javascript/prototype.js"/>
+     </fileset>
+  </compress-js>
+	<replaceregexp
+            match="(?s)&lt;!--REGEXP_START_REMOVE--&gt;(.*)&lt;!--REGEXP_END_REMOVE--&gt;"
+            replace=""
+            byline="false">
+            <fileset dir="${prepared.dir}" includes="**/*.jsp" />
+   </replaceregexp>
+  <concat destfile="${prepared.dir}/javascript/ie.js" binary="false">
+<header filtering="no" trimleading="yes">
+/*******************************************************************************
+ *    This file is part of Open-jACOB
+ *    Copyright (C) 2005-2006 Tarragon GmbH
+ * 
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; version 2 of the License.
+ * 
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ * 
+ *    You should have received a copy of the GNU General Public License     
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+ *    USA
+ *******************************************************************************/
+</header>
+    <fileset file="${prepared.dir}/javascript/calendar.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/calendar-setup.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/debug.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/popupWindow.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/autosuggest.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/brwsniff.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/prototype.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/moo.dom.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/moo.fx.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/webdav.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/nicEdit.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/tree.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBBehaviour.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTable.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTransparentMessage.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBAlert.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBPrompt.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBConfirm.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBFFComboBox.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTimeline.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBCalendar.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/ie_common.js"></fileset>
+ </concat>	
+ <copy file="${prepared.dir}/javascript/ie.js" toFile="${prepared.dir}/javascript/ie_common.js" overwrite="true"/>
+	
+  <concat destfile="${prepared.dir}/javascript/ns.js" binary="false">
+<header filtering="no" trimleading="yes">
+/*******************************************************************************
+ *    This file is part of Open-jACOB
+ *    Copyright (C) 2005-2006 Tarragon GmbH
+ * 
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; version 2 of the License.
+ * 
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ * 
+ *    You should have received a copy of the GNU General Public License     
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+ *    USA
+ *******************************************************************************/
+</header>
+    <fileset file="${prepared.dir}/javascript/calendar.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/calendar-setup.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/debug.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/popupWindow.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/autosuggest.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/brwsniff.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/prototype.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/moo.dom.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/moo.fx.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/webdav.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/nicEdit.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/tree.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBBehaviour.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTable.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTransparentMessage.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBAlert.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBPrompt.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBConfirm.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBFFComboBox.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBTimeline.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/jACOBCalendar.js"></fileset>
+    <fileset file="${prepared.dir}/javascript/ns_common.js"></fileset>
+ </concat>		
+ <copy file="${prepared.dir}/javascript/ns.js" toFile="${prepared.dir}/javascript/ns_common.js" overwrite="true"/>
+	
+  <delete quiet="true"  file="${prepared.dir}/javascript/calendar.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/calendar-setup.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/debug.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/popupWindow.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/autosuggest.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/brwsniff.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/prototype.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/moo.dom.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/moo.fx.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/webdav.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/nicEdit.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/tree.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBBehaviour.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBTable.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBTransparentMessage.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBAlert.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBPrompt.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBConfirm.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBFFComboBox.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBTimeline.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/jACOBCalendar.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/ns.js"/>
+  <delete quiet="true"  file="${prepared.dir}/javascript/ie.js"/>
+</target>
+	
+	<!-- =================================================================== -->
+	<!-- JavaDoc                                                             -->
+	<!-- =================================================================== -->
+	<target name="javadoc" depends="jacobBase.jar" description="jACOB API documentation">
+		<mkdir dir="${dist.dir}"/>
+		
+		<javadoc destdir="${dist.dir}/javadoc" access="public" use="true" notree="false" nonavbar="false" noindex="false" splitindex="true" author="false" version="true" nodeprecatedlist="false" nodeprecated="false" Encoding="ISO-8859-1" windowtitle="jACOB ${engine.version} API">
+			<fileset dir="./java" defaultexcludes="yes">
+				<patternset refid="javadoc.sources"/>
+			</fileset>
+			<classpath refid="compile.javadoc.classpath"/>
+			<doctitle><![CDATA[<h1>${engine.name} ${engine.version} API Documentation</h1>]]></doctitle>
+			<header><![CDATA[<i>${engine.name} ${engine.version} API Documentation.</i>]]></header>
+		</javadoc>
+		<zip destfile="${dist.dir}/${engine.name}-${engine.version}.javadoc.zip" basedir="${dist.dir}/javadoc"/>
+	</target>
+	
+	<target name="doclet" depends="doclet.jar" description="jACOB API changelog">
+		<mkdir dir="${dist.dir}"/>
+
+		<javadoc additionalparam="-path ddd">
+			<fileset dir="./java" defaultexcludes="yes">
+				<patternset refid="javadoc.sources"/>
+			</fileset>
+	     <doclet name="de.tif.jacob.util.doclet.ListSince" path="${doclet.jar}">
+	     </doclet>
+    </javadoc>
+ 
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- CATALINA DEPLOY                                                     -->
+	<!-- =================================================================== -->
+	<target name="catalina.deploy" depends="openjacob.war" description="Build and unzip war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${openjacob.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+</project>

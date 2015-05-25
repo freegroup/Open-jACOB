@@ -1,0 +1,5230 @@
+'NAME = "TaskUpdate"
+'TYPE = 0
+'TEMPLATE = "Function TaskUpdate() As Boolean"
+'TEXT = [[
+
+
+'*****************************************************************************
+'SCript:     TaskUpdate
+'Purpose:    Business rules that are executed when a task is updated.
+'Copyright:  Quintus Corporation, 1996
+'*****************************************************************************
+'Option Explicit
+Declare Function CheckTaskDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean
+
+Global Const sNull = ""
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver				
+
+Dim sINITIALSTATUS As String
+Dim sENDSTATUS As String
+Dim bOBJECTREQUIRED As Boolean
+Dim bALLOWCANCEL As Boolean
+Dim bNEEDEXTID As Boolean
+Dim bWebQ As Boolean
+' dient webtaker für die Speicherverwaltung
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskRec As DBRecord
+Dim iTaskTable As DBTable
+
+'--------------------------------
+Function LinkThroughTable(iNetwork As DBNetwork, iRec As DBRecord, sTableName As String, sFieldName As String) As Boolean
+
+
+
+' Try to link the records through the table.  Could already have selected
+' a record, but with the workings of the GUI, not have the foreign field
+' filled in for the call.
+
+Dim iTable As DBTable
+
+	Set iTable = iNetwork.GetTable(sTableName)
+	LinkThroughTable = False
+	If iTable.RecordCount = 1 Then
+		iRec.SetValue sFieldName, iTable.GetRecord(0).GetKeyValue
+		LinkThroughTable = True
+	End If
+	Set iTable = Nothing
+End Function
+'----------------------------------------------------------------
+'WebQ kann nicht die Clientfunktion	 CheckTaskDocumented  nutzen,
+' weil das IExplorer-Objekt erzeugt wird
+' deshalb der Workaround
+Function ToEnglishDate( sValue As String) As String
+Dim nPos As Integer
+	nPos= InStr(1,sValue,"Mär",1)
+	If nPos <> 0 Then
+  		 Mid$(sValue,nPos,3)="Mar"
+	End If
+	nPos= InStr(1,sValue,"Mai",1)
+	If nPos <> 0 Then
+  		 Mid$(sValue,nPos,3)="May"
+	End If
+	nPos= InStr(1,sValue,"Okt",1)
+	If nPos <> 0 Then
+  		 Mid$(sValue,nPos,3)="Oct"
+	End If
+	nPos= InStr(1,sValue,"Dez",1)
+	If nPos <> 0 Then
+  		 Mid$(sValue,nPos,3)="Dec"
+	End If
+ToEnglishDate = sValue
+End Function
+Function CheckTaskDocumentedWebQ(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean
+
+Dim isOK As Boolean
+Dim dTaskStart As Date
+Dim dTaskDone As Date
+Dim iRecord As DBRecord
+Dim dInterval As Date
+Dim sResolver As String
+Dim nResolver As Integer
+Dim nTotalTimespent As Long
+Dim dDokumentationTime As Date
+Dim sTotalTimespent As String
+Dim sDokumentationTime As String
+Dim sExtSystemType As String
+Dim sExtSystem As String
+Dim sTaskType  As String
+Dim sHWG As String
+Dim sValue As String
+Dim isDocumented As Boolean
+
+
+	sErrorText = ""
+	isOK =False
+	isDocumented = True
+On Error GoTo error_handler
+  				sValue =iTaskRec.GetValue("taskstart")
+				If sValue = "" Then
+						iTaskRec.SetValue "taskstart", iTaskRec.Getvalue("daterequested")
+  				End If
+  				sValue =iTaskRec.GetValue("timedoc_h")
+				If sValue = "" Then
+						iTaskRec.SetValue "timedoc_h" , "0"
+				End If
+  				sValue =iTaskRec.GetValue("timedoc_m")
+				If sValue = "" Then
+						iTaskRec.SetValue "timedoc_m" , "00"
+				End If
+  				sValue =iTaskRec.GetValue("timedocumentation")
+				If sValue = "" Then
+						iTaskRec.SetValue "timedocumentation" , 0
+				End If
+  				sValue =iTaskRec.GetValue("no_resolver")
+				If sValue = "" Then
+						iTaskRec.SetValue "no_resolver" , 1
+				End If
+				nTotalTimespent=val(iTaskRec.GetValue("totaltimespent_h"))*3600+val(iTaskRec.GetValue("totaltimespent_m"))*60 
+
+	dTaskStart = CDate(ToEnglishDate(iTaskRec.GetValue("taskstart")))	
+	dTaskDone = CDate(ToEnglishDate(iTaskRec.GetValue("taskdone")))
+	sResolver = iTaskRec.GetValue("no_resolver")
+	nResolver = val(sResolver )
+	sDokumentationTime =iTaskRec.GetValue("timedocumentation") 
+	dDokumentationTime = iApp.IntervalToSeconds(sDokumentationTime)
+	If Not (dTaskStart > 0) Then
+		sErrorText = "Arbeitsbeginn "  
+		isDocumented = False
+	End If
+	If Not (dTaskDone > 0) Then
+		sErrorText = sErrorText & ",Arbeitsende "  
+		isDocumented = False
+	End If
+	If Not (sResolver<> "" ) Then
+		sErrorText = sErrorText & ",Anzahl Mitarbeiter "  
+		isDocumented = False
+	End If
+	If Not (nTotalTimespent >0) Then
+		sErrorText = sErrorText & ",Arbeitsaufwand "  
+		isDocumented = False
+	End If
+	If Not (sDokumentationTime <>"") Then
+		sErrorText = sErrorText & ",Dokumentationsaufwand "  
+		isDocumented = False
+	End If
+	If Not isDocumented Then
+		sErrorText = "Folgende Felder sind nicht dokumentiert: " & sErrorText  
+		CheckTaskDocumentedWebQ= False
+		Exit Function
+	End If
+
+	If dTaskstart > dTaskDone Then
+		sErrorText = "Das Arbeitsende kann nicht vor Arbeitsbeginn liegen."
+		GoTo Exit_Function
+	End If
+	If nResolver < 1 Or nResolver >999 Then
+		sErrorText =  "Die Anzahl der Arbeiter stimmt nicht."
+		GoTo Exit_Function
+	End If
+	If nTotalTimespent <= 0 Or nTotalTimespent >(36000000) Then
+		sErrorText = "Der Durchführungsaufwand ist ungültig." 
+		GoTo Exit_Function
+	End If
+	If dDokumentationTime < 0 Or dDokumentationTime >(36000000) Then
+		sErrorText = "Der Dokumentationsaufwand ist ungültig."
+		GoTo Exit_Function
+	End If
+	sExtSystemType= ""
+	If iTaskRec.HasLinkedRecord("ext_system") Then
+		sExtSystemType = iTaskRec.GetLinkedRecord("ext_system").GetValue("systemtype") 
+	End If
+	If sExtSystemType="GDS"  Then 
+	   If Not iNetwork.GetTable("errorcodetaskdata").InDatabase("task_key", iTaskRec.GetValue("pkey")) Then
+				sErrorText =  "Es ist keine GDS Rückmeldung angegeben."
+				GoTo Exit_Function
+	   End If				
+	Else
+		If sExtSystemType="EDVIN" Then
+			
+			If Not( iTaskRec.HasLinkedRecord("tasktype")) Then 
+			   	sErrorText =  "Es ist keine Auftragsart angegeben."
+			   	GoTo Exit_Function
+			End If
+		Else
+	   		If sExtSystemType="virtuell" Then
+				' Do nothing
+		   	Else
+
+				sErrorText =  "Es ist kein Abrechnungssystem definiert."
+				GoTo Exit_Function
+			End If
+		End If
+	End If 
+
+	isOK  = True 
+    GoTo Exit_Function
+Error_handler:
+	sErrorText = "Fehler bei der Überprüfung des Dokumentiert-Status "
+Exit_Function:
+	CheckTaskDocumentedWebQ= isOK
+End Function
+
+'----------------------------------------------------------------
+Sub GetExtSystemParameter(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord)
+Dim iExtSystemRec As DBRecord
+Dim iTAble As DBTable
+' Defaults
+  	sINITIALSTATUS = "Neu"
+  	sENDSTATUS = "Abgerechnet"
+  	bOBJECTREQUIRED = True
+  	bALLOWCANCEL= False
+	bNEEDEXTID = True
+    If Not(iTaskRec.HasLinkedRecord("ext_system")) And _
+		   Not(LinkThroughTable(iNetwork,iTaskRec,"ext_system","ext_system_key")) Then
+		iApp.UserMsg "Es ist kein gültiges ext.System gewählt",ebCritical
+		Exit Sub
+	Else
+
+		If iTaskRec.HasLinkedRecord("ext_system") Then
+			 Set iExtSystemRec = iTaskRec.GetLinkedRecord("ext_system")
+		Else
+			Set iTable = iNetwork.GetTable("ext_system")
+			Set iExtSystemRec = iTAble.GetRecord(0)
+		End If 
+
+	End If
+  	sINITIALSTATUS = iExtSystemRec.GetValue("initialstatus")
+  	sENDSTATUS = iExtSystemRec.GetValue("endstatus")
+	If iExtSystemRec.GetValue("allowcancel") = "Ja" Then
+		bALLOWCANCEL=True
+	Else
+		bALLOWCANCEL=false
+	End If
+
+	If iExtSystemRec.GetValue("objectrequired") = "Ja" Then
+		bOBJECTREQUIRED=True
+	Else
+		bOBJECTREQUIRED=false
+	End If
+
+  	If sINITIALSTATUS = "Neu" Then
+		bNEEDEXTID=True
+	Else
+		bNEEDEXTID=false
+	End If
+	Set iTable = Nothing
+	Set iExtSystemRec = Nothing
+End Sub
+'----------------------------------------------------------------
+
+Function CheckNewTask(iApp As Application, _
+                      iRec As DBRecord) As Boolean
+ Dim iNetwork As DBNetwork
+ Dim iBrowser As DBBrowser
+ Dim iTable As DBTable
+ Dim iCallTable As DBTable
+ Dim nRecMode As Integer
+ Dim sSequence As String
+ Dim sPreSequence As String
+ Dim sNotTaskkey As String
+ Dim nTaskRecs As Integer
+ Dim sCallStatus As String
+
+    CheckNewTask =True
+	If bCalledFromRuleServer = True Then Exit Function
+    On Error GoTo CheckNewTask_error_handler
+    '-----------------------------------------------
+	nRecMode = iRec.Mode()
+	If nRecMode = MODE_NEW Then
+	' First get the call table from the network, and see if we have a record selected.
+		Set iCallTable = iApp.ContextNetwork.GetTable("call")
+
+		If iCallTable.RecordCount = 1 Then
+	  		'We have a single record selected.  Let's link.
+	  	   sCallStatus = iCallTable.GetRecord(0).GetValue("callstatus")
+	  		If sCallStatus = "Geschlossen" Then 
+   			  	iApp.UserMsg "Für geschlossene Meldungen dürfen keine Aufträge angelegt werden.", ebCritical
+   				CheckNewTask = False
+ 	 			GoTo Exit_Function
+			End If
+	  	   sCallStatus = iCallTable.GetRecord(0).GetValue("callstatus")
+	  		If sCallStatus <> "Angenommen" Then 
+   			  	iApp.UserMsg "Um Aufträge anzugelegen, muß die Meldung angenommen sein."
+   				CheckNewTask = False
+ 	 			GoTo Exit_Function
+			End If 
+ 
+   		Else
+   		  	iApp.UserMsg "Es ist keine Meldung ausgewählt"
+			CheckNewTask = False
+ 			GoTo Exit_Function
+	    End If
+    	Set iNetwork = iApp.CreateNetwork( "q_task","q_task" )
+	    Set iTable = iNetwork.GetTable( "tasktable" )
+     	Set iBrowser = iNetwork.GetBrowser( "tasktableBrowser" )
+    	iTable.QBEClear
+    	iBrowser.Clear
+     	iTable.QBESetValue "calltask", iRec.GetValue("calltask")
+        sNotTaskkey = "!" & iRec.getValue("pkey")
+		iTable.QBESetValue "pkey", sNotTaskkey
+		iBrowser.Search "cqlocal"							    
+		nTaskRecs = iBrowser.RecordCount  ' his owne Too
+		iRec.SetValue "taskno",  iRec.GetValue("calltask") & "/" &  Trim$(CStr(nTaskRecs+1))
+
+	   sSequence = iRec.GetValue("sequence")
+       If sSequence <> "0" Then	 ' Check If there a previous Sequence
+		sPreSequence = Str$(Val(sSequence)-1)
+        sNotTaskkey = "!" & iRec.getValue("pkey")
+    	iTable.QBEClear
+    	iBrowser.Clear
+     	iTable.QBESetValue "taskstatus", "!Storniert"
+     	iTable.QBESetValue "calltask", iRec.GetValue("calltask")
+ 	    iTable.QBESetValue "sequence", "1.." & sPreSequence 
+ 	    iTable.QBESetValue "workable", "Ja" 
+		iTable.QBESetValue "pkey", sNotTaskkey
+		iBrowser.Search "cqlocal"							    
+		nTaskRecs = iBrowser.RecordCount
+		If nTaskRecs > 0 Then
+        	iApp.UserMsg " Die angegebene Sequenz ist ungültig."_
+						 & Basic.Eoln$ &"Es existiert mindestens ein ausführbarer Auftrag mit niedrigerer Sequenz"
+			CheckNewTask = False
+		End If
+	   End If 
+	End If
+
+Exit_Function:
+    Set iBrowser = Nothing
+	Set iTable = Nothing
+	Set iCallTable = Nothing
+	Set iNetwork = Nothing
+Exit Function
+CheckNewTask_error_handler:
+    iApp.UserMsg "TaskUpdate error " & CStr(Err) & ": " & Error$
+    CheckNewTask = False
+	GoTo Exit_Function
+
+End Function
+
+'--------------------------------------------------------------------
+'New Function to check the new field ble
+' Mike Doering Quartess
+
+Function WorkableStatus(iApp As Application, _
+         iTaskRec As DBRecord) As Boolean
+
+Dim iNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTable As DBTable
+Dim iRec As DBRecord
+Dim sSequence As String
+Dim sPreSequence As String
+Dim sPostSequence As String
+Dim sSearchStr As String
+Dim sNotTaskkey As String
+Dim nTaskRecs As Long
+Dim sRecpkey As String
+Dim i As Integer
+Dim	nNextSequene As Integer
+Dim nCurrentSequene	As Integer
+Dim bCommit As Boolean
+
+   On Error GoTo Workable_ERROR_HANDLER
+
+	Set iNetwork = iApp.CreateNetwork( "q_task","q_task" )
+	Set iTable = iNetwork.GetTable( "tasktable" )
+	Set iBrowser = iNetwork.GetBrowser( "tasktableBrowser" )
+    sNotTaskkey = "!" & iTaskRec.getValue("pkey")
+	sSearchStr="Neu|Angelegt|Freigegeben|In Arbeit"
+	sSequence = iTaskRec.GetValue("sequence")
+	If 	sSequence = "0" Then
+		iTaskRec.SetValue "workable", "Ja"   
+	Else
+		sPreSequence=Str(val(sSequence)-1)
+		If val(sSequence) = 99 Then 
+			sPostSequence=sSequence
+ 		Else 
+			sPostSequence=Str(val(sSequence)+1)
+		End If
+ 		iTable.QBEClear
+		iBrowser.Clear
+		iTable.QBESetValue "calltask", iTaskRec.GetValue("calltask")
+		iTable.QBESetValue "taskstatus", sSearchStr
+	    iTable.QBESetValue "sequence", sPostSequence & "..99"
+ 		iTable.QBESetValue "pkey", sNotTaskkey
+ 		iBrowser.Search "cqlocal"
+ 		nTaskRecs = iBrowser.RecordCount
+		If nTaskRecs < 1  Then
+ 			iTaskRec.SetValue "workable", "Ja"   
+ 	  	Else
+ 			iTaskRec.SetValue "workable", "Nein"
+ 		End If
+	End If
+
+	If InStr("Storniert|Fertig gemeldet|Abgeschlossen",iTaskRec.GetValue("taskstatus")) Then
+		iTable.QBEClear
+		iBrowser.Clear
+		iTable.QBESetValue "calltask", iTaskRec.GetValue("calltask")
+		iTable.QBESetValue "taskstatus", sSearchStr
+	    ITable.QBESetValue "sequence", sSequence & "..99"
+		iTable.QBESetValue "pkey", sNotTaskkey
+		iBrowser.Search "cqlocal"
+		nTaskRecs = iBrowser.RecordCount
+   		If nTaskRecs < 1  Then ' there are no preveous Tasks
+ 			iTable.QBEClear
+		   '	iTable.QBESetValue "calltask",
+		   '	iTable.QBESetValue "pkey", sNotTaskkey
+			iTable.SetWhere "tasktable.pkey <> " & iTaskRec.getValue("pkey")  & " And tasktable.calltask = " &  iTaskRec.GetValue("calltask") & " And tasktable.sequence >0 And tasktable.sequence <" & sSequence & " order by tasktable.sequence desc"
+   			iTable.Search
+			iTable.SetWhere ""
+			nTaskRecs = iTable.RecordCount
+			If nTaskRecs > 0 Then ' we found a next Sequence
+				nNextSequene =0
+				bCommit = False
+				For i=0 To nTaskRecs - 1
+					Set iRec = iTable.GetRecord(i)
+					nCurrentSequene = iRec.GetValue("sequence")
+					If nCurrentSequene >= nNextSequene Then 
+						If iRec.GetValue( "workable")= "Nein" Then	
+							iRec.SetValue "workable","Ja"
+							iTable.commit
+							bCommit = True
+						End If
+						nNextSequene = nCurrentSequene
+					Else
+						i= nTaskRecs ' Exit Loop
+					End If	
+				Next i
+				If bCommit Then
+					iApp.UserMsg "Es wurden Datensätze auf ausführbar geändert."_
+         			& Basic.Eoln$ &"Der Aufgabenbrowser ist möglicherweise nicht mehr aktuell."
+				End If
+			End If
+		End If
+	End If
+
+    Set iRec     = Nothing
+	Set iTable   = Nothing
+	Set iBrowser = Nothing
+	Set iNetwork = Nothing
+ WorkableStatus = True
+ Exit Function
+	Workable_ERROR_HANDLER:
+    If Err= 10025 Then
+	 	   sRecpkey = iRec.getValue("pkey")
+		   iApp.UserMsg "Beenden der Aufgabe nicht möglich, weil"_
+		& Basic.Eoln$ &"Augabe-Nr.: "& sRecpkey & " widerrechtlich bearbeitet wird."
+		Else
+			iApp.UserMsg "WorkableStatus error " & CStr(Err) & ": " & Error$
+	End If 
+    Set iRec     = Nothing
+	Set iTable   = Nothing
+	Set iBrowser = Nothing
+	Set iNetwork = Nothing
+ 	WorkableStatus = False
+
+End Function
+
+'----------------------------------------------------------------
+Sub SetTaskStatus(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord)
+Dim  sCurrentStatus	 As String
+	If	(iTaskRec.Mode =MODE_NEW) Then	 iTaskRec.SetValue "taskstatus",  sINITIALSTATUS
+	
+	sCurrentStatus = iTaskRec.GetValue("taskstatus")
+	If 	sCurrentStatus = "Storniert" And  bALLOWCANCEL Then Exit Sub
+
+	If 	bNEEDEXTID And iTaskRec.GetValue("extsystem_id") ="" Then iTaskRec.SetValue "taskstatus",  sINITIALSTATUS
+
+	If 	bNEEDEXTID And iTaskRec.GetValue("extsystem_id") <> "" _
+		And sCurrentStatus ="Neu" Then 
+			iTaskRec.SetValue "taskstatus",  "Angelegt"
+			sCurrentStatus = "Angelegt"
+	End If
+End Sub
+'----------------------------------------------------------------
+
+Function CheckTaskStatusChange(iApp As Application, _
+    iNetwork As DBNetwork, iTaskRec As DBRecord) As Boolean
+' Get the old and new status field values.  Based on these, enforce
+' the state change rules.
+
+Dim OldStatus As String
+Dim NewStatus As String
+Dim dDateResolved As Date
+Dim dDateReported As Date
+Dim dDateDocumented As Date
+Dim dCloseBy As Date
+Dim sClosedBy As String
+Dim lInterval As Long
+Dim isOK As Boolean
+Dim isDocumented As Boolean
+Dim sWorkable As String
+Dim sErrorText As String
+
+	sErrorText = ""
+	CheckTaskStatusChange =False
+	isOK = True
+	isDocumented = True
+    OldStatus= ""
+	NewStatus = ""
+	' there is an ext. System get the parameter
+    GetExtSystemParameter iApp ,iNetwork, iTaskRec
+
+	SetTaskStatus iApp ,iNetwork, iTaskRec
+' Diese Regel gilt bei allen Stati
+	If bOBJECTREQUIRED And Not(iTaskRec.HasLinkedRecord("taskobject")) Then
+					iApp.UserMsg "Das Abrechnungssystem des Auftrags erfordert ein Objekt."_
+                  	 & Basic.Eoln$ & "Wählen Sie bitte ein passendes Objekt aus.",ebExclamation
+        	        CheckTaskStatusChange = False
+					Exit Function
+  	End If
+
+    If iTaskRec.HasChanged("taskstatus") And Not (iTaskRec.Mode =MODE_NEW) Then
+        OldStatus = iTaskRec.GetOldValue("taskstatus")
+        NewStatus = iTaskRec.GetValue("taskstatus")
+    Else
+		If iTaskRec.HasChanged("taskstatus") And (iTaskRec.Mode =MODE_NEW)	Then
+    		OldStatus = iTaskRec.GetValue("taskstatus")
+   	    	NewStatus = iTaskRec.GetValue("taskstatus")
+		Else 
+		' No Status Change then exit
+	    	CheckTaskStatusChange =	isOK
+            Exit Function
+		End If
+    End If
+    If OldStatus = "Abgerechnet" Or OldStatus = "Storniert" Or OldStatus = "Abgeschlossen" Then
+			iApp.UserMsg "Abgerechnete oder stornierte Aufträge dürfen nicht mehr geändert werden.",ebCritical
+			isOK =FALSE
+	    	CheckTaskStatusChange =	isOK
+            Exit Function
+	End If
+
+  '  Select Case NewStatus	  geht nicht in WebQ ?
+    If NewStatus= "Angelegt"   Then
+        If (OldStatus = "Neu" Or  OldStatus = "Angelegt")   Then
+			If 	bNEEDEXTID And iTaskRec.GetValue("extsystem_id") ="" Then
+				 iApp.UserMsg "Es wird eine Id des Externen Systems benötigt", ebCritical	
+				 iTaskRec.SetValue "taskstatus",  sINITIALSTATUS
+				CheckTaskStatusChange =FALSE
+           	    Exit Function
+			End If
+			isOK = True
+		Else
+			isOK = False
+		End If
+	End If
+    If NewStatus = "Freigegeben"  Then
+        If (OldStatus = "Freigeben" Or  OldStatus = "Angelegt")  Then
+			isOK = True
+		Else
+			isOK = False
+		End If
+    
+	End If
+	If NewStatus = "Storniert" Then
+        If (OldStatus = "Neu" Or OldStatus = "Angelegt"  Or OldStatus = "Freigeben" Or OldStatus = "In Arbeit")  Then
+				If  bALLOWCANCEL Then 
+		   			isOK = True
+				Else
+					IApp.UserMsg " In diesem ext. System ist 'stornieren' nicht erlaubt.",ebInformation
+		   			isOK = False
+				End If
+		Else
+			isOK = False
+		End If
+
+    End If
+	If NewStatus = "In Arbeit" Then
+        If OldStatus = "Freigegeben" Or OldStatus = "In Arbeit"  Then
+       		If iTaskRec.GetValue("workable")="Nein" Then
+				iApp.UserMsg "Sie dürfen diesen Auftrag nicht in Bearbeitung setzen,"_
+                  	 & Basic.Eoln$ & "weil er noch nicht bearbeitbar ist."
+                CheckTaskStatusChange = False
+				Exit Function
+  		    End If
+	        iTaskRec.SetValue "dateowned", "now"
+		Else
+			isOK = False
+		End If
+
+
+    End If
+	If NewStatus = "Fertig gemeldet"  Then
+        If OldStatus = "In Arbeit" Or OldStatus = "Fertig gemeldet" Then
+       		If iTaskRec.GetValue("workable")="Nein" Then
+				iApp.UserMsg "Sie dürfen diesen Auftrag nicht fertig melden,"_
+                  	 & Basic.Eoln$ & "weil sie nicht bearbeitbar ist."
+                CheckTaskStatusChange = False
+				Exit Function
+  		    End If
+	        iTaskRec.SetValue "dateresolved", "now"
+			If iTaskRec.GetValue("taskdone") = "" Then
+	      	   iTaskRec.SetValue "taskdone", "now"
+			End If
+   	    	iTaskRec.SetValue "resolved_user", iApp.DBUser
+			If sENDSTATUS ="Fertig gemeldet" Then
+	       		If bOBJECTREQUIRED And Not(iTaskRec.HasLinkedRecord("taskobject")) Then
+					iApp.UserMsg "Das Abrechnungssystem des Auftrags erfordert ein Objekt."_
+                  	 & Basic.Eoln$ & "Wählen Sie bitte ein passendes Objekt aus.",ebExclamation
+        	        CheckTaskStatusChange = False
+					Exit Function
+  		   		 End If
+				 iTaskRec.SetValue "taskstatus", "Abgeschlossen"
+	        	 iTaskRec.SetValue "dateclosed", "now"
+			End If
+		Else
+			isOK = False
+		End If
+
+    End If
+	If NewStatus = "Dokumentiert"  Then
+        If (OldStatus = "Fertig gemeldet" Or OldStatus = "Dokumentiert")  Then
+       		If bOBJECTREQUIRED And Not iTaskRec.HasLinkedRecord("taskobject") Then
+				iApp.UserMsg "Das Externe System des Auftrags erfordert ein Objekt,"_
+                  	 & Basic.Eoln$ & "Wählen Sie bitte ein passendes Objekt aus.",ebExclamation
+                CheckTaskStatusChange = False
+				Exit Function
+  		    End If
+			If Not bCalledFromRuleServer Then
+				'WebQ kann nicht die Clientfunktion	 CheckTaskDocumented  nutzen,
+				' weil das IExplorer-Objekt erzeugt wird
+				If iApp.Name="webtaker" Then
+					isDocumented = CheckTaskDocumentedWebQ(iApp,iNetwork,iTaskRec, sErrorText)
+				Else
+		   	   	  	isDocumented = CheckTaskDocumented(iApp,iNetwork,iTaskRec, sErrorText)
+				End If
+
+				If Not isDocumented Then
+	 				iTaskRec.SetValue "taskstatus", Oldstatus		
+				  	iApp.UserMsg sErrorText, ebInformation, "dokumentieren fehlgeschlagen"
+                    CheckTaskStatusChange = False
+				    Exit Function
+				End If
+			Else
+				isDocumented = True
+			End If
+			If sENDSTATUS ="Dokumentiert" And isDocumented Then
+				 iTaskRec.SetValue "taskstatus", "Abgeschlossen"
+	        	 iTaskRec.SetValue "dateclosed", "now"
+                 iTaskRec.SetValue "datedocumented", "now"
+
+			Else
+				If isDocumented Then
+			  		 iTaskRec.SetValue "taskstatus", "Dokumentiert"
+	        		iTaskRec.SetValue "datedocumented", "now"
+				Else 
+			  		 iTaskRec.SetValue "taskstatus", OldStatus
+				End If
+ 
+			End If			
+		Else
+			isOK = False
+		End If
+    End If 
+	If NewStatus = "Abgerechnet" Then
+        If OldStatus = "Dokumentiert" Then
+	        iTaskRec.SetValue "accountdate", "now"
+		Else
+			isOK = False
+		End If
+    End If
+	If NewStatus = "Abgeschlossen"	Then
+        If OldStatus = "Abgerechnet" Then
+	        iTaskRec.SetValue "dateclosed", "now"
+		Else
+			isOK = False
+		End If
+	End If
+   ' End Select	' geht nicht inWebQ?
+
+	If Not isOK And isDocumented Then
+		iApp.UserMsg "Der Statusübergang von '" & Oldstatus & "' zu '" & NewStatus & "' ist nicht erlaubt.", ebCritical
+		iTaskRec.SetValue "taskstatus", Oldstatus		
+	End If
+	CheckTaskStatusChange = isOK  And isDocumented
+End Function
+'----------------------------------------------------------------
+Sub SetMiscDates(iTaskRec As DBRecord)
+
+    'If a new record, set daterequested to Now. 
+    If iTaskRec.Mode = MODE_NEW Then
+        iTaskRec.SetValue "daterequested", "now"
+    End If
+
+    iTaskRec.SetValue "datemodified", "now"
+
+End Sub
+'----------------------------------------------------------------
+Function SetFlag(nTarget As Long, nFlag As Integer) As Long
+' Sets the nFlag'th bit of the target integer
+' Note that nFlag is actually off-by-one.  When nFlag = 0, set the 1 bit
+    SetFlag = nTarget Or 2 ^ (nFlag)
+End Function
+'----------------------------------------------------------------
+
+Sub SetEscalationState(iNetwork As DBNetwork, iTaskRec As DBRecord)
+' The escalation state is an integer that records the current state of
+' the DB record.  This state is used by the event server to determine 
+' whether an escalation should be fired.
+' The state is represented by setting bits of the integer that correspond
+' to record states.  Here, we check those record states and set bits 
+' appropriately.  Note that in the case of a closed call, we want to set
+' all flags, preventing unnecessary escalations.
+Dim nState As Long
+Dim bIsClosed As Boolean
+Dim nEscType As Integer
+Dim iEscTbl As DBTable
+' Begin changes Mike Doering Quartess
+Dim sTaskPriority As String
+Dim nTaskType As Integer
+
+    Set iEscTbl = iNetwork.GetTable("callescalation")
+
+	' Begin Chages Mike Doering Quartess
+	' the ESCALATION type bases on the type from the esc. table AND
+	' the priority - we do not want to escalate on OLD rules
+	' if the priority has changed - so the priority is used to
+	' set the EscalationStatus
+	sTaskPriority = iTaskRec.GetValue( "priority" )
+	nTaskType = iEscTbl.MapEnumStrToInt( "priority", sTaskPriority ) + 8
+    nState = 0
+	nState = Not( SetFlag( nState, nTaskType ) ) And 65280 ' 0xFF00
+	' End Changes 
+    bIsClosed = False
+    ' For each state that is important to this record, set the flag
+    ' if the condition no longer applies
+    If iTaskRec.GetValue("taskstatus") = "Fertig gemeldet"  Or _
+       iTaskRec.GetValue("taskstatus") = "Dokumentiert"  Or _
+       iTaskRec.GetValue("taskstatus") = "Abgerechnet"  Or _
+       iTaskRec.GetValue("taskstatus") = "Abgerechnet"  Then
+    ' we have a closed task
+        bIsClosed = True
+
+        nEscType = iEscTbl.MapEnumStrToInt("type", "nicht fertig gemeldet")
+        nState = SetFlag(nState, nEscType)
+    End If
+
+    If iTaskRec.HasLinkedRecord("taskworkgroup") Or bIsClosed Then
+    ' we have a workgroup
+        nEscType = iEscTbl.MapEnumStrToInt("type", "nicht zugewiesen")
+'        nEscType = iEscTbl.MapEnumStrToInt("type", "Not Assigned")
+        nState = SetFlag(nState, nEscType)
+    End If
+
+
+    iTaskRec.SetValue "escstatus", nState
+	Set iEscTbl = Nothing
+
+End Sub
+'----------------------------------------------------------------------
+Function NewRecord(iTaskRec As DBRecord) As Boolean
+' Determine whether this record is "new", even though we are post
+' update.  To do this, look to see if the "datemodified" field has
+' an empty old value.
+Dim sValue As String
+
+    If iTaskRec.HasOldValue("datemodified") Then
+        sValue = iTaskRec.GetOldValue("datemodified")
+        If Len(sValue) = 0 Then
+            NewRecord = True
+        Else
+            NewRecord = False
+        End If
+    End If
+
+End Function
+'----------------------------------------------------------------
+Function CheckTaskLinks(iApp As Application, _
+    iNetwork As DBNetwork, iTaskTable As DBTable, _
+     iTaskRec As DBRecord)	As Boolean
+Dim iObjectRec As DBRecord
+
+Dim sObjectKey As String
+Dim sObjectExtSystemKey As String
+Dim sExtSystemKey As String
+Dim sCurrenExtSystemKey As String
+Dim sCallID As String
+Dim sMsgText As String
+Dim isOk As Boolean
+Dim nCount As Integer
+Dim nAnswer As Integer
+
+CheckTaskLinks = True
+		isOk = True
+		sExtSystemKey= ""
+		
+	If iNetwork.HasTable("ext_system") Then
+        ' We need to make sure we have an ext_system_key.
+    	    If Not(iTaskRec.HasLinkedRecord("ext_system")) And _
+			   Not(LinkThroughTable(iNetwork,iTaskRec,"ext_system","ext_system_key")) Then
+						iApp.UserMsg "Das externe System  ist Pflichteingabe", ebInformation, "Update fehlgeschlagen"
+						CheckTaskLinks = False
+       	                Exit Function
+	   		Else 
+		 	
+		  		If iTaskRec.Mode <> MODE_NEW And iTaskRec.HasChanged("ext_system_key") Then
+		   		 	If iTaskRec.GetValue("ext_system_key") <> iTaskRec.GetOldValue("ext_system_key") Then
+						iApp.UserMsg "Das externe System darf nicht geändert werden.", ebInformation, "Update fehlgeschlagen"
+						CheckTaskLinks = False
+       	                Exit Function
+			   		End If
+		   		End If
+			sCurrenExtSystemKey = iTaskRec.GetValue("ext_system_key")
+			End If
+	
+	End If
+	
+	If iTaskRec.HasLinkedRecord("taskobject") Then
+	   		Set iObjectRec = iTaskRec.GetLinkedRecord("taskobject") 
+			If iObjectRec.GetValue("objstatus")= "außer Betrieb" And iTaskRec.HasChanged("object_key") Then 
+			 		iApp.UserMsg "Auf ein Objekt im Status 'Außer Betrieb' können keine Aufträge abgerechnet werden." , ebInformation
+			  		CheckTaskLinks = False
+  			End If			
+			sObjectkey = iTaskRec.GetValue("object_key")
+			sObjectExtSystemKey = iNetwork.GetTable("taskobject" ).GetValueWhere("ext_system_key", "pkey", sObjectkey)
+			If sObjectExtSystemKey <> sCurrenExtSystemKey And sCurrenExtSystemKey <> "" Then
+				   		sMsgText = "Das in der Meldung enthaltene Objekt kann in diesem ext. System nicht abgerechnet werden."
+						nAnswer = iApp.UserResponseMsg( sMsgText & Basic.Eoln$ & _
+					  		"Kontrollieren Sie bitte auch die HWG und die Auftragsart", ebok + ebCritical, "Überprüfung Abrechnungssystem fehlgeschlagen")
+						CheckTaskLinks = False
+			End If
+	End If
+Dim sValue As String
+Dim sHour As String
+Dim sMin As String
+	sValue= iTaskRec.GetValue("disruption_start")
+	If sValue <> "" And iTaskRec.HasChanged("disruption_start") Then
+		sHour = Item$( sValue,1,,":")
+		sMin = Item$( sValue,2,,":")
+		If sHour ="__" Then 
+			sHour = "00"
+		Else 
+		   If Left$(sHour,1) ="_" Then sHour=Right$(shour,1)	
+		   If val(sHour) >23 Then 
+				iApp.UserMsg "Edvin Störbeginn darf nicht größer 23 Stunden sein"
+				CheckTaskLinks = False
+				Exit Function
+		   End If
+		   sHour = Format(CStr(val(sHour)),"00")
+		End If	
+		If sMin ="__" Then 
+			sMin = "00"
+		Else 
+		   If Left$(sMin,1) ="_" Then sMin=Right$(sMin,1)	
+		   If val(sMin) >59 Then 
+				iApp.UserMsg "Edvin Störbeginn darf nicht größer 23:59 Stunden sein"
+				CheckTaskLinks = False
+				Exit Function
+		   End If
+		   sMin = Format(CStr(val(sMin)),"00")
+		End If
+	   sValue=sHour & ":" & sMin
+  	   iTaskRec.SetValue "disruption_start", sValue
+	Else
+	   If iTaskRec.Mode = MODE_NEW Then
+	   	  iTaskRec.SetValue "disruption_start",Format$(Time(),"HH:NN")	
+	   End If	
+	End If
+	Set iObjectRec = Nothing
+End Function
+'----------------------------------------------------------------
+
+
+Function TaskUpdate() As Boolean
+' Change TaskUpdate to afunction because we must check sequence status
+'Database record modifications. No GUI required.
+Dim bResult As Boolean
+ 
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork
+    Set iTaskRec = iApp.ContextRecord
+    Set iTaskTable = iApp.ContextTable
+	If iApp.Name = "webtaker"  then	  '
+		bWebQ = True
+	Else
+		bWebQ = False
+	End If 
+
+   If Not (CheckNewTask(iApp,  iTaskRec)) 	Then
+     	  TaskUpdate = False
+		  GoTo Exit_Function
+	End If 
+   If Not (CheckTaskLinks( iApp, iNetwork, iTaskTable, iTaskRec)) 	Then
+     	  TaskUpdate = False
+		  GoTo Exit_Function
+	End If 
+    If Not (CheckTaskStatusChange(iApp, iNetwork, iTaskRec)) 	Then
+     	  TaskUpdate = False
+		  GoTo Exit_Function
+	End If
+ If Not bWebQ Then ' brauchen wir bei WebQ nicht
+ 	If Not (WorkableStatus(iApp, iTaskRec ))	Then
+     	  TaskUpdate = False
+		  GoTo Exit_Function
+	End If
+End If
+ 	iTaskRec.SetValue "change_user", iApp.DBUser
+    SetMiscDates iTaskRec 
+    SetEscalationState iNetwork, iTaskRec
+    bResult = iTaskRec.WriteHistory("history")
+	bCalledFromRuleServer =False
+	TaskUpdate = true
+
+    GoTo Exit_Function
+
+    Exit Function 
+
+ERROR_HANDLER:
+	TaskUpdate = False
+    iApp.UserMsg "TaskUpdate error " & CStr(Err) & ": " & Error$
+Exit_Function:
+    Set iTaskRec = Nothing
+    Set iTaskTable = Nothing
+    Set iNetwork = Nothing
+    Set iApp = Nothing
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TaskDelete"
+'TYPE = 0
+'TEMPLATE = "Sub TaskDelete()"
+'TEXT = [[
+
+'*****************************************************************************
+'SCript:     TaskDelete
+'Purpose:    Business rules that are executed when a task is Deleted.
+'Copyright:  Quintus Corporation, 1996
+'*****************************************************************************
+
+Global Const sNull = ""
+
+Sub TaskDelete() 
+'Database record modifications. No GUI required.
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskRec As DBRecord
+Dim iLRec As DBRecord
+Dim sCount As String
+Dim sStatus As String 
+
+    'On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork
+    Set iTaskRec = iApp.ContextRecord
+
+' Depending upon the status of the task, update task count fields
+' of the parent call/changerequest record
+
+    ' Get the linked call/changerequest record
+
+'!!: "call" -> "Meldung"
+'    If iTaskRec.HasLinkedRecord("Meldung") Then
+    If iTaskRec.HasLinkedRecord("call") Then
+'!!: "call" -> "Meldung"
+'        Set iLRec = iTaskRec.GetLinkedRecord("Meldung")
+        Set iLRec = iTaskRec.GetLinkedRecord("call")
+'!!: "changerequest" -> "Change Request"
+'    ElseIf iTaskRec.HasLinkedRecord("Change Request") Then
+    ElseIf iTaskRec.HasLinkedRecord("changerequest") Then
+'!!: "changerequest" -> "Change Request"
+'        Set iLRec = iTaskRec.GetLinkedRecord("Change Request")
+        Set iLRec = iTaskRec.GetLinkedRecord("changerequest")
+    Else
+        Exit Sub
+    End If
+
+    ' Adjust opentaskcount/closedtaskcount fields in the linked
+    ' call/changerequest record
+
+    sStatus = iTaskRec.GetValue("taskstatus")
+
+'!!: "Completed" -> "beendet"
+    If sStatus = "beendet" Then
+'    If sStatus = "Completed" Then
+        sCount = Val(iLRec.GetValue("closedtaskcount")) - 1 
+        iLRec.SetValue "closedtaskcount", sCount
+    Else
+        sCount = Val(iLRec.GetValue("opentaskcount")) - 1
+        iLRec.SetValue "opentaskcount", sCount
+    End If
+
+     iLRec.GetTable.Commit
+
+    Exit Sub
+
+ERROR_HANDLER:
+'!!: iApp.UserMsg
+    iApp.UserMsg "TaskDelete error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "MyTaskQueueSearch"
+'TYPE = 0
+'TEMPLATE = "Function MyTaskQueueSearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         MyTaskQueueSearch
+' Purpose:      Search for tasks assigned to my workgroups
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Function MyTaskQueueSearch() As Boolean
+
+Dim iApp As Application
+Dim iTable As DBTable
+Dim iFocus As SFocus
+Dim iContextTable As DBTable
+Dim sRelationSet As String
+Dim iNetwork As DBNetwork
+
+Dim sSearchStr As String
+
+    On Error GoTo myqueue_error_handler
+    Set iApp = GetApp()
+	Set iFocus = iApp.ContextFocus
+
+' Meister wollen vorher ein Clear
+	iFocus.Clear
+
+	Select Case iApp.ContextControlName
+		Case "rmnuArray:1"
+			sRelationSet = "r_queues"
+		Case "rmnuArray:2", "taskMyTasks"
+			sRelationSet ="r_taskqueues"			
+		Case Else
+    		MyTaskQueueSearch = False
+    		Exit Function
+	End Select
+			
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable( "groupmember" )
+	iTable.Clear
+	Set iContextTable = iApp.ContextTable
+	sSearchStr = "=" & CurrentUserKey( iNetwork, "agent" )
+
+    iApp.ContextFocus.ApplyCurrentConstraints sRelationSet
+	iTable.QBESetValue "employeegroup", sSearchStr
+
+	sSearchStr = "Neu|Angelegt|Freigegeben|In Arbeit|Fertig gemeldet|Dokumentiert"
+    iApp.ContextTable.QBESetValue "taskstatus", sSearchStr
+    iApp.ContextBrowser.Search sRelationSet, 2	 ' QW_DCO_FILL_BOTH
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    iTable.QBEClear
+    iApp.ContextTable.QBEClear
+
+    ' Return False to prevent standard search
+    MyTaskQueueSearch = False
+    Exit Function
+
+myqueue_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "MyTaskQueueSearch error " & CStr(Err) & ": " & Error$
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    If Not iTable Is Nothing Then
+        iTable.QBEClear
+    End If
+    If Not iApp.ContextTable Is Nothing Then
+        iApp.ContextTable.QBEClear
+    End If
+
+    MyTaskQueueSearch = False
+End Function
+'--------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "MyTaskSearch"
+'TYPE = 0
+'TEMPLATE = "Function MyTaskSearch() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         MyTaskSearch
+' Purpose:      Search for tasks for this call
+' Copyright:    Quartess 2002
+' *****************************************************************************
+Function MyTaskSearch() As Boolean
+
+Dim iApp As Application
+Dim iTable As DBTable
+Dim iGroup As SGroup
+Dim iNetwork As DBNetwork
+
+Dim sSearchStr As String
+
+    On Error GoTo error_handler
+    Set iApp = GetApp()
+
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable( "call" )
+	If iTable.RecordCount <> 1 Then
+	   iApp.UserMsg " Es ist kein Call ausgewählt"	
+ 	   MyTaskSearch = False
+  	   Exit Function
+	End If
+	sSearchStr = iTable.GetRecord(0).GetValue("pkey")
+    iApp.ContextFocus.Clear
+    iApp.ContextTable.QBESetValue "calltask", sSearchStr
+    iApp.ContextBrowser.Search "r_task"	, QW_DCO_FILL_BOTH
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    iTable.QBEClear
+    iApp.ContextTable.QBEClear
+
+    ' Return False to prevent standard search
+    MyTaskSearch = False
+    Exit Function
+
+error_handler:
+    iApp.UserMsg "MyTaskSearch error " & CStr(Err) & ": " & Error$
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    If Not iTable Is Nothing Then
+        iTable.QBEClear
+    End If
+    If Not iApp.ContextTable Is Nothing Then
+        iApp.ContextTable.QBEClear
+    End If
+
+    MyTaskQueueSearch = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AcceptTask"
+'TYPE = 0
+'TEMPLATE = "Sub AcceptTask()"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         AcceptTask
+' Purpose:      Make me the owner of the current task
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Sub AcceptTask()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iGroup As SGroup
+Dim iTaskTable As DBTable
+Dim iTaskRec As DBRecord
+Dim iOwnerTable As DBTable
+Dim iOwnerRec As DBRecord
+Dim sOwner As String
+Dim sOwnerKey As String
+Dim sToday As String
+
+    On Error GoTo accepttask_error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextFocus.Network()
+    Set iGroup = iApp.ContextGroup				   
+'!!: "task" -> "Aufgabe"
+'    Set iTaskTable = iNetwork.GetTable("Aufgabe")
+    Set iTaskTable = iNetwork.GetTable("task")
+
+    ' If there is no backfilled record, get out.
+    Set iTaskRec = iGroup.GetCurrentRecord()
+    If iTaskRec Is Nothing Then
+        iApp.ContextFocus.Message "No task to accept"
+        Exit Sub
+    End If
+
+    ' You can't accept if the task is already owned
+    If iTaskRec.HasLinkedRecord("resolver") Then
+        Set iOwnerRec = iTaskRec.GetLinkedRecord("resolver")
+        sOwner = iOwnerRec.GetValue("fullname")
+'!!: iApp.UserMsg
+        iApp.UserMsg "Diese Aufgabe ist bereits akzeptiert von " & sOwner
+        Exit Sub
+    End If
+
+    ' Get the owner (my) record
+    sOwner = CurrentUserName(iNetwork, "resolver")
+    sOwnerKey = CurrentUserKey(iNetwork, "resolver")
+
+    If Len(sOwner) Then
+        sToday = FormatDate(Now)
+        iGroup.Change
+        iGroup.SetForeignValue "taskResolver", sOwner, sOwnerKey
+        iGroup.SetValue "taskDateowned", sToday
+'!!: "Owned" -> "akzeptiert"
+        iGroup.SetValue "taskState", "akzeptiert"
+'        iGroup.SetValue "taskState", "Owned"
+        iGroup.Update
+    End If
+    Exit Sub
+
+accepttask_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "AcceptTask error " & CStr(Err) & ": " & Error$
+End Sub
+'--------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TaskPostUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub TaskPostUpdate()"
+'TEXT = [[
+
+'*****************************************************************************
+'SCript:     TaskPostUpdate
+'Purpose:    Business rules that are executed after a task is updated.
+'Copyright:  Quintus Corporation, 1996
+'*****************************************************************************
+'Option Explicit
+Public bAutoDocumented As Boolean
+Global Const sEmptyStr = ""
+Declare Function SaveMessage( iNetwork As DBNetwork,  sTo As String, sSubject As String, sMsg As String, sStylesheet As String, sTable As String, sKey As String) As Boolean
+
+Declare Function ConvertFormular(iApp As Application,iNetwork As DBNetwork, sTemplateFile As String, bHTML As Boolean )  As String
+
+Dim iDoc_TemplateTable As DBTable
+' dient Webtaker zur Speicherverwaltung
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskTable As DBTable
+Dim iTaskRec As DBRecord
+'----------------------------------------------------------------
+Function NewRecord(iTaskRec As DBRecord) As Boolean
+' Determine whether this record is "new", even though we are post
+' update.  To do this, look to see if the "datemodified" field has
+' an empty old value.
+Dim sValue As String
+
+    If iTaskRec.HasOldValue("datemodified") Then
+        sValue = iTaskRec.GetOldValue("datemodified")
+        If sValue = sEmptyStr Then
+            NewRecord = True
+        Else
+            NewRecord = False
+        End If
+    End If
+
+End Function
+'----------------------------------------------------------------
+Sub NotifyWorkgroup( iApp As Application, iNetwork As DBNetwork, iWorkgroupRecord As DBRecord,  sSubject As String,  sMsg As String, sTable As String, sTableKey  As String)
+Dim iAlertNetwork As DBNetwork
+Dim iGroupmemberTbl As DBTable
+Dim iEmployeeTbl As DBTable
+Dim iMemberRec As DBRecord
+Dim i As Integer
+Dim sAddr As String
+Dim nPriority As Integer
+Dim sPriority As String
+Dim sStylesheet As String
+Dim sCurrenUserKey As String
+Dim sMethod As String
+
+ ' Achtung sStylesheet wird überschrieben!
+	On Error GoTo NotifyWorkgroup_errorhandler
+	sCurrenUserKey = iApp.CurrentUserKey
+	Set	 iAlertNetwork = iApp.CreateNetwork( "q_alert")
+	Set	 iGroupmemberTbl =	iAlertNetwork.GetTable("groupmember")
+	If iWorkgroupRecord.GetValue("notifyowngroup") = "Nein" And sCurrenUserKey <> "" Then
+		iGroupmemberTbl.Clear
+		iGroupmemberTbl.QBEClear
+		iGroupmemberTbl.QBESetValue "workgroupgroup", "=" & iWorkgroupRecord.GetValue("pkey")
+		iGroupmemberTbl.QBESetValue "employeegroup","=" & sCurrenUserKey
+   		iGroupmemberTbl.Search
+		If iGroupmemberTbl.RecordCount > 0 Then GoTo Exit_Sub 
+	End If
+
+	Set	 iEmployeeTbl =	iAlertNetwork.GetTable("employee")
+	iGroupmemberTbl.Clear
+	iGroupmemberTbl.QBEClear
+	iGroupmemberTbl.QBESetValue "workgroupgroup", "=" & iWorkgroupRecord.GetKeyValue
+	iGroupmemberTbl.QBESetValue "notifymethod","!Keine"
+	iGroupmemberTbl.Search
+	For i=1 To iGroupmemberTbl.RecordCount
+	   Set iMemberRec = iGroupmemberTbl.GetRecord(i-1)
+	   sMethod = iMemberRec.GetValue("notifymethod")
+	   If sCurrenUserKey = iMemberRec.GetValue("employeegroup") Then sMethod = "Keine"  ' keine Eigenbenachrichtigung!
+	   Select Case 	sMethod
+        Case "Signal"
+			sPriority = iApp.ContextRecord.GetValue("priority")
+   			nPriority = iApp.ContextTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+			sAddr = iEmployeeTbl.GetValueWhere("loginname","pkey", iMemberRec.GetValue("employeegroup"))
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           sTable , sTableKey,"Warnung"
+        Case "Email"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("email_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("emailcorr","pkey", iMemberRec.GetValue("employeegroup"))
+			If sAddr <> "" Then		
+				bStatus = SaveMessage( iNetwork,  "email://" & sAddr, sSubject, sMsg, sStylesheet, sTable , sTableKey )
+			Else
+				iApp.UserMsg "Email-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+        Case "FAX","Fax"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("fax_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("faxcorr","pkey", iMemberRec.GetValue("employeegroup"))	
+			If sAddr <> "" Then				
+				bStatus = SaveMessage( iNetwork, "rightfax://" &  sAddr, sSubject, sMsg, sStylesheet,sTable , sTableKey)
+			Else
+				iApp.UserMsg "FAX-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+        Case "Funkruf","SMS"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("sms_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("pager","pkey", iMemberRec.GetValue("employeegroup"))
+			If sAddr <> "" Then							
+	  			bStatus = SaveMessage( iNetwork,  "sms://" & sAddr, sSubject, sMsg, sStylesheet, sTable , sTableKey )
+			Else
+				iApp.UserMsg "SMS-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+	   End Select		
+	Next i 	
+	GoTo Exit_Sub
+NotifyWorkgroup_errorhandler:
+    iApp.UserMsg "TaskPostUpdate-NotifyWorkgroup error " & CStr(Err) & ": " & Error$  
+Exit_Sub:
+	Set iGroupmemberTbl = Nothing 
+	Set iMemberRec = Nothing 
+	Set iAlertNetwork = Nothing
+	Set iEmployeeTbl = Nothing
+
+End Sub 
+'----------------------------------------------------------------
+Sub UpdateTaskCount(iApp As Application, _
+    iNetwork As DBNetwork, iTaskTable As DBTable, _
+     iTaskRec As DBRecord)
+' Depending upon the status of the task, update task count fields
+' of the parent call/changerequest record
+Dim iLRec As DBRecord
+Dim sCount As String
+Dim sStatus As String
+Dim sOldStatus As String
+Dim bCommit As Boolean
+Dim  nOldCallValue As Long
+Dim  nTaskValue As Long
+Dim  nOldTaskValue As Long
+
+    ' Get the linked call/changerequest record
+
+    If iTaskRec.HasLinkedRecord("call") Then
+        Set iLRec = iTaskRec.GetLinkedRecord("call")
+    Else
+        Exit Sub
+    End If
+
+
+    ' Adjust opentaskcount/closedtaskcount fields in the linked
+    ' call/changerequest record
+
+    sStatus = iTaskRec.GetValue("taskstatus")
+	If iTaskRec.HasOldValue("taskstatus") Then sOldStatus = iTaskRec.GetOldValue("taskstatus")
+    bCommit = False
+    
+    If NewRecord(iTaskRec) Then
+        bCommit = True
+        sCount = Val(iLRec.GetValue("opentaskcount")) + 1
+        iLRec.SetValue "opentaskcount", sCount
+    End If
+
+    If iTaskRec.HasChanged("taskstatus") And sStatus = "Fertig gemeldet" Then
+        bCommit = True
+        sCount = Val(iLRec.GetValue("closedtaskcount")) + 1 
+        iLRec.SetValue "closedtaskcount", sCount
+        sCount = Val(iLRec.GetValue("opentaskcount")) - 1
+		If Val(sCount) > -1 Then
+        	iLRec.SetValue "opentaskcount", sCount
+		End If
+    End If
+
+' Gesamt Dokumentationsaufwand  der Handwerker ...
+
+    If (iTaskRec.HasChanged("timedocumentation") Or iTaskRec.HasChanged("taskstatus")) And sStatus = "Dokumentiert" Then
+        bCommit = True
+		If iTaskRec.HasOldValue("timedocumentation") Then 
+			nOldTaskValue = iApp.IntervalToSeconds(iTaskRec.GetOldValue("timedocumentation") )
+		Else 
+		   nOldTaskValue = 0
+		End If
+		nTaskValue = iApp.IntervalToSeconds(iTaskRec.GetValue("timedocumentation") ) 
+        nOldCallValue = iApp.IntervalToSeconds(iLRec.GetValue("totaltaskdoc")) 
+        iLRec.SetValue "totaltaskdoc", iApp.SecondsToInterval(nOldCallValue - nOldTaskValue	+ nTaskValue)
+	End If
+' Gesamt Arbeitszeit der Handwerker ...
+    If (iTaskRec.HasChanged("totaltimespent") Or iTaskRec.HasChanged("taskstatus")) And sStatus = "Dokumentiert" Then
+        bCommit = True
+		If iTaskRec.HasOldValue("totaltimespent") Then 
+			nOldTaskValue = iApp.IntervalToSeconds(iTaskRec.GetOldValue("totaltimespent") )
+		Else 
+		   nOldTaskValue = 0
+		End If
+		nTaskValue = iApp.IntervalToSeconds(iTaskRec.GetValue("totaltimespent") ) 
+        iLRec.SetValue "closedtaskcount", sCount
+        nOldCallValue = iApp.IntervalToSeconds(iLRec.GetValue("totaltasktimespent")) 
+        iLRec.SetValue "totaltasktimespent", iApp.SecondsToInterval(nOldCallValue - nOldTaskValue	+ nTaskValue)
+	End If
+    If bCommit Then
+        iLRec.GetTable.Commit
+    End If
+	Set  iLRec = Nothing
+End Sub
+'----------------------------------------------------------------------------------------------------------
+
+Sub CheckAutoClosed(iApp As Application, iNetwork As DBNetwork,  iTaskRec As DBRecord)
+Dim iCallRec As DBRecord
+Dim nOpenTaskCount As Integer
+Dim nOpenSubCalls As Integer
+Dim nOpenTasks As Integer
+Dim nClosedTasks As Integer
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallduplicateTable As DBTable
+Dim sCallID As String
+Dim dWhen As Date
+Dim sTaskKey As String
+Dim sMsg As String
+Dim sWorkgroup As String
+
+    If (iTaskRec.HasLinkedRecord("call")) And ( (iTaskRec.GetValue("taskstatus")="Fertig gemeldet") Or (iTaskRec.GetValue("taskstatus")="Abgeschlossen") ) Then
+        Set iCallRec = iTaskRec.GetLinkedRecord("call")
+    Else
+        Exit Sub
+    End If
+	If iCallRec.GetValue("callstatus") <>"Angenommen" Then 		' Nur Angenommene Calls können Fertig gemeldet werden
+        Exit Sub
+	End If
+
+' Feedback an AK wenn über Fertigmeldung gewünscht
+	If 	iTaskRec.GetValue("feedback")="Ja" Then
+		sTaskKey= iTaskRec.GetKeyValue 
+		sWorkgroup = iCallRec.GetValue("workgroupcall")
+		sMsg = "Auftrag " & iTaskRec.GetValue("taskno") & " wurde fertig gemeldet."
+		'iApp.NotifyWorkgroup dWhen, sWorkgroup, "task", sTaskKey, sMsg, 1
+        NotifyWorkgroup iApp, iNetwork, iCallRec.GetLinkedRecord("callworkgroup"),  sMsg,  sMsg, "task", sTaskKey
+	End If
+	If iCallRec.GetValue("autoclosed") <> "Ja" Then	 Exit Sub
+' Now check possible autoclosed for this call
+' Sind noch offene Aufträge da?	   ' Jetzt Trigger
+ 	   	Set iSearchNetwork = iApp.CreateNetwork( "q_task", "q_task" )
+   	   	Set iBrowser = iSearchNetwork.GetBrowser( "tasktableBrowser" )
+   	   	Set iTaskTable = iSearchNetwork.GetTable( "tasktable" )
+	   	sCallID = iCallRec.GetKeyValue
+   	   	iTaskTable.QBEClear
+   	   	iTaskTable.QBESetValue "calltask", sCallID
+   	   	iTaskTable.QBESetValue "taskstatus", "Neu|Angelegt|Freigegeben|In Arbeit"
+	   	iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+		nOpenTasks = iBrowser.RecordCount
+   		iTaskTable.QBEClear
+		'nOpenTasks = val( iCallRec.GetValue("opentaskcount")  )
+        If  nOpenTasks > 0 Then
+            GoTo Exit_Sub
+        End If
+' Sub Calls checken
+ 		Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+   		Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+		iCallduplicateTable.Clear
+		sCallID = iCallRec.GetKeyValue
+   		iCallduplicateTable.QBEClear
+   		iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+   		iCallduplicateTable.QBESetValue "callstatus", "Rückruf|Durchgestellt|AK zugewiesen|Fehlgeroutet|Angenommen"
+		iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+		nOpenSubCalls = iBrowser.RecordCount
+		If nOpenSubCalls >0 Then
+            GoTo Exit_Sub
+        End If
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+' Auftrag fertig melden
+	If iCallRec.GetValue("callstatus") ="Angenommen" Then 
+   		iCallRec.SetValue "callstatus", "Fertig gemeldet"
+		iCallRec.GetTable.Commit
+	End If
+Exit_Sub:
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+	Set iCallRec = Nothing
+
+End Sub
+
+'----------------------------------------------------------------------
+Sub  AutoCallDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord)
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallduplicateTable As DBTable
+Dim sCallID As String
+Dim iCallRec As DBRecord
+Dim	iCallWorkgroupRec As DBRecord
+
+
+	If iTaskRec.GetValue("taskstatus") <> "Dokumentiert"	 Then Exit Sub
+	If iTaskRec.HasLinkedRecord("call") Then
+   		Set iCallRec = iTaskRec.GetLinkedRecord("call")
+	Else
+		Exit Sub
+	End If
+
+    If iCallRec.GetValue("callstatus") <> "Fertig gemeldet" Then	Exit Sub
+
+	If Not iCallRec.HasLinkedRecord("callworkgroup") Then Exit Sub
+
+   	Set iCallWorkgroupRec = iCallRec.GetLinkedRecord("callworkgroup")
+   	If 	iCallWorkgroupRec.GetValue("autodocumented") <> "Ja"  Then	Exit Sub
+
+
+ 	Set iSearchNetwork = iApp.CreateNetwork( "q_taskcount3", "q_taskcount3" )
+ 	Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+ 	Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+ 	iCallduplicateTable.Clear
+  	sCallID = iCallRec.GetKeyValue
+  	iCallduplicateTable.QBEClear
+   	iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+   	iCallduplicateTable.QBESetValue "callstatus", "Rückruf|Durchgestellt|AK zugewiesen|Fehlgeroutet|Angenommen|Fertig gemeldet"
+	iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+	If iBrowser.RecordCount	>0  Then
+		GoTo Exit_Sub 
+	End If 
+ 	Set iTaskTable = iSearchNetwork.GetTable( "task" )
+ 	iTaskTable.Clear
+  	iTaskTable.QBEClear
+   	iTaskTable.QBESetValue "calltask", sCallID
+   	iTaskTable.QBESetValue "taskstatus", "Neu|Angelegt|Freigegeben|In Arbeit|Fertig gemeldet"
+	iTaskTable.Search
+	If iTaskTable.RecordCount	>0 Then
+		GoTo Exit_Sub
+	End If
+	Set iCallduplicateTable = Nothing
+	Set iTaskTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing ' sonst gibt es Ärger mim callupdate
+ 
+	' Call  auto dokumentieren
+			bAutoDocumented = True
+
+	   		iCallRec.SetValue "datedocumented", "now"
+			iCallRec.SetValue "callstatus", "Dokumentiert"
+			On Error GoTo  Exit_Sub
+			iCallRec.GetTable.Commit
+
+Exit_Sub:
+	Set iCallduplicateTable = Nothing
+	Set iTaskTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+	Set iCallRec = Nothing
+    Set iCallWorkgroupRec = Nothing
+End Sub
+'----------------------------------------------------------------------
+
+Sub SendAlert(iApp As Application, _
+    iTaskTable As DBTable, iTaskRec As DBRecord)
+Dim iLRec As DBRecord
+Dim iLRec2 As DBRecord
+Dim sKey As String
+Dim sTableName As String
+Dim sTo As String
+Dim sMsg As String
+Dim bResult As Boolean
+' Set miscellaneous values based on whether task is linked 
+    ' to a call or a changerequest
+'!!: "call" -> "Meldung"
+'    If iTaskRec.HasLinkedRecord("Meldung") Then
+    If iTaskRec.HasLinkedRecord("call") Then
+        ' Get linked call record and its key value
+'!!: "call" -> "Meldung"
+'        sTableName = "Meldung"
+        sTableName = "call"
+        Set iLRec = iTaskRec.GetLinkedRecord(sTableName)
+        sKey = iLRec.GetKeyValue
+
+        ' Get agent record linked to call record and determine
+        ' the agent loginname
+        If iLRec.HasLinkedRecord("agent") Then
+            Set iLRec2 = iLRec.GetLinkedRecord("agent")
+            sTo = iLRec2.GetValue("loginname")
+        Else
+            sTo = ""
+        End If
+        ''
+'!!: "changerequest" -> "Change Request"
+'    ElseIf iTaskRec.HasLinkedRecord("Change Request") Then
+    ElseIf iTaskRec.HasLinkedRecord("changerequest") Then
+        ' Get linked changerequest record and its key value
+'!!: "changerequest" -> "Change Request"
+'        sTableName = "Change Request"
+        sTableName = "changerequest"
+        Set iLRec = iTaskRec.GetLinkedRecord(sTableName)
+        sKey = iLRec.GetKeyValue
+
+        ' Get agent record linked to changerequest record and determine
+        ' the requester loginname
+            If iLRec.HasLinkedRecord("requester") Then
+                Set iLRec2 = iLRec.GetLinkedRecord("requester")
+                sTo = iLRec2.GetValue("loginname")
+            Else
+                sTo = ""
+            End If
+            ''
+        Else
+            Exit Sub
+        End If
+
+    bResult = IsTaskSetClosed(iApp, iTaskTable, iTaskRec)
+
+    If bResult And Len(sTo) Then
+'!!        sMsg = "All tasks associated with " & sTableName & " # " _
+'               & sKey & " are closed"
+'        sMsg = "Alle mit " & sTableName & " # " _
+'               & sKey & " verknüpften Auträge sind beendet."
+'        iApp.SendAlert sTo, iApp.DBUser, sMsg, 0, sTableName, sKey
+    End If
+ Set iLRec2 = Nothing
+ Set iLRec = Nothing
+End Sub
+'----------------------------------------------------------------------
+Sub ScheduleEscalations(iApp As Application, _
+    iNetwork As DBNetwork, iTaskTable As DBTable, _
+    iTaskRec As DBRecord)
+Dim iEscTbl As DBTable
+Dim iEscRec As DBRecord
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim nTblKey As Long
+Dim sWrkgrpKey As String
+Dim nWrkgrpKey As Long
+Dim sPriority As String
+Dim nPriority As Integer
+Dim nRecs As Long
+Dim i As Integer
+Dim nDelay As Long
+Dim nRepeatMins As Long
+Dim dWhen As Date
+Dim sStr As String
+Dim sUnits As String
+Dim sType As String
+Dim sSubject As String
+Dim nStatus As Long
+' Begin changes Mike Doering
+Dim bGroupOnly As Boolean
+
+' Begin changes Mike Doering
+
+	' Escalations are scheduled for new tasks or if the task
+	' priority has changed or if the workgroup has changed
+	bGroupOnly = False ' has only the Workgroup changed ?
+	If Not( NewRecord( iTaskRec ) ) Then
+		' all NewRecords must be scheduled
+		If Not( iTaskRec.HasChanged( "priority" ) ) Then
+			' priority not changed - perhaps the workgroup
+			If Not( iTaskRec.HasChanged( "workgrouptask" ) ) Then
+				' the status has not changed nor the workgroup
+				Exit Sub
+			Else
+				bGroupOnly = True
+			End If
+		End If
+	End If
+
+' solved a little bit better - see above
+'    ' Escalations are scheduled for if the task priority has changed
+'    If Not(NewRecord(iTaskRec)) And Not(iTaskRec.HasChanged("priority")) Then
+'        Exit Sub
+'    End If
+' End changes Mike Doering
+
+    ' Find all escalation records that match the current task's 
+    ' priority.  Note that this could be modified to use other
+    ' selection criteria, depending on the structure of the 
+    ' escalation table.
+    sPriority = iTaskRec.GetValue("priority")
+    nPriority = iTaskTable.MapEnumStrToInt("priority", sPriority)
+    Set iEscTbl = iNetwork.GetTable("callescalation")
+    iEscTbl.Clear
+    iEscTbl.QBESetValue "priority", "|" & sPriority
+'!!: "task" -> "Aufgabe"
+    iEscTbl.QBESetValue "targettable", "Auftrag"
+'    iEscTbl.QBESetValue "targettable", "task"
+    iEscTbl.Search
+    nRecs = iEscTbl.RecordCount()
+
+    ' For each escalation record, calculate the firing time,
+    ' using the business calendar.  Then schedule.
+    If nRecs > 0 Then
+        sWrkgrpKey = iTaskRec.GetValue("workgrouptask")
+		' changed by Jacek Margos - what if the pkey is above 32K ?
+		' solution: "do not use integer values"
+        'nWrkgrpKey = Val(sWrkgrpKey)
+        Set iTable = iApp.SysNetwork.GetTable("qw_events")
+        iTable.Clear
+        For i=0 To nRecs - 1
+            Set iEscRec = iEscTbl.GetRecord(i)
+            nDelay = Val(iEscRec.GetValue("delay"))
+            sUnits = iEscRec.GetValue("delayunits")
+            Select Case sUnits
+'!!: "Hours" -> "Stunden"
+       	        Case "Stunden"
+'       	        Case "Hours"
+'                    dWhen = iApp.AddBusinessTime(Now, nDelay, 0)
+                    nRepeatMins = nDelay*60
+'!!: "Minutes" -> "Minuten"
+       	        Case "Minuten"
+'       	        Case "Minutes"
+'                    dWhen = iApp.AddBusinessTime(Now, 0, nDelay)
+                    nRepeatMins = nDelay
+            End Select
+			'Begin Changes Mike Doering
+			'the reference is always daterequested
+			dWhen = CDate( iTaskRec.GetValue( "daterequested" ) )
+			' modification by Jacek Margos
+			' the customer wants to use the business time (work schedule)
+			'dWhen = DateAdd( "n", nRepeatMins, dWhen )
+			dWhen = iApp.AddBusinessTime( dWhen, 0, nRepeatMins )
+            If iEscRec.GetValue("repeated") = "0" Then
+                nRepeatMins = 0
+            End If
+
+            sSubject = ConvertFormular(iApp,iNetwork,CStr(iEscRec.GetValue("subject")),true)
+	   		If Len(sSubject) > 240 Then				' qw_events table limitation
+			   sSubject = Left$(sSubject,240)
+	   		End If
+
+            sType = iEscRec.GetValue("type")
+            nStatus = iEscTbl.MapEnumStrToInt("type", sType)
+            nStatus = 2 ^ (nStatus)  ' Set the bit position
+'			Type of the task ( see TaskUpdate() - SetEscalationState
+'			we set the escalation state so we need to change it here also
+			sType = iTaskRec.GetValue( "priority" )
+			nStatus = nStatus Or 2 ^ ( 8 + iEscTbl.MapEnumStrToInt( "priority", sType ) )
+            ' Decide who to notify if this escalation should fire.
+            ' If there is a task workgroup, use that. Otherwise, use the
+            ' escalation workgroup.
+            sStr = iEscRec.GetValue("notifytarget")
+			If sStr = "Eskalationsgruppe" Or sWrkgrpKey = "-1"_
+			Or sWrkgrpKey = "" Or sWrkgrpKey = "NULL" Then
+				'sWrkgrpKey = iEscRec.GetValue( "groupescalation" )
+				sWrkgrpKey = iEscRec.GetValue( "escgroupescalation" )
+			End If
+			' if only the workgroup has changed
+			' and the escalation rule is for the 'Escalation Group'
+			' do not re-schedule: the old escalation is (has been) OK
+			If Not( bGroupOnly And sStr = "Eskalationsgruppe" ) Then
+	            Set iRecord = iTable.AddRecord
+
+	            iRecord.SetValue "when", CStr(dWhen)
+	            iRecord.SetValue "workgroupkey", sWrkgrpKey
+	            iRecord.SetValue "escalationkey", iEscRec.GetKeyValue
+	            iRecord.SetValue "tablename", "task"
+	            iRecord.SetValue "tablekey", iTaskRec.GetKeyValue
+	            iRecord.SetValue "severity", nPriority
+	            iRecord.SetValue "message", sSubject
+	            iRecord.SetValue "escstatus", nStatus
+	            iRecord.SetValue "tier", iEscRec.GetValue("tier")
+	            iRecord.SetValue "agent", CStr(iApp.EscalationAgent)
+	            iRecord.SetValue "sender", iApp.Name ' Oder was anderes
+	            iRecord.SetValue "datemodified", Now
+	            iRecord.SetValue "repeatinterval", nRepeatMins
+			End If
+        Next i
+        iTable.Commit
+        iTable.Clear
+    End If
+    iEscTbl.QBEClear
+	Set iEscTbl = Nothing
+	Set iRecord = Nothing
+	Set iTable = Nothing
+	Set iEscRec = Nothing
+    ' Clear the QBE data in escalation
+End Sub
+'-------------------------------------------------------------------------------------
+Function ActionMsg(iApp As Application,iNetwork As DBNetwork, iTaskRec As DBRecord, _
+    iActionRec As DBRecord, sSubject As String, sStylesheet As String) As String
+' Collect important information for a task and format it into an
+' message.
+
+Dim sMsg As String
+Dim iXMLTable As DBTable
+    sDoc_key= iActionRec.GetValue("doc_template_key") 
+    If sDoc_key <> "" And sDoc_key <> "NULL" Then
+		 iDoc_TemplateTable.QBEClear
+		 iDoc_TemplateTable.Clear
+		 iDoc_TemplateTable.QBESetValue	"pkey",sDoc_key
+		 iDoc_TemplateTable.Search
+		 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("xsl_stylesheet")
+    	sXML_key= iDoc_TemplateTable.GetRecord(0).GetValue("xml_template_key") 
+    	If sXML_key <> "" And sXML_key <> "NULL" Then
+			Set iXMLTable = iNetwork.GetTable("xml_template")
+		 	sMsg = iXMLTable.GetValueWhere("xmltext","pkey",sXML_key)
+			sMsg = ConvertFormular(iApp,iNetwork,  sMsg,true)
+		Else
+	   		sMsg ="<doc>Fehler! Kein Text!</doc>"
+			sStylesheet= "default.xsl"
+		End If
+	Else
+		sMsg ="<doc>Fehler! Kein Text!</doc>"
+		sStylesheet= "default.xsl"
+	End If
+    ActionMsg = sMsg
+Set iXMLTable = Nothing
+
+End Function
+'-----------------------------------------------------------------------------
+
+Function ActionAddr(iRecord As DBRecord, _
+     iActionRec As DBRecord, sName As String) As String
+' Build the action's address list 
+Dim iRelRec As DBRecord
+Dim sTo As String
+Dim sMethod As String
+Dim sAddr As String
+
+    sTo = iActionRec.GetValue("recipient")
+    sMethod = iActionRec.GetValue("method")
+
+    Select Case sTo
+    Case "Kunde"
+        If iRecord.HasLinkedRecord("call") Then
+			Set iRelRec = iRecord.GetLinkedRecord("call")			
+        	If iRelRec.HasLinkedRecord("customerint") Then
+		   		sMethod = iRelRec.GetValue("callbackmethod")   ' Feed aus Call!
+          	  	Set iRelRec = iRelRec.GetLinkedRecord("customerint")
+		   		'sMethod = iRelRec.GetValue("communicatepref")
+	   			 GoTo EmployeeAddress
+        	End If
+		End If
+    Case "Mitarbeiter"
+'    Case "Agent"
+        If iRecord.HasLinkedRecord("call") Then
+			Set iRelRec = iRecord.GetLinkedRecord("agent")			
+        	If iRelRec.HasLinkedRecord("agent") Then
+           	 Set iRelRec = iRelRec.GetLinkedRecord("agent")
+	   		 GoTo EmployeeAddress
+       	   End If
+		End If
+    Case "Arbeitsgruppe"
+'    Case "Workgroup"
+        If iRecord.HasLinkedRecord("taskworkgroup") Then
+            Set iRelRec = iRecord.GetLinkedRecord("taskworkgroup")
+            sAddr = iRelRec.GetValue("notificationaddr")
+        End If
+'!!: "CC List" -> "CC Liste"
+    Case "CC Liste"
+'    Case "CC List"
+            sAddr = iRecord.GetValue("cclist")
+    End Select
+
+    ActionAddr = sAddr
+    Exit Function
+
+
+
+EmployeeAddress:
+    Select Case sMethod
+'!!: "Alert" -> "Signal"
+    Case "Signal"
+'    Case "Alert"
+        sAddr = iRelRec.GetValue("loginname")
+    Case "Email"
+        sAddr = iRelRec.GetValue("emailcorr")
+    Case "FAX", "Fax"
+        sAddr = iRelRec.GetValue("faxcorr")
+        sName = iRelRec.GetValue("fullname")
+    Case "Funkruf","SMS"
+'    Case "Pager"
+        sAddr = iRelRec.GetValue("pager")
+    End Select
+
+    ActionAddr = sAddr
+	Set iRelRec = Nothing
+
+End Function
+'----------------------------------------------------------------
+Function CheckAddress(iApp As Application,iNetwork As DBNetwork, iTaskRec As DBRecord, sMethod As String,sAddr As String) As Boolean
+Dim iTable As DBTable
+Dim sQuestion As String
+Dim sGroupName As String
+	 If sMethod ="Bearbeiter" Or sMethod ="Keine"  Then
+ 		 CheckAddress = True
+  		 Exit Function		
+	 End If	
+
+	 Set iTable = iNetwork.GetTAble("taskworkgroup")
+	 sGroupName = iTable.GetValueWhere("name","pkey", "=" & iTaskRec.GetValue("workgrouptask"))
+	 sQuestion =  "Ist die " & sMethod & "-Adresse von " & sGroupname & " richtig?"
+ 	 sAddr = Inputbox$(sQuestion,"System möchte " & sMethod & " an " & sGroupname & "versenden.",sAddr)	
+	 If sAddr = "" Then 
+		 CheckAddress= False
+	 Else
+		CheckAddress = True
+	End If
+	Set iTable = Nothing	
+End Function
+'----------------------------------------------------------------
+'----------------------------------------------------------------
+Sub RunActions(iApp As Application, iNetwork As DBNetwork, _
+           iTaskTable As DBTable, iTaskRec As DBRecord)
+Dim iActionTbl As DBTable
+Dim iActionRec As DBRecord
+Dim iCallRec As DBRecord
+Dim iTable As DBTable
+Dim iWorkgroupTable As DBTable
+Dim iWorkgroupRecord As DBRecord
+Dim nTblKey As Long
+Dim nRecs As Long
+Dim i As Integer
+Dim sType As String
+Dim sStatus As String
+Dim sPriority As String
+Dim sGrpKey As String
+Dim sCategoryKey As String
+Dim sExtSystemKey As String
+Dim sTasktypeKey As String
+Dim sAddr As String
+Dim sName As String
+Dim sSubject As String
+Dim sMethod As String
+Dim sMsg As String
+Dim bStatus As Boolean
+Dim nPriority As Integer
+Dim bFeedback As Boolean
+Dim sStylesheet As String
+Dim sDefaultStylesheet As String
+
+    ' Only do this if the status has changed
+    If Not( iTaskRec.HasChanged("taskstatus") Or iTaskRec.HasChanged("workgrouptask") ) Then
+        Exit Sub
+    End If
+
+    ' Find all action records that match the current task's 
+    ' status.  Note that this could be modified to use other
+    ' selection criteria, depending on the structure of the 
+    ' action table.
+    sStatus = iTaskRec.GetValue("taskstatus")
+	sPriority = iTaskRec.GetValue("priority")
+	If iTaskRec.HasLinkedRecord("call") Then
+		Set iCallRec = iTaskRec.GetLinkedRecord("call")
+		sCategoryKey = iCallRec.GetValue( "categorycall" )
+		Else 
+			sCategoryKey =""
+	End If 
+	sExtSystemKey = iTaskRec.GetValue("ext_system_key")
+	sTasktypeKey = iTaskRec.GetValue("tasktype_key")
+	bFeedback = False
+    Set iActionTbl = iNetwork.GetTable("callaction")
+    iActionTbl.Clear
+    iActionTbl.QBESetValue "statusevent", sStatus 
+	If sPriority <>"" Then
+    	iActionTbl.QBESetValue "priority", "NULL|" & sPriority
+	Else
+	   iActionTbl.QBESetValue "priority", "NULL"
+	End If
+    iActionTbl.QBESetValue "targettable", "Auftrag"
+	sGrpKey = iTaskRec.GetValue( "workgrouptask" )
+	If (sGrpKey = "") Or (sGrpKey = "NULL") Then
+		' the call does not have a workgroup
+		iActionTbl.QBESetValue "groupaction", "NULL"
+	Else
+		' the call does have a workgroup
+		iActionTbl.QBESetValue "groupaction", "NULL|" & sGrpKey
+		Set iWorkgroupRecord = iTaskRec.GetLinkedRecord("taskworkgroup")
+		iActionTbl.QBESetValue "migration", iWorkgroupRecord.GetValue("migration")
+	End If
+	If (sCategoryKey = "") Or (sCategoryKey = "NULL") Then
+		iActionTbl.QBESetValue "categoryaction", "NULL"
+	Else
+		iActionTbl.QBESetValue "categoryaction", "NULL|" & sCategoryKey
+	End If
+
+	If (sExtSystemKey = "") Or (sExtSystemKey = "NULL") Then
+		iActionTbl.QBESetValue "ext_system_key", "NULL"
+	Else
+		iActionTbl.QBESetValue "ext_system_key", "NULL|" & sExtSystemKey
+	End If
+
+	If sTasktypeKey <> ""  Then
+		iActionTbl.QBESetValue "tasktype_key", "NULL|" & sTasktypeKey
+	End If
+    iActionTbl.Search
+
+    nRecs = iActionTbl.RecordCount
+    If nRecs =0 Then
+        Exit Sub
+    End If
+
+    ' For each action record, do the right thing
+    For i=0 To nRecs - 1
+        Set iActionRec = iActionTbl.GetRecord(i)
+
+        sSubject = ConvertFormular(iApp, iNetwork,CStr(iActionRec.GetValue("subject")),true)
+        sMethod = iActionRec.GetValue("method")
+        sAddr = ActionAddr(iTaskRec, iActionRec, sName)
+		If Len(sSubject) > 240 Then				' qw_events table limitation
+			   sSubject = Left$(sSubject,240)
+		End If
+
+        ' An action that notifies a workgroup is a special case, since
+        ' the event server knows how to extract the workgroup's preferred 
+        ' notification method, and explode the workgroup into owners.
+        If iActionRec.GetValue("recipient") = "Arbeitsgruppe" Then
+		   sMethod = iWorkgroupRecord.GetValue("notifymethod")
+		   bFeedback =False
+		   sAddr = 	iWorkgroupRecord.GetValue("notificationaddr")
+        End If
+        If iActionRec.GetValue("recipient") = "Kunde" And Not (iCallRec Is Nothing) Then
+		   If iCallRec.HasLinkedRecord("customerint") Then
+			Set iCustomerRec = iCallRec.GetLinkedRecord("customerint")
+			   sMethod = iCallRec.GetValue("callbackmethod")
+  			  Select Case sMethod
+   			   Case "Signal"
+			        sAddr = iCustomerRec.GetValue("loginname")
+  			   Case "Email"
+   			    	sAddr = iCustomerRec.GetValue("emailcorr")
+ 			   Case "FAX", "Fax"
+ 			       sAddr = iCustomerRec.GetValue("faxcorr")
+ 			   Case "Funkruf","SMS"
+			'    Case "Pager"
+  			       sAddr = iCustomerRec.GetValue("pager")
+   			  End Select
+		   Else	
+		   		sMethod = "Keine" 
+		   End If	
+		End If
+		If iActionRec.GetValue("recipient") = "Kunde" And (iCallRec Is  Nothing)  Then	   ' keine Meldung senden
+		   			sMethod = "Keine" 
+        End If
+		
+		If iActionRec.GetValue("recipient") = "folgende Adresse" Then
+		   sAddr=iActionRec.GetValue("notificationaddr")
+		End If
+		If iActionRec.GetValue("recipient") = "NM Meisterei" And Not (iWorkgroupRecord Is Nothing) Then		
+		   sMethod = iWorkgroupRecord.GetValue("notifymethod")
+		   bFeedback =True
+		   sAddr = 	iWorkgroupRecord.GetValue("notificationaddr")
+		End If
+	   If ( InStr(AppGetActive$,"QGateway") = 0 And iActionRec.GetValue("confirmation") ="Ja") And (sMethod <> "keine") And Not bFeedback Then
+			Dim sResponseText As String
+			Dim nAnswer As Integer
+			If sMethod = "Bearbeiter" Then
+				sResponseText = "System möchte den Bearbeiter benachrichtigen." & Basic.Eoln$
+			Else
+				sResponseText = "System möchte ein " & sMethod & " an " & sAddr & " senden." & Basic.Eoln$
+			End If	
+			nAnswer = iApp.UserResponseMsg(sResponseText & " Ist das in Ordnung?", ebYesNo, "Benachrichtignung " & iActionRec.GetValue("name"))
+			If nAnswer = ebNo Then sMethod = "Keine" 
+	  
+       End If
+	   If bFeedback And InStr(AppGetActive$,"QGateway") = 0 Then 
+			If Not CheckAddress(iApp,iNetwork, iTaskRec, sMethod ,sAddr ) Then sMethod = "keine"
+	   End If
+
+
+     Select Case sMethod
+        Case "Signal"
+   			nPriority = iTaskTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+			If bFeedback Then
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           "task", iTaskRec.GetKeyValue,"Warnung"
+					iApp.UserMsg " Es wurde die Handwerkergruppe " &  iWorkgroupRecord.GetValue("name") & " über Signal benachrichtigt.",ebInformation
+			 Else
+            	iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           "task", iTaskRec.GetKeyValue,"Warnung"
+			End If	
+
+			
+        Case "Email"
+   		    sMsg = ActionMsg(iApp, iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("email_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+			'bStatus = iApp.SendMail(sAddr, sSubject, "", sMsg,bFeedback)
+			If sAddr <> "" Then
+				bStatus = SaveMessage( iNetwork,  "email://" & sAddr, sSubject, sMsg, sStylesheet, "task", iTAskRec.GetKeyValue )
+			Else
+				iApp.UserMsg "Email-Benachrichtigung für Aktionsregel ID. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+
+        Case "FAX","Fax"
+   		    sMsg = ActionMsg(iApp, iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("fax_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+          '  bStatus = iApp.SendFax(sAddr, sSubject, sName, sMsg,bFeedback)
+			If sAddr <> "" Then
+				bStatus = SaveMessage( iNetwork, "rightfax://" &  sAddr, sSubject, sMsg, sStylesheet, "tasl", iTAskRec.GetKeyValue )
+			Else
+				iApp.UserMsg "FAX-Benachrichtigung für Aktionsregel ID. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+
+        Case "Funkruf","SMS"
+      		sMsg = ActionMsg(iApp, iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("sms_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+          '  bStatus = iApp.SendPage(sAddr, sSubject,bFeedback)
+			If sAddr <> "" Then
+				bStatus = SaveMessage( iNetwork,  "sms://" & sAddr, sSubject, sMsg, sStylesheet, "task", iTaskRec.GetKeyValue )
+			Else
+				iApp.UserMsg "SMS-Benachrichtigung für Aktionsregel ID. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+        Case "Drucker", ""
+			 iApp.UserMsg "Die Handwerkergruppe kann nicht automatisch benachrichtigt werden." & Basic.Eoln$ & _ 
+							"Bitte benachrichtigen Sie die Handwerkergruppe manuell.", ebInformation
+        Case "Telefon"
+			 iApp.UserMsg "Der Kunde wünscht telefonisch benachrichtigt zu werden." & Basic.Eoln$ & _ 
+							"Bitte informieren Sie den Kunden über den Status des Auftrags.", ebInformation
+        Case "Bearbeiter"
+   			 If iTaskRec.HasLinkedRecord("taskworkgroup") Then
+        	 	Set iWorkgroupRecord = iCallRec.GetLinkedRecord("taskworkgroup")
+            	 sPriority = iCallRec.GetValue("priority")
+            	 nPriority = iTaskTable.MapEnumStrToInt("priority", sPriority)
+      		     sMsg = ActionMsg(iApp, iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+              	 NotifyWorkgroup iApp, iNetwork, iWorkgroupRecord,  sSubject,  sMsg, "task", iTaskRec.GetKeyValue
+            	 	'iApp.NotifyWorkgroup Now, sGrpKey, "task", iCallRec.GetKeyValue, sSubject, nPriority
+				 If bFeedback Then
+					iApp.UserMsg " Es wurde die Handwerkergruppe " &  iWorkgroupRecord.GetValue("name") & " benachrichtigt.",ebInformation
+				 End If	
+    	     End If
+ 
+	 End Select
+    Next i
+
+    ' Clear the QBE data in action table
+    iActionTbl.QBEClear
+	Set iActionRec = Nothing
+	Set iCallRec = Nothing
+	Set iWorkgroupRecord = Nothing
+	Set iActionTbl = Nothing
+	Set iTable = Nothing
+	Set iWorkgroupTable = Nothing
+
+End Sub
+'----------------------------------------------------------------
+
+Sub TaskPostUpdate() 
+'Database record modifications.  No GUI required.
+
+
+    'On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork
+    Set iTaskTable = iApp.ContextTable
+    Set iTaskRec = iApp.ContextRecord
+	Set iDoc_TemplateTable = iNetwork.GetTable("doc_template")
+
+    ScheduleEscalations iApp, iNetwork, iTaskTable, iTaskRec
+    RunActions iApp, iNetwork, iTaskTable, iTaskRec
+
+    ' SendAlert sends an alert to the parent call or changerequest
+    ' if the task set is closed
+    'SendAlert iApp, iTaskTable, iTaskRec
+    'UpdateTaskCount iApp, iNetwork, iTaskTable, iTaskRec
+	CheckAutoClosed iApp, iNetwork, iTaskRec
+  	AutoCallDocumented iApp , iNetwork, iTaskRec
+	GoTo Exit_Sub
+    Exit Sub
+
+ERROR_HANDLER:
+'!!: iApp.UserMsg
+    iApp.UserMsg "TaskPostUpdate error " & CStr(Err) & ": " & Error$
+Exit_sub:
+    Set iTaskRec = Nothing
+    Set iTaskTable = Nothing
+	Set iDoc_TemplateTable = Nothing
+    Set iNetwork = Nothing
+    Set iApp = Nothing
+
+End Sub
+'----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GotoTaskDokumentation"
+'TYPE = 0
+'TEMPLATE = "Sub GotoTaskDokumentation()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       GotoTaskDokumentation
+'Purpose:      GUI script to jump to TaskDokumentation form after added a task
+'Type:	       GUI Rule
+'Copyright:    Quartess MDo, 2002
+'*****************************************************************************
+
+Sub GotoTaskDokumentation()
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iForm As SForm
+Dim sKey As String
+Dim sName As String	
+Dim iTaskRec As DBRecord
+Dim sExtSystemType As String
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	If iGroup.Mode <> MODE_UPDATE And iGroup.Mode <> MODE_NEW Then
+   		sExtSystemType= ""
+		Set iTaskRec = iApp.ContextRecord
+   		If iTaskRec.HasLinkedRecord("ext_system") Then
+	 		sExtSystemType = iTaskRec.GetLinkedRecord("ext_system").GetValue("systemtype") 
+   		End If
+   		If sExtSystemType="GDS"  Then 
+	   		iApp.ContextFocus.ShowForm "taskdocumentation"
+		Else
+	   		iApp.ContextFocus.ShowForm "taskEdvin"
+	    End If
+	End If
+
+Exit Sub
+Error_handler:
+    iApp.UserMsg "GotoTaskdocumentation error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SetTaskResolved"
+'TYPE = 0
+'TEMPLATE = "Sub SetTaskResolved()"
+'TEXT = [[
+'*****************************************************************************
+' File:         SetTaskResolved
+' Purpose:      Make me the taskstatus to resolved
+' Copyright:    Quartess, 2002
+' *****************************************************************************
+Sub SetTaskResolved()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iRec As DBRecord
+Dim iGroup As SGroup
+Dim nAnswer As Integer
+Dim sGroupName As String
+
+    On Error GoTo error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextFocus.Network()
+    Set iGroup = iApp.ContextGroup
+	iGroup.BtnClick "taskRefresh"
+    Set iGroup = iApp.ContextGroup
+    ' If there is no backfilled record, get out.
+    Set iRec = iGroup.GetCurrentRecord()
+    If iRec Is Nothing Then
+        iApp.ContextFocus.Message "Keine Auftrag ausgewählt"
+        Exit Sub
+    End If
+   '	Msgbox iApp.ContextControlName
+ 
+	Select Case iApp.ContextControlName
+	Case "taskSetOK"
+		If iGroup.GetValue(iGroup.GUIName("taskstatus")) <> "Angelegt" Then
+			iApp.UserMsg "Nur Aufträge im Status 'Angelegt' können freigegeben werden.", ebInformation
+			Exit Sub
+		End If
+		nAnswer =iApp.UserResponseMsg( "Wollen Sie den Auftrag wirklich 'Freigeben'?",ebQuestion + ebYesNo,"Freigegeben"	)
+
+   		If nAnswer = ebYes Then
+    	    iGroup.Change
+   	        iGroup.SetValue "taskState", "Freigegeben"
+	        iGroup.BtnClick "taskUpdate"
+	    End If
+	Case "taskSetInProcess"
+		If iGroup.GetValue(iGroup.GUIName("taskstatus")) <> "Freigegeben" Then
+			iApp.UserMsg "Nur Aufträge im Status 'Freigegeben' können 'In Arbeit' gesetzt werden.", ebInformation
+			Exit Sub
+		End If
+		nAnswer =iApp.UserResponseMsg( "Wollen Sie den Auftrag wirklich 'In Arbeit' melden?",ebQuestion + ebYesNo,"'In Arbeit'"	)
+
+   		If nAnswer = ebYes Then
+    	    iGroup.Change
+   		    iGroup.SetValue "taskDateowned", Now()
+   	        iGroup.SetValue "taskState", "In Arbeit"
+	        iGroup.BtnClick "taskUpdate"
+	    End If
+	Case "taskSetResolved"
+		If iGroup.GetValue(iGroup.GUIName("taskstatus")) <> "In Arbeit" Then
+			iApp.UserMsg "Nur Aufträge im Status 'In Arbeit' können fertig gemeldet werden.", ebInformation
+			Exit Sub
+		End If
+		nAnswer =iApp.UserResponseMsg( "Wollen Sie den Auftrag wirklich fertig melden?",ebQuestion + ebYesNo,"Fertigmeldung"	)
+
+   		If nAnswer = ebYes Then
+    	    iGroup.Change
+   	        iGroup.SetValue "taskState", "Fertig gemeldet"
+	        iGroup.BtnClick "taskUpdate"
+	    End If
+	Case "rmnuArray:5","rmnuArray:4"
+		If Instr("Neu|Angelegt|Freigegeben",iGroup.GetValue(iGroup.GUIName("taskstatus"))) = 0 Then
+			iApp.UserMsg "Nur Aufträge im Status Neu, Angelegt oder Freigegeben können storniert werden.", ebInformation
+			Exit Sub
+		End If
+		nAnswer =iApp.UserResponseMsg( "Wollen Sie den Auftrag wirklich stornieren?",ebQuestion + ebYesNo,"Auftrag stornieren"	)
+
+   		If nAnswer = ebYes Then
+    	    iGroup.Change
+   		    iGroup.SetValue "taskDateCanceled", Now()
+   	        iGroup.SetValue "taskState", "Storniert"
+	        iGroup.BtnClick "taskUpdate"
+	    End If
+	Case "taskSetDocumented"
+		If iGroup.GetValue(iGroup.GUIName("taskstatus")) <> "Fertig gemeldet" Then
+			iApp.UserMsg "Nur Aufträge im Status 'Fertig gemeldet' können dokumentiert werden.", ebInformation
+			Exit Sub
+		End If
+
+    	    iGroup.Change
+  				sGroupName =iGroup.GUIName("taskstart")
+ 				If sGroupName <> "" Then 
+					If iGroup.GetValue(sGroupName) = "" Then
+						iGroup.SetValue sGroupName, iGroup.GetCurrentRecord.Getvalue("daterequested"),True
+					End If
+  				End If
+  				sGroupName =iGroup.GUIName("timedoc_h")
+ 				If sGroupName <> "" Then 
+					If iGroup.GetValue(sGroupName) = "" Then
+						iGroup.SetValue sGroupName, "0",True
+					End If
+  				End If
+  				sGroupName =iGroup.GUIName("timedoc_m")
+ 				If sGroupName <> "" Then 
+					If iGroup.GetValue(sGroupName) = "" Then
+						iGroup.SetValue sGroupName, "00",True
+					End If
+  				End If
+
+				If iGroup.GetCurrentRecord.Getvalue("timedocumentation") ="" Or iGroup.GetCurrentRecord.Getvalue("timedocumentation") = "NULL"	Then
+					iGroup.GetCurrentRecord.Setvalue "timedocumentation" , 0
+				End If
+  				sGroupName =iGroup.GUIName("no_resolver")
+ 				If sGroupName <> "" Then 
+					If iGroup.GetValue(sGroupName) = "" Or iGroup.GetValue(sGroupName) = "NULL" Then
+						iGroup.SetValue sGroupName, "1",True
+					End If
+  				End If
+
+   	        iGroup.SetValue "taskState", "Dokumentiert"
+	        iGroup.BtnClick "taskUpdate"
+	End Select
+
+	Exit Sub
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "SetTaskResolved error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "BeforeSearchTaskworkgroup"
+'TYPE = 0
+'TEMPLATE = "Sub BeforeSearchTaskworkgroup()"
+'TEXT = [[
+'*****************************************************************************
+' File:         BeforeSearchTaskworkgroup
+' Purpose:      Get Callworkgroup into DCO ( Bug in Quintus )
+' *****************************************************************************
+Sub BeforeSearchTaskworkgroup()
+Dim iApp As Application
+Dim iTable As DBTable
+
+    Set iApp = GetApp()
+	Set iTable = iApp.ContextNetwork.GetTable("callworkgroup")
+	If iTable.RecordCount = 1 Then
+   		iApp.ContextNetwork.GetTable("workgrouphwg").QBESetValue "workgroup_key", iTable.GetRecord(0).GetValue("pkey")
+	End If
+	Set iTable = iApp.ContextNetwork.GetTable("ext_system")
+	If iTable.RecordCount = 1 Then
+   		iApp.ContextNetwork.GetTable("hwgtasktype").QBESetValue "ext_system_key", iTable.GetRecord(0).GetValue("pkey")
+	End If
+	Set iTable = iApp.ContextNetwork.GetTable("taskworkgroup")
+	If iTable.RecordCount <> 1 Then
+   		iTable.QBESetValue "groupstatus", "gültig"
+	End If
+   ' iApp.ContextFocus.ApplyCurrentConstraints "r_tasktype_ak"
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TaskPreUpdate"
+'TYPE = 0
+'TEMPLATE = "Function TaskPreUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       TaskPreUpdate
+'Purpose:      Business rules that are executed before a task is updated.
+'*****************************************************************************
+Const sNull = ""
+'---------------------------------------------------------------------------
+Function TaskPreUpdate() As Boolean
+Dim iApp As Application
+Dim iTaskGroup As SGroup
+Dim iTaskRecord As DBRecord
+Dim sGroupName As String
+Dim sValue As String
+Dim sHour As String
+Dim sMin As String
+
+    On Error GoTo error_handler
+    '-------------------------------------------------
+
+    Set iApp = GetApp
+
+	Set iTaskGroup = iApp.ContextGroup()
+	Set iTaskRecord = iApp.ContextRecord
+
+	sDummy = iTaskRecord.GEtVAlue("taskstatus")
+	If sDummy = "Abgerechnet" Or sDummy ="Abgeschlossen" Then
+   	 TaskPreUpdate = False
+	 iApp.UserMsg "Aufträge im Status " & sDummy & " dürfen nicht mehr modifiziert werden."
+	 Exit Function	
+	End If
+	
+   	 TaskPreUpdate = True
+    Exit Function  
+
+error_handler:
+    iApp.UserMsg "TaskPreUpdate error " & CStr(Err) & ": " & Error$
+    TaskPreUpdate = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "RefreshForm"
+'TYPE = 0
+'TEMPLATE = "Sub RefreshForm()"
+'TEXT = [[
+Sub RefreshForm()
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iTargetGroup As SGroup
+Dim iForm As SForm
+Dim sKey As String
+Dim sName As String	
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iForm = iApp.ContextForm
+	Select Case iForm.Name
+	Case  "taskdocumentation","taskEdvin"
+		Set iGroup = iApp.ContextGroup
+		If iGroup.Name="task" Then
+			sKey = iGroup.GetValue("taskKey")
+			iApp.ContextFocus.Clear
+			iGroup.SetValue "taskKey", sKey
+			iGroup.BtnClick "taskSearch"
+		Else
+
+			sKey = iGroup.GetValue("errorcodetaskdataTask")
+			iApp.ContextFocus.Clear
+			Set iTargetGroup = iForm.GetGroup("task")
+			iTargetGroup.SetValue "taskKey", sKey
+			iTargetGroup.BtnClick "taskSearch"
+		End If
+	Case  "taskadd","UTtask","UTtaskdocumentation"
+		Set iGroup = iApp.ContextGroup	
+		If iGroup.Name="task" Then
+			sKey = iGroup.GetValue("taskKey")
+			iApp.ContextFocus.Clear
+			iGroup.SetValue "taskKey", sKey
+			iGroup.BtnClick "taskSearch"
+		Else
+			sKey = iGroup.GetValue("callKey")
+			iApp.ContextFocus.Clear
+	   		iGroup.SetValue "callKey", sKey
+	  		iGroup.BtnClick "callSearch"
+		End If
+	Case  "callMngrDocument","callMngrCheck","callMngrCaretaker","UTcallMngrDocument"
+		Set iGroup = iApp.ContextGroup
+		sKey = iGroup.GetValue("callKey")
+		iApp.ContextFocus.Clear
+		iGroup.SetValue "callKey", sKey
+		iGroup.BtnClick "callSearch"
+	Case  "objectAK"
+		Set iGroup = iApp.ContextGroup
+		sKey = iGroup.GetValue("objectPkey")
+		iGroup.Clear
+		iGroup.SetValue "objectPkey", sKey
+		iGroup.BtnClick "objectSearch"
+End Select
+	 Exit Sub	
+Error_handler:
+    iApp.UserMsg "GotoCall error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ErrorcodetaskdataPreUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub ErrorcodetaskdataPreUpdate()"
+'TEXT = [[
+Sub ErrorcodetaskdataPreUpdate()
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim nGroupMode As Integer
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+
+    On Error GoTo error_handler
+    '-------------------------------------------------
+
+    Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iGroup = iApp.ContextGroup()
+	If iGroup.GetValue("errorcodetaskdataInvoicingtext") = "" Then
+  		Set iTable = iNetwork.GetTable("gdserrorcode")
+		If iTable.RecordCount = 1 Then
+			iGroup.SetValue "errorcodetaskdataInvoicingtext", iTable.GetRecord(0).GetValue("codedescripition")
+	   End If
+	End If	
+Exit Sub
+error_handler:
+    iApp.UserMsg "ErrorcodetaskdataPreUpdate error " & CStr(Err) & ": " & Error$
+
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TaskNew"
+'TYPE = 0
+'TEMPLATE = "Sub TaskNew()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       TAskNew
+'Purpose:      Business rules that are executed when a task is entered.
+'Copyright:    Tarragon, 2002
+'*****************************************************************************
+Const sNull = ""
+'---------------------------------------------------------------------------
+
+Sub ClearField(iGroup As SGroup, sFieldname As String, sDefault As String)
+Dim sGroupName As String 
+	sGroupName =iGroup.GUIName(sFieldname)
+	If sGroupName <> "" Then 
+		iGroup.SetValue sGroupName, sDefault
+	End If
+	iGroup.GetCurrentRecord.SetValue sFieldname, sDefault
+End Sub
+'---------------------------------------------------------------------------
+
+
+Sub GetDefaultExtSystem(iApp As Application, _
+    iNetwork As DBNetwork, iGroup As SGroup )
+Dim iCallTable As DBTable
+Dim iTable As DBTable
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallRecord As DBRecord
+Dim sObjectKey As String
+Dim sExtSystemKey As String
+Dim sExtSystemName As String
+Dim sCallID As String
+	
+		sExtSystemKey= ""
+		Set iCallTable = iNetwork.GetTable("call")
+		If 	iCallTable.RecordCount = 1 Then
+			Set iCallRecord = iCallTable.GetRecord(0)
+			sCallID = iCallRecord.GetKeyValue
+	 		sObjectkey= iCallRecord.GetValue("object_key")
+		   	If sObjectkey <> "" And sObjectkey <> "NULL" Then
+				   	Set iTable = iNetwork.GetTable("taskobject")
+					iTable.Clear
+					iTable.QBEClear
+					iTable.QBESetValue "pkey", sObjectkey
+					iTable.Search	
+					sObjectName = iTable.GetValueWhere("name", "pkey", sObjectkey)
+					iGroup.SetForeignValue "taskObject", sObjectName, sObjectkey
+
+					sExtSystemKey = iNetwork.GetTable("object" ).GetValueWhere("ext_system_key", "pkey", sObjectkey)
+					If sExtSystemKey <> "" And sExtSystemKey <> "NULL" Then 
+				   		Set iTable = iNetwork.GetTable("ext_system")
+						sExtSystemName = iTable.GetValueWhere("name", "pkey", sExtSystemKey)
+						iTable.Clear
+						iTable.QBEClear
+						iTable.QBESetValue "pkey", sExtSystemKey
+						iTable.Search	  '
+						iGroup.SetForeignValue "taskExtsystem", sExtSystemName, sExtSystemKey
+				  	Else
+						iGroup.SetForeignValue "taskExtsystem","", "NULL"
+				  	End If
+			End If
+		End If
+	Set iTaskTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+End Sub
+
+
+Sub TaskNew()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iGroup As SGroup
+Dim iCallRec As DBRecord
+Dim iTaskRecord As DBRecord
+Dim iTaskTable As DBTable
+
+    On Error GoTo new_error_handler
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+    Set iNetwork = iApp.ContextNetwork()
+	Set iTaskTable  = iApp.ContextTable 
+	If iGroup.GetValue("taskExtsystem") = "" Then 
+		GetDefaultExtSystem iApp, iNetwork, iGroup 
+	End If
+			' Clear Old Records
+			ClearField iGroup, "escstatus", sNull
+			ClearField iGroup, "cclist", sNull
+			ClearField iGroup, "taskstart", sNull
+			ClearField iGroup, "taskdone", sNull
+			ClearField iGroup, "no_resolver", sNull
+			ClearField iGroup, "accountdate", sNull
+			ClearField iGroup, "timedocumentation", sNull
+			ClearField iGroup, "pm_order", sNull
+			ClearField iGroup, "totaltimespent", sNull
+			ClearField iGroup, "datedocumented", sNull
+			ClearField iGroup, "dateresolved", sNull
+			ClearField iGroup, "transmitted", "false" 
+			ClearField iGroup, "resolved_extsystem", "Nein" 
+			ClearField iGroup, "disruption_h", sNull
+			ClearField iGroup, "disruption_m", sNull
+			ClearField iGroup, "disruption_start", sNull
+			ClearField iGroup, "edvin_beh_bez", sNull
+			ClearField iGroup, "edvin_beh_code", sNull
+			ClearField iGroup, "edvin_bgr_bez", sNull
+			ClearField iGroup, "edvin_bgr_code", sNull
+			ClearField iGroup, "edvin_btl_bez", sNull
+			ClearField iGroup, "edvin_btl_code", sNull
+			ClearField iGroup, "edvin_mah_bez", sNull
+			ClearField iGroup, "edvin_mah_code", sNull
+			ClearField iGroup, "edvin_sha_bez", sNull
+			ClearField iGroup, "edvin_sha_code", sNull
+			ClearField iGroup, "productionloss_h", sNull
+			ClearField iGroup, "productionloss_m", sNull
+
+Exit Sub 
+new_error_handler:
+    iApp.UserMsg "TaskNew error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetBMSTask"
+'TYPE = 0
+'TEMPLATE = "Sub GetBMSTask()"
+'TEXT = [[
+'*****************************************************************************
+' File:         GetBMSTask
+' Purpose:      legt einen BMS Auftrag an
+' Copyright:    Tarragon, 2003
+' *****************************************************************************
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+
+' DIE BENOTIGTE sCHLÜSSEL FÜR EINEN AUFTRAG
+Const BMSKEY = 1
+Const GMZKEY = 3
+Const TASKCODE ="BMS"
+Const GMZTASKCODE ="GMZ"
+Const GMZTASKTYPE="GMZ"
+Const TASKTYPE="BMS"
+Const HWGKEY = 100544
+Dim iApp As Application
+Dim sBMSId As String
+Dim sTaskkey As String
+Dim sCallKey As String
+Dim sCustName As String
+Dim sCustPersonalID As String
+Dim sUserID As String
+Dim sBMSType As String
+Dim sShortDescription As String
+Dim sCustSite As String
+Dim iNetwork As DBNetwork
+'--------------------------------------------------------------------
+Function Answer_DlgFkt( ControlName$, Action%, SuppValue% )
+'Print ControlName$, Action%, SuppValue%
+
+Select Case Action%
+ Case 1 ' First time open Dialog
+		DlgValue "OptionGroup1",0 
+		sBMSType = "BESCHAFFUNG"
+		DlgText "CustName", sCustName
+		DlgText "CustID", sCustPersonalID
+		DlgText "AgentID",sUserID
+		DlgText "Summary", sShortDescription
+		DlgText "CustSite", sCustSite
+
+
+ Case 2 ' something clicked
+   Select Case ControlName$
+	 Case "OptionButton1"
+		sBMSType = "BESCHAFFUNG"
+
+	 Case "OptionButton2"
+		sBMSType = "UMZUG"
+
+
+     Case "OK"
+		sCustPersonalID= DlgText$( "CustID") 
+		sUserID= DlgText$("AgentID")
+		sShortDescription= DlgText$( "Summary" )
+		sCustSite = DlgText$(	"CustSite")
+
+     End Select	
+ End Select
+End Function 
+
+Begin Dialog UserDialog ,,186,152,"BMS-Auftrag",.Answer_DlgFkt
+	OKButton 8,126,40,14
+	CancelButton 136,126,40,14
+	Text 12,4,52,8,"BMS-Auftrag für: ",.Label1
+	Text 68,4,104,8,"Name",.CustName,,,ebBold
+	Text 12,18,52,8,"Personalnummer:",.Label2
+	Text 12,33,52,8,"Werk",.Label3
+	TextBox 70,16,35,12,.CustID
+	TextBox 70,31,20,12,.CustSite
+	Text 12,50,52,8,"Beschreibung:",.Label4
+	TextBox 13,61,151,12,.Summary,1
+	GroupBox 14,76,150,24,"Art",.GroupBox1
+	OptionGroup .OptionGroup1
+		OptionButton 16,88,56,8,"Beschaffung",.OptionButton1
+		OptionButton 100,88,56,8,"Umzug",.OptionButton2
+	Text 12,108,52,8,"Agent:",.Label5
+	TextBox 70,105,96,12,.AgentID
+End Dialog
+'--------------------------------------------------------------------
+Function GetXML() As String
+  Dim xmlhttp As Object
+  Dim loc As String
+  Dim sXML As Variant
+  Dim CRLF As String	
+  Dim sMediatorRoot As String
+  Dim sSequencesRoot As String
+  Dim sSequence As String
+
+  On Error GoTo GetXML_error
+	CRLF =  Basic.eoln$
+	
+	sSequence =  "bms/createBMSRecord.seq.xml&Date=" & Time()
+
+   sMediatorRoot = GetAppProfileValue(iNetwork,"mediatorroot")
+   sSequencesRoot = GetAppProfileValue(iNetwork,"sequenceroot")
+   loc =sMediatorRoot & "?xbd.sequence.uri=" & sSequencesRoot & sSequence 
+	sXML = "<?xml version=""1.0"" encoding=""ISO-8859-1"" standalone=""yes""?>" & CRLF
+	sXML = sXML & "<BMS>"	 & CRLF
+	sXML = sXML & "  <SMCAUFTRAGSNUMMER>" & sTaskkey & "</SMCAUFTRAGSNUMMER>"	 & CRLF
+	sXML = sXML & "  <SMCTICKETNUMMER>" & sCallKey & "</SMCTICKETNUMMER>"	 & CRLF
+	sXML = sXML & "  <USERID>" & sUserID & "</USERID>"	 & CRLF
+	sXML = sXML & "  <IDENTA>" & sCustPersonalID & "</IDENTA>"	 & CRLF
+	sXML = sXML & "  <WERK>" & sCustSite & "</WERK>"	 & CRLF
+	sXML = sXML & "  <AUFTRAGSART>" & sBMSType & "</AUFTRAGSART>"	 & CRLF
+	sXML = sXML & "  <TEXT>" & sShortDescription & "</TEXT>"	 & CRLF
+	sXML = sXML & "</BMS>"  & CRLF
+
+  Msg.Open "Verbindung zu BMS wird aufgebaut ..",0,0,0
+
+  Set xmlhttp = CreateObject("Microsoft.XMLHTTP")
+  xmlhttp.Open "POST", loc, false 
+  xmlhttp.setRequestHeader "Content-Type", "text/xml"
+  xmlhttp.Send sXML
+
+  GetXML = xmlhttp.responseText
+
+  Msg.Close
+
+ Exit Function	 
+
+ GetXML_error:
+	GetXML = "<error>" & " GetXML Error " & CStr(Err) & ": " & Error$ & "</error>"
+  	Msg.Close
+	Set xmlhttp = Nothing	
+
+End Function
+'----------------------------------------------------------------
+Function CreateBMSRecord() As Boolean
+Dim iParser As Object
+Dim iDoc As Object
+Dim bRef As Boolean
+Dim iNodeList As Object
+Dim iNode As Object
+Dim iElement As Object
+Dim sXMLText As String
+Dim sAnswer As String
+Dim sSequence As String
+Dim i As Long
+Dim nAnswer As Integer
+Dim nRows As Long
+
+CreateBMSRecord = True
+On Error GoTo ERRORHANDLER
+
+	Set iParser = GetObject( "", "QXMLParse.QXMLParser" )
+
+	sXMLText = GetXML()
+ 
+	bref = iParser.parseString(sXMLText) 
+	
+	Set iDoc = iParser.Document
+
+' Ist alles OK mit dem Dokument?
+Set iNodeList = iDoc.getElementsByTagName("error")
+If iNodeList.Length > 0 Then
+	CreateBMSRecord= False
+	nAnswer= iApp.UserResponseMsg( "Es konnte kein BMS-Auftrag angelegt werden." & Basic.Eoln$ & _
+                 "Die Agenten-ID oder Personalnummer ist wahrscheinlich nicht richtig."& Basic.Eoln$ & _
+				 "Möchten Sie das Fehlerprotokoll sehen?", ebYesNo+ebDefaultButton2+ebInformation )	
+    If nAnswer = ebYes Then
+		 iApp.UserMsg sXMLText, ebOKonly, "BMS Fehlerprotokoll"
+	End If
+   GoTo Cancel_Function 
+End If
+Set iNodeList = iDoc.getElementsByTagName("bmsid")
+If iNodeList.Length = 0 Then 
+	GetBMSList= False
+	iApp.UserMsg " Es ist keine BMS-Auftragsnummer zurückgekommen"
+	CreateBMSRecord= False	
+	GoTo Cancel_Function
+End If
+
+
+Set iNode = iNodeList.item(0)
+If iNode.hasChildNodes  Then
+	sBMSId = iNode.FirstChild.NodeValue
+Else 
+	sBMSId = ""
+	CreateBMSRecord = False
+End If
+
+Cancel_Function:
+
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+
+	Exit Function
+
+ERRORHANDLER:
+	iApp.UserMsg "CreateBMSRecord error " & CStr(Err) & ": " & Error$
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	CreateBMSRecord = False
+
+End Function
+' ----------------------------------------------------------------------
+
+Sub BMSTask()				  
+Dim AnswerIsOK As Boolean
+Dim CheckList_dlg As UserDialog
+Dim iTaskTable As DBTAble
+Dim iTable As DBTAble
+Dim iCallRec As DBRecord
+Dim iCustRec As DBRecord
+Dim iGroup As SGroup
+
+    On Error GoTo error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextFocus.Network()
+    Set iGroup = iApp.ContextGroup
+		
+    ' If there is no backfilled record, get out.
+    Set iCallRec = iGroup.GetCurrentRecord()
+    If iCallRec Is Nothing Then
+        iApp.ContextFocus.Message "Keine Meldung ausgewählt"
+        Exit Sub
+    End If
+	sCallKey = iCallRec.GetKeyValue
+   '	Msgbox iApp.ContextControlName
+		If   iGroup.GetValue(iGroup.GUIName("callstatus")) <> "Angenommen" Then
+			iApp.UserMsg "Nur Meldungen im Status  'Angenommen' können einen BMS-Auftrag zugewiesen bekommen.", ebInformation
+			Exit Sub
+		End If
+	Set iCustRec = iNetwork.GetTable("customerint").GetRecord(0)
+	sCustName = iCustRec.GetValue("fullname" )
+	sCustPersonalID = iCustRec.GetValue("employeeid" )
+	sCustSite = iCustRec.GetValue("emplsite_keycorr" )
+	sUserID = UCase$( iApp.DBUser )
+	sShortDescription = iCallRec.GetValue("problem")
+			
+	AnswerIsOK = Dialog(CheckList_dlg)
+
+	If Not AnswerIsOK Then Exit Sub
+ ' Clear Constraint Tasktype and ext_system
+    	    Set iTable = iNetwork.GetTable("ext_system")
+			iTable.Clear
+    	    Set iTable = iNetwork.GetTable("tasktype")
+			iTable.Clear
+
+    	    Set iTAskTable = iNetwork.GetTable("task")
+			iTaskTable.Clear
+			Set iRec = iTaskTable.AddRecord
+			iRec.SetValue "summary", " BMS-Auftrag wird angelegt"
+			iRec.SetValue "ext_system_key",	BMSKEY
+			iRec.SetValue "tasktype_key", TASKCODE
+			iRec.SetValue "calltask", sCallKey
+   		    iRec.SetValue "taskstatus", "Angelegt"
+			iRec.SetValue "workgrouptask", HWGKEY
+	        iTaskTable.Commit
+			sTaskkey = iRec.GetKeyValue() 
+			' Parameter für BMS sammeln
+			If  CreateBMSRecord Then
+				iApp.UserMsg "BMS-Auftrag mit ID " & sBMSId & " wurde erstellt"
+   		    	iRec.SetValue "taskstatus", "Freigegeben"
+   		    	iRec.SetValue "extsystem_id", sBMSId
+			    iRec.SetValue "summary", sShortDescription
+	   		    iTaskTable.Commit
+   		    	iRec.SetValue "taskstatus", "In Arbeit"
+	   		    iTaskTable.Commit
+			Else
+				iApp.UserMsg "Erstellen eines BMS-Auftrags ist fehlgeschlagen"
+   		    	iRec.SetValue "taskstatus", "Storniert"
+			    iRec.SetValue "summary", "Erstellen eines BMS-Auftrags ist fehlgeschlagen"
+	   		    iTaskTable.Commit
+			End If
+
+			' Refresch GUI
+			iApp.ContextFocus.Clear
+			iGroup.SetValue iGroup.GUIName("pkey"), sCallKey
+			iGroup.BtnClick "callSearch"
+	Exit Sub
+
+error_handler:
+'!!: iApp.UserMsg
+	iTaskTable.Clear ' um Locks zu löschen
+    iApp.UserMsg "GBMSTask error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+'---------------------
+Sub GMZTask()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskTable As DBTAble
+Dim iRec As DBRecord
+Dim iGroup As SGroup
+Dim sAnswer As String
+
+    On Error GoTo error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextFocus.Network()
+    Set iGroup = iApp.ContextGroup
+		
+    ' If there is no backfilled record, get out.
+    Set iRec = iGroup.GetCurrentRecord()
+    If iRec Is Nothing Then
+        iApp.ContextFocus.Message "Keine Meldung ausgewählt"
+        Exit Sub
+    End If
+	sCallKey = iRec.GetKeyValue
+   '	Msgbox iApp.ContextControlName
+		If   iGroup.GetValue(iGroup.GUIName("callstatus")) <> "Angenommen" Then
+			iApp.UserMsg "Nur Meldungen im Status  'Angenommen' können einen GMZ-Auftrag zugewiesen bekommen.", ebInformation
+			Exit Sub
+		End If
+		sAnswer =InputBox$( "GMZ-Auftragsnummer:","GMZ-Auftragsnr. eingeben"	)
+
+   		If sAnswer <> ""  Then
+    	    Set iTAskTable = iNetwork.GetTable("task")
+			iTaskTable.Clear
+			Set iRec = iTaskTable.AddRecord
+   		    iRec.SetValue "extsystem_id", sAnswer
+   		    iRec.SetValue "taskstatus", "In Arbeit"
+			 iRec.SetValue "summary", " GMZ Auftragsnr." & sAnswer
+			iRec.SetValue "ext_system_key",	GMZKEY
+			iRec.SetValue "tasktype_key", GMZTASKCODE
+			iRec.SetValue "calltask", sCallKey
+			iRec.SetValue "workgrouptask", HWGKEY
+	        iTaskTable.Commit
+			' Refresch GUI
+			iApp.ContextFocus.Clear
+			iGroup.SetValue iGroup.GUIName("pkey"), sCallKey
+			iGroup.BtnClick "callSearch"
+	    End If
+	Exit Sub
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "GMZTask error " & CStr(Err) & ": " & Error$
+End Sub
+
+'------------------------------------------------------------------
+
+Sub GetBMSTask()
+Dim iApp As Application
+Dim iGroup As SGroup
+
+    On Error GoTo error_handler
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextFocus.Network()
+    Set iGroup = iApp.ContextGroup
+	Select Case iApp.ContextControlName
+		Case "callGMZtask"
+			GMZTask
+		Case "callBMStask"
+			BMSTask
+	End select
+	Exit Sub
+
+error_handler:
+    iApp.UserMsg "GetBMSTask error " & CStr(Err) & ": " & Error$
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "RecordBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub RecordBackfill()"
+'TEXT = [[
+'*****************************************************************************
+' File:         RecordBackfill
+' Purpose:      Gui rule on Record backfill
+' Copyright:    Tarragon, 2003
+'*****************************************************************************
+
+'----------------------------------------------------------
+Sub RecordBackfill()
+
+Dim iApp As Application
+Dim iSearchNetwork As DBNetwork
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iRec As DBRecord
+Dim sID As String
+
+    '-------------------------------------------------
+    Set iApp = GetApp()
+	Set iSearchNetwork = iApp.CreateNetwork( "q_taskcount", "q_taskcount" )
+    Set iGroup = iApp.ContextGroup
+	Set iRec = iApp.ContextRecord
+   	Set iAttachmentTable = iSearchNetwork.GetTable( "attachment" )
+	sID = iRec.GetKeyValue
+' Calculate Attachments
+	   iAttachmentTable.QBEClear
+	   Select Case iGroup.Name
+		Case "task"	
+	   		iAttachmentTable.QBESetValue "task_key", sID
+		Case "callEntry"
+	   		iAttachmentTable.QBESetValue "callattachment", sID
+	   End Select
+	   iAttachmentTable.search
+	   If iAttachmentTable.RecordCount > 0 Then				
+			iGroup.SetValue "hasattachment", "1", True
+		Else 
+			iGroup.SetValue "hasattachment", "0", True
+		End If
+   	Set iAttachmentTable = Nothing
+	Set iSearchNetwork = Nothing
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TaskFormActivate"
+'TYPE = 0
+'TEMPLATE = "Sub TaskFormActivate()"
+'TEXT = [[
+'*****************************************************************************
+'SCript:     TaskFormActivate
+'Purpose:    Business rules that are executed when a taskform is activated.
+'Copyright:  Tarragon Software 2004
+'*****************************************************************************
+
+Sub TaskFormActivate()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iForm As SForm
+Dim iGroup As SGroup
+
+    '-------------------------------------------------
+    Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+	If 	iNetwork.GetTable("call").RecordCount <> 1 and iNetwork.GetTable("task").RecordCount < 2  Then	 Exit Sub
+
+	Set iForm = iApp.ContextForm
+    Set iGroup = iForm.GetGroup("task")
+    'Set iCallRec = iNetwork.GetTable("call").GetRecord(0)
+	' Problem wenn mehr als 1 Auftrag zu einer Meldung da, dann sind Foreignfields falsch
+	iGroup.Clear
+	iGroup.BtnClick "taskSearch"
+ End Sub
+
+
+
+
+
+
+']]

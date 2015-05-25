@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_PizzaService" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="name"/>
+            <parameter name="dial"/>
+            <parameter name="street"/>
+            <parameter name="city"/>
+            <parameter name="plz"/>
+            <parameter name="distance"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+                <!-- -->
+				<forward toNode="noLocation">
+					<question pattern="((was)|(wie))\s+mu[ßs]+\s+((ich)|(man))\s+fragen\s+um\s+an\s+ein[en]*\s+pizza\w*\s+zu\s+kommen[\s?!]*"   defaultAnswer="Einfach die Frage 'Pizzadienst in Mannheim' stellen. Du kannst mir aber auch jetzt die Postleitzahl, nennen und ich suche Dir einen raus"/>
+					<question pattern="kennste?\s+((du)|(ihr))\s+(auch\s+)?ei[ne]*\s+pizza\w*[\s?!]*"                        defaultAnswer="Na aber sicher  - sage mir einfach die Postleitzahl oder den Ort"/>
+					<question pattern="kennste?\s+((du)|(ihr))\s+pizza\w*[\s?!]*"                                   defaultAnswer="Ja sicher - einfach mir eine Postleitzahl oder Ort sagen und ich versuche einen Pizzadienst zu finden"/>
+					<question pattern="((wie)|(wo))\s+kom[mne]*\s+((ich)|(man)|(wir))\s+(jetzt\s+)?an\s+ei[ne]*\s+pizza\w*[\s?!]*" defaultAnswer="Vieleicht durch einen Pizzadienst?! Sage mir doch einfach die Postleitzahl und ich suche einen raus!"/>
+					<question pattern="((wie)|(wo))\s+bekom[mne]*\s+((ich)|(man)|(wir))\s+(jetzt\s+)?ei[ne]*\s+pizza\w*[\s?!]*" defaultAnswer="Vieleicht durch einen Pizzadienst?! Sage mir doch einfach die Postleitzahl und ich suche einen raus!"/>
+					<question pattern="((wie)|(wo))\s+find[endt]*\s+((ich)|(man)|(wir))\s+(jetzt\s+)?ei[ne]*\s+pizza\w*[\s?!]*" defaultAnswer="Vieleicht durch einen Pizzadienst?! Sage mir doch einfach die Postleitzahl und ich suche einen raus!"/>
+					<question pattern="\w+\s+((wollen)|(will))\s+pizza[\s?!]*"                                      defaultAnswer="Ich benötige noch die Postleitzahl (oder Stadt) damit ich einen Pizzadienst ausmachen kann!"/>
+					<question pattern="((ich)|(wir)\s+)?(brauche\s+)?(einen?\s+)?pizza\w*[\s?!]*"                  defaultAnswer="Ich benötige noch die Postleitzahl (oder Stadt) damit ich einen passenden Pizzadienst finden kann!"/>
+					<question pattern="will\s+(eine\s+)?pizza[\s?!]*" 	                                            defaultAnswer="Will?!....'Ich hätter gerne' heisst das - sage mir einfach die Postleitzahl und ich suche dir einen raus!"/>
+					<question pattern="((ich)|(wir))\s+brauchen*\s+(einen*\s+)?pizza[\s?!]*" 	                                            defaultAnswer="Will?!....'Ich hätter gerne' heisst das - sage mir einfach die Postleitzahl und ich suche dir einen raus!"/>
+					<question pattern="wo\s+gibts?(\s+e)?s\s+((hier)|(einen)|(ein))*\s+pizza\w*[\s?!]*"           defaultAnswer="Falls Du mir eine Postleitzahl oder Ort sagst, suche ich Dir einen raus."/>
+					<question pattern="((schicke?)|(sage?))\s+((mir)|(uns))\s+einen\s+pizza\w*(\s+zu)?[\s?!]*"    defaultAnswer="Warum nicht. Dann sage mir die Postleitzahl und ich suche dir die Telefonnummer raus!"/>
+				</forward>
+
+				<forward toNode="plz">
+					<question pattern="gibt\s+es\s+einen\s+pizza\w*\s+in\s+([0-9]+)[\s?!]*"                      defaultAnswer=""/>
+					<question pattern="gibt\s+es\s+in\s+([0-9]+)\s+ein(?:[en]*)\s+pizza\w*[\s?!]*"               defaultAnswer=""/>
+					<question pattern="pizzalieferservice\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"             defaultAnswer=""/>
+					<question pattern="pizzalieferdienst\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"              defaultAnswer=""/>
+					<question pattern="pizzadienst\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"                    defaultAnswer=""/>
+					<question pattern="pizzaservice\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"                   defaultAnswer=""/>
+					<question pattern="pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"                          defaultAnswer=""/>
+					<question pattern="suche\s+pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*"                 defaultAnswer=""/>
+					<question pattern="wo\s+gibt\s+(?:e)?s\s+pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]*" defaultAnswer=""/>
+					<question pattern="(?:(?:schick)|(?:sage))\s+(?:(?:mir)|(?:uns))\s+einen\s+pizza\w*\s+(?:(?:in)|(?:an)|(?:bei))\s+([0-9]+)[\s?!]"        defaultAnswer="Warum nicht. Dann sage mir die Postleitzahl und ich suche dir die Telefonnummer raus!"/>
+				</forward>
+
+				<forward toNode="city">
+					<question pattern="gibt\s+es\s+einen\s+pizza\w*\s+in\s+([-a-zäöüß.\s]+)[?!]*"                defaultAnswer=""/>
+					<question pattern="gibt\s+es\s+in\s+([-a-zäöüß.\s]+)\s+ein(?:[en]*)\s+pizza\w*[?!]*"         defaultAnswer=""/>
+					<question pattern="pizzalieferservice\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"      defaultAnswer=""/>
+					<question pattern="pizzalieferdienst\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"       defaultAnswer=""/>
+					<question pattern="pizzadienst\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"             defaultAnswer=""/>
+					<question pattern="pizzaservice\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"            defaultAnswer=""/>
+					<question pattern="pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"                   defaultAnswer=""/>
+					<question pattern="suche\s+pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*"          defaultAnswer=""/>
+					<question pattern="wo\s+gibt(?: e)?s\s+pizza\s+(?:(?:in)|(?:an)|(?:bei))\s+([a-zäöüß\s-.]+)[?!]*" defaultAnswer=""/>
+				</forward>
+			</node>
+
+			<node name="noLocation">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+			<node name="plz">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+			<node name="city">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

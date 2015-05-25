@@ -1,0 +1,39 @@
+'NAME = "CoverageUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub CoverageUpdate()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       CoverageUpdate
+'Purpose:      Automatically computes the name:
+'              takes two first characters of the enumeration "day"
+'              (contains weekdays) and appends the times.
+'              Remark: Table Rule (no GUI, no OS specific calls)
+'Copyright:    Quartess GmbH, 1997
+'*****************************************************************************
+Sub CoverageUpdate()
+
+Dim iApp As Application
+Dim iRec As DBRecord
+Dim sName As String
+Dim sFrom As String
+Dim sTo As String
+
+	Set iApp = GetApp
+	Set iRec = iApp.ContextRecord
+	sName = iRec.GetValue( "day" )
+	sFrom = iRec.GetValue( "time_from" )
+	sTo = iRec.GetValue( "time_to" )
+	sName = Left( sName, 2 )
+	If sName = "" Then
+		sName = "XX"
+	End If
+	sName = sName & " " & sFrom & " - " & sTo
+	iRec.SetValue "name", sName
+End Sub
+
+
+
+
+
+']]

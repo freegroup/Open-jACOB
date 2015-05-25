@@ -1,0 +1,263 @@
+//
+// 
+//  
+// Source File Name:   Demo1View.java
+
+package de.shorti.dragdrop.examples.demo1;
+
+
+
+
+
+import de.shorti.dragdrop.*;
+import de.shorti.dragdrop.examples.*;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.util.*;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.border.TitledBorder;
+
+// Referenced classes of package de.shorti.dragdrop.examples.demo1:
+//            Demo1, AppAction
+
+public class Demo1View extends FREEGridView
+{
+
+    Demo1View()
+    {
+        m_ghost = new FREERectangle(new Point(), new Dimension());
+    }
+
+    public boolean doMouseDown(int i, Point point, Point point1)
+    {
+        FREEObject object = pickDocObject(point, true);
+        if(object != null)
+        {
+            FREEObject object1 = object;
+            if(!object1.isDraggable() && object1.getParent() != null && (object1.getParent() instanceof ListArea) && object1.getParent().getParent() != null && (object1.getParent().getParent() instanceof RecordNode))
+            {
+                RecordNode recordnode = (RecordNode)object1.getParent().getParent();
+                int j = recordnode.findItem(object1);
+                if(j >= 0)
+                {
+                    FREEPort port = recordnode.getLeftPort(j);
+                    if(port == null)
+                        port = recordnode.getRightPort(j);
+                    if(port != null && startNewLink(port, point))
+                        return true;
+                }
+            }
+        }
+        return super.doMouseDown(i, point, point1);
+    }
+
+    public boolean doMouseUp(int i, Point point, Point point1)
+    {
+        if((i & 0x4) != 0)
+        {
+            FREEObject object = pickDocObject(point, true);
+            if(object != null)
+            {
+                if((i & 0x2) != 0)
+                {
+                    FREEObject object1 = pickDocObject(point, false);
+                    if(object1 != null)
+                        object = object1;
+                } else
+                {
+                    selectObject(object);
+                }
+                doCancelMouse();
+                Demo1 demo1 = (Demo1)getFrame();
+                demo1.callDialog(object);
+                return true;
+            }
+        }
+        return super.doMouseUp(i, point, point1);
+    }
+
+    public void doBackgroundClick(int i, Point point, Point point1)
+    {
+        if((i & 0x4) != 0)
+        {
+            Demo1 demo1 = (Demo1)getFrame();
+            demo1.gridAction();
+        }
+    }
+
+    public void dragOver(DropTargetDragEvent droptargetdragevent)
+    {
+        super.dragOver(droptargetdragevent);
+        if(droptargetdragevent.getDropAction() != 0)
+        {
+            if(m_ghost.getView() != this)
+            {
+                m_ghost.setSize(50, 50);
+                addObjectAtTail(m_ghost);
+            }
+            m_ghost.setTopLeft(viewToDocCoords(droptargetdragevent.getLocation()));
+        }
+    }
+
+    public void dragExit(DropTargetEvent droptargetevent)
+    {
+        if(m_ghost.getView() == this)
+            removeObject(m_ghost);
+        super.dragExit(droptargetevent);
+    }
+
+    public boolean isDropFlavorAcceptable(DropTargetDragEvent droptargetdragevent)
+    {
+        return super.isDropFlavorAcceptable(droptargetdragevent) || droptargetdragevent.isDataFlavorSupported(DataFlavor.stringFlavor);
+    }
+
+    public void drop(DropTargetDropEvent droptargetdropevent)
+    {
+        de.shorti.dragdrop.FREECopyEnvironment copyEnv = getDocument().createDefaultCopyEnvironment();
+        if(doDrop(droptargetdropevent, copyEnv))
+        {
+            for(Iterator iterator = copyEnv.values().iterator(); iterator.hasNext();)
+            {
+                Object obj = iterator.next();
+                if(obj instanceof FREEObject)
+                {
+                    FREEObject object = (FREEObject)obj;
+                    if(object.isTopLevel())
+                        object.setResizable(true);
+                }
+            }
+
+            return;
+        }
+        try
+        {
+            if(droptargetdropevent.isDataFlavorSupported(DataFlavor.stringFlavor))
+            {
+                Transferable transferable = droptargetdropevent.getTransferable();
+                Object obj1 = transferable.getTransferData(DataFlavor.stringFlavor);
+                droptargetdropevent.acceptDrop(droptargetdropevent.getDropAction());
+                String s = (String)obj1;
+                Vector vector = AppAction.allActions();
+                for(int i = 0; i < vector.size(); i++)
+                {
+                    AppAction appaction = (AppAction)vector.elementAt(i);
+                    if(!appaction.toString().equals(s))
+                        continue;
+                    Point point = viewToDocCoords(droptargetdropevent.getLocation());
+                    Demo1 demo1 = (Demo1)getFrame();
+                    demo1.setDefaultLocation(point);
+                    appaction.actionPerformed(null);
+                    break;
+                }
+
+                droptargetdropevent.dropComplete(true);
+                return;
+            }
+        }
+        catch(Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        droptargetdropevent.rejectDrop();
+    }
+
+    public void updateBorder()
+    {
+        TitledBorder titledborder = (TitledBorder)getBorder();
+        String s = "Demo1 View: ";
+        int i = (int)(getScale() * 100D);
+        s = s + String.valueOf(i);
+        s = s + "%";
+        titledborder.setTitle(s);
+        Insets insets = getInsets();
+        paintImmediately(0, 0, getWidth(), insets.top);
+    }
+
+    public boolean makeLabeledLinkForPort(FREEPort port)
+    {
+        if(port instanceof BasicNodePort)
+            return true;
+        de.shorti.dragdrop.FREEArea area = port.getParent();
+        return area != null && (area.getFlags() & 0x10000) != 0;
+    }
+
+    public void newLink(FREEPort port, FREEPort port1)
+    {
+        Object obj = null;
+        if(makeLabeledLinkForPort(port) || makeLabeledLinkForPort(port1))
+        {
+            FREELabeledLink labeledlink = new FREELabeledLink(port, port1);
+            obj = labeledlink;
+            FREELinkLabel linklabel = new FREELinkLabel("from");
+            linklabel.setAlignment(0);
+            linklabel.setSelectable(true);
+            linklabel.setEditOnSingleClick(true);
+            labeledlink.setFromLabel(linklabel);
+            linklabel = new FREELinkLabel("middle");
+            linklabel.setAlignment(1);
+            linklabel.setSelectable(true);
+            linklabel.setEditable(true);
+            linklabel.setEditOnSingleClick(true);
+            labeledlink.setMidLabel(linklabel);
+            linklabel = new FREELinkLabel("to");
+            linklabel.setAlignment(2);
+            linklabel.setEditOnSingleClick(true);
+            labeledlink.setToLabel(linklabel);
+        } else
+        {
+            obj = new FREELink(port, port1);
+        }
+        port.getDocument().getFirstLayer().getNextLayer().addObjectAtTail(((FREEObject) (obj)));
+    }
+
+    public java.awt.geom.Rectangle2D.Double getPrintPageRect(Graphics2D graphics2d, PageFormat pageformat)
+    {
+        return new java.awt.geom.Rectangle2D.Double(pageformat.getImageableX(), pageformat.getImageableY(), pageformat.getImageableWidth(), pageformat.getImageableHeight() - 20D);
+    }
+
+    public double getPrintScale(Graphics2D graphics2d, PageFormat pageformat)
+    {
+        return getScale();
+    }
+
+    public void printDecoration(Graphics2D graphics2d, PageFormat pageformat, int i, int j)
+    {
+        super.printDecoration(graphics2d, pageformat, i, j);
+        String s = Integer.toString(i);
+        s = s + ", ";
+        s = s + Integer.toString(j);
+        java.awt.Paint paint = graphics2d.getPaint();
+        graphics2d.setPaint(Color.black);
+        Font font = graphics2d.getFont();
+        graphics2d.setFont(new Font(FREEText.getDefaultFontFaceName(), 0, 10));
+        graphics2d.drawString(s, (int)(pageformat.getImageableX() + pageformat.getImageableWidth() / 2D), (int)((pageformat.getImageableY() + pageformat.getImageableHeight()) - 10D));
+        graphics2d.setPaint(paint);
+        graphics2d.setFont(font);
+    }
+
+    public String getToolTipText(MouseEvent mouseevent)
+    {
+        if(!isMouseEnabled())
+            return null;
+        Point point = mouseevent.getPoint();
+        Point point1 = viewToDocCoords(point);
+        FREEObject object = pickDocObject(point1, false);
+        if(object != null)
+        {
+            Object obj = object.getLayer().getIdentifier();
+            if(obj != null)
+                obj = obj.toString();
+            if(obj != null)
+                return (String)obj;
+        }
+        return super.getToolTipText(mouseevent);
+    }
+
+    protected FREERectangle m_ghost;
+}

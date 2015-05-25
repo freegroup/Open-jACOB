@@ -1,0 +1,192 @@
+'NAME = "PricebookSearch"
+'TYPE = 0
+'TEMPLATE = "Function PricebookSearch() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       PricebookSearch
+'Purpose:      Search for the pricebook entries which are related to the
+'              selected task. The relation is defined as string field
+'              and not like the normal CustomerQ relations
+'              Remark: GUI
+' Note:    only to be used in Form = "taskcall", Groups = "task","pricebook"
+'Copyright:    Quartess GmbH, 1997
+'*****************************************************************************
+Function PricebookSearch() As Boolean
+
+Dim iApp As Application
+Dim iForm As SForm
+Dim iPriceGroup As SGroup
+Dim iTaskGroup As SGroup
+Dim sService As String
+
+	On Error GoTo pricebooksearch_error_handler
+
+	Set iApp = GetApp
+	Set iForm = iApp.ContextForm
+	Set iPriceGroup = iApp.ContextGroup
+	Set iTaskGroup = iForm.GetGroup( "task" )
+
+	If iTaskGroup.Mode <> MODE_FILLED Then
+		iApp.UserMsg "Keine Aufgabe selektiert." & _
+					Chr$( 13 ) & Chr$( 10 ) & _
+					"Suche innerhalb des Bereichs nicht möglich."
+		PricebookSearch = False
+		Exit Function
+	End If
+	sService = iTaskGroup.GetValue( "taskService" )
+	If sService = "" Then
+		iApp.UserMsg "Bereich in der Aufgabe nicht angegeben." & _
+					Chr$( 13 ) & Chr$( 10 ) & _
+					"Suche innerhalb des Bereichs nicht möglich."
+		PricebookSearch = False
+		Exit Function
+	End If
+
+	iPriceGroup.SetValue "pricebookService", sService
+	PricebookSearch = True
+	Exit Function
+
+pricebooksearch_error_handler:
+	iApp.UserMsg "PricebookSearch error " & CStr(Err) & ": " & Error$
+	Exit Function
+End Function
+
+
+
+
+
+
+
+
+']]
+'NAME = "PricebookCopy"
+'TYPE = 0
+'TEMPLATE = "Sub PricebookCopy()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       PricebookCopy
+'Purpose:      Takes some information from the selected pricebook record
+'              and copies it to the selected task.
+'              After we have a task, we search for the cheapest pricebook
+'              entry (with the same "category" as the task) and than copy
+'              the price to the task.
+'              Remark: GUI
+' Note:    only to be used in Form = "taskcall", Groups = "task","pricebook"
+'Copyright:    Quartess GmbH, 1997
+'*****************************************************************************
+Sub PricebookCopy()
+
+Dim iApp As Application
+Dim iForm As SForm
+Dim iPriceGroup As SGroup
+Dim iTaskGroup As SGroup
+Dim sPrice As String
+
+	On Error GoTo pricebookcopy_error_handler
+
+	Set iApp = GetApp
+	Set iForm = iApp.ContextForm
+	Set iPriceGroup = iApp.ContextGroup
+	Set iTaskGroup = iForm.GetGroup( "task" )
+
+	If iPriceGroup.Mode <> MODE_FILLED Then
+		iApp.UserMsg "Kein Preis selektiert." & _
+					Chr$( 13 ) & Chr$( 10 ) & _
+					"Übernahme nicht möglich."
+		Exit Sub
+	End If
+	If iTaskGroup.Mode = MODE_FILLED Then
+		iTaskGroup.Change
+	ElseIf iTaskGroup.Mode <> MODE_UPDATE Then
+		iApp.UserMsg "Keine Aufgabe selektiert." & _
+					Chr$( 13 ) & Chr$( 10 ) & _
+					"Übernahme nicht möglich."
+		Exit Sub
+	End If
+
+	sPrice = iPriceGroup.GetValue( "pricebookPrice" )
+	iTaskGroup.SetValue "taskPlancost", sPrice
+	iTaskGroup.SetValue "taskAllowedTo", iPriceGroup.GetValue( "pricebookAllowedTo" )
+	iTaskGroup.SetValue "taskSecurity",  iPriceGroup.GetValue( "pricebookSecurity" )
+	iTaskGroup.SetValue "taskSLA", iPriceGroup.GetValue( "pricebookSLA" )
+	iTaskGroup.SetValue "taskRLA", iPriceGroup.GetValue( "pricebookRLA" )
+	iTaskGroup.Update
+
+	Exit Sub
+
+
+pricebookcopy_error_handler:
+	iApp.UserMsg "PricebookCopy error " & CStr(Err) & ": " & Error$
+	Exit Sub
+
+End Sub
+
+
+
+
+
+
+']]
+'NAME = "PricebookBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub PricebookBackfill()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       PricebookBackfill
+'Purpose:      Search for the contract of the pricebook and puts
+'              the SLA & RLA values into the pricebook group
+'              Remark: GUI, no error notification
+'Copyright:    Quartess GmbH, 1997
+'*****************************************************************************
+Sub PricebookBackfill()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iContractTbl As DBTable
+Dim iProductTbl As DBTable
+Dim sContractKey As String
+Dim iRecord As DBRecord
+Dim iGroup As SGroup
+Dim sSLA As String
+Dim sRLA As String
+
+
+	On Error GoTo abort
+
+	Set iApp = GetApp()
+	Set iRecord = iApp.ContextRecord
+	If iRecord Is Nothing Then
+		Exit Sub
+	End If
+
+	Set iNetwork = iApp.ContextNetwork
+	Set iContractTbl = iNetwork.GetTable( "contract" )
+	sContractKey = iRecord.GetValue( "contractpricebook" )	
+	If  sContractKey = "-1" Or sContractKey = "" Or sContractKey = "NULL" Then
+		sSLA = ""
+		sRLA = ""
+	Else
+		sSLA = iContractTbl.GetValueWhere( "timetoclose", "pkey", sContractKey )
+		sRLA = iContractTbl.GetValueWhere( "timetorespond", "pkey", sContractKey )
+	End If
+
+	Set iGroup = iApp.ContextGroup()
+	iGroup.SetValue "pricebookSLA", sSLA, True
+	iGroup.SetValue "pricebookRLA", sRLA, True
+
+	Exit Sub
+
+
+
+abort:
+
+End Sub
+
+
+
+
+
+']]

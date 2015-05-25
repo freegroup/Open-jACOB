@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+  <chapter>
+    <title>MessageDialog</title>
+
+    <section>
+      <title>Introduction</title>
+        
+      <para>
+        It is clear that these dialog boxes are always needed in programs that have a user interface. 
+        After all, we are humans, humans make mistakes, and dialog boxes notify us when we err.
+      </para>
+      <para>
+      <!--
+        Notice the various gif images that can used for the each type of box.
+       -->
+        Not much more can be said about "MessageDialog" -- it really is easy.
+      </para>
+      <para>
+        <figure id="user.dialog.messageDialog01">
+	          <title>Screenshot of an <emphasis>IMessageDialog</emphasis> in action</title>
+	          <screenshot><mediaobject><imageobject> <imagedata fileref="GuiProgramming/messageDialog.png" scalefit="0" width="8cm">
+          </imagedata> </imageobject> </mediaobject></screenshot>
+	    </figure>
+	  </para>
+	</section>
+    <section><title>An Example</title>
+  	  <section>
+  	  	<title>Preface</title> 
+  	  		<para>
+  	  		 In this simple example we notify the user that they have pressed a button. We can call 
+  	  		 them the <emphasis>Hello World</emphasis> of dialog boxes.
+        	</para>
+	  </section>
+
+      <section>
+	    <section>
+		 <title>The <emphasis>MessageDialog</emphasis> within a ButtonHandler</title>
+			<programlisting>package jacob.event.screen.f_call_manage.taskEdvin;
+import java.util.*;
+import de.tif.etr.screen.*;
+import de.tif.etr.screen.dialogs.*;
+import de.tif.etr.screen.event.IButtonEventHandler;
+
+public class GetBaueinheit extends IButtonEventHandler
+{
+  public void onAction(IClientContext context, IGuiElement button)throws Exception
+  {
+    IMessageDialog dialog =context.createMessageDialog("Title","This is a message");
+    dialog.show();
+  }
+
+  public void onGroupStatusChanged(IClientContext context, int status, IGuiElement button) throws Exception
+  {
+  }
+}</programlisting>
+		</section>
+	</section>
+  </section>
+  </chapter>

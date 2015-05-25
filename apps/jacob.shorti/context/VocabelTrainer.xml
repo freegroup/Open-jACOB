@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_VocabelTrainer" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="original"/>
+            <parameter name="translation"/>
+        </responseItem>
+		<nodelist>
+            <!--
+                Start node of the context
+            -->
+			<node name="start">
+				<forward toNode="howUseTrainer">
+					<question pattern="wie\s+startet\s+man\s+(eigentlich\s+)?den\s+vo[ck]+abeltrainer[\s?!]*"   defaultAnswer="Sage mir einfach 'Starte den Vokabeltrainer', und schon bekommst du alle 24 Stunden 20 Vokabeln Deutsch/Englisch zugesendet."/>
+					<question pattern="wie\s+begint\s+man\s+(eigentlich\s+)?den\s+vo[ck]+abeltrainer[\s?!]*"   defaultAnswer="Sage mir einfach 'Starte den Vokabeltrainer', und schon bekommst du alle 24 Stunden 20 Vokabeln Deutsch/Englisch zugesendet."/>
+				</forward>
+
+				<forward toNode="startTrainer">
+					<question pattern="starte\s+den\s+vo[ck]+abeltrainer[\s?!]*"   defaultAnswer="Der Vokabeltrainer wurde erfolgreich eingerichtet. Es werden ab jetzt alle 24 Stunden eine Nachricht versendet."/>
+				</forward>
+
+				<forward toNode="stopTrainer">
+					<question pattern="stoppe\s+den\s+vo[ck]+abeltrainer[\s?!]*"   defaultAnswer="Der Vokabeltrainer wurde gestopped."/>
+				</forward>
+
+				<forward toNode="sendRandom">
+					<question pattern="vokabeltrainer"    defaultAnswer=""/>
+				</forward>
+			</node>
+
+            <!--
+                This node handles the 'how to use the vocable trainer' questions
+            -->
+			<node name="howUseTrainer">
+				<forward toNode="howUseTrainer">
+					<question pattern="(und\s+)?wie\s+stoppe\s+ich\s+diesen(\s+wieder)?[\s?!]*" 	defaultAnswer="Einfach mir den Satz 'beende den Vokabeltrainer' sagen."/>
+					<question pattern="(und\s+)?wie\s+beende\s+ich\s+diesen(\s+wieder)?[\s?!]*" 	defaultAnswer="Einfach mir den Satz 'beende den Vokabeltrainer' sagen."/>
+					<question pattern="und\s+beenden?[\s?!]*"                                         defaultAnswer="Einfach mir den Satz 'beende den Vokabeltrainer' sagen."/>
+					<question pattern="und\s+stopp?e?n?[\s?!]*"                                       defaultAnswer="Einfach mir den Satz 'beende den Vokabeltrainer' sagen."/>
+				</forward>
+			</node>
+
+            <!--
+                This node init the vocable trainer for the requested user.
+            -->
+			<node name="startTrainer">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+            <!--
+                This node deinstall the vocable trainer for the requested user.
+            -->
+			<node name="stopTrainer">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+            <!--
+                This node send a well defined count of vocables to the user.
+                This is for one and only vocable trainer message
+            -->
+			<node name="sendRandom">
+				<forward toNode="start">
+					<question pattern="danke" defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

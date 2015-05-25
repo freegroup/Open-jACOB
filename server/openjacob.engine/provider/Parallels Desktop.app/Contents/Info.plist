@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.parallels.vm.vmpackage</string>
+			<key>UTTypeDescription</key>
+			<string>Parallels VM package</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pvm</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.parallels.vm.vmhdd</string>
+			<key>UTTypeDescription</key>
+			<string>Parallels VM hard disk image</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hdd</string>
+					<string>hds</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.parallels.vm.vmmem</string>
+			<key>UTTypeDescription</key>
+			<string>Parallels VM memory image</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mem</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.parallels.vm.vmsav</string>
+			<key>UTTypeDescription</key>
+			<string>Parallels VM state image</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>sav</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>prl_client_app</string>
+	<key>CFBundleGetInfoString</key>
+	<string>5.0.9376.600278, Copyright 2005-2010 Parallels Holdings, Ltd. and its affiliates</string>
+	<key>CFBundleIconFile</key>
+	<string>Parallels.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.parallels.desktop.console</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>Parallels Desktop Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>Parallels Desktop-Benutzerhandbuch</string>
+	<key>CFBundleInfoDictonaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Parallels Desktop</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.0</string>
+	<key>CFBundleSignature</key>
+	<string>pvdc</string>
+	<key>CFBundleVersion</key>
+	<string>9376.600278</string>
+	<key>CFMajorVersion</key>
+	<integer>5</integer>
+	<key>CFMinorVersion</key>
+	<integer>0</integer>
+	<key>NSAppleScriptEnabled</key>
+	<string>Yes</string>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>DYLD_LIBRARY_PATH</key>
+		<string>/Library/Parallels/Parallels Service.app/Contents/MacOS</string>
+	</dict>
+
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pvs</string>
+			</array>
+
+			<key>CFBundleTypeName</key>
+			<string>Parallels VM configuration</string>
+
+			<key>CFBundleTypeIconFile</key>
+			<string>pvs.icns</string>
+
+			<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+				<true/>		                                                                                                                      
+			<key>LSHandlerRank</key>
+				<string>Owner</string>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pvm</string>
+			</array>
+
+			<key>CFBundleTypeName</key>
+			<string>Parallels virtual machine</string>
+
+			<key>CFBundleTypeIconFile</key>
+			<string>pvm.icns</string>
+
+			<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+		        	<true/>		                                                                                                                      
+			<key>LSHandlerRank</key>
+				<string>Owner</string>
+		</dict>
+
+ 		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>hdd</string>
+			</array>
+			
+			<key>CFBundleTypeName</key>
+			<string>Parallels VM hard disk image</string>
+            
+			<key>CFBundleTypeIconFile</key>
+			<string>hdd.icns</string>
+
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+		</dict>
+		
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fdd</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Parallels VM floppy drive image</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>fdd.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+		</dict>
+		
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+           	<array>
+               	<string>iso</string>
+           	</array>
+
+			<key>CFBundleTypeName</key>
+			<string>Parallels CD/DVD drive image</string>
+
+			<key>CFBundleTypeIconFile</key>
+			<string>iso.icns</string>
+
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mem</string>
+			</array>
+
+			<key>CFBundleTypeName</key>
+			<string>Parallels VM Memory Dump</string>
+
+			<key>CFBundleTypeIconFile</key>
+			<string>mem.icns</string>
+
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sav</string>
+			</array>
+
+			<key>CFBundleTypeName</key>
+			<string>Parallels VM Saved State</string>
+
+			<key>CFBundleTypeIconFile</key>
+			<string>sav.icns</string>
+
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+		</dict>
+	</array>
+</dict>
+</plist>

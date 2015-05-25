@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="db_field(doc_template.xsl_stylesheet)"?>
+<doc>
+   <data>
+   	<general>
+   	<date>db_field(*Date)</date>
+   	<time>db_field(*Time)</time>	
+   	</general>
+	<tc_customer>
+	  <fullname>db_field(tc_order.tc_customer_key-tc_customer.fullname)</fullname>
+	  <lastnamecorr>db_field(tc_order.tc_customer_key-tc_customer.lastnamecorr)</lastnamecorr>
+	  <firstnamecorr>db_field(tc_order.tc_customer_key-tc_customer.firstnamecorr)</firstnamecorr>
+	  <phonecorr>db_field(tc_order.tc_customer_key-tc_customer.phonecorr)</phonecorr>
+	  <faxcorr>db_field(tc_order.tc_customer_key-tc_customer.faxcorr)</faxcorr>
+	  <emailcorr>db_field(tc_order.tc_customer_key-tc_customer.emailcorr)</emailcorr>
+	  <department>db_field(tc_order.tc_customer_key-tc_customer.department)</department>
+	</tc_customer>
+	<tc_order>
+		<pkey>db_field(tc_order.pkey)</pkey>
+		<slot>db_field(tc_order.tc_capacity_key-tc_capacity.slot)</slot>
+		<slotdate>$SLOTDATE$</slotdate>
+		<slottime>$SLOTTIME$</slottime>
+		<pkw>db_field(tc_order.tc_object_key-tc_object.external_id)</pkw>
+		<customerEmail>db_field(tc_order.customerEmail)</customerEmail>
+		<description>db_field(tc_order.description)</description>
+		<created>db_field(tc_order.created)</created>
+		<call>db_field(tc_order.tc_call_key)</call>
+	</tc_order>
+ </data>
+</doc>

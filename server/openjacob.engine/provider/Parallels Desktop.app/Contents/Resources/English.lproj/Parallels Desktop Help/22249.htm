@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta name="description" content="You can add a number of network adapters to your virtual machine configuration and use them for connecting to different networks." />
+
+<meta name="description" content="Specify the type of networking to be used by the virtual network adapter." />
+
+<title> Netzwerkadaptereinstellungen </title>
+<meta name="Keywords" content="Adresse	MAC-Adresse, Bridged Ethernet-Netzwerk, MAC-Adresse	Adresse generieren, MAC-Adresse	in Virtual Machine, Netzwerkadapter	Netzwerkadapter einrichten, Netzwerkadapter	Parallels-Netzwerkadapter, Netzwerkmodus	Bridged Ethernet, Netzwerkmodus	Shared Network (NAT)" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23215.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22724.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Netzwerkadaptereinstellungen</h3>
+<p class="bodytext">Im Bereich <strong class="specialbold">Netzwerk-Adapter</strong> der VM-Konfiguration k?nnen Sie die Netzwerkeinstellungen der virtuellen Maschine verwalten.</p>
+<p class="bodytext">          <img src="pd_ce_networkadap.gif" alt="Netzwerkadapter-Optionen" height="391" width="556" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">W?hlen Sie die Option <strong class="specialbold">Verbunden</strong>, wenn dieser Netzwerkadapter beim Starten der virtuellen Maschine verbunden sein soll.</p>
+<p class="bodytext">          Sie können für den Netzwerk-Adapter der virtuellen Maschine einen der folgenden Netzwerktypen wählen:</p>
+<ul class="listbullet"><li class="listbullet"><strong class="specialbold">Shared Network</strong>. Wählen Sie diese Option, um die Funktion &quot;Netzwerkadressübersetzung (NAT)&quot; für die virtuelle Maschine zu aktivieren. In diesem Fall nutzt die virtuelle Maschine die Netzwerkverbindung, die zurzeit vom Host-Computer verwendet wird.<p class="listcontinue">Unter <strong class="specialbold"><a id="h22803" class="jumptemplate" title="Shared Network" href="22247.htm" target="_self">Shared Network</a></strong> erfahren Sie, wie dieser Netzwerktyp konfiguriert wird.</p>
+</li><li class="listbullet"><strong class="specialbold">Bridged Ethernet-Netzwerk</strong>. Wählen Sie diese Option, damit die virtuelle Maschine über einen der Netzwerk-Adapter, die auf dem Host-Computer installiert sind, auf das lokale Netzwerk und das Internet zugreifen kann. In diesem Fall wird die virtuelle Maschine wie ein eigenständiger Computer im Netzwerk behandelt, und sie muss genauso konfiguriert werden wie ein echter Computer. Der physische Adapter, mit dem der Adapter der virtuellen Maschine überbrückt wird, kann in der Liste unter der Option <strong class="specialbold">Bridged Ethernet-Netzwerk</strong> ausgewählt werden.<p class="listcontinue">Unter <strong class="specialbold"><a id="h22252" class="jumptemplate" title="Bridged Ethernet-Netzwerk" href="22251.htm" target="_self">Bridged Ethernet-Netzwerk</a></strong> erfahren Sie, wie dieser Netzwerktyp konfiguriert wird.</p>
+</li><li class="listbullet"><strong class="specialbold">Host-exklusives Netzwerk</strong>. Wählen Sie diese Option, damit die virtuelle Maschine eine Verbindung zum Host-Computer und zu den darauf befindlichen virtuellen Maschinen herstellen kann und außerhalb des Host-Computers unsichtbar ist.<p class="listcontinue">Unter <strong class="specialbold"><a id="h22406" class="jumptemplate" title="Host-exklusives Netzwerk" href="22243.htm" target="_self">Host-exklusives Netzwerk</a></strong> erfahren Sie, wie dieser Netzwerktyp konfiguriert wird.        </p>
+</li></ul><p class="bodytext">          Im Feld <strong class="specialbold">MAC-Adresse</strong> können Sie die MAC-Adresse ändern, die der virtuellen Maschine zurzeit zugeordnet ist. MAC-Adressen werden automatisch bei der Erstellung der virtuellen Maschine generiert. Sie können jedoch die Standard-MAC-Adresse ändern, indem Sie einen anderen Wert in das Feld <strong class="specialbold">MAC-Adresse</strong> eingeben oder auf die Taste <strong class="specialbold">Generieren</strong> klicken. Bei der Eingabe einer neuen MAC-Adresse sollten Sie darauf achten, dass sie in Ihrem Netzwerk eindeutig ist.        </p>
+<p class="subheading">Unterst?tzung f?r WiFi-Bridging</p>
+<p class="bodytext">So k?nnen Sie von Ihrer virtuellen Maschine eine Verbindung zu einem kabellosen Netzwerk herstellen</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie auf das Feld <strong class="specialbold">Typ</strong>.</li><li class="listnumber">W?hlen Sie den <strong class="specialbold">AirPort</strong>-Adapter aus der Liste <strong class="specialbold">Bridged Networking</strong> und klicken Sie auf <strong class="specialbold">OK</strong>, damit die ?nderungen wirksam werden.</li></ol><p class="bodytext">Nach der Durchf?hrung dieser Schritte kann die virtuelle Maschine ?ber den AirPort-Adapter des Mac eine Verbindung zum Internet herstellen.</p>
+<p class="bodytext">Wenn Sie ?ber WiFi eine Verbindung zum Internet herstellen m?chten und f?r den WiFi-Zugriffspunkt die Option zum ?berpr?fen von DHCP-Paketen aktiviert ist, treten unter Umst?nden Probleme auf.<strong class="specialbold"> Aktivieren Sie in diesem Fall die Option MAC-Adresse des Hosts an den DHCP-Server senden</strong>, um sicherzustellen, dass die virtuelle Maschine eine IP-Adresse f?r den Zugriff auf das Internet erh?lt.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Die Aktivierung der Option <strong class="specialbold">MAC-Adresse des Hosts an den DHCP-Server senden</strong> bringt nicht bei allen DHCP-Servern den gew?nschten Effekt. Die virtuelle Maschine erh?lt m?glicherweise die gleiche IP-Adresse wie der physische Computer.</p>
+<p class="bodytext">Wenn die virtuelle Maschine nicht f?r die Ausf?hrung im Bridged Ethernet-Modus konfiguriert werden kann, k?nnen Sie einen anderen Netzwerkmodus in Betracht ziehen: <a id="h22803_2" class="jumptemplate" title="Shared Network" href="22247.htm" target="_self">Shared Network-Modus</a> oder <a id="h22244" class="jumptemplate" title="Host-exklusives Netzwerk" href="22243.htm" target="_self">Host-only-Netzwerkmodus</a>.</p>
+<p class="bodytext">          Wenn die Konfiguration der virtuellen Maschine vor weiteren, nicht authorisierten Änderungen geschützt werden soll, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Einstellungen in einem Bereich der Konfiguration der virtuellen Maschine ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30335" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

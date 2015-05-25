@@ -1,0 +1,1428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="Jacob">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DataSources">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DataSource" type="CastorDataSource" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Roles" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sollte beim nächsten Majorrelease zu Pflicht gemacht werden!</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Role" type="CastorRole" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Tables">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Table" type="CastorTable" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TableAliases">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TableAlias" type="CastorTableAlias" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Browsers">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Browser" type="CastorBrowser" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Relations">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Relation" type="CastorRelation" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Relationsets">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Relationset" type="CastorRelationset" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Forms">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Form" type="CastorJacobForm" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="ExternalForm" type="CastorExternalForm" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="MutableForm" type="CastorMutableForm" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="HtmlForm" type="CastorHtmlForm" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Domains">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Domain" type="CastorDomain" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Applications">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Application" type="CastorApplication" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ExternalModules" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Kann beim nächsten Majorrelease gelöscht werden. Wird nicht mehr benötigt!</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ExternalModule" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="filename" type="xs:string" use="required"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Diagrams" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ActivityDiagram" type="CastorActivityDiagram" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required"/>
+			<xs:attribute name="engineVersion" type="xs:string" use="required"/>
+			<xs:attribute name="defaultApplication" type="xs:string" use="optional"/>
+			<xs:attribute name="erroneous" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="CastorTable">
+		<xs:sequence>
+			<xs:element name="Field" type="CastorTableField" maxOccurs="unbounded"/>
+			<xs:element name="PrimaryKey" type="CastorKey" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO: Prüfen ob dieses Element nicht Pflicht sein kann!</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ForeignKey" type="CastorKey" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="UniqueIndex" type="CastorKey" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Index" type="CastorKey" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="datasource" type="xs:string" use="required"/>
+		<xs:attribute name="dbName" type="xs:string" use="optional"/>
+		<xs:attribute name="representativeField" type="xs:string" use="optional"/>
+		<xs:attribute name="historyField" type="xs:string" use="optional"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="omitLocking" type="xs:boolean" use="optional" default="false"/>
+		<!-- since 2.9.4 -->
+		<xs:attribute name="NtoMTable" type="xs:boolean" use="optional" default="false"/>
+		<!-- since 2.9.4 -->
+		<xs:attribute name="recordsAlwaysDeletable" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="CastorTableField">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Text" type="TextField"/>
+				<xs:element name="Boolean" type="BooleanField">
+					<xs:annotation>
+						<xs:documentation>Seit jACOB 2.6</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Integer" type="IntegerField"/>
+				<xs:element name="Long" type="LongField"/>
+				<xs:element name="Float" type="FloatField"/>
+				<xs:element name="Double" type="DoubleField"/>
+				<xs:element name="Decimal" type="DecimalField"/>
+				<xs:element name="Date" type="DateField" nillable="true"/>
+				<xs:element name="Time" type="TimeField"/>
+				<xs:element name="Timestamp" type="TimestampField"/>
+				<xs:element name="LongText" type="LongTextField"/>
+				<xs:element name="Binary" type="BinaryField"/>
+				<xs:element name="Enumeration" type="EnumerationField"/>
+				<xs:element name="Document" type="DocumentField"/>
+			</xs:choice>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="dbName" type="xs:string" use="optional"/>
+		<xs:attribute name="required" type="xs:boolean" use="required"/>
+		<xs:attribute name="readonly" type="xs:boolean" use="required"/>
+		<xs:attribute name="customFieldType" type="xs:string" use="optional"/>
+		<xs:attribute name="history" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="label" type="xs:string" use="optional"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorTableAlias">
+		<xs:sequence>
+			<xs:element name="Condition" type="xs:string" minOccurs="0"/>
+			<xs:element name="SortField" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="fieldName" type="xs:string" use="required"/>
+					<xs:attribute name="sortOrder" type="CastorSortOrder" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="table" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="CastorBrowser">
+		<xs:sequence>
+			<xs:element name="Field" type="CastorBrowserField" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+			
+			<!-- since 2.7.4 -->
+			<!-- implements a tree with a CONNECT BY table field known from Oracel -->
+      <xs:element name="ConnectByKey" type="CastorKey"  minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="alias" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="type" type="BrowserType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorBrowserField">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="TableField" type="CastorBrowserTableFieldType"/>
+				<xs:element name="Runtime" type="CastorBrowserRuntimeFieldType"/>
+			</xs:choice>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="visible" type="xs:boolean" use="required"/>
+		<xs:attribute name="configureable" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="readonly" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="CastorBrowserTableFieldType">
+		<xs:sequence>
+			<xs:element name="Foreign" type="CastorBrowserForeignType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="tableField" type="xs:string" use="required"/>
+		<xs:attribute name="sortOrder" type="CastorSortOrder" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorBrowserForeignType">
+		<xs:attribute name="foreignAlias" type="xs:string" use="required"/>
+		<xs:attribute name="relationToUse" type="xs:string" use="optional"/>
+		<xs:attribute name="browserToUse" type="xs:string" use="optional"/>
+		<xs:attribute name="relationset" type="xs:string" use="optional"/>
+		<xs:attribute name="filldirection" type="CastorFilldirection" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorBrowserRuntimeFieldType">
+		<xs:attribute name="dummy" type="xs:boolean" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorKey">
+		<xs:sequence>
+			<xs:element name="Field" type="CastorKeyField" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorRelation">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="OneToMany" type="CastorOneToMany"/>
+				<xs:element name="ManyToMany" type="CastorManyToMany"/>
+			</xs:choice>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorOneToMany">
+		<xs:attribute name="fromAlias" type="xs:string" use="required"/>
+		<xs:attribute name="toAlias" type="xs:string" use="required"/>
+		<xs:attribute name="toKey" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorManyToMany">
+		<xs:attribute name="fromRelation" type="xs:string" use="required"/>
+		<xs:attribute name="toRelation" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorRelationset">
+		<xs:sequence>
+			<xs:element name="Relation" type="CastorName" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorDimension">
+		<xs:attribute name="x" type="xs:integer" use="required"/>
+		<xs:attribute name="y" type="xs:integer" use="required"/>
+		<xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CastorFont">
+		<xs:attribute name="family" use="optional" default="sans-serif">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="serif"/>
+					<xs:enumeration value="sans-serif"/>
+					<xs:enumeration value="cursive"/>
+					<xs:enumeration value="fantasy"/>
+					<xs:enumeration value="monospace"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="style" use="optional" default="normal">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="normal"/>
+					<xs:enumeration value="italic"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="weight" use="optional" default="normal">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="normal"/>
+					<xs:enumeration value="bold"/>
+					<xs:enumeration value="bolder"/>
+					<xs:enumeration value="lighter"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="size" type="xs:integer"/>
+	</xs:complexType>
+	<xs:complexType name="CastorButton">
+		<xs:sequence>
+			<xs:element name="Dimension" type="CastorDimension"/>
+			<xs:element name="Action" type="CastorAction"/>
+			<xs:element name="Font" type="CastorFont" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="emphasize" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="default" type="xs:boolean" use="optional"/>
+		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorCaption">
+		<xs:sequence>
+			<xs:element name="Dimension" type="CastorDimension" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Some GUI Elements such like InFormBrowser do not need a dimension for caption!</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Action" type="CastorAction" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A caption might be implemented as a link to execute an action</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Font" type="CastorFont" minOccurs="0"/>
+      <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<!-- since 2.8.6 -->
+		<xs:attribute name="color" type="xs:string" use="optional"/>
+		<xs:attribute name="ellipsis" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="halign" type="CastorHorizontalAlignment" default="right"/>
+		<xs:attribute name="valign" type="CastorVerticalAlignment" default="top"/>
+		<!-- since 2.7.2 -->
+		<xs:attribute name="eventHandler" type="xs:string" use="optional"/>
+					
+	</xs:complexType>
+	<xs:complexType name="CastorAction">
+		<xs:choice>
+			<xs:element name="Generic">
+				<xs:complexType>
+					<xs:attribute name="dummy" type="xs:boolean" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NewRecord">
+				<xs:complexType>
+					<xs:attribute name="dummy" type="xs:boolean" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdateRecord">
+				<xs:complexType>
+					<xs:attribute name="changeUpdate" type="xs:boolean" use="required"/>
+					<xs:attribute name="executeScope" use="optional" default="outer group">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="outer group"/>
+								<xs:enumeration value="tab pane"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DeleteRecord">
+				<xs:complexType>
+					<xs:attribute name="needUserConfirmation" type="xs:boolean" use="optional" default="true"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ClearGroup">
+				<xs:complexType>
+					<xs:attribute name="dummy" type="xs:boolean" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Search">
+				<xs:complexType>
+					<xs:attribute name="relationset" type="xs:string" use="required"/>
+					<xs:attribute name="filldirection" type="CastorFilldirection" use="required"/>
+					<xs:attribute name="safeMode" type="xs:boolean" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SearchUpdateRecord">
+				<xs:complexType>
+					<xs:attribute name="relationset" type="xs:string" use="required"/>
+					<xs:attribute name="filldirection" type="CastorFilldirection" use="required"/>
+					<xs:attribute name="safeMode" type="xs:boolean" use="required"/>
+					<xs:attribute name="changeUpdate" type="xs:boolean" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RecordSelected">
+				<xs:complexType>
+					<xs:attribute name="dummy" type="xs:boolean" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NavigateToForm">
+				<xs:complexType>
+					<xs:attribute name="formName" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="TextField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="maxLength" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="caseSensitive" type="xs:boolean" use="required"/>
+		<xs:attribute name="searchMode" type="TextFieldSearchModeType" use="required"/>
+		<xs:attribute name="fixedLength" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="BooleanField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:boolean" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IntegerField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:integer" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="autoincrement" type="xs:boolean" use="required"/>
+		<xs:attribute name="min" type="xs:integer" use="optional"/>
+		<xs:attribute name="max" type="xs:integer" use="optional"/>
+		<xs:attribute name="dbincrement" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="LongField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:long" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="autoincrement" type="xs:boolean" use="required"/>
+		<xs:attribute name="min" type="xs:long" use="optional"/>
+		<xs:attribute name="max" type="xs:long" use="optional"/>
+		<xs:attribute name="dbincrement" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="FloatField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:float" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="min" type="xs:float" use="optional"/>
+		<xs:attribute name="max" type="xs:float" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="DoubleField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:double" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="min" type="xs:double" use="optional"/>
+		<xs:attribute name="max" type="xs:double" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="DecimalField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:decimal" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="min" type="xs:decimal" use="optional"/>
+		<xs:attribute name="max" type="xs:decimal" use="optional"/>
+		<xs:attribute name="scale" type="xs:short" use="optional" default="2"/>
+	</xs:complexType>
+	<xs:complexType name="DateField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TimeField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TimestampField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="resolution" use="optional" default="secbase">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="minbase"/>
+					<xs:enumeration value="secbase"/>
+					<xs:enumeration value="msecbase"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LongTextField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="changeHeader" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="disableMapping" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="editMode" type="LongTextEditModeType" use="optional"/>
+		<xs:attribute name="sqlType" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="LONGVARCHAR"/>
+					<xs:enumeration value="CLOB"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BinaryField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="disableMapping" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="sqlType" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value=""/>
+					<xs:enumeration value="LONGVARBINARY"/>
+					<xs:enumeration value="BLOB"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="EnumerationField">
+		<xs:sequence>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+			<xs:element name="Value" type="StringValue" maxOccurs="unbounded"/>
+			<!-- since 2.8.2 -->
+			<xs:element name="Label"   type="StringValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CastorFilldirection">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="both"/>
+			<xs:enumeration value="backward"/>
+			<xs:enumeration value="forward"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CastorSortOrder">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="descending"/>
+			<xs:enumeration value="ascending"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextInputModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="readonly"/>
+			<xs:enumeration value="append"/>
+			<xs:enumeration value="prepend"/>
+			<xs:enumeration value="fulledit"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LongTextEditModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="append"/>
+			<xs:enumeration value="prepend"/>
+			<xs:enumeration value="fulledit"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BrowserType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="static"/>
+			<xs:enumeration value="inform"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextFieldSearchModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unbound"/>
+			<xs:enumeration value="leftbound"/>
+			<xs:enumeration value="rightbound"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CastorKeyField">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="CastorDomain">
+		<xs:sequence>
+			<xs:element name="FormGroup" type="CastorFormGroup" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Seit jACOB 2.7. Man hat nun die Möglichkeit Formen in einer Gruppe zusammenzufassen. Dies hat nur eine Auswirkung auf Ihre visuelle Representation. Nicht auf den eigentlichen Kern der Engine.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Form" type="CastorName" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Role" type="CastorName" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="title" type="xs:string" use="required"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="icon" type="xs:string" use="optional"/>
+		<xs:attribute name="canCollapse" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="dataScope" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="group"/>
+					<xs:enumeration value="form"/>
+					<xs:enumeration value="domain"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CastorFormGroup">
+		<xs:sequence>
+			<xs:element name="Form" type="CastorName" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="title" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="CastorExternalForm">
+		<xs:sequence>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="url" type="xs:string" use="optional"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="target" use="optional" default="Content Area">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Content Area"/>
+					<xs:enumeration value="New Window"/>
+					<xs:enumeration value="Current Window"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="icon" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorJacobForm">
+		<xs:sequence>
+			<xs:element name="Group" type="CastorGroup" minOccurs="0" maxOccurs="unbounded"/>
+      <!-- seit 2.8.0 -->
+			<xs:element name="GroupContainer" type="CastorGroupContainer" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="icon" type="xs:string" use="optional"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<!-- seit 2.8.0 -->
+		<xs:attribute name="hideSearchBrowserTabStrip" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<!-- seit 2.8.0 -->
+	<xs:complexType name="CastorGroupContainer">
+		<xs:sequence>
+			<xs:element name="Dimension" type="CastorDimension"/>
+			<xs:element name="Group" type="CastorGroup" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="hideHiddenGroupBrowser" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="CastorGroup">
+			<xs:sequence>
+			<xs:element name="Dimension" type="CastorDimension"/>
+			<!-- seit 2.7.4 -->
+			<xs:element name="SelectionActionEventHandler" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="className" type="xs:string" use="required"/>
+					<xs:attribute name="label" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GuiElement" type="CastorGuiElement" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ContextMenuEntry" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Action" type="CastorAction"/>
+						<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+  		        <!-- since 2.10 -->
+		        <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="name" type="xs:string" use="required"/>
+					<xs:attribute name="label" type="xs:string" use="required"/>
+					<xs:attribute name="visible" type="xs:boolean" use="required"/>
+					<xs:attribute name="eventHandler" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<!-- seit 2.10.0 -->
+		<xs:attribute name="resizeMode" type="CastorResizeMode" use="optional" />
+	  <xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="alias" type="xs:string" use="required"/>
+		<xs:attribute name="browser" type="xs:string" use="required"/>
+		<xs:attribute name="hideEmptyBrowser" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="border" type="xs:boolean" use="optional" default="true"/>
+	  <!-- seit 2.8.6 -->
+		<xs:attribute name="borderWidth" type="xs:integer" use="optional" default="-1"/>
+		<xs:attribute name="borderColor" type="xs:string" use="optional" />
+		<xs:attribute name="backgroundColor" type="xs:string" use="optional"/>
+		
+	</xs:complexType>
+	<xs:complexType name="CastorMutableForm">
+		<xs:sequence>
+			<xs:element name="Group" type="CastorMutableGroup" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="icon" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorMutableGroup">
+		<xs:sequence>
+			<xs:element name="Dimension" type="CastorDimension"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="alias" type="xs:string" use="required"/>
+		<xs:attribute name="browser" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="CastorHtmlForm">
+		<xs:sequence>
+			<xs:element name="Group" type="CastorHtmlGroup" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="icon" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorHtmlGroup">
+		<xs:sequence>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="alias" type="xs:string" use="required"/>
+		<xs:attribute name="browser" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="CastorGuiElement">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="LocalInputField">
+					<xs:complexType>
+						<xs:choice>
+							<xs:element name="PasswordInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TextInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+									<xs:attribute name="multiline" type="xs:boolean" use="optional" default="false"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Gauge">
+								<xs:annotation>
+									<xs:documentation>Seit jACOB 2.6</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+									</xs:sequence>
+									<xs:attribute name="min" type="xs:integer" use="required"/>
+									<xs:attribute name="max" type="xs:integer" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CheckBox">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ListBox">
+								<xs:annotation>
+									<xs:documentation>Seit jACOB 2.6</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+
+									<xs:attribute name="multiselect" type="xs:boolean" use="optional" default="false"/>
+									<!-- seit 2.8.0. Wird benötigt um Altanwendungen im Verhalten nicht zu verändern und Neuanwendungen ein
+									     konsistentes Verhalten bezüglich Combobox und Listbox zu verleihen.
+									     
+									     Grund: Combobox geht zum Server wenn der Anwender eine Wert auswählt und ein Hook existiert
+									            ....die TableListbox ruft jedoch nicht den Server.
+									            Dies ist inkonsistent und wird bei NEUEN Elementen im Designer durch setzen den "fireEvent" 
+									            flag gesteuert.
+									 -->
+									<xs:attribute name="callHookOnSelect" type="xs:boolean" use="optional" default="false"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ComboBox">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+									
+									<!-- seit 2.9.4. Eine Combobox ist nicht zwingend mit einem DB-Enum verbunden. Diese kann z.B. auch
+									     mit einem DB-Text verbunden werden. In diesem Fall kann es Sinn machen dem Anwender eigene Werte
+									     eintragen zu lassen. Es würde dann in der GUI wie folgt aussen:
+									     
+									     Enum 1
+									     Enum 2
+									     Enum 3
+									     ====================
+									     User defined...
+									     
+									     Beim Klick auf "User Defined" erscheint dann ein Dialog und der Anwender tippt seinen Wert ein.
+									-->
+									<xs:attribute name="allowUserDefinedValue" type="xs:boolean" use="optional" default="false"/>
+
+									<!-- seit 2.9.4. Eine Combobox kann bis zu zwei zusätzliche, vordefinierte Sucheintrage erhalten wenn diese
+									     Flags aktiviert sind. Dies stellt sich dann in dem UI wie folgt dar.
+
+                       ================									     
+                       - empty - 
+                       - not empty - 
+                       ================									     
+									     Enum 1
+									     Enum 2
+									     Enum 3
+									     
+									-->
+									<xs:attribute name="allowNullSearch"    type="xs:boolean" use="optional" default="true"/>
+									<xs:attribute name="allowNotNullSearch" type="xs:boolean" use="optional" default="true"/>
+
+									<!-- seit 2.8.0. Wird benötigt um Altanwendungen im Verhalten nicht zu verändern und Neuanwendungen ein
+									     konsistentes Verhalten bezüglich Combobox und Listbox zu verleihen.
+									     
+									     Grund: Combobox geht zum Server wenn der Anwender eine Wert auswählt und ein Hook existiert
+									            ....die TableListbox ruft jedoch nicht den Server.
+									            Dies ist inkonsistent und wird bei NEUEN Elementen im Designer durch setzen des Flags
+									            gesteuert.
+									 -->
+									<xs:attribute name="callHookOnSelect" type="xs:boolean" use="optional" default="true"/>
+              		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="RadioButtonGroup">
+								<xs:annotation>
+									<xs:documentation>Seit jACOB 2.7</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+									</xs:sequence>
+									<!-- seit 2.8.0. Wird benötigt um Altanwendungen im Verhalten nicht zu verändern und Neuanwendungen ein
+									     konsistentes Verhalten bezüglich Combobox und Listbox zu verleihen.
+									     
+									     Grund: Combobox geht zum Server wenn der Anwender eine Wert auswählt und ein Hook existiert
+									            ....die TableListbox ruft jedoch nicht den Server.
+									            Dies ist inkonsistent und wird bei NEUEN Elementen im Designer durch setzen des Flags
+									            gesteuert.
+									 -->
+									<xs:attribute name="callHookOnSelect" type="xs:boolean" use="optional" default="false"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DateInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+              		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TimeInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+              		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TimestampInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+              		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="LongTextInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+									<!--  deprecated -->
+									<xs:attribute name="mode" type="TextInputModeType" use="optional"/>
+									
+									<xs:attribute name="inForm" type="xs:boolean" use="required"/>
+									
+									<!--  deprecated seit 2.10. Wird durch contentType ersetzt-->
+									<xs:attribute name="htmlInput" type="xs:boolean" use="optional" default="false"/>
+									
+									<!-- gibt den content type des elementes an. SyntaxHighlighting, Editor und Darstellung versuchen für den 
+									        vorgegebenen ContentType die bestmögliche Unterstüzung zu liefern.  -->			 
+									<xs:attribute name="contentType" use="optional" default="text/plain">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="text/plain"/>
+												<xs:enumeration value="text/wiki"/>
+												<xs:enumeration value="text/html"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+
+									<xs:attribute name="wordWrap" type="xs:boolean" use="optional" default="false"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Image">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="inForm" type="xs:boolean" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DocumentInput">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Dimension" type="CastorDimension"/>
+										<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+										<!--  seit 2.8.3  -->
+                    <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+									</xs:sequence>
+              		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="tableField" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ForeignInputField">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+							<!--  seit 2.8.3  -->
+              <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+						</xs:sequence>
+         		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+						<xs:attribute name="asComboBox" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="foreignAlias" type="xs:string" use="required"/>
+						<xs:attribute name="foreignTableField" type="xs:string" use="required"/>
+						<xs:attribute name="relationToUse" type="xs:string" use="required"/>
+						<xs:attribute name="browserToUse" type="xs:string" use="required"/>
+						<xs:attribute name="relationset" type="xs:string" use="required"/>
+						<xs:attribute name="filldirection" type="CastorFilldirection" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="InFormBrowser">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+							<!-- seit 2.7.4 -->
+							<xs:element name="SelectionActionEventHandler" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+									</xs:sequence>
+									<xs:attribute name="className" type="xs:string" use="required"/>
+									<xs:attribute name="label" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<!-- Leiche. kann entfallen. Wird im Designer nur noch weg abwärts.komp. gesetzt.
+						     Bei einer M-N Relation wird diese dann nicht mehr gesetzt
+						--> 
+						<xs:attribute name="relationToUse" type="xs:string" use="optional"/>
+						<xs:attribute name="browserToUse" type="xs:string" use="required"/>
+						<xs:attribute name="newMode" type="xs:boolean" use="required"/>
+						<xs:attribute name="updateMode" type="xs:boolean" use="required"/>
+						<xs:attribute name="searchMode" type="xs:boolean" use="optional" default="true"/>
+						<!-- Veraltet. Wird durch die beiden Attribute deleteModeSelected, deleteModeUpdateNew ersetzt.
+						     In der Engine wird dies jedoch noch ausgewertet=> Alte Applikation laufen noch.
+						     Im Designer wird dies jedoch automatisch zu den neuen Attribut konvertiert.
+						  -->
+						<xs:attribute name="deleteMode" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="deleteModeSelected"  type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="deleteModeUpdateNew" type="xs:boolean" use="optional" default="false"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TableListBox">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="Caption" type="CastorCaption" minOccurs="0"/>
+							<!--  seit 2.8.3  -->
+              <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+						</xs:sequence>
+         		<xs:attribute name="halign" type="CastorHorizontalAlignment" use="optional"/>
+						<xs:attribute name="tableAlias" type="xs:string" use="required"/>
+						<xs:attribute name="displayField" type="xs:string" use="required"/>
+						<xs:attribute name="deleteModeSelected" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="deleteModeUpdateNew" type="xs:boolean" use="optional" default="false"/>
+						<!-- seit 2.8.2
+						     Falls man in der Tablelistbox eine Sortierung möchte, dann hängt man einen Browser an die
+						     Listbox welcher dann die entsprechende Sortierung hat.
+						 -->
+						<xs:attribute name="browserToUse" type="xs:string" use="optional"/>
+						
+             <!-- seit 2.10
+                 Man kann einer TableListBox sagen ob und wie diese sich an ihren Inhalt anpassen soll
+             -->
+						<xs:attribute name="resizeMode" type="CastorResizeMode" use="optional" />
+
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="FlowLayoutContainer">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="GuiElement" type="CastorGuiElement" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="orientation" use="optional" default="horizontal">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="horizontal"/>
+									<xs:enumeration value="vertical"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Button" type="CastorButton"/>
+				<xs:element name="Label">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Caption" type="CastorCaption"/>
+						</xs:sequence>
+						<xs:attribute name="tableField" type="xs:string" use="optional"/>
+						<!-- seit 2.10.0
+						        Falls in einem Datenbank gebundenem Label NULL enthalten ist, kann hier ein sinvoller Wert hinterlegt
+						        werden. Somit wird dann nicht "" sondern z.B. "-keine-" angezeigt. Kann auch einen I18N Schlüssel enthalten
+						        Macht nur in Zusammenhang mit eine DB-Label Sinn.
+						-->
+						<xs:attribute name="nullDefaultValue" type="xs:string" use="optional"/>
+						
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="PluginComponent">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="Property"  type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="writeContainer" type="xs:boolean" use="optional" default="true"/>
+  					<xs:attribute name="pluginImplClass" type="xs:string"/>
+  					<xs:attribute name="pluginId" type="xs:string" use="optional" />
+  					<xs:attribute name="pluginVersion" type="xs:string" use="optional" />
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="OwnDrawElement">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="BarChart">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+						<xs:attribute name="title" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="legendX" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="legendY" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="background" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="grid" type="xs:boolean" use="optional" default="true"/>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="LineChart">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+						<xs:attribute name="title" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="legendX" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="legendY" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="background" type="xs:boolean" use="optional" default="true"/>
+						<xs:attribute name="grid" type="xs:boolean" use="optional" default="true"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TimeLine">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Calendar">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StyledText">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+						<xs:attribute name="i18nkey" type="xs:string" use="optional"/>
+						<xs:attribute name="postProcessWithLetterEngine" type="xs:boolean" use="optional" default="false"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BreadCrumb">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Caption" type="CastorCaption"/>
+							<!--  seit 2.8.3  -->
+              <xs:element name="Font" type="CastorFont" minOccurs="0"/>
+						</xs:sequence>
+						<xs:attribute name="delimiter" type="xs:string" use="optional" default="/"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StaticImage">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+						<xs:attribute name="src" type="xs:string" use="required"/>
+						<xs:attribute name="tooltip" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DynamicImage">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+						</xs:sequence>
+						<xs:attribute name="tooltip" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Container">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dimension" type="CastorDimension"/>
+							<xs:element name="Pane" type="CastorGroup" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+	       	   	<!-- seit 2.10.0 -->
+			         <xs:attribute name="resizeMode" type="CastorResizeMode" use="optional" />
+							<xs:attribute name="layout" use="optional" default="tab_strip">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="tab_strip"/>
+									<xs:enumeration value="stack"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Heading">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Caption" type="CastorCaption"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="visible" type="xs:boolean" use="required"/>
+		<xs:attribute name="tabIndex" type="xs:nonNegativeInteger" use="optional" default="0"/>
+		<xs:attribute name="paneIndex" type="xs:nonNegativeInteger" use="optional" default="0"/>
+		<xs:attribute name="eventHandler" type="xs:string" use="optional"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+
+		<!-- since 2.7.2 -->
+		<xs:attribute name="inputHint" type="xs:string" use="optional"/>
+
+	  <!-- seit 2.8.6 -->
+		<xs:attribute name="borderWidth" type="xs:integer" use="optional" default="-1"/>
+		<xs:attribute name="borderColor" type="xs:string" use="optional" />
+		<xs:attribute name="backgroundColor" type="xs:string" use="optional"/>
+
+	</xs:complexType>
+	<xs:complexType name="CastorApplication">
+		<xs:sequence>
+			<xs:element name="Domain" type="CastorDomainRef" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+ 		  <!-- since 2.10 -->
+		  <xs:element name="workFlow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="title" type="xs:string" use="required"/>
+		<xs:attribute name="eventHandler" type="xs:string"/>
+		<xs:attribute name="dataScope" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="group"/>
+					<xs:enumeration value="form"/>
+					<xs:enumeration value="domain"/>
+					<xs:enumeration value="application"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="eventHandlerLookupMethod">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="name"/>
+					<xs:enumeration value="reference"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CastorDomainRef">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="externalModule" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="CastorName">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="StringValue">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="Location">
+		<xs:all>
+			<xs:element name="x" type="xs:integer"/>
+			<xs:element name="y" type="xs:int"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="CastorProperty">
+		<xs:annotation>
+			<xs:documentation>Property to add data independant from XSD</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="CastorName"/>
+			<xs:element name="Value" type="StringValue"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CastorDataSource">
+		<xs:sequence>
+			<xs:element name="Desc" type="xs:string" minOccurs="0"/>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="reconfigure" use="optional" default="full">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="full"/>
+					<xs:enumeration value="none"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="type" use="optional" default="sql">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="sql"/>
+					<xs:enumeration value="index"/>
+					<xs:enumeration value="directory"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DocumentField">
+		<xs:sequence>
+			<xs:element name="Dummy" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CastorActivityDiagram">
+		<xs:sequence>
+			<xs:element name="DiagramNode" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Dimension" type="CastorDimension"/>
+						<xs:choice>
+							<xs:element name="Activity">
+								<xs:complexType>
+									<xs:attribute name="relatedForm" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ForkJoin">
+								<xs:complexType/>
+							</xs:element>
+							<xs:element name="BranchMerge">
+								<xs:complexType/>
+							</xs:element>
+							<xs:element name="Start">
+								<xs:complexType/>
+							</xs:element>
+							<xs:element name="End">
+								<xs:complexType/>
+							</xs:element>
+						</xs:choice>
+						<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="name" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Transition" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="fromNode" type="xs:string" use="required"/>
+					<xs:attribute name="toNode" type="xs:string" use="required"/>
+					<xs:attribute name="description" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="StringValue" use="required"/>
+		<xs:attribute name="createDate" type="xs:dateTime"/>
+	</xs:complexType>
+	<xs:simpleType name="CastorVerticalAlignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="top"/>
+			<xs:enumeration value="middle"/>
+			<xs:enumeration value="bottom"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CastorResizeMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="booth"/>
+			<xs:enumeration value="width"/>
+			<xs:enumeration value="height"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CastorHorizontalAlignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="left"/>
+			<xs:enumeration value="center"/>
+			<xs:enumeration value="right"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CastorRole">
+		<xs:sequence>
+			<xs:element name="Property" type="CastorProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string"/>
+	</xs:complexType>
+</xs:schema>

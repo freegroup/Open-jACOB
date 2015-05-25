@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="jacob-application" default="jacapp" basedir=".">
+<property file="build.properties" />
+
+<tstamp><format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+
+<!-- =================================================================== -->
+<!--  Configuration                                                      -->
+<!-- =================================================================== -->
+<property environment="env"/>
+<property name="buildlib.dir"        value="./build"/>
+<property name="distlib.dir"         value="./lib"/>
+<property name="dist.dir"            value="./dist"/>
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+   <fileset dir="${distlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- ALL                                                                 -->
+<!-- =================================================================== -->
+<target name="all"  depends="project.zip, war"  description="create the project">
+</target>
+
+<!-- =================================================================== -->
+<!-- jACAPP                                                               -->
+<!-- =================================================================== -->
+<target name="jacapp" depends="compile, version" description="create the .jacapp file for the jACOB-Application server"  >
+
+	<!-- move the jsp to the classes directory -->
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+  <copy todir="./classes/web" filtering="true">
+		<fileset dir="./web">
+      		<include name="**/*.jsp"/>
+		</fileset>
+  </copy>
+  <copy todir="./classes/web" filtering="false">
+		<fileset dir="./web">
+      		<exclude name="**/*.jsp"/>
+		</fileset>
+  </copy>
+
+	<copy todir="./classes/lib" >
+		<fileset dir="./lib">
+  		<include name="**"/>
+		</fileset>
+  </copy>
+
+  <mkdir dir="${dist.dir}/"/>
+	<jar compress="true"  destfile="${dist.dir}/${app.name}-${app.version}.jacapp" >
+		<fileset dir="./classes">
+			<exclude name="applications/${app.name}/**/*.java"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+			<attribute name="jACOB-Engine-Version"      value="${jacob.version}"/>
+			<attribute name="jACOB-Application-Version" value="${app.version}"/>
+			<attribute name="jACOB-Application-Name"    value="${app.name}"/>
+		</manifest>
+   </jar>
+</target>
+
+<target name="project.zip" depends="clean" description="create the project.zip file"  >
+  <mkdir dir="${dist.dir}/"/>
+	<jar compress="true"  destfile="${dist.dir}/project.zip" >
+		<fileset dir=".">
+			<exclude name="**/classes/**"/>
+			<exclude name="**/*.jacapp"/>
+		</fileset>
+   </jar>
+</target>
+	
+	<!-- =================================================================== -->
+	<!-- VERSION                                                             -->
+	<!-- =================================================================== -->
+	<target name="version" description="determine the jACOB jar version and provide them as property">
+		<java  fork="true"
+		       failonerror="true"
+		       outputproperty="jacob.version"
+		       classname="de.tif.jacob.core.Version"
+		       >
+			<classpath refid="compile.classpath" />
+			<arg value="jacob.version"/>
+		</java>
+		<echo message="${jacob.version}"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- DEPLOY and CONFIGURATION                                            -->
+	<!-- =================================================================== -->
+	<target name="deploy_configure" depends="deploy, configure" description="deploy AND configure your application to the jACOB-Application server"  >
+	</target>
+		
+	<!-- =================================================================== -->
+	<!-- DEPLOY                                                               -->
+	<!-- =================================================================== -->
+	<target name="deploy" depends="jacapp, checkProperties" description="deploy the jacapp to the jACOB-Application server"  >
+
+		<echo message="=============================================================================================" />
+		<echo message="|| deploy file: ${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp" />
+	    <get src="${jacob.url}cmdenter?entry=DeployLocalJacapp&amp;app=admin&amp;user=${admin.username}&amp;pwd=${admin.passwd}&amp;jacappPath=${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp"
+		     dest="deploy.log"
+		 verbose="true"/>
+		 <loadfile property="deployMessage"    srcFile="deploy.log"/>
+		<echo message="${deployMessage}"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- CONFIGURE                                                           -->
+	<!-- =================================================================== -->
+	<target name="configure" depends="jacapp, checkProperties" description="deploy the jacapp to the jACOB-Application server"  >
+
+		<echo message="=============================================================================================" />
+		<echo message="|| configure application: ${basedir}/${dist.dir}/${app.name}-${app.version}.jacapp" />
+	    <get src="${jacob.url}cmdenter?entry=ReconfigureDatasource&amp;app=admin&amp;user=${admin.username}&amp;pwd=${admin.passwd}&amp;applicationName=${app.name}&amp;applicationVersion=${app.version}&amp;dataSource=${app.ds}"
+		     dest="configure.log"
+		 verbose="true"/>
+		 <loadfile property="configureMessage"  srcFile="configure.log"/>
+		<echo message="${configureMessage}"/>
+		<echo message="DB configure done."/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Property check for deploy and configure                             -->
+	<!-- =================================================================== -->
+	<target name="checkProperties">	
+		<fail unless="jacob.url">
+	Error		
+	============================================================================
+	    Please add the property 'tomcat.port' to your build.properties file!!
+	    example:
+			jacob.url=http://localhost:8080/jacob
+			app.ds=${app.name}DataSource
+			admin.username=AdminUserName
+			admin.passwd=SECRET:-)
+	=============================================================================
+			</fail>
+
+		<fail unless="app.ds">
+	Error		
+	============================================================================
+	    Need the application data source name for configure
+		Please add the property 'app.ds' into the build.properties file
+			
+	    example:
+			tomcat.port=8080
+			app.ds=${app.name}DataSource
+			admin.username=AdminUserName
+			admin.passwd=SECRET:-)
+	=============================================================================
+			</fail>
+
+		
+
+		<fail unless="admin.username">
+	Error		
+	============================================================================
+		Please insert the property 'admin.username' to your build.properties file!!
+			
+		It must be the username and password the the adminstation application
+		of your local jACOB server.
+			
+	    example:
+			tomcat.port=8080
+			app.ds=${app.name}DataSource
+			admin.username=AdminUserName
+			admin.passwd=SECRET:-)
+	=============================================================================
+			</fail>
+	</target>
+
+<target name="war" depends="jacapp">
+	  <delete dir="./${app.name}TMP" quiet="true"/>
+		<unjar src="${jacobDemoWar}" dest="./${app.name}TMP"/>
+	  <delete dir="${demoDir}/themes/Quintus/"/>
+	  <delete dir="${demoDir}/themes/QuintusBold/"/>
+	  <delete dir="${demoDir}/themes/DaimlerChrysler/"/>
+		
+	<delete>
+		<fileset dir="./${app.name}TMP/WEB-INF/lib/">
+	    <include name="axis-ant.jar"/>
+	    <include name="chart-engine.jar"/>
+	    <include name="GLUE.jar"/>
+	    <include name="itext-1.3.1.jar"/>
+	    <include name="jCharts-0.7.5.jar"/>
+	    <include name="jfreechart-1.0.0-rc1.jar"/>
+	    <include name="BCEL.jar"/>
+		</fileset>
+	</delete>
+	
+	<!-- move the jacapp-file to the required position -->
+	<copy file="${dist.dir}/${app.name}-${app.version}.jacapp" toFile="./${app.name}TMP/WEB-INF/jacapp/${app.name}-${app.version}.jacapp">
+	</copy>
+	
+		<!-- move the application information -->
+		<copy file="./applicationInfo.html" toFile="./${app.name}TMP/applicationInfo.html" overwrite="true">
+		</copy>
+
+		<jar destfile="${dist.dir}/${app.name}.war" >
+		<fileset dir="./${app.name}TMP">
+		</fileset>
+   </jar>
+   <delete dir="./${app.name}TMP" quiet="true"/>
+
+</target>
+
+<!-- =================================================================== -->
+<!-- CLEAN                                                               -->
+<!-- =================================================================== -->
+<target name="clean" description="Delete old build and dist directories">
+    <delete quiet="true" dir="./classes"/>
+    <delete quiet="true" dir="./dist"/>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean" description="Compile Java sources">
+
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+	<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true">
+	</copy>
+
+	<mkdir dir="./classes"/>
+	<!-- Compile Java classes as necessary -->
+	<javac encoding="ISO-8859-1" srcdir="java" debug="on" destdir="./classes" >
+       <classpath refid="compile.classpath" />
+	</javac>
+
+	<!-- move the images to the class directory for the jar -->
+    <copy todir="./classes">
+		<fileset dir="./java">
+      		<include name="**"/>
+		</fileset>
+    </copy>
+
+	<!-- move the jad-file to the required position -->
+	<copy file="./application.jad" toFile="./classes/jacob/config/application.jad" overwrite="true">
+	</copy>
+</target>
+	
+	<!-- =================================================================== -->
+	<!-- BKM DATATRANSFER VON POSTGRESQL NACH HSQL                           -->
+	<!-- =================================================================== -->
+	<property name="datatransfer.dir" value="../de.ibis.datatransfer"/>
+	<property name="datatransfer_bkm.out.root.dir" value="./datatransfer/hsql/data"/>
+	<property name="datatransfer_bkm.out.step1.dir" value="${datatransfer_bkm.out.root.dir}/1_users"/>
+	<path id="datatransfer.classpath">
+		<fileset dir="${datatransfer.dir}/lib">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${datatransfer.dir}/dist">
+			<include name="datatransfer*compiled.jar"/>
+		</fileset>
+	</path>
+	<target name="datatransfer_bkm.clean" description="Clean datatransfer HSQL">
+		<delete quiet="true" dir="${datatransfer_bkm.out.root.dir}"/>
+	</target>
+	<target name="datatransfer_bkm" depends="datatransfer_bkm.clean" description="Datatransfer HSQL">
+		<antcall target="datatransfer_bkm.step1"/>
+	</target>
+	<target name="datatransfer_bkm.step1" description="Datatransfer HSQL Step1">
+		<delete quiet="true" dir="${datatransfer_bkm.out.step1.dir}"/>
+		<mkdir dir="${datatransfer_bkm.out.step1.dir}"/>
+		<copy todir="${datatransfer_bkm.out.step1.dir}">
+			<fileset dir="./datatransfer/hsql">
+				<include name="bkmDataSource.*"/>
+			</fileset>
+		</copy>
+		<java fork="true" dir="${datatransfer_bkm.out.step1.dir}" failonerror="true" classname="de.ibis.datatransfer.DataTransfer">
+			<classpath refid="datatransfer.classpath"/>
+			<arg value="datatransfer.properties" />
+			<arg value="JacobIds2HSQL" />
+			<arg value="UserGroup2HSQLStep1" />
+			<arg value="UserGroup2HSQLStep2" />
+			<arg value="UserGroup2HSQLStep3" />
+			<arg value="UserGroup2HSQLStep4" />
+			<arg value="UserGroup2HSQLStep5" />
+			<jvmarg value="-DLOG4J_CONFIG=../../datatransfer.log4j" />
+			<jvmarg value="-DPREF_FOLDER=../.."/>
+			<jvmarg value="-Xmx200M"/>
+		</java>
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- BKM DATATRANSFER VON HSQL NACH MySQL                           -->
+	<!-- =================================================================== -->
+	<property name="datatransfer_mysql.out.root.dir" value="./datatransfer/mysql"/>
+	<target name="datatransfer_mysql.clean" description="Clean datatransfer MySQL">
+		<delete quiet="true" dir="${datatransfer_bkm.out.root.dir}"/>
+	</target>
+	<target name="datatransfer_mysql" depends="datatransfer_mysql.clean" description="Datatransfer MySQL">
+		<antcall target="datatransfer_mysql.step1"/>
+	</target>
+	<target name="datatransfer_mysql.step1" description="Datatransfer MySQL Step1">
+		<mkdir dir="${datatransfer_mysql.out.root.dir}/xmlout"/>
+		<java fork="true" dir="${datatransfer_mysql.out.root.dir}" failonerror="true" classname="de.ibis.datatransfer.DataTransfer">
+			<classpath refid="datatransfer.classpath"/>
+			<arg value="datatransfer.properties" />
+			<arg value="XML2MYSQL" />
+			<!--
+			<arg value="Alles2XML" />
+			<arg value="Step1" />
+			<arg value="Step2" />
+			<arg value="Step3" />
+			<arg value="Step4" />
+			<arg value="Step5" />
+			-->
+			<jvmarg value="-DLOG4J_CONFIG=./datatransfer.log4j" />
+			<jvmarg value="-DPREF_FOLDER=."/>
+			<jvmarg value="-Xmx200M"/>
+		</java>
+	</target>
+</project>
+

@@ -1,0 +1,91 @@
+<style>
+
+.TablePalettePart
+{
+  border: 1px solid #404080;
+}
+
+.draw2d_toolbar p
+{
+  margin:3px;
+}
+
+.draw2d_toolbar p a
+{
+  border:1px solid gray;
+  background-color:#f0f0f0;
+  font-family:tahoma,arial,helvetica;
+  font-size:9pt;
+  cursor:pointer;
+  text-decoration:none;
+  padding-left:5px;
+  padding-right:5px;
+  padding-top:2px;
+  padding-bottom:2px;
+  color:black;
+}
+
+.draw2d_toolbar
+{
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:100%;
+  height:30px;
+  border:1px solid #8080a0;
+  padding-top:0px;
+  padding-left:5px;
+  background: #FAFAFF url(./application/@APPLICATION@/@VERSION@/{modulname}/images/toolbar_bg.png) repeat-x;
+}
+
+#property_panel
+{
+  border:1px solid #8080a0;
+  position:absolute;
+  background: #FAFAFF url(./application/@APPLICATION@/@VERSION@/{modulname}/images/toolbar_bg.png) repeat-x;
+}
+#object_panel
+{
+  border:1px solid #8080a0;
+  position:absolute;
+  background: #FAFAFF url(./application/@APPLICATION@/@VERSION@/{modulname}/images/toolbar_bg.png) repeat-x;
+}
+#formDiv
+{
+  margin-top:0px !important;
+  overflow:hidden !important;
+}
+
+</style>
+
+<div id="property_panel" style="top:80px;width:150px;" >
+</div >
+
+<div id="scrollarea" style="position:absolute;left:0px;top:80px;width:150px;height:100px;overflow:auto;" >
+   <div id="paintarea" style="position:absolute;left:0px;top:0px;width:3000px;height:3000px" >
+   </div>
+</div>
+
+<div id="object_panel" style="left:0px;top:30px;width:100%;height:50px;" >
+</div >
+
+
+<script>
+var dbBackend = new draw2d.JacobDatabaseBackend();
+var editor = null;
+
+windowsToShow.push(new FakeWindow("edit"));
+
+
+function onContentAreaResize(/*:int*/ width, /*:int*/ height)
+{
+  	var panel = $("property_panel");
+  	var editor= $("scrollarea");
+
+  	editor.style.width=Math.max(10,width-150)+"px";
+   editor.style.height = Math.max(10,height-81)+"px";
+
+   panel.style.height=Math.max(10,(height-82))+"px";
+  	panel.style.left = (width-150)+"px";
+}
+</script>

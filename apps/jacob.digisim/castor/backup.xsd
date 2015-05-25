@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/circuit" targetNamespace="http://www.example.org/circuit">
+	<element name="backup">
+		<complexType>
+			<sequence>
+				<element name="part" type="tns:part" maxOccurs="unbounded" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	<complexType name="part">
+		<sequence>
+			<element name="pkey" type="string"   minOccurs="0"></element>
+			<element name="name" type="string"   minOccurs="0"></element>
+			<element name="state" type="string"   minOccurs="0"></element>
+			<element name="code" type="string"   minOccurs="0"></element>
+			<element name="comment" type="string"  minOccurs="0"></element>
+			<element name="tool_image" type="base64Binary"   minOccurs="0"></element>
+			<element name="resource_image" type="base64Binary"   minOccurs="0"></element>
+			<element name="ownerKey" type="string"   minOccurs="0"></element>
+			<element name="partKey" type="string"   minOccurs="0"></element>
+			<element name="history" type="string"   minOccurs="0"></element>
+			<element name="lastRelease" type="string"   minOccurs="0"></element>
+			<element name="assigneeKey" type="string"   minOccurs="0"></element>
+			<element name="mandatorId" type="string"   minOccurs="0"></element>
+			<element name="partKey2" type="string"   minOccurs="0"></element>
+		</sequence>
+	</complexType>
+</schema>

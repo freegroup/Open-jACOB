@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta name="description" content="Learn the types of disks that can be used by Parallels virtual machines." />
+
+<title> Unterstützung für virtuelle und reale Festplatten </title>
+<meta name="Keywords" content="Arbeitsspeicher	in Virtual Machine, Dateien	HDD-Datei, Disketten-Image	in Virtual Machines verwenden, Einfache Festplatten, Festplatte	Formate und Typen, Festplattenformat	überprüfen, Festplatten-Image	expandierendes Festplatten-Image, Festplatten-Image	Typen und Formate von Festplatten-Images, Unterstützte Dateiformate und Systeme, Virtuelle Festplatte	Festplatte aufteilen" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22372.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="30297.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Unterstützung für virtuelle und reale Festplatten</h3>
+<p class="bodytext">In diesem Abschnitt sind die Festplattentypen aufgeführt, die von &lt;PS-Produktname&gt; virtuelle Maschinen verwendet werden können. Er enthält zudem Informationen über grundlegende Vorgänge, die Sie mit diesen Festplatten ausführen können.</p>
+<p class="subheading">Unterstützte Festplattentypen</p>
+<p class="bodytext">Parallels virtuelle Maschinen können entweder virtuelle Festplatten oder Boot Camp-Partitionen als Festplatten verwenden.</p>
+<p class="subheading">Virtuelle Festplatten</p>
+<p class="bodytext">Eine virtuelle Festplatte kann eine Kapazität zwischen 100 MB und 8 TB haben.</p>
+<p class="bodytext">Virtuelle Festplatten können entweder ein <em class="emphasis">einfaches</em> oder ein <em class="emphasis">expandierendes</em> Format haben. Wenn Sie im Modus <strong class="specialbold">Windows Express</strong> oder im Modus <strong class="specialbold">Typisch</strong> eine virtuelle Maschine erstellen (im Assistenten <strong class="specialbold">Neue virtuelle Maschine</strong>), wird die Festplatte im <em class="emphasis">expandierenden</em> Format erstellt.</p>
+<table width="570" cellpadding="2" cellspacing="0" border="0" style="border-collapse:collapse">
+<tr align="left" valign="top">
+<td width="78"><p class="bodytext"><strong class="specialbold">Einfach</strong></p>
+</td>
+<td width="492"><p class="tablebodytext">Die Imagedatei einer einfachen virtuellen Festplatte wird auf Ihrem Hostcomputer gespeichert und hat eine feste Größe.  Die Größe wird bei der Erstellung einer solchen Festplatte festgelegt. Einfache Festplatten können mithilfe des Assistenten <strong class="specialbold">Neue virtuelle Maschine </strong> (Modus <strong class="specialbold">Eigene</strong>) erstellt werden. </p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td width="78"><p class="bodytext"><strong class="specialbold">Expandierend</strong></p>
+</td>
+<td width="492"><p class="tablebodytext">Die Imagedatei einer expandierenden virtuellen Festplatte wird auf Ihrem Hostcomputer gespeichert und ist anfangs noch klein. Sie nimmt an Größe zu, wenn Sie Programme und Daten zur virtuellen Festplatte auf dem Gastbetriebssystem hinzufügen.</p>
+</td>
+</tr>
+
+</table>
+<p class="subheading">Aufgeteilte Festplatten</p>
+<p class="bodytext">Eine virtuelle Festplatte beider Formate kann entweder eine ganze Festplatte oder eine aufgeteilte Festplatte sein. Standardmäßig besteht eine aufgeteilte Festplatte aus 2-GB-Teilen. Sie wird als einzelne <code class="monospace">HDD</code>-Datei gespeichert. Aufgeteilte Festplatten ermöglichen einen schnelleren Datenzugriff.</p>
+<p class="subheading">Boot Camp-Partitionen</p>
+<p class="bodytext">Mit &lt;PS-Produktname&gt; können Sie entscheiden, wie Boot Camp Windows XP und das Betriebssystem Windows Vista verwendet werden sollen. Sie können entweder auf normalem Wege (über Boot Camp) oder auf einer virtuellen Maschine (über Parallels Desktop) gestartet werden. Eine Boot Camp Windows-Partition kann als bootfähige Festplatte oder als Datenfestplatte auf Parallels virtuelle Maschinen verwendet werden.</p>
+<p class="note"><strong class="buttons">Hinweis</strong>: Bei einer virtuellen Maschine, die eine Boot Camp-Partition verwendet, können keine Snapshots erstellt und die Funktion <strong class="specialbold">Rückgängig-Datenträger</strong> kann nicht verwendet werden.</p>
+<p class="subheading">CDs/DVDs und ihre Images</p>
+<p class="bodytext">&lt;PS-Produktname&gt; kann auf reale CDs/DVDs und CD/DVD-Images zugreifen.</p>
+<p class="bodytext">Bei &lt;PS-Produktname&gt; bestehen keine Einschränkungen hinsichtlich der Verwendung von Multisession-CDs und -DVDs. Die virtuelle Maschine kann neben Audio-CDs ohne Kopierschutz auch kopiergeschützte Audio-CDs ohne Einschränkungen wiedergeben. </p>
+<p class="bodytext">Wenn Ihr Hostcomputer über ein beschreibbares optisches Laufwerk verfügt, können Sie dieses verwenden, um CDs und DVDs auf einer virtuelle Maschine zu brennen.</p>
+<p class="bodytext">&lt;PS-Produktname&gt; unterstützt CD/DVD-Images im ISO-, CUE- und CCD-Format.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> DMG-Images, die mit dem Mac OS X-Festplattendienstprogramm erstellt wurden, werden auch von &lt;PS-Produktname&gt; unterstützt. Wenn Sie solch ein Image erstellen, sollten Sie darauf achten, ein <em class="emphasis">schreibgeschütztes</em> und <em class="emphasis">unkomprimiertes</em> Image ohne Verschlüsselung zu erstellen.</p>
+<p class="subheading">Disketten und Disketten-Images</p>
+<p class="bodytext">&lt;PS-Produktname&gt; kann zwei Diskettentypen verwenden:</p>
+<ul class="listbullet"><li class="listbullet">reale Disketten, die in ein reales Diskettenlaufwerk eingeführt werden, das mit einer virtuellen Maschine verbunden ist</li><li class="listbullet">Disketten-Imagedateien mit der Erweiterung <code class="monospace">.fdd</code>, die mit einer virtuellen Maschine verbunden sind</li></ul><p class="bodytext">&lt;PS-Produktname&gt; behandelt Disketten-Images wie reale Disketten. &lt;PS-Produktname&gt; unterstützt Disketten-Imagedateien mit der Erweiterung <code class="monospace">.fdd</code> und einer Größe von 1,44 MB.</p>
+<p class="bodytext">Mit &lt;PS-Produktname&gt; können Sie auch ein Image einer leeren Diskette erstellen. Verwenden Sie dafür den Bereich <strong class="specialbold">Diskette</strong> im Dialog Konfiguration der virtuellen Maschine. </p>
+<p class="note"><strong class="buttons">Hinweis:</strong> &lt;PS-Produktname&gt; kann keine Images realer Disketten erstellen.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+23580" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

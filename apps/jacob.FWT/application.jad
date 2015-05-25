@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="FWT-Anwendungen" engineVersion="2.5" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="FWT_DS">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+    <DataSource name="jacob_DS">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+    <DataSource name="stammdatenDS"/>
+  </DataSources>
+  <Roles>
+    <Role description="" name="Administrator"/>
+    <Role description="" name="User"/>
+  </Roles>
+  <Tables>
+    <Table datasource="stammdatenDS" dbName="employee" name="employee" representativeField="fullname">
+      <Field dbName="pkey" history="false" label="ID" name="pkey" readonly="true" required="true">
+        <Integer autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="DB-ID" name="loginname" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="employeeid" history="false" label="Pers. ID" name="employeeid" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="availability" history="false" label="verfügbar" name="availability" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="fullname" history="false" label="Voller Name" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="64" searchMode="unbound"/>
+      </Field>
+      <Field dbName="department" history="false" label="Abteilung" name="department" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="30" searchMode="unbound"/>
+      </Field>
+      <Field dbName="privatephone" history="false" label="private Tel." name="privatephone" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="30" searchMode="unbound"/>
+      </Field>
+      <Field dbName="supportrole" history="false" label="Support Rolle" name="supportrole" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="phonecorr" history="false" label="phonecorr" name="phonecorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="30" searchMode="unbound"/>
+      </Field>
+      <Field dbName="buildingcorr" history="false" label="Gebäude" name="buildingcorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="employeetype" history="false" label="employeetype" name="employeetype" readonly="false" required="true">
+        <Enumeration>
+          <Default>Intern</Default>
+          <Value>Intern</Value>
+          <Value>Extern</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="firstnamecorr" history="false" label="Vorname" name="firstnamecorr" readonly="false" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="32" searchMode="leftbound"/>
+      </Field>
+      <Field dbName="lastnamecorr" history="false" label="Nachname" name="lastnamecorr" readonly="false" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="32" searchMode="leftbound"/>
+      </Field>
+      <Field dbName="emailcorr" history="false" label="Email" name="emailcorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="100" searchMode="unbound"/>
+      </Field>
+      <Field dbName="faxcorr" history="false" label="FAX" name="faxcorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="30" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mobilecorr" history="false" label="Tel. Mobil" name="mobilecorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="30" searchMode="unbound"/>
+      </Field>
+      <Field dbName="sitepartcorr" history="false" label="Werksteil" name="sitepartcorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="employeestatus" history="false" label="Employeestatus" name="employeestatus" readonly="false" required="true">
+        <Enumeration>
+          <Default>von Hand</Default>
+          <Value>DBCS</Value>
+          <Value>von Hand</Value>
+          <Value>DBCS Gelöscht</Value>
+          <Value>von Hand gelöscht</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="accountingcodecorr" history="false" label="Accountingcode" name="accountingcodecorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="8" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pm_role" history="false" label="PM" name="pm_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="ak_role" history="false" label="AK Rolle" name="ak_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="hpccorr" history="false" label="Hauspost Code " name="hpccorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="4" searchMode="unbound"/>
+      </Field>
+      <Field dbName="warte_role" history="false" label="Leitwarte Rolle" name="warte_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="sdadmin_role" history="false" label="SD-Admin Rolle" name="sdadmin_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="admin_role" history="false" label="Admin Rolle" name="admin_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="emplsite_keycorr" history="false" label="Werk" name="emplsite_keycorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="3" searchMode="unbound"/>
+      </Field>
+      <Field dbName="roomcorr" history="false" label="Raum korr" name="roomcorr" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="userid" history="false" label="Userid" name="userid" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="superak_role" history="false" label="Super AK Rolle" name="superak_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="bp_role" history="false" label="BP" name="bp_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="lpr_ip" history="false" label="Lpr_ip" name="lpr_ip" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="mbtech_role" history="false" label="MBTECH Rolle" name="mbtech_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="passwdhash" label="Password hash value" name="passwdhash" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="pqp_role" history="false" label="PQ Personal" name="pqp_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="prj_role" history="false" label="PRJ Admin" name="prj_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="net_role" history="false" label="Netz" name="net_role" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Zugriff auf das Netzwerkaudit</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="PKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="FWT_DS" dbName="user_application" name="user_application">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="japplication_key" history="false" label="Japplication_key" name="japplication_key" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="constraintfield1" history="false" label="Feld 1" name="constraintfield1" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="constraintvalue1" history="false" label="Wert 1" name="constraintvalue1" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="constraintfield2" history="false" label="Feld 2" name="constraintfield2" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="constraintvalue2" history="false" label="Wert 2" name="constraintvalue2" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="isglobal" history="false" label="Global" name="isglobal" readonly="false" required="false">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="displayname" history="false" label="Displayname" name="displayname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="60" searchMode="unbound">
+          <Default/>
+        </Text>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="japplication_FKey">
+        <Field>japplication_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="applicationUKey">
+        <Field>japplication_key</Field>
+      </UniqueIndex>
+      <UniqueIndex name="displyname_UKey">
+        <Field>displayname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="jacob_DS" dbName="japplication" description="Installed jACOB applications" name="japplication">
+      <Field dbName="name" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="prim">
+        <Field>name</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="jacob_DS" dbName="administrator" description="Administrators of JACOB" name="administrator">
+      <Field dbName="loginId" label="Login-ID" name="loginId" readonly="false" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="id" label="ID" name="id" readonly="true" required="true">
+        <Integer autoincrement="true" dbincrement="false"/>
+      </Field>
+      <Field dbName="passwdhash" label="Password hash value" name="passwdhash" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" label="Full name" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email" label="Email" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="prim">
+        <Field>id</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginIdIdx">
+        <Field>loginId</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="jacob_DS" dbName="japplversion" description="Installed application versions" historyField="history" name="japplversion">
+      <Field dbName="jversion" history="true" label="Version" name="version" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="buildby" history="true" label="Buildby" name="buildby" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="20" searchMode="unbound"/>
+      </Field>
+      <Field dbName="builddatetime" history="true" label="Builddatetime" name="builddatetime" readonly="true" required="false">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <Field dbName="installedsince" history="true" label="Installedsince" name="installedsince" readonly="true" required="true">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <Field dbName="buildmachine" history="true" label="Buildmachine" name="buildmachine" readonly="true" required="false">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="jstatus" history="true" label="Status" name="status" readonly="false" required="true">
+        <Enumeration>
+          <Default>inactive</Default>
+          <Value>inactive</Value>
+          <Value>productive</Value>
+          <Value>test</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="content" history="true" label="Data" name="content" readonly="true" required="true">
+        <Binary/>
+      </Field>
+      <Field dbName="name" history="true" label="Application" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" fixedLength="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="contentsize" history="true" label="Size" name="contentsize" readonly="true" required="true">
+        <Integer autoincrement="false" dbincrement="false"/>
+      </Field>
+      <Field dbName="history" label="History" name="history" readonly="true" required="false">
+        <LongText changeHeader="true"/>
+      </Field>
+      <Field dbName="installseqnbr" history="true" label="Seq. number" name="installseqnbr" readonly="true" required="true">
+        <Integer autoincrement="false" dbincrement="false"/>
+      </Field>
+      <PrimaryKey name="prim">
+        <Field>name</Field>
+        <Field>version</Field>
+      </PrimaryKey>
+      <ForeignKey name="japplication_FKey">
+        <Field>name</Field>
+      </ForeignKey>
+      <UniqueIndex name="seqnbr">
+        <Field>installseqnbr</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="FWT_DS" dbName="applicationemployee" name="applicationemployee">
+      <Field dbName="employee_key" history="false" label="Employee_key" name="employee_key" readonly="false" required="true">
+        <Integer autoincrement="false"/>
+      </Field>
+      <Field dbName="user_application_key" history="false" label="User_application_key" name="user_application_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>employee_key</Field>
+        <Field>user_application_key</Field>
+      </PrimaryKey>
+      <ForeignKey name="employee_FKey">
+        <Field>employee_key</Field>
+      </ForeignKey>
+      <ForeignKey name="user_application_FKey">
+        <Field>user_application_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="user_application" table="user_application"/>
+    <TableAlias name="japplication" table="japplication">
+      <Condition>japplication.name=japplversion.name and japplversion.jstatus &lt;&gt;'inactive'</Condition>
+    </TableAlias>
+    <TableAlias name="japplversion" table="japplversion"/>
+    <TableAlias name="employee" table="employee"/>
+    <TableAlias name="myaccess" table="employee"/>
+    <TableAlias name="applicationemployee" table="applicationemployee"/>
+    <TableAlias name="administrator" table="administrator"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="user_application" name="user_applicationBrowser" type="inform">
+      <Field label="Applikation" name="browserJapplication_key" visible="true">
+        <TableField sortOrder="ascending" tableField="japplication_key"/>
+      </Field>
+    </Browser>
+    <Browser alias="japplication" name="japplicationBrowser" type="inform">
+      <Field label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="japplversion" name="japplversionBrowser" type="inform">
+      <Field label="Version" name="browserVersion" visible="true">
+        <TableField tableField="version"/>
+      </Field>
+      <Field label="Application" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Applikation" name="browserJapplication" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="japplicationBrowser" filldirection="both" foreignAlias="japplication" relationToUse="r_jappl_japplversion" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="employee" name="employeeBrowser" type="inform">
+      <Field label="TTS-Login" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Nachname" name="browserLastnamecorr" visible="true">
+        <TableField sortOrder="ascending" tableField="lastnamecorr"/>
+      </Field>
+      <Field label="Vorname" name="browserFirstnamecorr" visible="true">
+        <TableField sortOrder="ascending" tableField="firstnamecorr"/>
+      </Field>
+      <Field label="Werk" name="browserEmplsite_keycorr" visible="true">
+        <TableField tableField="emplsite_keycorr"/>
+      </Field>
+      <Field label="Abteilung" name="browserDepartment" visible="true">
+        <TableField tableField="department"/>
+      </Field>
+      <Field label="Portal ID" name="browserUserid" visible="true">
+        <TableField tableField="userid"/>
+      </Field>
+    </Browser>
+    <Browser alias="myaccess" name="myaccessBrowser" type="inform">
+      <Field label="ID" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="applicationemployee" name="applicationemployeeBrowser" type="inform">
+      <Field label="Mitarbeiter" name="browserEmployee" visible="true">
+        <TableField tableField="fullname">
+          <Foreign browserToUse="employeeBrowser" filldirection="both" foreignAlias="employee" relationToUse="employee_applicationemployee" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="administrator" name="administratorBrowser" type="inform">
+      <Field label="Login-ID" name="browserLoginId" visible="true">
+        <TableField tableField="loginId"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="r_jappl_japplversion">
+      <OneToMany fromAlias="japplication" toAlias="japplversion" toKey="japplication_FKey"/>
+    </Relation>
+    <Relation name="japplication_user_application">
+      <OneToMany fromAlias="japplication" toAlias="user_application" toKey="japplication_FKey"/>
+    </Relation>
+    <Relation name="employee_applicationemployee">
+      <OneToMany fromAlias="employee" toAlias="applicationemployee" toKey="employee_FKey"/>
+    </Relation>
+    <Relation name="user_application_applicationemployee">
+      <OneToMany fromAlias="user_application" toAlias="applicationemployee" toKey="user_application_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="jacob">
+      <Relation>r_jappl_japplversion</Relation>
+      <Property>
+        <Name>japplication.x</Name>
+        <Value>211</Value>
+      </Property>
+      <Property>
+        <Name>japplication.y</Name>
+        <Value>53</Value>
+      </Property>
+      <Property>
+        <Name>japplversion.x</Name>
+        <Value>211</Value>
+      </Property>
+      <Property>
+        <Name>japplversion.y</Name>
+        <Value>193</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="application">
+      <Relation>japplication_user_application</Relation>
+      <Relation>employee_applicationemployee</Relation>
+      <Relation>user_application_applicationemployee</Relation>
+      <Property>
+        <Name>user_application.x</Name>
+        <Value>249</Value>
+      </Property>
+      <Property>
+        <Name>user_application.y</Name>
+        <Value>115</Value>
+      </Property>
+      <Property>
+        <Name>japplication.x</Name>
+        <Value>525</Value>
+      </Property>
+      <Property>
+        <Name>japplication.y</Name>
+        <Value>132</Value>
+      </Property>
+      <Property>
+        <Name>applicationemployee.x</Name>
+        <Value>247</Value>
+      </Property>
+      <Property>
+        <Name>applicationemployee.y</Name>
+        <Value>251</Value>
+      </Property>
+      <Property>
+        <Name>employee.x</Name>
+        <Value>258</Value>
+      </Property>
+      <Property>
+        <Name>employee.y</Name>
+        <Value>351</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="Zuordnung" name="MyApplications">
+      <Group alias="user_application" browser="user_applicationBrowser" label="Applikationszuordnung" name="user_applicationGroup">
+        <Dimension height="411" width="811" x="5" y="5"/>
+        <GuiElement name="user_applicationButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="645" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="application" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="user_applicationButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="725" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="user_applicationButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="725" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="user_applicationButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="645" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="user_applicationJapplication" visible="true">
+          <ForeignInputField browserToUse="japplicationBrowser" filldirection="both" foreignAlias="japplication" foreignTableField="name" relationToUse="japplication_user_application" relationset="jacob">
+            <Dimension height="20" width="159" x="91" y="25"/>
+            <Caption halign="left" label="Applikation" valign="top">
+              <Dimension height="20" width="70" x="16" y="25"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="user_applicationIsglobal" visible="true">
+          <LocalInputField tableField="isglobal">
+            <CheckBox>
+              <Dimension height="16" width="16" x="645" y="87"/>
+              <Caption halign="right" label="Global" valign="top">
+                <Dimension height="16" width="70" x="570" y="87"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="InfoLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="QBE Constraint für die Mitarbeitertabelle" valign="top">
+              <Dimension height="20" width="335" x="91" y="60"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="user_applicationConstraintfield2" visible="true">
+          <LocalInputField tableField="constraintfield2">
+            <TextInput>
+              <Dimension height="20" width="159" x="91" y="115"/>
+              <Caption halign="left" label="Feld 2" valign="top">
+                <Dimension height="20" width="70" x="16" y="115"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="user_applicationConstraintvalue1" visible="true">
+          <LocalInputField tableField="constraintvalue1">
+            <TextInput>
+              <Dimension height="20" width="159" x="393" y="85"/>
+              <Caption halign="right" label="Wert 1" valign="top">
+                <Dimension height="20" width="70" x="318" y="85"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="user_applicationConstraintvalue2" visible="true">
+          <LocalInputField tableField="constraintvalue2">
+            <TextInput>
+              <Dimension height="20" width="159" x="393" y="115"/>
+              <Caption halign="right" label="Wert 2" valign="top">
+                <Dimension height="20" width="70" x="318" y="115"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="user_applicationConstraintfield1" visible="true">
+          <LocalInputField tableField="constraintfield1">
+            <TextInput>
+              <Dimension height="20" width="159" x="91" y="85"/>
+              <Caption halign="left" label="Feld 1" valign="top">
+                <Dimension height="20" width="70" x="16" y="85"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="user_applicationApplicationemployeeBrowser" visible="true">
+          <InFormBrowser browserToUse="applicationemployeeBrowser" deleteMode="true" newMode="true" relationToUse="user_application_applicationemployee" updateMode="true">
+            <Dimension height="236" width="555" x="91" y="150"/>
+            <Caption halign="left" label="zugeordnete Mitarbeiter" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.user_application.User_applicationDisplayname" name="user_applicationDisplayname" visible="true">
+          <LocalInputField tableField="displayname">
+            <TextInput>
+              <Dimension height="20" width="159" x="393" y="25"/>
+              <Caption halign="right" label="Anwendungs-Buttonlabel" valign="top">
+                <Dimension height="20" width="139" x="249" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="applicationDelete" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form label="Mitarbeiter" name="Employee">
+      <Group alias="employee" browser="employeeBrowser" label="Mitarbeiter" name="employeeGroup">
+        <Dimension height="476" width="816" x="5" y="5"/>
+        <GuiElement name="employeeButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="651" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="731" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeInfo" visible="true">
+          <Label>
+            <Caption halign="left" label="Stammdatenpflege findet in Caretaker statt" valign="top">
+              <Dimension height="20" width="255" x="180" y="25"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="employeeFirstnamecorr" visible="true">
+          <LocalInputField tableField="firstnamecorr">
+            <TextInput>
+              <Dimension height="20" width="149" x="77" y="100"/>
+              <Caption halign="left" label="Vorname" valign="top">
+                <Dimension height="20" width="70" x="2" y="100"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeLastnamecorr" visible="true">
+          <LocalInputField tableField="lastnamecorr">
+            <TextInput>
+              <Dimension height="20" width="149" x="407" y="100"/>
+              <Caption halign="left" label="Nachname" valign="top">
+                <Dimension height="20" width="70" x="332" y="100"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeEmplsite_keycorr" visible="true">
+          <LocalInputField tableField="emplsite_keycorr">
+            <TextInput>
+              <Dimension height="20" width="149" x="77" y="126"/>
+              <Caption halign="left" label="Werk" valign="top">
+                <Dimension height="20" width="70" x="2" y="126"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeAk_role" visible="true">
+          <LocalInputField tableField="ak_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="102"/>
+              <Caption halign="left" label="AK Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="102"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeAvailability" visible="true">
+          <LocalInputField tableField="availability">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="128"/>
+              <Caption halign="left" label="verfügbar" valign="top">
+                <Dimension height="16" width="70" x="659" y="128"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeBp_role" visible="true">
+          <LocalInputField tableField="bp_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="154"/>
+              <Caption halign="left" label="BP" valign="top">
+                <Dimension height="16" width="70" x="659" y="154"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeNet_role" visible="true">
+          <LocalInputField tableField="net_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="206"/>
+              <Caption halign="left" label="Netz" valign="top">
+                <Dimension height="16" width="70" x="659" y="206"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePm_role" visible="true">
+          <LocalInputField tableField="pm_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="232"/>
+              <Caption halign="left" label="PM" valign="top">
+                <Dimension height="16" width="70" x="659" y="232"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePqp_role" visible="true">
+          <LocalInputField tableField="pqp_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="258"/>
+              <Caption halign="left" label="PQ Personal" valign="top">
+                <Dimension height="16" width="70" x="659" y="258"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePrj_role" visible="true">
+          <LocalInputField tableField="prj_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="284"/>
+              <Caption halign="left" label="PRJ Admin" valign="top">
+                <Dimension height="16" width="70" x="659" y="284"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeSdadmin_role" visible="true">
+          <LocalInputField tableField="sdadmin_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="310"/>
+              <Caption halign="left" label="SD-Admin Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="310"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeSuperak_role" visible="true">
+          <LocalInputField tableField="superak_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="336"/>
+              <Caption halign="left" label="Super AK Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="336"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeSupportrole" visible="true">
+          <LocalInputField tableField="supportrole">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="362"/>
+              <Caption halign="left" label="Support Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="362"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeWarte_role" visible="true">
+          <LocalInputField tableField="warte_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="388"/>
+              <Caption halign="left" label="Leitwarte Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="388"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeAdmin_role" visible="true">
+          <LocalInputField tableField="admin_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="76"/>
+              <Caption halign="left" label="Admin Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="76"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="149" x="77" y="74"/>
+              <Caption halign="left" label="TTS Login" valign="top">
+                <Dimension height="20" width="70" x="2" y="74"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePhonecorr" visible="true">
+          <LocalInputField tableField="phonecorr">
+            <TextInput>
+              <Dimension height="20" width="149" x="77" y="152"/>
+              <Caption halign="left" label="Telefon" valign="top">
+                <Dimension height="20" width="70" x="2" y="152"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeDepartment" visible="true">
+          <LocalInputField tableField="department">
+            <TextInput>
+              <Dimension height="20" width="149" x="407" y="126"/>
+              <Caption halign="left" label="Abteilung" valign="top">
+                <Dimension height="20" width="70" x="332" y="126"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeMbtech_role" visible="true">
+          <LocalInputField tableField="mbtech_role">
+            <CheckBox>
+              <Dimension height="16" width="16" x="734" y="180"/>
+              <Caption halign="left" label="MBTECH Rolle" valign="top">
+                <Dimension height="16" width="70" x="659" y="180"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeUserid" visible="true">
+          <LocalInputField tableField="userid">
+            <TextInput>
+              <Dimension height="20" width="149" x="407" y="74"/>
+              <Caption halign="left" label="Portal ID" valign="top">
+                <Dimension height="20" width="70" x="332" y="74"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="FWT" name="MyAccess">
+      <Group alias="myaccess" browser="myaccessBrowser" eventHandler="jacob.event.ui.myaccess.MyaccessGroup" label="FWT" name="myaccessGroup">
+        <Dimension height="526" width="801" x="15" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName0" name="AppName0" visible="true">
+          <Button label="AppName0">
+            <Dimension height="20" width="180" x="139" y="100"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName1" name="AppName1" visible="true">
+          <Button label="AppName1">
+            <Dimension height="20" width="180" x="395" y="100"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName3" name="AppName3" visible="true">
+          <Button label="AppName3">
+            <Dimension height="20" width="180" x="395" y="130"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName0" name="AppName4" visible="true">
+          <Button label="AppName4">
+            <Dimension height="20" width="180" x="139" y="160"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName5" name="AppName5" visible="true">
+          <Button label="AppName5">
+            <Dimension height="20" width="180" x="395" y="160"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName6" name="AppName6" visible="true">
+          <Button label="AppName6">
+            <Dimension height="20" width="180" x="139" y="190"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName7" name="AppName7" visible="true">
+          <Button label="AppName7">
+            <Dimension height="20" width="180" x="395" y="190"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName8" name="AppName8" visible="true">
+          <Button label="AppName8">
+            <Dimension height="20" width="180" x="139" y="220"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName9" name="AppName9" visible="true">
+          <Button label="AppName9">
+            <Dimension height="20" width="180" x="395" y="220"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName10" name="AppName10" visible="true">
+          <Button label="AppName10">
+            <Dimension height="20" width="180" x="139" y="250"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName11" name="AppName11" visible="true">
+          <Button label="AppName11">
+            <Dimension height="20" width="180" x="395" y="250"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName13" name="AppName12" visible="true">
+          <Button label="AppName12">
+            <Dimension height="20" width="180" x="139" y="280"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName14" name="AppName14" visible="true">
+          <Button label="AppName14">
+            <Dimension height="20" width="180" x="139" y="310"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName15" name="AppName15" visible="true">
+          <Button label="AppName15">
+            <Dimension height="20" width="180" x="395" y="310"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName16" name="AppName16" visible="true">
+          <Button label="AppName16">
+            <Dimension height="20" width="180" x="139" y="340"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName17" name="AppName17" visible="true">
+          <Button label="AppName17">
+            <Dimension height="20" width="180" x="395" y="340"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName18" name="AppName18" visible="true">
+          <Button label="AppName18">
+            <Dimension height="20" width="180" x="139" y="370"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName19" name="AppName19" visible="true">
+          <Button label="AppName19">
+            <Dimension height="20" width="180" x="395" y="370"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName2" name="AppName2" visible="true">
+          <Button label="AppName2">
+            <Dimension height="20" width="180" x="139" y="130"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.myaccess.AppName13" name="AppName13" visible="true">
+          <Button label="AppName13">
+            <Dimension height="20" width="180" x="395" y="280"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="ApplicationInfo" visible="true">
+          <Label>
+            <Caption halign="left" label="Bitte eine Anwendung auswählen:" valign="top">
+              <Dimension height="20" width="193" x="138" y="70"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="FWT" title="FWT" visible="true">
+      <Form>MyAccess</Form>
+      <Role>User</Role>
+    </Domain>
+    <Domain name="Administration" title="Administration" visible="true">
+      <Form>Employee</Form>
+      <Form>MyApplications</Form>
+      <Role>Administrator</Role>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="FWT-Anwendungen" title="FWT Application">
+      <Domain>FWT</Domain>
+      <Domain>Administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

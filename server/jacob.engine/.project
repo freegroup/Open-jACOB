@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>jacob.engine</name>
+	<comment></comment>
+	<projects>
+		<project>openjacob.engine</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>openjacobjava</name>
+			<type>2</type>
+			<location>/home/andherz/workspace/openjacob.engine/java</location>
+		</link>
+		<link>
+			<name>openjava</name>
+			<type>2</type>
+			<location>/home/andherz/workspace/openjacob.engine/java</location>
+		</link>
+		<link>
+			<name>tomcat</name>
+			<type>2</type>
+			<location>/home/andherz/J::/jakarta-tomcat-5.0.28/webapps/jacob/WEB-INF/classes</location>
+		</link>
+	</linkedResources>
+</projectDescription>

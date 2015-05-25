@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_Help" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="start">
+					<question pattern="((wie\s+lautet\s+)?die\s+)?lösung[?!]*"            defaultAnswer="geh heim1"/>
+					<question pattern="(die\s)?lösung[?!]*"                                 defaultAnswer="geh heim2"/>
+					<question pattern="((was)|(wer))\s+bist\s+du+[?!]*"                     defaultAnswer="Ein automatisches Auskunftssystem!"/>
+					<question pattern="auch\s+spielen[?!]*"                                 defaultAnswer="Klar - im Moment aber nur Galgenmännchen. Einfach das Wort ´Hangman´ mir zuschicken und schon geht es los."/>
+					<question pattern="spielen[?!]*"                                         defaultAnswer="Klar - im Moment aber nur Galgenmännchen. Einfach das Wort ´Galgenmann´ mir zuschicken und schon geht es los."/>
+					<question pattern="wie\s+((ist)|(lautet))\s+deine?\s+nummer[?!]*"     defaultAnswer="Man kann mir eine SMS über +491606109584 (D1) oder +491749608076 (D2) schicken. Funktioniert natürlich auch von E-Plus.....Einfach die Nummer nehmen welche für Dich kostengünstiger ist."/>
+					<question pattern="kann\s+man\sdir\s+auch\s+eine\s+sms\s+schicken[?!]*"     defaultAnswer="Man kann mir eine SMS über +491606109584 (D1) oder +491749608076 (D2) schicken. Funktioniert natürlich auch von E-Plus.....Einfach die Nummer nehmen welche für Dich kostengünstiger ist."/>
+					<question pattern="wie\s+((ist)|(lautet))\s+deine?\s+email\s*add*ress*e[?!]*"      defaultAnswer="info@short-i.de oder infor@short-i.com. Falls Du eine Fragen an mich haben solltest, trage diese dan einfach in das Subject ein."/>
+					<question pattern="wie\s+kann\s+((man)|(ich))\s+spielen[?!]*"         defaultAnswer="Im Moment kann ich nur Galgenmännchen spielen!!!!"/>
+				</forward>
+				<forward toNode="how">
+					<question pattern="wie\s+funk\w*\s+du[?!]*"                           defaultAnswer="Man stellt mir eine Frage, und ich antworte. Ganz einfach"/>
+					<question pattern="was\s+kannst\s+du[?!]*"                             defaultAnswer="Ich kann Ihnen über Telefonnummer, Postleitzahlen, Pizzalieferdienste usw. auskunft geben."/>
+					<question pattern="was\s+kannst\s+du\s+noch[?!]*"                     defaultAnswer="eine ganze Menge. Frage mich doch mal nach der Vorwahl einer Stadt"/>
+					<question pattern="was\s+kann\s+((man)|(ich))\s+dich\s+fragen[?!]*"  defaultAnswer="Man kann mich Worte übersetzen lassen, nach einem Pizzaservice fragen, Telefonnummer erfragen oder Bankleitzahlen...."/>
+					<question pattern="kannst\s+du\s+(auch\s+)?spielen[?!]*"              defaultAnswer="Klar - im Moment aber nur Galgenmänchen. Einfach das Wort ´Hangman´ mir zuschicken und schon geht es los."/>
+				</forward>
+			</node>
+
+			<node name="how">
+				<forward toNode="start">
+					<question pattern="(und\s)?wie[?!]*"                                    defaultAnswer="Ganz einfach - frag mich doch mal nach einem Pizzadienst."/>
+				</forward>
+			</node>
+
+		</nodelist>
+	</Context>
+</ContextList>

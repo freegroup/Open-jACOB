@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+  <chapter>
+    <title>GridTableDialog</title>
+
+    <section>
+      <title>Introduction</title>
+        
+      <para>
+        GridDialogs are a subclass of IDialog components specifically designed to display and select data in a 
+        grid or table view. Grids in a crossware application provide a broad choice of interfaces through 
+        which data can be represented in tabular form. In the case of our <emphasis>GridTableDialog</emphasis> we enable
+        the user to select <emphasis>one</emphasis> row from an <emphasis>n-size</emphasis> dataset.
+        The fields of the data can be linked to fields in the UI or you can proceed the click event manualy.
+      </para>
+      <para>
+        <figure id="user.dialog.gridTable01">
+	          <title>Screenshot of an <emphasis>IGridTableDialog</emphasis> in action</title>
+	          <screenshot><mediaobject><imageobject> <imagedata 
+	          fileref="GuiProgramming/gridDialog_screenshot.png" scalefit="0"
+	          ></imagedata> </imageobject> </mediaobject></screenshot>
+	    </figure>
+	  </para>
+      <para>
+		The <emphasis>GridTableDialog</emphasis> encapsulates common functionality so that you can 
+		easily reuse it. For example, you often need to display and select information from a foreign 
+		sql table or view. To generalize this code, you might first create a function to collect the data and 
+		then pass in the column names and the data to display the GridDialog. The user selects one 
+		row in the popup dialog and the GridDialog fill back the selected row in the connected input 
+		fields - thats all.
+	   </para>
+	</section>
+    <section><title>A Example</title>
+  	  <section>
+  	  	<title>Preface</title> 
+  	  		<para>
+        	We create test data and display them in an GridTableDialog. The user has now the capability
+        	to select one row. The GridTableDialog fill back the selected row in the GUI input fields. A 
+        	simple example which will covers all the relevant aspect of using this type of dialog.
+        	</para>
+	  </section>
+
+      <section>
+        <title>The data binding</title>
+	        <para>
+	        The Grid is data-bound, which means it's linked to an java array, which provides data 
+	        for the grid to display. An array for the header naming and one for the data itself.
+    	    </para>
+	        <figure id="user.dialog.gridTableDatabinding">
+	          <title>bind a grid dialog with a data table</title>
+     	   		<programlisting>String[] header = new String[]{"Code" , "Beschreibung"};
+
+String[][] testdaten=new String[4][2];
+testdaten[0]= new String[]{"row0 col0","row0 col1"};
+testdaten[1]= new String[]{"row1 col0","row1 col1"};
+testdaten[2]= new String[]{"row2 col0","row2 col1"};
+testdaten[3]= new String[]{"row3 col0","row3 col1"};
+
+dialog.setHeader(header);
+dialog.setData(testdaten);</programlisting>
+    		</figure>
+      </section>
+      
+      <section>
+        <title>The GUI binding</title>
+        	<para>
+        	One option to process the user selection is the binding with <emphasis>ISingleDataGuiElement</emphasis> - 
+        	the data representation of all input fields.
+        	The user clicks on one row and all linked <emphasis>ISingleDataGuiElement</emphasis> 
+        	fields will be filled with the cell data of the connected columns.
+	        </para>
+	        <figure id="user.dialog.gridTableguibinding">
+		          <title>Backfill of an <emphasis>IGridTableDialog</emphasis> in action</title>
+		          <screenshot><mediaobject><imageobject> <imagedata 
+		          fileref="GuiProgramming/gridDialog_guibinding.png" scalefit="0"
+		          ></imagedata> </imageobject> </mediaobject></screenshot>
+		    </figure>
+	        <figure id="user.dialog.gridTableGuibinding">
+	          <title>bind a grid dialog selection with an input field</title>
+		        <programlistingco>
+		        <areaspec>
+	    	  		<area id="form.gridDialog.init"      coords='6' />
+	      			<area id="form.gridDialog.connect1"  coords='8' />
+	      			<area id="form.gridDialog.connect2"  coords='9' />
+		        </areaspec>
+				<programlisting>ISingleDataGuiElement code =(ISingleDataGuiElement)context.getGroup()
+                                         .findByName("inputfield_A");
+ISingleDataGuiElement desc =(ISingleDataGuiElement)context.getGroup()
+                                         .findByName("inputfield_B");
+
+IGridTableDialog dialog = context.createGridTableDialog();
+
+dialog.connect(0,code);
+dialog.connect(1,desc);
+				</programlisting>
+				 <calloutlist>
+				 	<callout arearefs="form.gridDialog.init">
+				 		<para>Create the grid dialog.</para>
+				 	</callout>
+				 	<callout arearefs="form.gridDialog.connect1">
+				 		<para>Connect the column 0 with the <emphasis>ISingleDataGuiElement</emphasis> with the name <emphasis>inputfield_A</emphasis>.</para>
+				 	</callout>
+				 	<callout arearefs="form.gridDialog.connect2">
+				 		<para>Connect the column 1 with the <emphasis>ISingleDataGuiElement</emphasis> with the name <emphasis>inputfield_B</emphasis>.</para>
+				 	</callout>
+				 </calloutlist>
+				 </programlistingco>
+			</figure>
+	  </section>
+      <section>
+        <title>But I Want More</title>
+        	<para>
+        	The <emphasis>GridTableDialog</emphasis> can do much more. The generic feature to proceed the user 
+        	selection is the binding via callback object. You define a callback object which will be called 
+        	(<footnote><para>There is no warranty that the callback object will be called. Nothing happens if 
+        	the user closed the	window with <keycombo><keycap>Alt</keycap><keycap>F4</keycap></keycombo></para></footnote>) 
+        	if the user selects an row in your grid.
+	        </para>
+	        <figure id="user.dialog.gridTableCallbackbinding">
+	          <title>bind a grid dialog selection with an callback object</title>
+		        <programlistingco>
+		        <areaspec>
+		      		<area id="form.gridDialog.callbackclass"   coords='1' />
+		      		<area id="form.gridDialog.initCallback"    coords='10' />
+		        </areaspec>
+				<programlisting>class myCallback implements IGridTableDialogCallback
+{
+  public void onSelect(IClientContext context, int rowIndex, Properties cellData)
+  {
+    System.out.println("the data ==================================");
+    cellData.list(System.out);
+  }
+}
+
+IGridTableDialog dialog = context.createGridTableDialog(new myCallBack());
+	</programlisting>
+			 <calloutlist>
+			 	<callout arearefs="form.gridDialog.callbackclass">
+			 		<para>Create a callback class which is an subclass of <emphasis>IGridTableDialogCallback</emphasis>.</para>
+			 	</callout>
+			 	<callout arearefs="form.gridDialog.initCallback">
+			 		<para>Create the grid dialog with an instance of myCallback for manually operated user selection.</para>
+			 	</callout>
+			 </calloutlist>
+			 </programlistingco>
+	   		</figure>
+ 	    </section>
+	    <section>
+		 <title>The <emphasis>GridTableDialog</emphasis> within a ButtonHandler</title>
+			<programlisting>package jacob.event.screen.f_call_manage.taskEdvin;
+import java.util.*;
+import de.tif.etr.screen.*;
+import de.tif.etr.screen.dialogs.*;
+import de.tif.etr.screen.event.IButtonEventHandler;
+
+public class GetBaueinheit extends IButtonEventHandler
+{
+class GridCallback implements IGridTableDialogCallback
+{
+  public void onSelect(IClientContext context, int rowIndex, Properties columns)
+  {
+    System.out.println("- Cell data -");
+    columns.list(System.out);
+  }
+}
+  
+public void onAction(IClientContext context, IGuiElement button)throws Exception
+{
+    IGridTableDialog dialog = context.createGridTableDialog(new GridCallback());
+
+    String[] header = new String[]{"Code" , "Beschreibung"};
+    
+    String[][] testdaten=new String[4][2];
+    testdaten[0]= new String[]{"row0 col0","row0 col1"};
+    testdaten[1]= new String[]{"row1 col0","row1 col1"};
+    testdaten[2]= new String[]{"row2 col0","row2 col1"};
+    testdaten[3]= new String[]{"row3 col0","row3 col1"};
+
+    dialog.setHeader(header);
+    dialog.setData(testdaten);
+
+    dialog.show(300,200);
+}
+
+public void onGroupStatusChanged(IClientContext context, int status, IGuiElement button) throws Exception
+{
+}
+}</programlisting>
+		</section>
+    </section>
+  </chapter>

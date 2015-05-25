@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta name="description" content="You can add a serial port to your virtual machine configuration and connect it to a real port, to a socket, or to an output file." />
+
+<meta name="description" content="The virtual machine's serial port can be connected to a real port, to a socket, or to an output file." />
+
+<title> Einstellungen für den seriellen Port </title>
+<meta name="Keywords" content="Serieller Port	konfigurieren, Socket" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="22724.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22809.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Einstellungen für den seriellen Port</h3>
+<p class="bodytext">          Im Bereich <strong class="specialbold">Serieller Port</strong> des Fensters <strong class="specialbold">Konfiguration der virtuellen Maschine</strong> können Sie die Einstellungen für den seriellen Port der virtuellen Maschine vornehmen.</p>
+<p class="bodytext">Wenn Sie serielle Ports verwenden, können Sie eine Verbindung herstellen zwischen</p>
+<ul class="listbullet"><li class="listbullet">der virtuellen Maschine und den Geräten des Host-Computers (über einen realen Port) oder</li><li class="listbullet">zwei virtuellen Maschinen, die sich auf demselben Host-Computer befinden (über ein Socket).</li></ul><p class="bodytext">Wenn Sie die virtuelle Maschine mit dem Gerät des Host-Computers verbinden möchten, müssen Sie einen seriellen Port erstellen, der von einem realen Port emuliert wird. Die Liste <strong class="specialbold">Serieller Port</strong> enthält die Geräte auf dem Host-Computer, die für eine Verbindung zur Verfügung stehen. Das eingebundene Gerät, das in einer virtuellen Maschine verwendet wird, kann nicht vom Host-Computer verwendet werden. Um es auf dem Host-Computer verwenden zu können, muss es zuvor von der virtuellen Maschine getrennt werden. Verwenden Sie dafür die Statusleiste der virtuellen Maschine.</p>
+<p class="bodytext">Wenn Sie zwei virtuelle Maschinen miteinander verbinden möchten, müssen Sie einen seriellen Port erstellen, der auf beiden virtuellen Maschinen von einem Socket emuliert wird. Die Namen dieser seriellen Ports müssen identisch sein. Die Verbindung zwischen den virtuellen Maschinen über serielle Ports ist bidirektional. Das heißt, dass die Arbeitsmodi der Sockets, die beim Erstellen des Ports festgelegt wurden, zu einem späteren Zeitpunkt im Bereich <strong class="specialbold">Serieller Port</strong> geändert werden können.</p>
+<p class="bodytext">Wenn Sie die Leistung der virtuellen Maschine protokollieren oder ihre Daten aufzeichnen müssen und diese Informationen zu einem späteren Zeitpunkt verwenden möchten, können Sie den seriellen Port der virtuellen Maschine mit einer Ausgabedatei auf dem physischen Server verbinden. So können sie den Verlauf der Aktivitäten der virtuellen Maschine jederzeit anzeigen und analysieren, indem Sie sich diese Datei ansehen.</p>
+<p class="bodytext">Mit dem Assistenten Hardware hinzufügen können Sie einen neuen seriellen Port zur virtuellen Maschine hinzufügen. Eine Anleitung zum Erstellen von seriellen Ports finden Sie unter <strong class="specialbold"><a id="h30518" class="jumptemplate" title="Hinzufügen und Entfernen von Geräten" href="30297.htm" target="_self">Geräte hinzufügen und entfernen</a></strong>.</p>
+<p class="note"><strong class="buttons">Hinweis</strong>: Sie können bis zu vier serielle Ports mit einer virtuellen Maschine verbinden.        </p>
+<p class="bodytext">          <img src="pd_ce_serialport.gif" alt="Optionen für den seriellen Port" height="390" width="556" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Wählen Sie die Option <strong class="specialbold">Verbunden</strong>, wenn dieser serieller Port beim Starten der virtuellen Maschine verbunden sein soll.</p>
+<p class="bodytext">In dem Feld <strong class="specialbold">Quelle</strong> geben Sie das Quell-Gerät an, dass diesen parallelen Port emuliert. Serielle Ports können von folgenden Geräten emuliert werden:</p>
+<ul class="listbullet"><li class="listbullet"><strong class="specialbold">Echter Port</strong>: Wählen Sie diese Option, um den seriellen Port der virtuellen Maschine mit einem der vorhandenen seriellen Ports auf dem Host-Computer zu verbinden. In diesem Fall müssen Sie den entsprechenden Port auf dem Host-Computer in der Liste <strong class="specialbold">Serieller Port</strong> auswählen.</li><li class="listbullet"><strong class="specialbold">Socket</strong>. Wählen Sie diese Option, um zwei virtuelle Maschinen über Sockets zu verbinden. Wenn Sie die virtuelle Maschine mit einem Socket verbinden, können Sie den Standardpfad zum Socket verwenden oder einen neuen Pfad in das Feld <strong class="specialbold">Socket</strong> eingeben. Außerdem können Sie die Rolle der virtuellen Maschine in der Verbindung konfigurieren. Wählen Sie dazu die gewünschte Rolle in der Liste <strong class="specialbold">Modus</strong> aus. Wenn Sie <strong class="specialbold">Server</strong> wählen, können Sie die andere virtuelle Maschine mit dieser virtuellen Machine steuern. Wenn Sie <strong class="specialbold">Client</strong> wählen, können Sie diese virtuelle Maschine von der anderen virtuellen Maschine aus steuern.<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn Sie den Socketmodus der ersten virtuellen Maschine ändern, müssen Sie auch den Socketmodus der zweiten virtuellen Maschine ändern.</p>
+</li><li class="listbullet">          <strong class="specialbold">Ausgabedatei</strong>. Wählen Sie diese Option, um den seriellen Port der virtuellen Maschine mit einer Ausgabedatei zu verbinden. Sie können den Standardpfad übernehmen oder einen anderen Pfad in das Feld <strong class="specialbold">Datei</strong> eingeben. Klicken Sie bei Bedarf auf die Taste <strong class="specialbold">Wählen</strong>, um nach der gewünschten Datei zu suchen.        </li></ul><p class="bodytext">          Wenn die Konfiguration der virtuellen Maschine vor weiteren, nicht authorisierten Änderungen geschützt werden soll, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Einstellungen in einem Bereich der Konfiguration der virtuellen Maschine ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30337" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

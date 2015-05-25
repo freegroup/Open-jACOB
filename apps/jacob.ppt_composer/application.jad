@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="ppt_composer" engineVersion="2.7" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="ppt_composerDataSource">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="USER"/>
+    <Role description="" name="ADMIN"/>
+  </Roles>
+  <Tables>
+    <Table datasource="ppt_composerDataSource" dbName="person" name="person">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="photo" history="false" label="Photo" name="photo" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="login_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="ppt_composerDataSource" dbName="account" name="account">
+      <Field dbName="pkey" history="false" label="Pkey" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Loginname" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Fullname" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Password" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="ppt_composerDataSource" dbName="ppt" historyField="history" name="ppt" representativeField="name">
+      <Field dbName="pkey" history="false" label="%PPT.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="true" label="%PPT.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="true" label="%PPT.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="document_en" history="true" label="%PPT.DOCUMENT_EN" name="document_en" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="changedate_en" history="false" label="%PPT.CHANGEDATE_EN" name="changedate_en" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="thumbnail_en" history="false" label="%PPT.THUMBNAIL_EN" name="thumbnail_en" readonly="true" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="thumbnail_en_small" history="true" label="%PPT.THUMBNAIL_EN_SMALL" name="thumbnail_en_small" readonly="true" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="document_de" history="true" label="%PPT.DOCUMENT_DE" name="document_de" readonly="false" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="changedate_de" history="false" label="%PPT.CHANGEDATE_DE" name="changedate_de" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="thumbnail_de" history="false" label="%PPT.THUMBNAIL_DE" name="thumbnail_de" readonly="true" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="thumbnail_de_small" history="false" label="%PPT.THUMBNAIL_DE_SMALL" name="thumbnail_de_small" readonly="true" required="false">
+        <Document/>
+      </Field>
+      <Field dbName="master_language" history="true" label="%PPT.MASTER_LANGUAGE" name="master_language" readonly="false" required="false">
+        <Enumeration>
+          <Default>Deutsch</Default>
+          <Value>English</Value>
+          <Value>Deutsch</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="history" history="false" label="%PPT.HISTORY" name="history" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="changedate" history="false" label="%PPT.CHANGEDATE" name="changedate" readonly="true" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="changedate_thumbnail" history="false" label="%PPT.CHANGEDATE_THUMBNAIL" name="changedate_thumbnail" readonly="true" required="false">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="ppt_composerDataSource" dbName="composition" historyField="history" name="composition" representativeField="name">
+      <Field dbName="pkey" history="false" label="%COMPOSITION.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="true" label="%COMPOSITION.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="description" history="true" label="%COMPOSITION.DESCRIPTION" name="description" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <Field dbName="history" history="false" label="%COMPOSITION.HISTORY" name="history" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="ppt_composerDataSource" dbName="ppt_to_composition" name="ppt_to_composition" representativeField="label">
+      <Field dbName="pkey" history="false" label="%PPT_TO_COMPOSITION.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="label" history="false" label="%PPT_TO_COMPOSITION.LABEL" name="label" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="250" searchMode="unbound"/>
+      </Field>
+      <Field dbName="ppt_key" history="false" label="%PPT_TO_COMPOSITION.PPT_KEY" name="ppt_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="composition_key" history="false" label="%PPT_TO_COMPOSITION.COMPOSITION_KEY" name="composition_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="index" history="false" label="%PPT_TO_COMPOSITION.INDEX" name="index" readonly="false" required="false">
+        <Integer autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="ppt_FKey">
+        <Field>ppt_key</Field>
+      </ForeignKey>
+      <ForeignKey name="composition_FKey">
+        <Field>composition_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="person" table="person"/>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="ppt" table="ppt"/>
+    <TableAlias name="composition" table="composition"/>
+    <TableAlias name="ppt_recreate" table="ppt">
+      <Condition>ppt_recreate.changedate_thumbnail &lt; ppt_recreate.changedate OR ppt_recreate.changedate_thumbnail is null</Condition>
+    </TableAlias>
+    <TableAlias name="ppt_to_composition" table="ppt_to_composition"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="person" name="personBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="Loginname" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="ppt" name="pptBrowser" type="inform">
+      <Field label="%PPT.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="composition" name="compositionBrowser" type="inform">
+      <Field label="%COMPOSITION.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="ppt_recreate" name="ppt_recreateBrowser" type="inform">
+      <Field label="%PPT.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="ppt_to_composition" name="ppt_to_compositionBrowser" type="inform">
+      <Field label="%PPT_TO_COMPOSITION.INDEX" name="browserIndex" visible="true">
+        <TableField sortOrder="ascending" tableField="index"/>
+      </Field>
+      <Field label="%PPT" name="browserPpt" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="pptBrowser" filldirection="both" foreignAlias="ppt" relationToUse="ppt_ppt_to_composition" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="ppt_to_composition" name="ppt_to_compositionFullBrowser" type="inform">
+      <Field label="%PPT_TO_COMPOSITION.INDEX" name="browserIndex" visible="true">
+        <TableField sortOrder="ascending" tableField="index"/>
+      </Field>
+      <Field label="%PPT_TO_COMPOSITION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%PPT_TO_COMPOSITION.COMPOSITION_KEY" name="browserComposition_key" visible="true">
+        <TableField tableField="composition_key"/>
+      </Field>
+      <Field label="%PPT_TO_COMPOSITION.LABEL" name="browserLabel" visible="true">
+        <TableField tableField="label"/>
+      </Field>
+      <Field label="%PPT_TO_COMPOSITION.PPT_KEY" name="browserPpt_key" visible="true">
+        <TableField tableField="ppt_key"/>
+      </Field>
+      <Field label="%PPT" name="browserPptName" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="pptBrowser" filldirection="both" foreignAlias="ppt" relationToUse="ppt_ppt_to_composition" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+    <Browser alias="ppt_to_composition" name="ppt_to_compositionDocumentBrowser" type="inform">
+      <Field label="%PPT_TO_COMPOSITION.INDEX" name="browserIndex" visible="true">
+        <TableField sortOrder="ascending" tableField="index"/>
+      </Field>
+      <Field label="%PPT_TO_COMPOSITION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%PPT" name="browserPptDocumentDE" visible="true">
+        <TableField tableField="document_de">
+          <Foreign browserToUse="pptBrowser" filldirection="both" foreignAlias="ppt" relationToUse="ppt_ppt_to_composition" relationset="local"/>
+        </TableField>
+      </Field>
+      <Field label="%PPT" name="browserPptDocumentEN" visible="true">
+        <TableField tableField="document_en">
+          <Foreign browserToUse="pptBrowser" filldirection="both" foreignAlias="ppt" relationToUse="ppt_ppt_to_composition" relationset="local"/>
+        </TableField>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="ppt_ppt_to_composition">
+      <OneToMany fromAlias="ppt" toAlias="ppt_to_composition" toKey="ppt_FKey"/>
+    </Relation>
+    <Relation name="composition_ppt_to_composition">
+      <OneToMany fromAlias="composition" toAlias="ppt_to_composition" toKey="composition_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="ppt">
+      <Relation>ppt_ppt_to_composition</Relation>
+      <Relation>composition_ppt_to_composition</Relation>
+      <Property>
+        <Name>composition.x</Name>
+        <Value>290</Value>
+      </Property>
+      <Property>
+        <Name>composition.y</Name>
+        <Value>448</Value>
+      </Property>
+      <Property>
+        <Name>ppt.x</Name>
+        <Value>325</Value>
+      </Property>
+      <Property>
+        <Name>ppt.y</Name>
+        <Value>112</Value>
+      </Property>
+      <Property>
+        <Name>ppt_to_composition.x</Name>
+        <Value>262</Value>
+      </Property>
+      <Property>
+        <Name>ppt_to_composition.y</Name>
+        <Value>265</Value>
+      </Property>
+      <Property>
+        <Name>ppt_to_composition.expanded</Name>
+        <Value>false</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="%FORM.USER" name="user">
+      <Group alias="person" border="false" browser="personBrowser" label="Person" name="personGroup">
+        <Dimension height="361" width="650" x="5" y="5"/>
+        <GuiElement name="personStaticImage" visible="true">
+          <StaticImage src="form_user.png">
+            <Dimension height="64" width="64" x="5" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="personLoginname" tabIndex="2" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="149"/>
+              <Caption halign="left" label="Loginname" valign="top">
+                <Dimension height="20" width="70" x="5" y="130"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personFullname" tabIndex="1" visible="true">
+          <LocalInputField tableField="fullname">
+            <TextInput>
+              <Dimension height="20" width="200" x="5" y="105"/>
+              <Caption halign="left" label="Fullname" valign="top">
+                <Dimension height="20" width="70" x="5" y="86"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPhoto" visible="true">
+          <LocalInputField tableField="photo">
+            <Image inForm="true">
+              <Dimension height="211" width="200" x="235" y="105"/>
+              <Caption halign="left" label="Photo" valign="top">
+                <Dimension height="20" width="70" x="235" y="86"/>
+              </Caption>
+            </Image>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personPassword" tabIndex="3" visible="true">
+          <LocalInputField tableField="password">
+            <PasswordInput>
+              <Dimension height="20" width="200" x="5" y="195"/>
+              <Caption halign="left" label="Password" valign="top">
+                <Dimension height="20" width="70" x="5" y="176"/>
+              </Caption>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="personButtonBar" visible="true">
+          <FlowLayoutContainer orientation="vertical">
+            <Dimension height="212" width="151" x="460" y="105"/>
+            <GuiElement name="personSearchUpdateRecordButton" tabIndex="4" visible="true">
+              <Button label="%BUTTON_COMMON_SEARCH">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="personClearGroupButton" tabIndex="5" visible="true">
+              <Button label="%BUTTON_COMMON_CLEAR">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <ClearGroup/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.person.PersonDeleteRecordButton" name="personDeleteRecordButton" tabIndex="6" visible="true">
+              <Button label="%BUTTON_COMMON_DELETE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <DeleteRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement name="personNewRecordButton" tabIndex="7" visible="true">
+              <Button label="%BUTTON_COMMON_NEW">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <NewRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+          </FlowLayoutContainer>
+        </GuiElement>
+        <GuiElement name="personLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="%HEADER.FORM_USER" valign="top">
+              <Dimension height="30" width="311" x="80" y="5"/>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="personStyledText" visible="true">
+          <StyledText i18nkey="%HELP.FORM_USER">
+            <Dimension height="47" width="536" x="80" y="35"/>
+          </StyledText>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Ppt" label="%FORM.PPT" name="ppt">
+      <Group alias="ppt" border="false" browser="pptBrowser" label="%GROUP.PPT" name="pptGroup">
+        <Dimension height="741" width="781" x="0" y="0"/>
+        <GuiElement name="pptStaticImage" visible="true">
+          <StaticImage src="form_ppt.png">
+            <Dimension height="64" width="64" x="5" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="pptName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="336" x="5" y="125"/>
+              <Caption halign="left" label="%PPT.NAME" valign="top">
+                <Dimension height="20" width="180" x="5" y="106"/>
+                <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="pptMaster_language" visible="true">
+          <LocalInputField tableField="master_language">
+            <ComboBox>
+              <Dimension height="20" width="150" x="5" y="170"/>
+              <Value>English</Value>
+              <Value>Deutsch</Value>
+              <Caption halign="left" label="%PPT.MASTER_LANGUAGE" valign="top">
+                <Dimension height="20" width="156" x="5" y="151"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="pptContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="441" width="533" x="5" y="225"/>
+            <Pane alias="ppt" browser="pptBrowser" label="%PPT.TAB.GERMAN" name="pptGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement eventHandler="jacob.event.ui.ppt.PptUploadDEButton" name="pptUploadDEButton" visible="true">
+                <Button label="%BUTTON_UPLOAD">
+                  <Dimension height="20" width="120" x="390" y="15"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="pptChangedate_de2" visible="true">
+                <Label tableField="changedate_de">
+                  <Caption halign="right" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="338" x="12" y="37"/>
+                    <Font family="sans-serif" size="6" style="italic" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="pptDocumentDE" visible="true">
+                <LocalInputField tableField="document_de">
+                  <DocumentInput>
+                    <Dimension height="20" width="340" x="10" y="15"/>
+                  </DocumentInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="pptThumbnail_de" visible="true">
+                <LocalInputField tableField="thumbnail_de">
+                  <Image inForm="true">
+                    <Dimension height="340" width="500" x="10" y="70"/>
+                  </Image>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="ppt" browser="pptBrowser" label="%PPT.TAB.ENGLISH" name="pptGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement eventHandler="jacob.event.ui.ppt.PptUploadENButton" name="pptUploadENButton" visible="true">
+                <Button label="%BUTTON_UPLOAD">
+                  <Dimension height="20" width="120" x="390" y="15"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="pptChangedate_en" visible="true">
+                <Label tableField="changedate_en">
+                  <Caption halign="right" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="340" x="10" y="37"/>
+                    <Font family="sans-serif" size="6" style="italic" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="pptDocumentEN" visible="true">
+                <LocalInputField tableField="document_en">
+                  <DocumentInput>
+                    <Dimension height="20" width="340" x="10" y="15"/>
+                  </DocumentInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="pptThumbnail_en" visible="true">
+                <LocalInputField tableField="thumbnail_en">
+                  <Image inForm="true">
+                    <Dimension height="340" width="500" x="10" y="70"/>
+                  </Image>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <GuiElement name="pptButtonBar" visible="true">
+          <FlowLayoutContainer orientation="vertical">
+            <Dimension height="102" width="171" x="365" y="125"/>
+            <GuiElement eventHandler="jacob.event.ui.ppt.PptSearchUpdateRecordButton" name="pptSearchUpdateRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_SEARCH">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <SearchUpdateRecord changeUpdate="false" filldirection="backward" relationset="default" safeMode="false"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.ppt.PptDeleteRecordButton" name="pptDeleteRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_DELETE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <DeleteRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.ppt.PptNewRecordButton" name="pptNewRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_NEW">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <NewRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+          </FlowLayoutContainer>
+        </GuiElement>
+        <GuiElement name="pptLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="%HEADER.FORM_PPT" valign="top">
+              <Dimension height="30" width="401" x="80" y="5"/>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="pptStyledText" visible="true">
+          <StyledText i18nkey="%HELP.FORM_PPT">
+            <Dimension height="57" width="458" x="80" y="34"/>
+          </StyledText>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Composition" label="%FORM.COMPOSITION" name="composition">
+      <Group alias="composition" border="false" browser="compositionBrowser" label="%GROUP.COMPOSITION" name="compositionGroup">
+        <Dimension height="641" width="686" x="0" y="0"/>
+        <GuiElement name="compositionStaticImage" visible="true">
+          <StaticImage src="form_composition.png">
+            <Dimension height="69" width="64" x="5" y="5"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="compositionName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="419" x="5" y="126"/>
+              <Caption halign="left" label="%COMPOSITION.NAME" valign="top">
+                <Dimension height="20" width="173" x="5" y="107"/>
+                <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="compositionDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="166" width="419" x="5" y="170"/>
+              <Caption halign="left" label="%COMPOSITION.DESCRIPTION" valign="top">
+                <Dimension height="20" width="208" x="5" y="150"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="compositionButtonBar" visible="true">
+          <FlowLayoutContainer orientation="vertical">
+            <Dimension height="231" width="141" x="445" y="126"/>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionSearchUpdateRecordButton" name="compositionSearchUpdateRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_SEARCH">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <SearchUpdateRecord changeUpdate="false" filldirection="both" relationset="default" safeMode="false"/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionComposeButton" name="compositionComposeButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMPOSE_PPT">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <RecordSelected/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionDeleteRecordButton" name="compositionDeleteRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_DELETE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <DeleteRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionNewRecordButton" name="compositionNewRecordButton" visible="true">
+              <Button halign="left" label="%BUTTON_COMMON_NEW">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <NewRecord/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionMergeDEButton" name="compositionMergeDEButton" visible="true">
+              <Button halign="left" label="%BUTTON_MERGE_DE">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <RecordSelected/>
+                </Action>
+              </Button>
+            </GuiElement>
+            <GuiElement eventHandler="jacob.event.ui.composition.CompositionMergeENButton" name="compositionMergeENButton" visible="true">
+              <Button halign="left" label="%BUTTON_MERGE_EN">
+                <Dimension height="0" width="0" x="0" y="0"/>
+                <Action>
+                  <RecordSelected/>
+                </Action>
+              </Button>
+            </GuiElement>
+          </FlowLayoutContainer>
+        </GuiElement>
+        <GuiElement name="compositionLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="%HEADER.FORM_COMPOSITION" valign="top">
+              <Dimension height="30" width="426" x="80" y="5"/>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="compositionStyledText" visible="true">
+          <StyledText i18nkey="%HELP.FORM_COMPOSITION">
+            <Dimension height="43" width="506" x="80" y="35"/>
+          </StyledText>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain canCollapse="false" name="workspace" title="%DOMAIN.WORKSPACE" visible="true">
+      <Form>ppt</Form>
+      <Form>composition</Form>
+    </Domain>
+    <Domain canCollapse="false" name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>user</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="ppt_composer" title="ppt_composer Application">
+      <Domain>workspace</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

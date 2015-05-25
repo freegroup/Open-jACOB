@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema targetNamespace="urn:www-smctts-de-schemas:ttsjob" elementFormDefault="qualified" xmlns="urn:www-smctts-de-schemas:ttsjob" 		    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:element name="TTSEnvelope" type="TTSEnvelopeType"></xsd:element>
+	<xsd:complexType name="TTSEnvelopeType">
+		<xsd:sequence>
+			<xsd:element name="Header" type="HeaderType" />
+			<xsd:element name="Body" type="BodyType" />
+		</xsd:sequence>
+		<xsd:attribute name="ttl" type="xsd:byte" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="HeaderType">
+		<xsd:sequence>
+			<xsd:element name="Src" type="EndpointTypeSrc" />
+			<xsd:element name="Dest" type="EndpointTypeDest" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="EndpointTypeSrc">
+		<xsd:sequence>
+			<xsd:element name="Host" type="xsd:string" />
+			<xsd:element name="Description" type="xsd:string" />
+			<xsd:element name="Agent" type="xsd:string" />		
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="EndpointTypeDest">
+		<xsd:sequence>
+			<xsd:element name="Host" type="xsd:string" />
+			<xsd:element name="Description" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="BodyType">
+		<xsd:sequence>
+			<xsd:element name="Job" type="JobType" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="JobType">
+		<xsd:all>
+			<xsd:element name="ObjectID" type="xsd:string"  minOccurs="1" />
+			<xsd:element name="Instance" type="xsd:string"  minOccurs="1"  />
+			<xsd:element name="MaintenanceGroup" type="xsd:string"   minOccurs="1" />
+			<xsd:element name="TimeStamp" type="xsd:dateTime"  minOccurs="1"  />
+			<xsd:element name="MessageText" type="xsd:string"  />
+			<xsd:element name="Activity" type="ActivityTypeEnum" />
+		</xsd:all>
+		<xsd:attribute name="event" type="EventTypeEnum" use="required" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="ActivityTypeEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="1023" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="EventTypeEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="come" />
+			<xsd:enumeration value="gone" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>

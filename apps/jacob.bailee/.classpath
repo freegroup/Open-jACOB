@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="build/core.jar"/>
+	<classpathentry kind="lib" path="build/axis.jar"/>
+	<classpathentry kind="lib" path="build/pop3.jar"/>
+	<classpathentry kind="lib" path="build/dte.jar"/>
+	<classpathentry kind="lib" path="build/mail.jar"/>
+	<classpathentry kind="lib" path="build/smtp.jar"/>
+	<classpathentry kind="lib" path="build/activation.jar"/>
+	<classpathentry kind="lib" path="build/saaj.jar"/>
+	<classpathentry kind="lib" path="build/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="lib" path="build/chart-engine.jar"/>
+	<classpathentry kind="lib" path="build/mailapi.jar"/>
+	<classpathentry kind="lib" path="build/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="build/engine.jar"/>
+	<classpathentry kind="lib" path="build/imap.jar"/>
+	<classpathentry kind="lib" path="build/commons-io-1.3.2.jar"/>
+	<classpathentry kind="lib" path="build/oda.jar"/>
+	<classpathentry kind="lib" path="build/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="build/birt-oda.jar"/>
+	<classpathentry kind="lib" path="build/flute.jar"/>
+	<classpathentry kind="lib" path="build/axis-ant.jar"/>
+	<classpathentry kind="lib" path="build/jacobBase.jar" sourcepath="/home/andherz/workspace/openjacob.engine/java"/>
+	<classpathentry kind="lib" path="build/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="build/sac.jar"/>
+	<classpathentry kind="lib" path="build/odaconsumer-helper.jar"/>
+	<classpathentry kind="lib" path="lib/jacobRule.jar"/>
+	<classpathentry kind="lib" path="lib/PDFRenderer.jar"/>
+	<classpathentry kind="lib" path="lib/core-renderer-minimal.jar"/>
+	<classpathentry kind="lib" path="lib/core-renderer.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-xerces-2.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/ICOReader-1.04.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_DialPrefix" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="dialprefix"/>
+            <parameter name="cityName"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="city">
+					<question pattern="die\s+([ßäöüa-z -.]+)\s+vorwa\w*[?!]*"                          defaultAnswer="Keine Ahnung"/>
+
+					<question pattern="vorwahl\s+von[\s:]+([ßäöüa-z -.]+)[?!]*"                         defaultAnswer="Keine Ahnung"/>
+					<question pattern="die\s+vorwahl\s+von[\s:]+([ßäöüa-z -.]+)[?!]*"                  defaultAnswer="Keine Ahnung"/>
+					<question pattern="kennst\sdu\\+die\s+vorwahl\s+von[\s:]+([ßäöüa-z -.]+)[?!]*"    defaultAnswer="Keine Ahnung"/>
+					<question pattern="wie\s+lautet\s+die\s+vorwahl\s+von[\s:]+([ßäöüa-z -.]+)[?!]*" defaultAnswer="Keine Ahnung"/>
+
+					<question pattern="vorwahl[\s:]+([ßäöüa-z -.]+)[?!]*"                                defaultAnswer="Keine Ahnung"/>
+					<question pattern="die\s+vorwahl\s+([ßäöüa-z -.]+)[?!]*"                            defaultAnswer="Keine Ahnung"/>
+					<question pattern="wie\s+lautet\s+die\s+vorwahl\s+([ßäöüa-z -.]+)[?!]*"           defaultAnswer="Keine Ahnung"/>
+					<question pattern="kennst\s+du\s+die\s+vorwahl\s+([ßäöüa-z -.]+)[?!]*"            defaultAnswer="Keine Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="city">
+				<forward toNode="start">
+					<question pattern="falsch\s*[!]*"              defaultAnswer="Echt?! Schade, wir werden versuchen es beim nächsten mal besser zu machen"/>
+					<question pattern="nicht\s+schlecht\s*[!]*"   defaultAnswer="Gern geschehen."/>
+					<question pattern="super[!]*"                   defaultAnswer="Gern geschehen."/>
+					<question pattern="danke[!]*"                   defaultAnswer="Gern geschehen."/>
+					<question pattern="ende[?!]*"                   defaultAnswer="ok."/>
+				</forward>
+
+				<forward toNode="repeat">
+					<question pattern="wiederholen?\s*[!]*"                                    defaultAnswer=""/>
+					<question pattern="noch\s*einmal\s*[!]*"                                  defaultAnswer=""/>
+					<question pattern="(das\s+)?(war\s+)(mir\s+)(zu\s+)(schnell\s*)[!]*"   defaultAnswer=""/>
+				</forward>
+			</node>
+
+			<node name="repeat">
+				<forward toNode="start">
+					<question pattern="falsch\s*[!]*"              defaultAnswer="Echt?! Schade, wir werden versuchen es beim nächsten mal besser zu machen"/>
+					<question pattern="nicht\s+schlecht\s*[!]*"   defaultAnswer="Gern geschehen."/>
+					<question pattern="super[!]*"                   defaultAnswer="Gern geschehen."/>
+					<question pattern="danke[!]*"                   defaultAnswer="Gern geschehen."/>
+					<question pattern="ende[?!]*"                   defaultAnswer="ok."/>
+				</forward>
+
+				<forward toNode="repeat">
+					<question pattern="wiederholen?[!]*"                                        defaultAnswer=""/>
+					<question pattern="noch\s+einmal[!]*"                                      defaultAnswer=""/>
+					<question pattern="(das\s+)?(war\s+)?(mir\s+)?(zu\s+)(schnell\s+)[!]*" defaultAnswer=""/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

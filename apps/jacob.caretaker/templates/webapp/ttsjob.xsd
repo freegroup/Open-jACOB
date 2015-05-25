@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Mike Döring (test) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="ttsjob">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="actorSystem">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="KANA4"/>
+							<xsd:enumeration value="EDVIN"/>
+							<xsd:enumeration value="Warte"/>
+							<xsd:enumeration value="Generic"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="job">
+					<xsd:complexType>
+						<xsd:choice>
+							<xsd:element name="call">
+								<xsd:complexType>
+									<xsd:choice>
+										<xsd:element name="insert" type="callInsertType"/>
+										<xsd:element name="update" type="callUpdateType"/>
+									</xsd:choice>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="task">
+								<xsd:complexType>
+									<xsd:choice>
+										<xsd:element name="insert" type="taskInsertType"/>
+										<xsd:element name="update" type="taskUpdateType"/>
+									</xsd:choice>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:choice>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="callUpdateType">
+		<xsd:all>
+			<xsd:element name="pkey" type="xsd:long">
+				<xsd:annotation>
+					<xsd:documentation>Primary Key der Tabelle call        </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="datemodified" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>Zeitstempel des gewuenschten Updates      </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="externalId" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation> Schluessel im Fremdsystem</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="problem" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Problembeschreibung der Meldung</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="action" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Aktionstext in der Meldung        </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="callstatus" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Staus der Meldung im TTS</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Rückruf"/>
+						<xsd:enumeration value="Durchgestellt"/>
+						<xsd:enumeration value="AK zugewiesen"/>
+						<xsd:enumeration value="Fehlgeroutet"/>
+						<xsd:enumeration value="Verworfen"/>
+						<xsd:enumeration value="Angenommen"/>
+						<xsd:enumeration value="Fertig gemeldet"/>
+						<xsd:enumeration value="Fertig akzeptiert"/>
+						<xsd:enumeration value="Dokumentiert"/>
+						<xsd:enumeration value="Geschlossen"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="warrentystatus" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Staus der Gewährleistungsüberprüfung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="überprüfen"/>
+						<xsd:enumeration value="verfolgen"/>
+						<xsd:enumeration value="nicht verfolgen"/>
+						<xsd:enumeration value="wird verfolgt"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="notslrelevant" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:long">
+						<xsd:enumeration value="0"/>
+						<xsd:enumeration value="1"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="priority" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PrioritÃ¤t der Meldung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="1-Normal"/>
+						<xsd:enumeration value="2-Kritisch"/>
+						<xsd:enumeration value="3-Produktion"/>
+						<xsd:enumeration value="4-Notfall"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="callInsertType">
+		<xsd:all>
+			<xsd:element name="datemodified" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>Zeitstempel des gewuenschten Inserts      </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="externalId" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation> Schluessel im Fremdsystem</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="20"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="problem">
+				<xsd:annotation>
+					<xsd:documentation>Problembeschreibung der Meldung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="240"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="action" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Aktionstext in der Meldung        </xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="240"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="callstatus">
+				<xsd:annotation>
+					<xsd:documentation>Staus der Meldung im TTS</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Rückruf"/>
+						<xsd:enumeration value="Durchgestellt"/>
+						<xsd:enumeration value="AK zugewiesen"/>
+						<xsd:enumeration value="Fehlgeroutet"/>
+						<xsd:enumeration value="Verworfen"/>
+						<xsd:enumeration value="Angenommen"/>
+						<xsd:enumeration value="Fertig gemeldet"/>
+						<xsd:enumeration value="Fertig akzeptiert"/>
+						<xsd:enumeration value="Dokumentiert"/>
+						<xsd:enumeration value="Geschlossen"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="warrentystatus" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Staus der Gewaehrleistungsueberpruefung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="überprüfen"/>
+						<xsd:enumeration value="verfolgen"/>
+						<xsd:enumeration value="nicht verfolgen"/>
+						<xsd:enumeration value="wird verfolgt"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="priority" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Prioritaet der Meldung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="1-Normal"/>
+						<xsd:enumeration value="2-Kritisch"/>
+						<xsd:enumeration value="3-Produktion"/>
+						<xsd:enumeration value="4-Notfall"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="categorycall" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schluessel zum Gewerk</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="process_key" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schluessel der Tätigkeit</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="objectID" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schluessel des Objektes in der EDVIN Instanz</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="instance" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name der EDVIN instanz ENDVIN/APA</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="workgroupcall" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schluessel  des AK</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="workgroup_name" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name des AKs</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="object_key" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schlüssel zum Object</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="agentcall" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schlüssel zu Agent</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="employeecall" type="xsd:long" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Schlüssel zum Melder</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="callbackmethod">
+				<xsd:annotation>
+					<xsd:documentation>Rückrufart an den Melder</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Keine"/>
+						<xsd:enumeration value="SMS"/>
+						<xsd:enumeration value="Telefon"/>
+						<xsd:enumeration value="Email"/>
+						<xsd:enumeration value="FAX"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="problemtext" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Langtextbeschreibung für Doku/Lsg</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="location" minOccurs="0"/>
+			<xsd:element name="notslrelevant" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:long">
+						<xsd:enumeration value="0"/>
+						<xsd:enumeration value="1"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="taskInsertType">
+		<xsd:all>
+			<xsd:element name="priority" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Prioritaet des Auftrages</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="1-Normal"/>
+						<xsd:enumeration value="2-Kritisch"/>
+						<xsd:enumeration value="3-Produktion"/>
+						<xsd:enumeration value="4-Notfall"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="summary" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Beschreibung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1000"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="taskstatus" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Status des Auftrags</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Neu"/>
+						<xsd:enumeration value="Angelegt"/>
+						<xsd:enumeration value="Freigegeben"/>
+						<xsd:enumeration value="Storniert"/>
+						<xsd:enumeration value="In Arbeit"/>
+						<xsd:enumeration value="Fertig gemeldet"/>
+						<xsd:enumeration value="Dokumentiert"/>
+						<xsd:enumeration value="Abgerechnet"/>
+						<xsd:enumeration value="Abgeschlossen"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="callinsert" type="callInsertType">
+				<xsd:annotation>
+					<xsd:documentation>notwendige Meldung fuer den Auftrag</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="taskUpdateType">
+		<xsd:all>
+			<xsd:element name="priority" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Prioritaet des Auftrags</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="1-Normal"/>
+						<xsd:enumeration value="2-Kritisch"/>
+						<xsd:enumeration value="3-Produktion"/>
+						<xsd:enumeration value="4-Notfall"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="summary" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Beschreibung</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1000"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="taskno">
+				<xsd:annotation>
+					<xsd:documentation>Auftragsnummer</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="20"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="taskstatus" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Auftragsstatus</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Neu"/>
+						<xsd:enumeration value="Angelegt"/>
+						<xsd:enumeration value="Freigegeben"/>
+						<xsd:enumeration value="Storniert"/>
+						<xsd:enumeration value="In Arbeit"/>
+						<xsd:enumeration value="Fertig gemeldet"/>
+						<xsd:enumeration value="Dokumentiert"/>
+						<xsd:enumeration value="Abgerechnet"/>
+						<xsd:enumeration value="Abgeschlossen"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:element name="location">
+		<xsd:annotation>
+			<xsd:documentation>Ort nach Faplisnotation</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="baxis_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="building_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="buildingpart_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="buildpartobj_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="description" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="120"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="floor_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="gdsbaxis_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="gdszaxis_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="note" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="orientation" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="N"/>
+							<xsd:enumeration value="NO"/>
+							<xsd:enumeration value="O"/>
+							<xsd:enumeration value="SO"/>
+							<xsd:enumeration value="S"/>
+							<xsd:enumeration value="SW"/>
+							<xsd:enumeration value="W"/>
+							<xsd:enumeration value="NW"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="plane_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="room_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="site_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="sitepart_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="zaxis_key" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="32"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

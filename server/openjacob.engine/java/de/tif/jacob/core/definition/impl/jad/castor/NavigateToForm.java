@@ -1,0 +1,134 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 0.9.5.3</a>, using an XML
+ * Schema.
+ * $Id$
+ */
+
+package de.tif.jacob.core.definition.impl.jad.castor;
+
+  //---------------------------------/
+ //- Imported classes and packages -/
+//---------------------------------/
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.Writer;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.ContentHandler;
+
+/**
+ * Class NavigateToForm.
+ * 
+ * @version $Revision$ $Date$
+ */
+public class NavigateToForm implements java.io.Serializable {
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * Field _formName
+     */
+    private java.lang.String _formName;
+
+
+      //----------------/
+     //- Constructors -/
+    //----------------/
+
+    public NavigateToForm() {
+        super();
+    } //-- de.tif.jacob.core.definition.impl.jad.castor.NavigateToForm()
+
+
+      //-----------/
+     //- Methods -/
+    //-----------/
+
+    /**
+     * Returns the value of field 'formName'.
+     * 
+     * @return the value of field 'formName'.
+     */
+    public java.lang.String getFormName()
+    {
+        return this._formName;
+    } //-- java.lang.String getFormName() 
+
+    /**
+     * Method isValid
+     */
+    public boolean isValid()
+    {
+        try {
+            validate();
+        }
+        catch (org.exolab.castor.xml.ValidationException vex) {
+            return false;
+        }
+        return true;
+    } //-- boolean isValid() 
+
+    /**
+     * Method marshal
+     * 
+     * @param out
+     */
+    public void marshal(java.io.Writer out)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, out);
+    } //-- void marshal(java.io.Writer) 
+
+    /**
+     * Method marshal
+     * 
+     * @param handler
+     */
+    public void marshal(org.xml.sax.ContentHandler handler)
+        throws java.io.IOException, org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, handler);
+    } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'formName'.
+     * 
+     * @param formName the value of field 'formName'.
+     */
+    public void setFormName(java.lang.String formName)
+    {
+        this._formName = formName;
+    } //-- void setFormName(java.lang.String) 
+
+    /**
+     * Method unmarshalNavigateToForm
+     * 
+     * @param reader
+     */
+    public static java.lang.Object unmarshalNavigateToForm(java.io.Reader reader)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        return (de.tif.jacob.core.definition.impl.jad.castor.NavigateToForm) Unmarshaller.unmarshal(de.tif.jacob.core.definition.impl.jad.castor.NavigateToForm.class, reader);
+    } //-- java.lang.Object unmarshalNavigateToForm(java.io.Reader) 
+
+    /**
+     * Method validate
+     */
+    public void validate()
+        throws org.exolab.castor.xml.ValidationException
+    {
+        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+        validator.validate(this);
+    } //-- void validate() 
+
+}

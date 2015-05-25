@@ -1,0 +1,13 @@
+<html xmlns="http://www.w3.org/1999/xhtml"  >
+        <head>
+        <META Http-Equiv="Cache-Control" Content="no-cache">
+        <META Http-Equiv="Pragma" Content="no-cache">
+        <META Http-Equiv="Expires" Content="0">
+        
+        <link   rel="shortcut icon" href="./favicon.gif">    
+        <script type="text/javascript" src="javascript/ie_common.js"></script>
+        <script type="text/javascript" src="javascript/debug.js" ></script>
+        <script type="text/javascript" src="javascript/popupWindow.js" ></script>
+        <script type="text/javascript" src="javascript/autosuggest.js"></script>
+<body scroll="no" onload="layout()">
+    

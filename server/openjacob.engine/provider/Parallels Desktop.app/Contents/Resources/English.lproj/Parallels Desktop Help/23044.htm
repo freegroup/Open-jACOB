@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta name="description" content="You can clone your virtual machine or copy its files manually to back it up." />
+
+<title> Erstellen eines Backups von einer virtuellen Maschine </title>
+<meta name="Keywords" content="Backups von Virtual Machines, Virtual Machine	Backup durchführen" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="27233.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22270.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675146.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Erstellen eines Backups von einer virtuellen Maschine</h2>
+<p class="bodytext">Die meisten Leute denken erst über regelmäßige Backups nach, wenn sie mit ernsthaftem Datenverlust konfrontiert werden. Schützen Sie sich vor derartigem Datenverlust und entwickeln Sie Ihre eigene Backup-Strategie. Bei virtuellen Maschinen können genau wie bei normalen Computern Abstürze vorkommen.</p>
+<p class="bodytext">Anhand einer oder mehrerer der folgenden Methoden können Sie ein Backup Ihrer virtuellen Maschine erstellen:</p>
+<ul class="listbullet"><li class="listbullet">Kopieren Sie die Dateien der virtuellen Maschine manuell.</li><li class="listbullet">Klonen Sie die virtuelle Maschine unter Verwendung des Assistenten <a id="h27332" class="jumptemplate" title="Klonen einer virtuellen Maschine" href="23064.htm" target="_self">Virtuelle Maschine klonen</a>. Geben Sie dem Klon einen aussagekräftigen Namen und sichern Sie ihn an einem eigens für Backups vorgesehenen Speicherort.</li><li class="listbullet">Nehmen Sie die Dateien der virtuellen Maschine in die automatischen Backups von Time Machine auf und bearbeiten Sie dazu in der Konfiguration der virtuellen Maschine die  <strong class="specialbold"><a id="h22498" class="jumptemplate" title="Allgemeine Einstellungen" href="22497.htm" target="_self">Allgemeinen</a></strong><a id="h22498_2" class="jumptemplate" title="Allgemeine Einstellungen" href="22497.htm" target="_self"> Einstellungen</a>.</li><li class="listbullet">Benutzen Sie Programme anderer Hersteller wie z. B. Acronis True Image.</li></ul><p class="subheading">Dateien der virtuellen Maschine kopieren.</p>
+<p class="bodytext">Suchen Sie Ihre virtuelle Maschine im Finder und erstellen Sie eine Backup-Kopie der Datei der virtuellen Maschine (.PVM).</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie in der Liste der <strong class="specialbold">Virtuellen Maschinen von Parallels</strong> mit rechts auf den Namen der virtuellen Maschine und wählen Sie im Kontextmenü <strong class="specialbold">In Finder einblenden</strong>. Gehen Sie im Finder zu dem Ordner, in dem die virtuelle Maschine gesichert ist.</li><li class="listnumber">Suchen Sie die PVM-Datei der virtuellen Maschine.<p class="listnote"><strong class="buttons">Hinweis:</strong> Bei der PVM-Datei handelt es sich um ein Paket mit der Konfigurationsdatei der virtuellen Maschine (.PVS), der virtuellen Festplatten-Datei (.HDD) sowie anderen Dateien. Weitere Informationen über die Dateien von virtuellen Maschinen finden Sie unter<strong class="specialbold"><a id="h22944" class="jumptemplate" title="Parallels virtuelle Maschine" href="22943.htm" target="_self">Virtuelle Maschine von Parallels</a></strong>.</p>
+</li><li class="listnumber">Kopieren Sie die PVM-Datei der virtuellen Maschine an einen sicheren Ort.</li></ol><p class="subheading">Virtuelle Maschine klonen</p>
+<p class="bodytext">Mit dem Assistenten Virtuelle Maschine klonen können Sie einen vollständigen Klon der virtuellen Maschine erstellen. Weitere Informationen finden Sie unter <strong class="specialbold"><a id="h27332_2" class="jumptemplate" title="Klonen einer virtuellen Maschine" href="23064.htm" target="_self">Virtuelle Maschine klonen</a></strong>.</p>
+<p class="subheading">Backup der virtuellen Maschine mit Time Machine</p>
+<p class="bodytext">Wenn Sie das Backup Ihrer virtuellen Maschine mit Time Machine erstellen, wird die PVM-Datei Ihrer virtuellen Machine automatisch in einem Backup mit anderen in Mac OS gesicherten Dateien gespeichert. In diesem Fall werden auch die auf der Festplatte der virtuellen Maschine gespeicherten Dateien gesichert, da die virtuelle Festplatten-Datei (.HDD) in der Paketdatei der virtuellen Maschine (.PVM) enthalten ist.</p>
+<p class="warning"><strong class="buttons">Achtung:</strong> Time Machine-Backups sind nur dann wirklich sicher, wenn die virtuellen Maschinen von Parallels während des Backups angehalten oder in Standby geschaltet wurden.</p>
+<p class="bodytext">Gehen Sie folgendermaßen vor, um bestimmte Dateien aus Windows wiederherzustellen:</p>
+<ol class="listnumber"><li class="listnumber">Suchen Sie die Backup-Kopie der PVM-Datei der virtuellen Maschine.</li><li class="listnumber">Klicken Sie mit rechts auf die Datei und wählen Sie <strong class="specialbold">Paketinhalt zeigen</strong>.</li><li class="listnumber">Klicken Sie im Fenster mit den Inhalten der virtuellen Maschine mit rechts in die virtuelle Festplatten-Datei (.HDD), die normalerweise den Namen <code class="monospace">&lt;VirtuelleMaschineName&gt;.hdd</code> trägt, und wählen Sie <strong class="specialbold">Öffnen mit</strong> &gt; <strong class="specialbold">Parallels Mounter</strong>.</li><li class="listnumber">Mit Parallels Mounter können Sie die Inhalte der Festplatte Ihrer virtuellen Maschine nach den Dateien durchsuchen, die wiederhergestellt werden sollen.</li></ol><p class="bodytext">Weitere Informationen über Parallels Mounter finden Sie unter <strong class="specialbold"><a id="h22902" class="jumptemplate" title="Verwenden von Parallels Mounter" href="30143.htm" target="_self">Parallels Mounter verwenden</a></strong>.</p>
+<p class="subheading">Backup-Programme anderer Hersteller verwenden</p>
+<p class="bodytext">Bei Bedarf können Sie auch jedes andere Backup-Programm eines anderen Herstellers verwenden. Registierte Benutzer von Parallels Desktop können kostenlos Acronis True Image Home benutzen, um Backups der virtuellen Maschinen zu erstellen. Laden Sie dieses Programm im <a class="" title="" href="http://www.parallels.com/en/download/" target="_blank">Parallels Download Center</a> herunter.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30119" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

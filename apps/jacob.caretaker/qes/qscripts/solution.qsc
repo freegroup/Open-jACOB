@@ -1,0 +1,539 @@
+'NAME = "Diagnose"
+'TYPE = 0
+'TEMPLATE = "Sub Diagnose()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       Diagnose
+'Purpose:      Executed when Search needs to be made to Fulcrum Collection
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub Diagnose()
+  Dim iApp As Application
+  Dim iGroup As SGroup
+  Dim txtQuery As String
+
+    On Error GoTo diagnose_error_handler
+    '------------------- GUI ------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+
+    txtQuery = iGroup.GetValue(iGroup.GUIName("problem"))
+
+    'will use default collection from ini file
+    iApp.FTRSearch txtQuery
+    exit sub
+
+diagnose_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "Diagnose error " & CStr(Err) & ": " & Error$, ebCritical
+    Resume Next
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "LinkDocument"
+'TYPE = 0
+'TEMPLATE = "Sub LinkDocument()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       LinkDocument
+'Purpose:      Executed when a marked fulcrum document has to be linked with
+'                               Current Call
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub LinkDocument()
+  Dim iApp As Application
+  Dim iFocus As SFocus
+  Dim iGroup As SGroup
+  Dim iNetwork As DBNetwork
+  Dim iSolnTbl As DBTable
+  Dim iSolnRec As DBRecord
+  Dim iOldRec As DBRecord
+  Dim iNewRec As DBRecord
+  Dim numRecs As Long
+  Dim callId As String
+  Dim solutionId As String
+  Dim docStr As String
+  Dim problemStr As String
+  Dim docId As String
+  Dim docTable As String
+  Dim docType As String
+  Dim docSummary As String
+  Dim DOC_SEP as String
+  Dim SEP_LEN As Integer
+  Dim callMode As Integer
+
+    'Initialize these variables
+    DOC_SEP = "::"
+    SEP_LEN = 2
+
+    On Error GoTo link_error_handler
+    '------------------- GUI ------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+    Set iFocus = iApp.ContextFocus()
+
+    docStr = iApp.FTRGetMarkedDocId()
+    If docStr <> "-1" And docStr <> "" And docStr <> "NULL" Then
+      Dim startPtr As Integer, endPtr As Integer
+
+        'Parse this string with Syntax DocTable::DocId::DocPath::DocSummary::
+        'DocSummary will have PKEY for solution table if DocTable is CQ_DBS
+        startPtr = 1
+        endPtr = InStr(startPtr, docStr, DOC_SEP)
+        docTable = Mid$(docStr, startPtr, endPtr - startPtr)
+
+        startPtr = endPtr + SEP_LEN
+        endPtr = InStr(startPtr, docStr, DOC_SEP)
+        docId = Mid$(docStr, startPtr, endPtr - startPtr)
+
+        startPtr = endPtr + SEP_LEN
+        endPtr = InStr(startPtr, docStr, DOC_SEP)
+        docPath = Mid$(docStr, startPtr, endPtr - startPtr)
+
+        startPtr = endPtr + SEP_LEN
+        endPtr = InStr(startPtr, docStr, DOC_SEP)
+        docType = Mid$(docStr, startPtr, endPtr - startPtr)
+
+        startPtr = endPtr + SEP_LEN
+        endPtr = InStr(startPtr, docStr, DOC_SEP)
+        docSummary = Mid$(docStr, startPtr, endPtr - startPtr)
+    Else
+'!!: iApp.UserMsg
+        iApp.UserMsg "LinkDocument error : Kein Dokument für die Verknüpfung markiert", ebCritical
+        Exit Sub
+    End If
+
+    Set iNetwork = iFocus.Network()
+    Set iSolnTbl = iNetwork.GetTable("solution")
+
+    'Get the Key of the currently selected Call from GUI
+    callId = iGroup.GetValue(iGroup.GUIName("pkey"))
+    If callId = "" Then
+'!!: iApp.UserMsg
+        iApp.UserMsg "LinkDocument error : Keine Meldung zum Dokument selektiert", ebCritical
+        Exit Sub
+    End If
+    problemStr = iGroup.GetValue(iGroup.GUIName("problem"))
+    If problemStr = "" Then
+        problemStr = " " 'Since problem field in solution is a NOT NULL field
+    End If
+    callMode = iGroup.Mode
+
+    'Check and Clear the old link
+    solutionId = iGroup.GetForeignKey("callSolution")
+    If solutionId <> "-1" And solutionId <> "" And solutionId <> "NULL" Then 'Decrease the refcount for its solution record
+        'Get the solution record with the given key value
+        iSolnTbl.QBEClear
+        iSolnTbl.QBESetValue "pkey", solutionId
+        iSolnTbl.Search
+        numRecs = iSolnTbl.RecordCount()
+
+        If numRecs = 1 Then
+            Set iOldRec = iSolnTbl.GetRecord(0)
+            If iOldRec Is  Nothing Then
+'!!: iApp.UserMsg
+                iApp.UserMsg "LinkDocument error : Keinen Lösungsdatensatz gefunden"
+                Exit Sub
+            End If
+            iOldRec.SetValue "refcount", CStr(Val(iOldRec.GetValue("refcount")) - 1)
+            iSolnTbl.Commit
+            Set iOldRec = Nothing
+        End If
+    End If
+
+    'First process the DB Docs, since this already has a record in solution table
+    If docTable = "DB" Then
+        'First get the solution record with the given PKEY
+        iSolnTbl.QBEClear
+        iSolnTbl.QBESetValue "pkey", docSummary 'variable docSummary contains PKEY
+        iSolnTbl.Search
+        numRecs = iSolnTbl.RecordCount()
+
+        If numRecs = 0 Then 'Something Wrong, Should I Create a new one?
+'!!: iApp.UserMsg
+            iApp.UserMsg "LinkDocument error : Keinen Lösungsdatensatz gefunden für KEY <" & docSummary & ">", ebCritical
+            Exit Sub
+        ElseIf numRecs = 1 Then 'Update documentid and refcount
+            Set iOldRec = iSolnTbl.GetRecord(0) 'Must be the first one
+            iOldRec.SetValue "documentid", docTable + "::" + docId
+            iOldRec.SetValue "refcount", CStr(Val(iOldRec.GetValue("refcount")) + 1)
+            iOldRec.SetValue "lastused", "today"
+
+            'Get the Key of this existing record and attach it to the call
+            solutionId = iOldRec.GetKeyValue()
+            docSummary = iOldRec.GetValue("summary")
+            'Commit all the changes made to the tables
+            iSolnTbl.Commit
+
+            If callMode = MODE_FILLED Then
+                iGroup.Change
+                iGroup.SetForeignValue "callSolution", docSummary, solutionId
+                iGroup.Update
+            Elseif callMode = MODE_NEW or callMode = MODE_UPDATE Then
+                iGroup.SetForeignValue "callSolution", docSummary, solutionId
+            End If
+        Else 'Error
+'!!: iApp.UserMsg
+            iApp.UserMsg "LinkDocument error : Mehrere Datensätze mit KEY <" & docSummary & "> gefunden", ebCritical
+            Exit Sub
+        End If
+
+'!!: iApp.UserMsg
+        iApp.UserMsg "Erfolgreich verknüpft", ebInformation
+        Exit Sub	'Done
+    End If
+
+'First check if there is a solution with this ID
+    iSolnTbl.QBEClear
+    iSolnTbl.QBESetValue "documentid", "=" + docTable + "::" + docId
+    iSolnTbl.Search
+    numRecs = iSolnTbl.RecordCount()
+
+    'Replace the current solution with this new solution/Add one more solution
+    If numRecs = 0 Then 'Create a new one
+        Set iNewRec = iSolnTbl.AddRecord
+        iNewRec.SetValue "refcount", 1
+        iNewRec.SetValue "documentid", docTable + "::" + docId
+        iNewRec.SetValue "location", docPath
+        iNewRec.SetValue "summary", docSummary
+        iNewRec.SetValue "problem", problemStr
+        iNewRec.SetValue "type", "FTR Doc"
+        iNewRec.SetValue "lastused", "today"
+        iNewRec.SetValue "datecreated", "today"
+        iNewRec.SetValue "lastmodified", "today"
+
+        'Get the Key of this new record and attach it to the call
+        solutionId = iNewRec.GetKeyValue()
+
+        'Commit all the changes made to the tables
+        iSolnTbl.Commit
+
+        If callMode = MODE_FILLED Then
+            iGroup.Change
+            iGroup.SetForeignValue "callSolution", docSummary, solutionId
+            iGroup.Update
+        Elseif callMode = MODE_NEW or callMode = MODE_UPDATE Then
+            iGroup.SetForeignValue "callSolution", docSummary, solutionId
+        End If
+    ElseIf numRecs = 1 Then 'Update
+        Set iOldRec = iSolnTbl.GetRecord(0) 'Must be the first one
+        iOldRec.SetValue "refcount", CStr(Val(iOldRec.GetValue("refcount")) + 1)
+
+        'Update location and summary, since it may have changed in Fulcrum
+        iOldRec.SetValue "location", docPath
+        iOldRec.SetValue "summary", docSummary
+        If iOldRec.GetValue("problem") = "" Then
+            iOldRec.SetValue "problem", problemStr
+        End If
+        iOldRec.SetValue "type", "FTR Doc"
+        iOldRec.SetValue "lastused", "today"
+
+        'Get the Key of this existing record and attach it to the call
+        solutionId = iOldRec.GetKeyValue()
+        
+        'Commit all the changes made to the tables
+        iSolnTbl.Commit
+
+        If callMode = MODE_FILLED Then
+            iGroup.Change
+            iGroup.SetForeignValue "callSolution", docSummary, solutionId
+            iGroup.Update
+        Elseif callMode = MODE_NEW or callMode = MODE_UPDATE Then
+            iGroup.SetForeignValue "callSolution", docSummary, solutionId
+        End If
+    Else 'Error
+'!!: iApp.UserMsg
+        iApp.UserMsg "LinkDocument error : Mehrere Datensätze mit dem Dokument-ID", ebCritical
+        Exit Sub
+    End If
+
+'!!: iApp.UserMsg
+    iApp.UserMsg "Erfolgreich verknüpft", ebInformation
+    Exit Sub
+
+link_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "LinkDocument error " & CStr(Err) & ": " & Error$, ebCritical
+    'Rolls back all the changes made to the solution table
+    If Not iSolnTbl Is Nothing Then
+        iSolnTbl.Clear
+    End If
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ShowDocument"
+'TYPE = 0
+'TEMPLATE = "Sub ShowDocument()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ShowDocument
+'Purpose:      Executed when a linked solution needs to be displayed onto screen
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub ShowDocument()
+  Dim iApp As Application
+  Dim iFocus As SFocus
+  Dim iGroup As SGroup
+  Dim iNetwork As DBNetwork
+  Dim iCallTbl As DBTable
+  Dim iCallRec As DBRecord
+  Dim iRec As DBRecord
+  Dim docStr As String
+  Dim docId As String
+  Dim docTable As String
+  Dim DOC_SEP as String
+  Dim SEP_LEN As Integer
+
+	'Initialize these variables
+	DOC_SEP = "::"
+	SEP_LEN = 2
+
+    On Error GoTo show_error_handler
+    '------------------- GUI ------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+    Set iFocus = iApp.ContextFocus()
+
+    Set iNetwork = iFocus.Network()
+'!!: "call" -> "Meldung"
+'    Set iCallTbl = iNetwork.GetTable("Meldung")
+    Set iCallTbl = iNetwork.GetTable("call")
+
+    ' Get the currently selected call record from the GUI.
+    Set iCallRec = iGroup.GetCurrentRecord
+    if iCallRec is Nothing Then
+'!!: iApp.UserMsg
+        iApp.UserMsg "ShowDocument error : Keine Meldung selektiert, keine Lösung vorhanden", ebCritical
+        Exit Sub
+    End If
+
+    If iCallRec.HasLinkedRecord("solution") Then
+        'Get this Linked Solution Record
+        set iRec = iCallRec.GetLinkedRecord("solution")
+        If iRec is Nothing Then
+'!!: iApp.UserMsg
+    	    iApp.UserMsg "ShowDocument error : Linked Solution Record is deleted from <solution> table", ebCritical
+            Exit Sub
+        End If
+        docStr = iRec.GetValue("documentid")
+        If docStr <> "-1" And docStr <> ""  And docStr <> "NULL" And InStr(docStr, DOC_SEP) <> 0 Then
+          Dim startPtr As Integer, endPtr As Integer
+
+            'Parse this string with Syntax DocTable::DocId
+	    startPtr = 1
+    	    endPtr = InStr(startPtr, docStr, DOC_SEP)
+            docTable = Mid$(docStr, startPtr, endPtr - startPtr)
+
+	    startPtr = endPtr + SEP_LEN
+            docId = Mid$(docStr, startPtr, Len(docStr) - (startPtr - 1))
+	Else
+'!!: iApp.UserMsg
+    	    iApp.UserMsg "ShowDocument error : Kein Dokument ist mit der Lösung verknüpft", ebCritical
+            Exit Sub
+	End If
+    Else 'No Solution is attached to this Call
+'!!: iApp.UserMsg
+        iApp.UserMsg "ShowDocument error : Keine Lösung ist mit der Meldung verknüpft", ebCritical
+        Exit Sub
+    End If
+    'Now show this document on Fulcrum window
+    iApp.FTRDisplay docId, docTable
+    Exit Sub
+
+show_error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "ShowDocument error " & CStr(Err) & ": " & Error$, ebCritical
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "ShowFTRDocument"
+'TYPE = 0
+'TEMPLATE = "Sub ShowFTRDocument()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ShowFTRDocument
+'Purpose:      Executed when a solution record needs to display an FT document
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub ShowFTRDocument()
+  Dim iApp As Application
+  Dim iGroup As SGroup
+  Dim iSolnRec As DBRecord
+  Dim docType As String
+  Dim docStr As String
+  Dim docId As String
+  Dim docTable As String
+  Dim DOC_SEP as String
+  Dim SEP_LEN As Integer
+
+	'Initialize these variables
+	DOC_SEP = "::"
+	SEP_LEN = 2
+
+    On Error GoTo showftr_err_handler
+    '------------------- GUI ------------------------------
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup
+
+    ' Get the currently selected solution record from the GUI.
+    Set iSolnRec = iGroup.GetCurrentRecord
+    if iSolnRec is Nothing Then
+'!!: iApp.UserMsg
+        iApp.UserMsg "ShowFTRDocument error : Kein aktueller Lösungsdatensatz vorhanden.", ebCritical
+        Exit Sub
+    End If
+
+    docType = iSolnRec.GetValue("type")
+    If InStr(docType, "FTR Doc") <> 0 Then
+        docStr = iSolnRec.GetValue("documentid")
+        If docStr <> "-1" And docStr <> "" And docStr <> "NULL" And InStr(docStr, DOC_SEP) <> 0 Then
+	  Dim startPtr As Integer, endPtr As Integer
+
+            'Parse this string with Syntax DocTable::DocId
+            startPtr = 1
+            endPtr = InStr(startPtr, docStr, DOC_SEP)
+            docTable = Mid$(docStr, startPtr, endPtr - startPtr)
+
+            startPtr = endPtr + SEP_LEN
+    	    docId = Mid$(docStr, startPtr, Len(docStr) - (startPtr - 1))
+        Else
+'!!: iApp.UserMsg
+            iApp.UserMsg "ShowFTRDocument error : Lösungsdatensatz zeigt nicht auf ein gültiges FTR Dokument", ebCritical
+            Exit Sub
+        End If
+    Else 'This is not a FTR Document to display
+        iApp.ContextFocus.Message "Das ist kein FTR Dokument"
+        Beep
+        Exit Sub
+    End If
+
+    'Now show this document on Fulcrum window
+    iApp.FTRDisplay docId, docTable
+    Exit Sub
+
+showftr_err_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "ShowFTRDocument error " & CStr(Err) & ": " & Error$, ebCritical
+End Sub
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+']]
+'NAME = "SolutionNew"
+'TYPE = 0
+'TEMPLATE = "Sub SolutionNew()"
+'TEXT = [[
+'****************************************************************************
+'Script:       SolutionNew
+'Purpose:      Business rules that are executed when a solution is entered
+'Copyright:    Quintus Corporation, 1996
+'****************************************************************************
+
+Sub SolutionNew()
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim sToday As String
+
+    Set iApp = GetApp()
+    Set iGroup = iApp.ContextGroup()
+
+    iGroup.SetValue iGroup.GUIName("creator"), iApp.DBUser
+
+    'Set datecreated, datemodified
+    sToday = FormatDate(Now)
+    iGroup.SetValue iGroup.GUIName("datecreated"), sToday
+    iGroup.SetValue iGroup.GUIName("lastmodified"), sToday
+
+End Sub
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+']]
+'NAME = "SolutionUpdate"
+'TYPE = 0
+'TEMPLATE = "Sub SolutionUpdate()"
+'TEXT = [[
+'****************************************************************************
+'SCript:       SolutionUpdate
+'Purpose:      Business rules that are executed when a solution is updated
+'Copyright:    Quintus Corporation, 1996
+'****************************************************************************
+
+Sub SolutionUpdate()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iSolRec As DBRecord
+
+    Set iApp = GetApp()
+    Set iSolRec = iApp.ContextRecord
+   
+'!!: "Published" -> "veröffentlicht"
+    If iSolRec.HasChanged("solnstatus") And _
+        iSolRec.GetValue("solnstatus") = "veröffentlicht" Then
+'    If iSolRec.HasChanged("solnstatus") And _
+'       iSolRec.GetValue("solnstatus") = "Published" Then
+            iSolRec.SetValue "publicationdate", Now
+    End If
+
+    iSolRec.SetValue "lastmodified", Now
+
+    If iSolRec.Mode = MODE_NEW Then
+        iSolRec.SetValue "creator", iApp.DBUser
+
+        'Set datecreated, datemodified
+        iSolRec.SetValue "datecreated", Now
+    End If
+
+
+End Sub
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+']]

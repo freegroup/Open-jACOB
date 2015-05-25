@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written by Eclipse BIRT 2.0 -->
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 1.0.1 Build &lt;20051130-1157></property>
+    <property name="units">in</property>
+    <text-property name="title">Releaselist</text-property>
+    <parameters>
+        <scalar-parameter name="releaseNbr" id="47">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="promptText">Release Number</property>
+            <property name="format">Unformatted</property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">1.0.0</property>
+        </scalar-parameter>
+        <scalar-parameter name="rcsProjectKey" id="50">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="promptText">RCS Project Key</property>
+            <property name="format">Unformatted</property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">1</property>
+        </scalar-parameter>
+        <scalar-parameter name="rcsVersionNbr" id="51">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="promptText">RCS Versionnumber</property>
+            <property name="format">Unformatted</property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">999.000</property>
+        </scalar-parameter>
+        <scalar-parameter name="projectName" id="52">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="promptText">Project name</property>
+            <property name="format">Unformatted</property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">myProject</property>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="qamasterDataSource" id="41">
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://djoser:3306/qm</property>
+            <property name="odaUser">admin</property>
+            <encrypted-property name="odaPassword">YWRtaW4=</encrypted-property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="requestsByBranch" id="42">
+            <property name="dataSource">qamasterDataSource</property>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText + " AND `rcs_branch`.`rcs_project_key`=" + params["rcsProjectKey"] + " AND `rcs_branch`.`versionnbr`<=" + params["rcsVersionNbr"]]]></method>
+            <property name="queryText">SELECT DISTINCT `request`.`pkey`, `rcs_branch`.`version`, `request`.`type`, `request`.`priority`, `request`.`state`, `request`.`subject`, `request`.`description`, `request`.`cust_solution_info`
+FROM `request` 
+INNER JOIN `requestbranch` ON `request`.`pkey`=`requestbranch`.`request_key` 
+INNER JOIN `rcs_branch` ON `rcs_branch`.`pkey`=`requestbranch`.`rcs_branch_key` 
+WHERE `rcs_branch`.`status`='Release' AND `request`.`suspend_from_rellist`=0</property>
+        </oda-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="topMargin">0.75in</property>
+            <property name="bottomMargin">0.75in</property>
+            <property name="rightMargin">1in</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="8">
+            <property name="height">0.333in</property>
+            <property name="width">5.968in</property>
+            <column id="9"/>
+            <row id="10">
+                <property name="height">0.333in</property>
+                <property name="verticalAlign">text-bottom</property>
+                <cell id="11">
+                    <property name="verticalAlign">top</property>
+                    <data id="49">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">larger</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textUnderline">underline</property>
+                        <property name="textAlign">center</property>
+                        <expression name="valueExpr">params["projectName"]+" Release "+params["releaseNbr"]+" Change List"</expression>
+                    </data>
+                </cell>
+            </row>
+        </grid>
+        <table name="table1" id="13">
+            <property name="width">100%</property>
+            <property name="dataSet">requestsByBranch</property>
+            <column id="35">
+                <property name="width">33.3%</property>
+            </column>
+            <header>
+                <row id="14">
+                    <cell id="15">
+                        <label id="43"/>
+                    </cell>
+                </row>
+            </header>
+            <group id="18">
+                <property name="sortDirection">desc</property>
+                <expression name="keyExpr">row["version"]</expression>
+                <header>
+                    <row id="19">
+                        <cell id="20">
+                            <data id="44">
+                                <property name="fontSize">larger</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="marginTop">10pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <expression name="valueExpr">row["version"]</expression>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="23">
+                        <cell id="24"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="27">
+                    <cell id="28">
+                        <data id="45">
+                            <property name="fontSize">medium</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">5pt</property>
+                            <expression name="valueExpr">row["pkey"]+": "+row["subject"]</expression>
+                        </data>
+                        <data id="46">
+                            <expression name="valueExpr">row["cust_solution_info"]</expression>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="31">
+                    <cell id="32"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

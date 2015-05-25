@@ -1,0 +1,68 @@
+<html>
+<style>
+.
+{
+  font-size:10pt;
+}
+.header
+{
+padding-top:40px;
+font-weight:bold;
+color:#000090;
+}
+</style>
+<body>
+<table>
+<tr>
+   <td><img src="help.png"></td>
+   <td><h2 style="color:#000090;padding-top:20px">QBE Schnell&uuml;bersicht</h2></td>
+</tr>
+</table>
+Diese &Uuml;bersicht dient der schnellen Orientierung welche Schl&uuml;sselworte in den Suchmasken eingetragen werden k&ouml;nnen. Eine ausf&uuml;hrliche 
+Beschreibung kann in der <b>QBE Beschreibung</b> nachgelesen werden.
+<br>
+    <table>
+     <tr><td  class="header" colspan="3"> <i>Allgemeine Schl&uuml;lsserworte und Ausr&uuml;cke</i></td><tr>
+     <tr><td>|</td><td>logisches ODER</td><td><b>john|liz</b> oder <b>1|2|6..10</b></td></tr>
+     <tr><td>!</td><td>logisches NICHT</td><td><b>!NULL</b> oder <b>!completed</b>
+     <tr><td>NULL</td><td>Leeres Feld</td><td><b>NULL|new</b> oder <b>!NULL</b>
+    
+     <tr><td  class="header" colspan="3"><i>Schl&uuml;lsserworte und Ausdr&uuml;cke f&uuml;r numerische Felder:</i></td><tr>
+     <tr><td>..</td><td>Intervall</td><td><b>0..100</b></td></tr>
+     <tr><td>&amp;</td><td>logisches UND</td><td><b>!4&amp;!7</b> oder <b>!4&amp;!7&lt;10</b></td></tr>
+     <tr><td>&gt;</td><td>gr&ouml;sser als</td><td><b>&gt;8</b> oder <b>&gt;d</b></td></tr>
+     <tr><td>&gt;=</td><td>gr&ouml;sser oder gleich</td><td><b>&gt;=1.1</b></td></tr>
+     <tr><td>&lt;</td><td>kleiner als</td><td><b>&lt;-4.5</b> oder <b>&lt;0|&gt;10</b></td></tr>
+     <tr><td>&lt;=</td><td>kleiner oder gleich</td><td><b>&lt;=0</b></td></tr>
+    
+     <tr><td  class="header" colspan="3"><i>Schl&uuml;lsserworte und Ausdr&uuml;cke f&uuml;r Textfelder:</i></td><tr>
+     <tr><td>=</td><td>Gleichheit</td><td><b>=completed</b></td></tr>
+     <tr><td>^</td><td>Linksausrichtung</td><td><b>^SELECT</b></td></tr>
+     <tr><td>$</td><td>Rechtsausrichtung</td><td><b>ing$</b></td></tr>
+     <tr><td>&amp;</td><td>logisches UND</td><td><b>error&amp;SQL</b></td></tr>
+     <tr><td>*</td><td>Platzhalter</td><td><b>Bill*ates</b></td></tr>
+     <tr><td>?</td><td>Platzhalter f&uuml;r ein Zeichen</td><td><b>No.???</b></td></tr>
+     <tr><td>"</td><td>Escape Zeiche</td><td><b>"&lt;tag&gt;"</b> (interpret &gt; and &lt; as normal characters)</td></tr>
+    
+     <tr><td  class="header" colspan="3"><i>Schl&uuml;sserworte und Ausdr&uuml;cke f&uuml;r Datumsfelder:</i></td><tr>
+     <tr><td>today</td><td>Datum von heute</td><td><b>&lt;=today-7d</b></td></tr>
+     <tr><td>now</td><td>Datum und Uhrzeit von heute</td><td><b>&gt;now-1h</b></td></tr>
+     <tr><td>.. </td><td>Intervall</td><td><b>now-24h..now</b></td></tr>
+     <tr><td>thisy</td><td>das aktuelle Jahr</td><td><b>thisy</b> oder <b>thisy-7d</b> (previous year range)</td></tr>
+     <tr><td>thisq</td><td>das aktuelle Quartal</td><td><b>thisq</b> oder <b>thisq-3m</b> (previous quarter range)</td></tr>
+     <tr><td>thism</td><td>den aktuellen Monat </td><td><b>thisq</b> oder <b>thisq-1m</b> (previous month range)</td></tr>
+     <tr><td>thisw</td><td>die aktuelle Woche</td><td><b>thisw</b> oder <b>thisw-7d</b> (previous week range)</td></tr>
+     <tr><td>ytd</td><td>vom Jahresanfang bis heute</td><td><b>ytd</b> oder <b>ytd-1y</b> (previous year to date range, e.g. 2004-01-01..2004-05-13)</td></tr>
+     <tr><td>qtd</td><td>vom Quartalsanfang bis heute</td><td><b>qtd</b> oder <b>qtd-3m</b> (previous quarter to date range, e.g. 2004-04-01..2004-06-03)</td></tr>
+     <tr><td>mtd</td><td>vom Monatsanfang bis heute</td><td><b>mtd</b> oder <b>mtd-1m</b> (previous month to date range, e.g. 2004-05-01..2004-05-27)</td></tr>
+     <tr><td>wtd</td><td>vom Wochenanfang bis heute</td><td><b>wtd</b> oder <b>wtd-7d</b> (previous week to date range)</td></tr>
+     <tr><td>weekx</td><td>Kalenderwoche x vom aktuell Jahr</td><td><b>week1</b> oder <b>week1..week10</b></td></tr>
+     <tr><td>[+-]xsec</td><td>add/sub x Sekunden</td><td><b>now-30sec..now</b></td></tr>
+     <tr><td>[+-]xmin</td><td>add/sub x Minuten</td><td><b>now-10min</b></td></tr>
+     <tr><td>[+-]xh</td><td>add/sub x Stunden</td><td><b>now-13h</b></td></tr>
+     <tr><td>[+-]xd</td><td>add/sub x Tage</td><td><b>today-14d</b></td></tr>
+     <tr><td>[+-]xm</td><td>add/sub x Monate</td><td><b>today-3m</b></td></tr>
+     <tr><td>[+-]xy</td><td>add/sub x Jahre</td><td><b>today-1y..today</b></td></tr>
+    </table>     
+   </body>
+</html>

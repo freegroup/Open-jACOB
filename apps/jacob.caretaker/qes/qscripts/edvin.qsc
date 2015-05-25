@@ -1,0 +1,1513 @@
+'NAME = "EDVINResloved"
+'TYPE = 0
+'TEMPLATE = "Sub EDVINResolved()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       RuleServer: EDVINResolved
+'Author:       Mike Döring
+'Purpose:      Scan the tasktable tasks where reloved in EDVIN and change the Status
+'Copyright:    Quartess, 2002
+'*****************************************************************************
+Declare Function CheckTaskDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean
+Declare Function SetAppProfileValue(iNetwork As DBNetwork, sFieldname as String, sValue As String) As Boolean
+
+' global DCO data declaration
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTaskTbl As DBTable
+Dim iTaskRec As DBRecord
+Dim iCallTbl As DBTable
+Dim iCallDupTbl As DBTable
+Dim iCallRec As DBRecord
+Dim iTaskBrowser As DBBrowser
+Dim iCallBrowser As DBBrowser
+
+Public bAutoDocumented As Boolean
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver				
+Dim sLogFile As String
+Dim sLockFile As String
+Dim nLogLevel As Integer
+Dim sInfo As String
+Dim sName As String 
+Dim nError As Long
+Dim sTaskNo As String
+
+' administrator's info
+Dim bAdminEmailOnErrors As Boolean
+Dim sAdminEmailSubject As String
+Dim sAdminEmailAddr As String
+Dim sAdminFullName As String
+Dim nRepeatInterval As Integer
+Dim bNewErrors As Boolean
+Dim LockArray()  As String
+Dim NewLockArray()  As String
+'LockArray(1,x)  : Zeitstempel
+'LockArray(2,x)  : Taskkey
+'LockArray(3,x)  : Fehlerbeschreibung
+'-------------------------------------------------------------------------
+
+' KONSTANTEN
+Const IniFile = "RuleServer.ini"
+Const LOGFILE = "D:\Quintus\EDVIN.log"
+Const LOCKFILE ="D:\Quintus\EDVIN-LOCK.log"
+Const INISection = "EDVIN"
+'-------------------------------------------------------------------------
+
+Sub GetLockInfo(sTable As String )
+Dim nChanel As Integer
+Dim sLine As String 
+
+	If Not FileExists(sLockFile & sTable & ".log") Then
+		ReDim Preserve LockArray(3,0)
+		Exit Sub
+	End If
+	nLineCount = 0
+	nChanel = FreeFile()
+	Open sLockFile & sTable & ".log" For Input Access Read Lock Write As nChanel
+	Do While Not EOF(nChanel)
+		Input nChanel,sLine
+		nLineCount = nLineCount +1
+		ReDim Preserve LockArray(3,nLineCount)
+		LockArray(1,nLineCount)=Item$(sLine,1,1,"|")
+		LockArray(2,nLineCount)=Item$(sLine,2,1,"|")
+		LockArray(3,nLineCount)=Item$(sLine,3,1,"|")
+	Loop
+	Close nChanel
+End Sub
+
+'-------------------------------------------------------------------------
+Sub SetLockInfo(sTable As String)
+Dim nChanel As Integer
+Dim sLine As String 
+
+	nLineCount = 1
+	nChanel = FreeFile()
+	'Open sLockFile For Output Access Write Lock Write As nChanel
+	Open sLockFile  & sTable & ".log" For Output  As nChanel
+	Do While nLineCount <= Ubound(NewLockArray,2)
+		Print # nChanel, NewLockArray(1,nLineCount) & "|" & NewLockArray(2,nLineCount) & "|" & NewLockArray(3,nLineCount)
+		nLineCount = nLineCount +1
+	Loop
+	Close nChanel 
+
+End Sub
+'-------------------------------------------------------------------------
+
+
+Sub WriteLog( nLevel As Integer, sMessage As String )
+Dim sDate As String
+Dim nChanel As Integer
+
+	On Error Resume Next
+	If ( nLevel > nLogLevel ) Then Exit Sub
+	If ( Len( sLogfile ) = 0 ) Then Exit Sub 
+	sDate = CStr( Date() + Time() )
+	nChanel = FreeFile()
+	Open sLogFile For Append Lock Write As nChanel
+	Print # nChanel, "[" & sDate & "] - " & sMessage
+	Close nChanel
+End Sub
+
+'-------------------------------------------------------------------------
+
+
+Sub SendAdminEmail( )
+Dim i As Integer
+	If UBound(NewLockArray,2) < 1 Then Exit Sub 
+	On Error Resume Next ' just to be sure no errors can stop me now
+	sBody = "Folgende Meldungen sind nicht durch die Schnittstelle gegangen:" & Basic.Eoln$ 
+	For i=1 To UBound(NewLockArray,2) 
+ 	  sBody = sBody &  NewLockArray(1,i) & " Auftrag oder Meldung " & " " & NewLockArray(2,i) & " ist nicht speicherbar:  " & NewLockArray(3,i) & Basic.Eoln$
+	Next i	
+	sBody = sBody & Basic.Eoln$ & " vgl. auch " & sLogFile	
+	WriteLog 3, "Email an Administrator: " & sAdminEmailAddr & ": " &  sAdminEmailSubject	
+	bRes =iApp.SendMail( sAdminEmailAddr, sAdminEmailSubject,, sBody)
+	If bRes = True Then
+		WriteLog 3, "gesendet."	
+	Else 
+		WriteLog 3, "nicht gesendet."
+	End If	
+End Sub
+
+'-------------------------------------------------------------------------
+
+Sub LogError( nNumber As Long )
+Dim sMsg As String
+	On Error GoTo logerror_error_handler
+	If nNumber > 0 Then 
+		sMsg = "Error " & CStr( nNumber ) & ": " & Error$( nNumber )
+	Else 
+		sMsg = " Unknown error in Script EDVINResolved"
+	End If
+	WriteLog 0, sMsg
+logerror_error_handler:
+	Exit Sub
+End Sub
+
+'----------------------------------------------------------------
+'----------------------------------------------------------------
+Sub  AddLockArray( sTaskkey As String,  sErrorMsg As String)
+Dim iIndex As Integer
+	iIndex = UBound(NewLockArray,2) +1
+	ReDim Preserve NewLockArray(3,iIndex)
+	NewLockArray(1,iIndex) = CStr(Now())
+	NewLockArray(2,iIndex) = sTaskKey
+	NewLockArray(3,iIndex) = sErrorMsg
+	bNewErrors = True
+End Sub
+
+'----------------------------------------------------------------
+
+Function UpdateTask( sTaskkey As String) As Boolean
+Dim sTaskStatus As String
+Dim sErrorMsg As String	
+Dim bIsDokumented As Boolean
+Dim sErrorText As String
+Dim nREcs As Integer
+	On Error GoTo updatetask_error_handler
+' Status Fertig gemeldet setzen
+	WriteLog 3, "PROZEDUR UpdateTask"
+	iTaskTbl.Clear
+	iTaskTbl.QBEClear
+	iTaskTbl.QBESetValue "resolved_extsystem","Ja"
+	iTaskTbl.QBESetValue "taskstatus","In Arbeit|Fertig gemeldet"
+	iTaskTbl.QBESetValue "pkey", sTaskkey 	
+	iTaskBrowser.Search	 "r_task", 2,True,false
+	nREcs =	iTaskBrowser.RecordCount
+	If nREcs <> 1 Then
+		   WriteLog 3, "Datensatz nicht eindeutig in DB mit pkey: " & sTaskkey
+		   sErrorMsg = "Datensatz nicht eindeutig in DB"	
+		   GoTo	updatetask_error_handler
+	End If
+	Set iTaskRec = iTaskBrowser.GetTableRecord(0,iTaskTbl)
+	' Erst fertig melden
+	sTaskStatus = iTaskRec.GetValue("taskstatus")
+    sTaskNo = iTaskRec.GetValue("taskno")
+	If sTaskStatus = "In Arbeit" Then
+		sErrorMsg = "Datensatz ist gelockt"
+	 	iTaskRec.SetValue "resolved_extsystem","Nein"	
+	 	iTaskRec.SetValue "taskstatus", "Fertig gemeldet"
+	 	WriteLog 1, "Es wurde der Auftrag taskno= " & sTaskNo & " auf 'Fertig gemeldet' gesetzt."
+		sErrorMsg = "Auf 'Fertig gemeldet' setzen ist fehlgeschlagen"
+		bCalledFromRuleServer = True
+	 	iTaskTbl.Commit
+		WriteLog 3, "commit"
+		UpdateTask = True
+	End If
+' über prüfen ob es moglich ist Auftrag zu dokumentieren
+	' Erst fertig melden
+	sTaskStatus = iTaskRec.GetValue("taskstatus")
+	bIsDokumented = CheckTaskDocumented(iApp, iNetwork, iTaskRec, sErrorText)
+	If Not bIsDokumented Then
+		WriteLog 3, "Datensatz ist nicht dokumentiert, weil: " & sErrorText
+	End If	
+	If bIsDokumented And sTaskStatus = "Fertig gemeldet" Then
+		sErrorMsg = "Datensatz ist gelockt"
+	 	iTaskRec.SetValue "resolved_extsystem","Nein"	
+		iTaskRec.SetValue "taskstatus", "Dokumentiert"
+		bCalledFromRuleServer = True
+		WriteLog 1, "Es wurde der Auftrag taskno= " & sTaskNo  & " auf 'Dokumentiert' gesetzt."
+		sErrorMsg = "Auf 'Dokumentiert' setzen fehlgeschlagen"
+		iTaskTbl.Commit
+		WriteLog 3, "commit"
+		UpdateTask = True
+		sErrorMsg = ""
+	End If
+
+	If Not bIsDokumented And sTaskStatus = "Fertig gemeldet" And iTaskRec.GetValue("resolved_extsystem") ="Ja" Then
+		sErrorMsg = "Datensatz ist gelockt"
+	 	iTaskRec.SetValue "resolved_extsystem","Nein"	
+		bCalledFromRuleServer = True
+		WriteLog 1, "Es wurde der Auftrag mit taskno= " & sTaskNo  & " Initialisiert"
+		sErrorMsg = "Initialisierung fehlgeschlagen"
+		iTaskTbl.Commit
+		WriteLog 3, "commit"
+		UpdateTask = True
+		sErrorMsg = ""
+	End If
+
+	bCalledFromRuleServer = False
+	Exit Function
+
+updatetask_error_handler:
+	nError = int(Err.Number)
+	On Error Resume Next
+	LogError nError
+	iTaskTbl.Clear
+	AddLockArray sTaskkey,  sErrorMsg 
+	UpdateTask = False
+End Function
+
+'-------------------------------------------------------------------------
+Function UpdateCall( sCallkey As String) As Boolean
+Dim sCallStatus As String
+Dim sErrorMsg As String	
+Dim bIsDokumented As Boolean
+Dim nRecs As Long
+	On Error GoTo updateCall_error_handler
+' Status Fertig gemeldet setzen
+UpdateCall = True
+	WriteLog 3, "PROZEDUR UpdateCall"
+	bCalledFromRuleServer = True
+	' Erst überprüfen ob offene Untermeldungen
+	iCallTbl.Clear
+	iCallTbl.QBEClear
+    iCallTbl.SetWhere "call.mastercall_key = " & sCallkey & " And  call.callstatus in (0,1,2,3,5)" 
+	iCallTbl.Search	 
+	nREcs =	iCallTbl.RecordCount
+	If nREcs > 0 Then
+		   WriteLog 3, "Datensatz " & sCallkey & " hat offene Untermeldungen " 
+		   UpdateCall=True
+		   AddLockArray sCallkey,  "offene Untermeldungen" 
+		   Exit Function	
+	End If
+	iCallTbl.SetWhere ""
+	iCallTbl.Clear
+	iCallTbl.QBEClear
+	iCallTbl.QBESetValue "opentaskcount","0"
+	iCallTbl.QBESetValue "closedtaskcount",">0"
+	iCallTbl.QBESetValue "callstatus","Angenommen"
+	iCallTbl.QBESetValue "pkey" , sCallKey 
+	iCallBrowser.Search	 "r_call", 2,True,false
+	nREcs =	iCallBrowser.RecordCount
+	If nREcs <> 1 Then
+		   WriteLog 3, "Datensatz " & sCallkey & " ist nicht hat nicht die richtigen Eigenschaften für das fertig melden" 
+		   UpdateCall=False
+		   GoTo updatecall_error_handler
+	End If
+
+	Set iCallRec = iCallBrowser.GetTableRecord(0,iCallTbl)
+	' Erst überprüfen ob offene Untermeldungen
+
+	sCallStatus = iCallRec.GetValue("callstatus")
+	'Msgbox sCallStatus & " " & sCallKey
+	If sCallStatus = "Angenommen" Then
+		sErrorMsg = "Datensatz ist gelockt"
+		bCalledFromRuleServer = True
+	 	iCallRec.SetValue "callstatus", "Fertig gemeldet"
+	 	WriteLog 1, "Es wurde die Meldung " & sCallKey & " auf 'Fertig gemeldet' gesetzt."
+		sErrorMsg = "Auf 'Fertig gemeldet' setzen ist fehlgeschlagen"
+	 	iCallTbl.Commit
+		WriteLog 3, "commit"
+		UpdateCall = True
+	End If
+
+	bCalledFromRuleServer = False
+	Exit Function
+
+updatecall_error_handler:
+	nError = int(Err.Number)
+	On Error Resume Next
+	LogError nError
+	iCallTbl.Clear
+	AddLockArray sCallkey,  sErrorMsg 
+	UpdateCall = False
+End Function
+
+'-------------------------------------------------------------------------
+Function GetIniInfo( sSection, sItem, sDefault ) As String
+Dim sRet As String
+	On Error GoTo getiniinfo_error_handler
+	sRet = ReadIni$( sSection, sItem, IniFile )
+	If sRet <> "" Then
+		GetIniInfo = sRet
+	Else
+		GetIniInfo = sDefault
+	End If
+	Exit Function
+getiniinfo_error_handler:
+	GetIniInfo = sDefault
+End Function
+
+'-------------------------------------------------------------------------
+
+Function CBool( sStr As String ) As Boolean
+	On Error GoTo cbool_error_handler
+	If UCase$( sStr ) = "TRUE" _
+	Or UCase$( sStr ) = "WAHR" Then
+		CBool = True
+		Exit Function
+	End If
+cbool_error_handler:
+	CBool = False
+End Function
+
+'-------------------------------------------------------------------------
+Sub Initialize
+	Set iApp = GetApp ' LogError uses SendEmail, SendEmail uses iApp
+
+	nLogLevel = CInt( GetIniInfo( INISection, "LogLevel","3" ) )
+	sLogFile = GetIniInfo( INISection, "LogFile", LOGFILE)
+	sLockFile = GetIniInfo( INISection, "LockFile", LOCKFILE)
+'*********************************************************************
+'*********************************************************************
+' Korrigieren
+nLogLevel=3
+	sLogFile = LOGFILE
+	sLockFile = LOCKFILE
+	WriteLog 3, "PROZEDUR EDVINResolved"
+	WriteLog 3, "Script Started"
+	sAdminFullName = GetIniInfo( INISection, "sAdminFullName", "Andreas Schwandt" )
+	sAdminEmailAddr = GetIniInfo( INISection, "AdminEmailAddr", "andreas.schwandt@daimlerchrysler.com" )
+	bAdminEmailOnErrors = CBool( GetIniInfo( INISection, "AdminEmailOnErrors", "True" ) )
+	sAdminEmailSubject = GetIniInfo( INISection, "AdminEmailSubject", "QGateway-ERROR: Konnte Aufträge nicht bearbeiten" )
+	nRepeatInterval =  Val( GetIniInfo( INISection, "RepeatInterval", "6" ) )
+	Set iNetwork = iApp.CreateNetwork( "f_call_manage", "f_call_manage" )
+	Set iTaskTbl = iNetwork.GetTable( "task" )
+	Set iCallTbl = iNetwork.GetTable( "call" )
+	Set iCallDupTbl = iNetwork.GetTable( "callduplicate" )
+	Set iCallBrowser = iNetwork.GetBrowser("callAKBrowser")
+	Set iTaskBrowser = iNetwork.GetBrowser("taskBrowser")	
+	ReDim Preserve LockArray(3,0)
+	ReDim Preserve NewLockArray(3,0)
+	bNewErrors = False
+	bAutoDocumented = False
+End Sub
+'-------------------------------------------------------------------------
+Function  ValidKeys(sTable As String) As String
+Dim sList As String
+Dim iIndex As Integer
+Dim i As Integer
+Dim dRepeatDate As Date
+On Error GoTo error_handler
+   sList= ""
+	For i = 1 To UBound(LockArray,2)
+		dRepeatDate = CDate( LockArray(1,i))
+		dRepeatDate = DateAdd("h", nRepeatInterval, dRepeatDate)  ' n= Minute, h = Stunde
+		If dRepeatDate > Now() Then ' diesen Task nicht
+			iIndex = UBound(NewLockArray,2)+1
+			ReDim Preserve NewLockArray(3,iIndex)
+			 NewLockArray(1, iIndex) = LockArray(1, i)
+			 NewLockArray(2, iIndex) = LockArray(2, i)
+			 NewLockArray(3, iIndex) = LockArray(3, i)
+			If sList= "" Then
+			   sList = LockArray(2,i)	
+			Else
+			   sList = sList & "," & LockArray(2,i)	
+			End If
+		End If
+	Next i
+	If sList ="" Then
+		ValidKeys= sTable & ".pkey >0"
+	Else
+		ValidKeys= sTable & ".pkey not in (" & sList & ")"
+	End If
+	Exit Function	  
+Error_handler:
+	WriteLog 1, "Error: Die Funktion ValidKeys konnte nicht ausgeführt werden"	
+	ValidKeys =""
+End Function
+'-------------------------------------------------------------------------
+Sub ClearNetwork
+
+
+		iTaskTbl.Clear
+		iTaskTbl.QBEClear
+ 		iNetwork.GetTable("call").Clear
+ 		iNetwork.GetTable("call").QBEClear
+ 		iNetwork.GetTable("object").Clear
+ 		iNetwork.GetTable("object").QBEClear
+ 		iNetwork.GetTable("ext_system").Clear
+ 		iNetwork.GetTable("ext_system").QBEClear
+ 		iNetwork.GetTable("taskworkgroup").Clear
+ 		iNetwork.GetTable("taskworkgroup").QBEClear
+ 		iNetwork.GetTable("tasktype").Clear
+ 		iNetwork.GetTable("tasktype").QBEClear
+		iTaskBrowser.Clear
+		iCallBrowser.Clear
+Exit Sub
+On Error GoTo error_handler
+Error_handler:
+	WriteLog 1, "Clear Network ist fehlgeschlagen"	
+End Sub
+'-------------------------------------------------------------------------
+
+Sub EDVINResolved()
+Dim bResult As Boolean
+Dim i As Integer
+Dim j As Integer
+Dim sMsg As String
+Dim sKeyList() As String
+Dim sKey As String
+Dim nRecs As Integer
+Dim nRecs2 As Integer
+
+	On Error GoTo EDVINResolved_error_handler
+' For Tasks
+	bResult = True
+	Initialize 
+	GetLockInfo "task" ' Hole mal die die fehlgeschlagenen Keys
+
+	' Alle möglichen Tasks suchen task.resolved_extsystem=1 
+	iTaskTbl.MaxRecords = -1 ' System Maximum
+	iTaskTbl.Clear
+	iTaskTbl.QBEClear
+	iTaskTbl.SetWhere "task.resolved_extsystem = 1 And ( task.taskstatus = 4 Or task.taskstatus = 5 ) And " & ValidKeys("task") 
+	iTaskTbl.Search
+	nRecs =	iTaskTbl.RecordCount
+
+	' alle Keys sammeln damit ich später die Record einzeln bearbeiten kann
+	' falls ein Commit fehlschlägt
+	For i =1 To nRecs
+		ReDim Preserve sKeyList(i-1)
+		sKeyList(i-1) = iTaskTbl.GetRecord(i-1).GetValue("pkey")
+	Next i
+	For i = 1 To nRecs
+		ClearNetwork
+		WriteLog 3, " Debug Script try task : "	& sKeyList(i-1)
+		If Not UpdateTask(sKeyList(i-1)) Then
+			WriteLog 1, "Auftrag pkey=" & sKeyList(i-1) & " konnte nicht gespeichert werden."	
+		End If
+	Next i
+	SetLockInfo "task" ' Schreib alle fehlgeschlagenen Keys
+	ReDim Preserve NewLockArray(3,0)
+	If bAdminEmailOnErrors And bNewErrors Then SendAdminEmail 
+   'For	  calls
+	bResult = True
+	GetLockInfo "call" ' Hole mal die die fehlgeschlagenen Keys
+
+	' Alle möglichen Tasks suchen task.resolved_extsystem=1 
+	iCallTbl.MaxRecords = -1 ' System Maximum
+	iCallTbl.Clear
+	iCallTbl.QBEClear
+	iCallTbl.SetWhere "call.autoclosed = 1 And call.opentaskcount =0 And call.closedtaskcount >0 And call.callstatus = 5 And " & ValidKeys("call") 
+	iCallTbl.Search
+	nRecs =	iCallTbl.RecordCount
+
+	' alle Keys sammeln damit ich später die Record einzeln bearbeiten kann
+	' falls ein Commit fehlschlägt
+	j=1
+	For i =1 To nRecs
+		sKey =iCallTbl.GetRecord(i-1).GetValue("pkey")
+	    iCallDupTbl.Clear
+    	iCallDupTbl.QBEClear
+    	iCallDupTbl.SetWhere "callduplicate.mastercall_key = " & sKey & " And  callduplicate.callstatus in (0,1,2,3,5)" 
+    	iCallDupTbl.Search
+	    nRecs2 =	iCallDupTbl.RecordCount
+		If nRecs2 = 0 Then
+			ReDim Preserve sKeyList(j-1)
+			sKeyList(j-1) = sKey
+			j = j + 1
+		End If 
+	Next i
+	For i = 1 To j-1
+			WriteLog 3, " Debug Script try call : "	& sKeyList(i-1)
+
+			If Not UpdateCall(sKeyList(i-1)) Then
+				 WriteLog 1, "Meldung " & sKeyList(i-1) & " konnte nicht gespeichert werden."	
+	   		End If
+
+	Next i
+	SetLockInfo "call" ' Schreib alle fehlgeschlagenen Keys
+	If bAdminEmailOnErrors And bNewErrors Then SendAdminEmail 
+	
+EDVINResolved_exit_sub:
+
+	
+    If Not SetAppProfileValue(iNetwork,"last_edvinresolved","now") Then WriteLog 1, "Unable to write Timestamp"
+	WriteLog 3, "Script Terminated"
+	' clean up
+		iTaskTbl.Clear
+	Set iCallBrowser = Nothing
+	Set iTaskBrowser = Nothing
+	Set iTaskTbl = Nothing
+	Set iTaskRec = Nothing
+	Set iCallTbl = Nothing
+	Set iCallDupTbl = Nothing
+	Set iCallRec = Nothing
+	Set iAttachTbl = Nothing
+	Set iNetwork = Nothing
+	Set iApp = Nothing
+
+	Exit Sub
+
+EDVINResolved_error_handler:
+	nError = Err.Number
+	On Error Resume Next
+	LogError nError
+	GoTo EDVINResolved_exit_sub
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GetEdvinValue"
+'TYPE = 0
+'TEMPLATE = "Sub GetEdvinValue()"
+'TEXT = [[
+'*****************************************************************************
+'Script:	GetEdvinValue
+'Purpose:	holt Edvininformationen über https und XML und EntireX
+'Copyright:	Tarragon Software 2003
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim sDescriptionValue As String
+Dim sCodeValue As String
+Dim sEdvinList() As String
+Dim nIndex() As Integer
+Dim sEdvinListArray() As String
+Dim nItem As Integer
+Dim bCancel As Boolean
+Dim bClear As Boolean
+Dim bUpdate As Boolean
+Dim nLength As Integer
+Dim bFinish As Boolean
+Dim sSearchCode As String
+Dim sSearchDescription As String
+Const CODE = 1
+Const DESCRIPTION = 2
+
+'---------------------------------------------------------------------------
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+
+Declare Function CheckTaskDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean
+
+'-------------------------------------------------------------------------------------
+
+Sub GetEdvinValue()
+Dim iTaskTable As DBTable
+Dim iTable As DBTable
+Dim iTaskRec As DBRecord
+Dim iGroup As SGroup
+Dim sEdvinFunction	As String
+Dim sHwg_Name As String
+Dim sExtSystem As String
+Dim sTaskType As String
+Dim sCodeName as String
+Dim sDescriptionName As String
+Dim bRes As Boolean
+Dim sErrorText As String
+    On Error GoTo error_handler
+
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork()
+    Set iGroup = iApp.ContextGroup				   
+    ' If there is no backfilled record, get out.
+    Set iTAskRec = iGroup.GetCurrentRecord()
+    If iTaskRec Is Nothing Then
+        iApp.UserMsg "Keinen Auftrag ausgewählt"
+        Exit Sub
+    End If
+	sDummy = iTaskRec.GEtValue("taskstatus")
+	If sDummy = "Abgerechnet" Or sDummy ="Abgeschlossen" Then
+	 iApp.UserMsg "Aufträge im Status " & sDummy & " dürfen nicht mehr modifiziert werden."
+	 Exit Sub
+	End If	
+	Select Case iApp.ContextControlName
+		Case "taskGetBaueinheit"
+			sEdvinFunction= "getBaueinheitenForHwg"
+			sCodeName = "taskEdvin_beh_code"
+			sDescriptionName = "taskEdvin_beh_bez"
+
+		Case "taskGetBaugruppe"
+			sEdvinFunction= "getBaugruppenForHwg"
+			sCodeName = "taskEdvin_bgr_code"
+			sDescriptionName = "taskEdvin_bgr_bez"
+
+		Case "taskGetBauteil"
+			sEdvinFunction= "getBauteileForHwg"
+			sCodeName = "taskEdvin_btl_code"
+			sDescriptionName = "taskEdvin_btl_bez"
+
+		Case "taskGetMassnahmencode"
+			sEdvinFunction= "getMassnahmencodesForHwg"
+			sCodeName = "taskEdvin_mah_code"
+			sDescriptionName = "taskEdvin_mah_bez"
+
+		Case "taskGetSchadenscode"
+			sEdvinFunction= "getSchadenscodesForHwg"
+			sCodeName = "taskEdvin_sha_code"
+			sDescriptionName = "taskEdvin_sha_bez"
+
+		case else
+			Exit Sub
+	End Select
+	sExtSystem= ""
+	If iTaskRec.HasLinkedRecord("ext_system") Then
+		If iTaskRec.GetLinkedRecord("ext_system").GetValue("systemtype") <> "EDVIN" Then
+			iApp.UserMsg "Diese Funktion gilt nur für Edvin-Abrechnungssysteme", ebInformation
+ 			Exit Sub
+		End If
+		sExtSystem = iTaskRec.GetLinkedRecord("ext_system").GetValue("name") 
+	End If
+	sHwg_Name = ""
+	If iTaskRec.HasLinkedRecord("taskworkgroup") Then
+		sHwg_Name = iTaskRec.GetLinkedRecord("taskworkgroup").GetValue("hwg_name") 
+	End If
+    If sHwg_Name = "" Or  sExtSystem = "" Then
+		iApp.UserMsg "Abrechnungssystem und Edvin-HWG müssen bekannt sein", ebInformation
+		Exit Sub
+	End If
+	sDescriptionValue =""
+    sCodeValue = ""
+	bUpdate = False
+	bRes = GetValueFromList(sEdvinFunction, sExtSystem,	sHwg_Name)
+	If bREs Then
+	  If iGroup.Mode = MODE_FILLED Then
+		 iGroup.Change	
+		 iGroup.SetValue sCodeName, sCodeValue
+		 iGroup.SetValue sDescriptionName, sDescriptionValue
+		 bUpdate = True	
+	  Else 	
+		 iGroup.SetValue sCodeName, sCodeValue
+		 iGroup.SetValue sDescriptionName, sDescriptionValue
+	  End If		
+	End If
+	If bClear Then	
+	  If iGroup.Mode = MODE_FILLED Then
+		 iGroup.Change	
+		 iGroup.SetValue sCodeName, ""
+		 iGroup.SetValue sDescriptionName, ""
+		 bUpdate = True	
+	  Else 	
+		 iGroup.SetValue sCodeName, ""
+		 iGroup.SetValue sDescriptionName, ""
+	  End If		
+	End If
+	If iTaskRec.GEtValue("taskstatus") = "Dokumentiert" Then
+		If Not CheckTaskDocumented(iApp, iNetwork, iTaskRec, sErrorText) Then
+		 bUpdate = False	
+		 iApp.UserMsg  sErrorText	
+		End If
+	End If	 
+	If bUpdate Then iGroup.Update
+	Exit Sub
+error_handler:
+    iApp.UserMsg "GetEdvinValue error " & CStr(Err) & ": " & Error$
+End Sub
+'-------------------------------------------------------------------
+
+'------------------------------------------------------------------------
+
+Sub GetAllElements()
+Dim i As Integer
+	ReDim sEdvinList( nLength )
+	ReDim  nIndex(nLength)
+	sEdvinList(0) = ""
+	nIndex(0) = 0
+	For i=1 To nLength 
+	 sEdvinList(i) = sEdvinListArray(i, CODE) & "  =  " &  sEdvinListArray(i, DESCRIPTION)
+	 nIndex(i) = i		
+	Next i
+End Sub
+
+'------------------------------------------------------------------------
+Sub GetSearchList()
+Dim i As Integer
+Dim nCounter As Integer
+
+	ReDim sEdvinList( 0 )
+	ReDim nIndex(0)
+	nCounter=1
+	sEdvinList(0) = ""
+	nIndex(0) = 0
+
+	For i=1 To nLength 
+	
+	 If InStr(sEdvinListArray(i, CODE),	UCase$(sSearchCode)) <> 0 And InStr(sEdvinListArray(i, DESCRIPTION),UCase$(sSearchDescription))	<> 0 Then
+		ReDim Preserve sEdvinList(nCounter)
+		ReDim Preserve nIndex( nCounter )
+	 	sEdvinList(nCounter) = sEdvinListArray(i, CODE) & "  =  " &  sEdvinListArray(i, DESCRIPTION)
+		nIndex(nCounter) = i
+		nCounter = nCounter +1
+	 End If			
+	Next i
+End Sub
+
+'------------------------------------------------------------------------
+Function Dlg_Fkt( ControlName$, Action%, SuppValue% )
+'Print "Control: "& ControlName$ & " Action. " & Action% & "SubValue: " & SuppValue%
+Select Case Action%
+	Case 1 ' First time open Dialog
+		nItem=0
+  		sendkeys "{Down}"
+	Case 2 ' something clicked
+		Select Case ControlName$
+			Case "OK"
+			  bFinish = True	
+			  bCancel = False
+			Case "Cancel"
+				Dlg_Fkt=0
+			  bFinish = True		
+			  bCancel = True
+			Case "ComboBox"
+				nItem = SuppValue%
+			Case "ClearButton"
+				bFinish = True	
+				bClear = True
+			Case "Search"
+				
+				sSearchCode	= DlgText$("CodeConstraint")
+				sSearchDescription=DlgText$("DescriptionConstraint") 
+				GetSearchList
+			Case "AllElements"
+				GetAllElements
+		End Select
+End Select
+End Function
+'-------------------------------------------------------------------
+
+Function GetXML(sEdvinFunction As String,sExtSystem As String, sHwg_Name As String) As String
+  Dim xmlhttp As Object
+  Dim loc As String
+  Dim nChanel1 As Integer
+  Dim strValue As Object
+  Dim sMediatorRoot	As String
+  Dim sSequencesRoot As String	
+  On Error GoTo GetXML_error
+
+  Msg.Open "Verbindung zu EDVIN wird aufgebaut ..",0,0,0
+  sMediatorRoot = GetAppProfileValue(iNetwork,"mediatorroot")
+  sSequencesRoot = GetAppProfileValue(iNetwork,"sequenceroot")
+  loc =sMediatorRoot & "?xbd.sequence.uri=" & sSequencesRoot & "edvin/hwg/" & sEdvinFunction & ".seq.xml&hwg=" & sHwg_Name & "&instance=" & sExtSystem & "&Date=" & Time()
+  'Test URL	
+  'loc ="file://C:/Daten/q-backup/Caretaker/5felder/test.row"
+
+Dim TheBrowser As Object
+Dim TheDocument As Object
+
+	Set TheBrowser = CreateObject("InternetExplorer.Application")
+	TheBrowser.Visible = False
+ 	TheBrowser.Navigate URL := loc
+    Msg.Text = "Verbindung wird hergestellt"
+
+	Do
+	Loop Until TheBrowser.ReadyState = 4 ' Fertig
+    Msg.Text = "Verbindung ist hergestellt"
+ 	Set TheDocument = TheBrowser.Document 
+ 	GetXML =	 TheDocument.body.innertext	  
+    Msg.Close
+	TheBrowser.Quit
+	Set TheDocument = Nothing
+	Set TheBrowser = Nothing
+
+
+  Exit Function
+' verträgt nicht iso-8859-1	 Die Umlaute werden in dargestellt
+  Set xmlhttp = CreateObject("Microsoft.XMLHTTP")
+  xmlhttp.Open "GET", loc, false 
+  xmlhttp.Send
+  GetXML = xmlhttp.responseText
+  Msg.Close
+
+  Set xmlhttp = Nothing	
+
+ Exit Function	 
+GetXML_error:
+ GetXML= "GetXML error " & CStr(Err) & ": " & Error$
+  	Msg.Close
+	TheBrowser.Quit
+	Set TheDocument = Nothing
+	Set TheBrowser = Nothing
+	Set xmlhttp = Nothing	
+
+End Function
+'------------------------------------------------------------------------------- 
+
+
+Function GetValueFromList(sEdvinFunction As String, sExtSystem As String,	sHwg_Name As String)   As Boolean
+Dim bRef As Boolean
+Dim sCSVList As String
+Dim i As Integer
+Dim r1% 
+ReDim sEdvinList(0)
+ReDim nIndex(0)
+ReDim sEdvinListArray(0,2)
+
+On Error GoTo ERRORHANDLER
+
+Begin Dialog UserDialog ,,328,220,"EDVIN",.Dlg_Fkt
+	OKButton 20,187,40,16
+	CancelButton 270,186,40,16
+	ComboBox 20,43,290,136,sEdvinList,.ComboBox
+	PushButton 73,187,40,16,"Clear",.ClearButton
+	TextBox 76,4,96,12,.CodeConstraint
+	PushButton 260,3,44,14,"Suchen",.Search
+	PushButton 260,24,44,14,"ganze Liste",.AllElements
+	Text 24,6,32,8,"Code",.CodeText
+	Text 22,24,44,8,"Bezeichnung",.DescriptionText
+	TextBox 76,21,96,12,.DescriptionConstraint
+End Dialog
+
+
+sCSVList = GetXML(sEdvinFunction, sExtSystem, sHwg_Name)
+If sCSVList = "ERROR" Then
+   iApp.UserMsg "Es ist ein unbekannter Fehler bei der Verbindung zu EDVIN aufgetreten." ,ebInformation,"EDVIN Fehler - Keine Daten vorhanden"
+   GoTo Cancel_Function 
+End If
+If InStr(sCSVList,"|") = 0 Then 
+	If sCSVList <> "" Then
+  		iApp.UserMsg sCSVList,ebInformation,"EDVIN Fehler - Keine Daten vorhanden"
+	Else
+  		iApp.UserMsg "Keine Daten vorhanden",ebInformation,"EDVIN"
+    End If
+	GoTo Cancel_Function
+End If
+	nLength = ItemCount(sCSVList,chr$(10))
+	ReDim sEdvinList(nLength )
+	ReDim nIndex(nLength)
+	ReDim sEdvinListArray(nLength,2)
+	bClear = False
+	sEdvinList(0) = ""
+	nIndex(0) = 0
+
+	sEdvinListArray(0, CODE) = ""
+	sEdvinListArray(0, DESCRIPTION)	= ""
+	For i=1 To nLength 
+	  sEdvinList(i) = Item$(sCSVList,i,i,chr$(10))
+	  sEdvinListArray(i, CODE) = Item$(sEdvinList(i),1,1,"|")	
+	  sEdvinListArray(i, DESCRIPTION) = Item$(sEdvinList(i),2,2,"|")
+	  sEdvinList(i) = sEdvinListArray(i, CODE) & "  =  " &  sEdvinListArray(i, DESCRIPTION)
+	  nIndex(i) = i		
+	Next i
+	Dim GetValue As UserDialog
+	'viewport.open
+	'viewport.clear
+	bFinish = False
+	Do
+		r1% = Dialog( GetValue )
+	Loop Until bFinish = True
+	If  bCancel	Or bClear Then  GoTo Cancel_Function
+	
+	sDescriptionValue = sEdvinListArray(nIndex(nItem), DESCRIPTION)
+	sCodeValue = sEdvinListArray(nIndex(nItem), CODE)
+    GetValueFromList= True
+	
+
+
+GoTo Exit_Function
+
+Cancel_Function:
+sDescriptionValue =""
+sCodeValue = ""
+GetValueFromList= False
+
+Exit_Function:
+Exit Function
+
+ERRORHANDLER:
+	Msgbox "GetValueFromList error " & CStr(Err) & ": " & Error$
+sDescriptionValue =""
+sCodeValue = ""
+GetValueFromList= False
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CheckTaskDocumented"
+'TYPE = 2
+'TEMPLATE = "Function CheckTaskDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CheckTaskDocumented
+'Purpose:      Connect to EntireX and EDVIN to check required fields
+'Copyright:    Tarragon, 2003
+'*****************************************************************************
+'Option Explicit
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+'----------------------------------------------------------------
+Const IS_REQUIRED = 1
+Const NOT_REQUIRED = 0
+Const IS_OPTIONAL = 3
+Type FieldsData
+ 		ExtSystem   As String
+		ih_art      As String	 ' HWG
+		ih_gruppe   As String	 ' TASKTYPE
+		anl_ausfall As Integer
+		baueinheit  As Integer
+		baugruppe   As Integer
+		bauteil     As Integer
+		mass_code   As Integer
+		schad_code  As Integer
+		stoerbeginn As Integer
+		stoerdauer  As Integer
+		success     As Boolean
+End Type
+Dim iRequiredField As FieldsData
+'---------------------------------------------------------------
+  Dim sMediatorRoot	As String
+  Dim sSequencesRoot As String	
+
+Function GetXML(sSequence As String) As String
+  Dim xmlhttp As Object
+  Dim loc As String
+  On Error GoTo GetXML_error
+
+  Msg.Open "Verbindung zu EDVIN wird aufgebaut ..",0,0,0
+   loc =sMediatorRoot & "?xbd.sequence.uri=" & sSequencesRoot & sSequence 
+
+
+  Set xmlhttp = CreateObject("Microsoft.XMLHTTP")
+  xmlhttp.Open "GET", loc, false 
+
+  'xmlhttp.setRequestHeader "Content-Type", "text/xml"
+
+  xmlhttp.Send
+
+  GetXML = xmlhttp.responseText
+
+  	Msg.Close
+
+
+ Exit Function	 
+
+ GetXML_error:
+	GetXML = "<ERROR>" & " GetXML Error " & CStr(Err) & ": " & Error$ & "</Error>"
+  	Msg.Close
+End Function
+'------------------------------------------------------------------------
+Function GetEdvinFieldStatus(iRequiredField As FieldsData, sErrorText As String)   As Boolean
+Dim iParser As Object
+Dim iDoc As Object
+Dim bRef As Boolean
+Dim iNodeList As Object
+Dim iNode As Object
+Dim iElement As Object
+Dim sXMLText As String
+Dim sAnswer As String
+Dim sSequence As String
+Dim i As Integer
+
+On Error GoTo ERRORHANDLER
+
+	Set iParser = GetObject( "", "QXMLParse.QXMLParser" )
+	sSequence =  "edvin/hwg/getFieldStatus.seq.xml&hwg=" & iRequiredField.ih_gruppe & "&instance=" & iRequiredField.ExtSystem & "&art=" & iRequiredField.ih_art & "&Date=" & Time()
+	sXMLText = GetXML(sSequence)
+	bref = iParser.parseString(sXMLText) 
+	Set iDoc = iParser.Document
+
+
+' Ist alles OK mit dem Dokument?
+Set iNodeList = iDoc.getElementsByTagName("ERROR")
+If iNodeList.Length > 0 Then
+   sErrorText= "Es ist ein Fehler bei der Verbindung zu EDVIN aufgetreten."
+   iRequiredField.Success  = False
+   GoTo Cancel_Function 
+End If
+Set iNodeList = iDoc.getElementsByTagName("result")
+If iNodeList.Length = 0 Then 
+	sErrorText= sXMLText
+    iRequiredField.Success  = False
+	GoTo Cancel_Function
+End If
+Set iNode = iNodeList.item(0)
+If iNode.hasChildNodes  Then
+		Set iElement = iNodeList.item(0).FirstChild.CXMLElement			 ' Get first row
+		iRequiredField.anl_ausfall = val(iElement.GetAttribute("higrha_anl_ausfall")) 
+		iRequiredField.baueinheit  = val(iElement.GetAttribute("higrha_baueinheit") )
+		iRequiredField.baugruppe   = val(iElement.GetAttribute("higrha_baugruppe") )
+		iRequiredField.bauteil     = val(iElement.GetAttribute("higrha_bauteil") )
+		iRequiredField.mass_code   = val(iElement.GetAttribute("higrha_mass_code") )
+		iRequiredField.schad_code  = val(iElement.GetAttribute("higrha_schad_code") )
+		iRequiredField.stoerbeginn = val(iElement.GetAttribute("higrha_schad_code") )
+		iRequiredField.stoerdauer  = val(iElement.GetAttribute("higrha_schad_code") )
+		iRequiredField.Success  = True
+Else 
+		iRequiredField.anl_ausfall = NOT_REQUIRED 
+		iRequiredField.baueinheit  = NOT_REQUIRED
+		iRequiredField.baugruppe   = NOT_REQUIRED
+		iRequiredField.bauteil     = NOT_REQUIRED
+		iRequiredField.mass_code   = NOT_REQUIRED
+		iRequiredField.schad_code  = NOT_REQUIRED
+		iRequiredField.stoerbeginn = NOT_REQUIRED
+		iRequiredField.stoerdauer  = NOT_REQUIRED
+		iRequiredField.Success  = True
+End If
+
+Cancel_Function:
+
+	GetEdvinFieldStatus= iRequiredField.Success
+
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	Exit Function
+
+ERRORHANDLER:
+	sErrorText = "GetEdvinFieldStatus error " & CStr(Err) & ": " & Error$
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+		iRequiredField.anl_ausfall = IS_REQUIRED 
+		iRequiredField.baueinheit  = IS_REQUIRED
+		iRequiredField.baugruppe   = IS_REQUIRED
+		iRequiredField.bauteil     = IS_REQUIRED
+		iRequiredField.ih_art      = IS_REQUIRED
+		iRequiredField.ih_gruppe   = IS_REQUIRED
+		iRequiredField.mass_code   = IS_REQUIRED
+		iRequiredField.schad_code  = IS_REQUIRED
+		iRequiredField.stoerbeginn = IS_REQUIRED
+		iRequiredField.stoerdauer  = IS_REQUIRED
+		iRequiredField.Success  = False
+
+	GetEdvinFieldStatus= False
+
+End Function
+'--------------------------------------------------
+Function IsValidEdvinField(sEdvinFunction As String, sExtSystem As String,sHwg_Name As String, sCode As String, sErrorText As String)   As Boolean
+Dim iParser As Object
+Dim iDoc As Object
+Dim bRef As Boolean
+Dim iNodeList As Object
+Dim iNode As Object
+Dim iElement As Object
+Dim sXMLText As String
+Dim sAnswer As String
+Dim sSequence As String
+Dim i As Integer
+
+On Error GoTo ERRORHANDLER
+
+	Set iParser = GetObject( "", "QXMLParse.QXMLParser" )
+	sSequence =  "edvin/hwg/" & sEdvinFunction & ".seq.xml&hwg=" & sHwg_Name & "&instance=" & sExtSystem & "&code=" & sCode & "&Date=" & Time()
+
+	sXMLText = GetXML(sSequence)
+ 
+	bref = iParser.parseString(sXMLText) 
+	
+	Set iDoc = iParser.Document
+
+ '	Exit Function
+
+' Ist alles OK mit dem Dokument?
+Set iNodeList = iDoc.getElementsByTagName("ERROR")
+If iNodeList.Length > 0 Then
+   sErrorText = " Es ist ein Fehler bei der Verbindung zu EDVIN aufgetreten."
+	IsValidEdvinField= False	
+   GoTo Cancel_Function 
+End If
+Set iNodeList = iDoc.getElementsByTagName("result")
+If iNodeList.Length = 0 Then 
+	sErrorText = sXMLText 
+	IsValidEdvinField= False	
+	GoTo Cancel_Function
+End If
+
+sAnswer = "0"
+Set iNode = iNodeList.item(0)
+
+If iNode.hasChildNodes  Then
+		Set iElement = iNode.FirstChild.CXMLElement
+		sAnswer = iElement.GetAttribute("valid")
+End If
+
+Select Case sAnswer
+	Case "0"
+	 IsValidEdvinField= False
+	Case "1"
+	 IsValidEdvinField= True
+	Case Else
+	 IsValidEdvinField= False
+End Select
+
+Cancel_Function:
+
+
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	Exit Function
+
+ERRORHANDLER:
+	sErrorText = "IsValidEdvinField error " & CStr(Err) & ": " & Error$
+	Set iElement = Nothing
+	Set iNodeList = Nothing
+	Set iNode = Nothing
+	Set iDoc = Nothing
+	Set iParser = Nothing
+	IsValidEdvinField= False
+
+End Function
+' ----------------------------------------------------------------------
+
+Function isTaskEDVINDocumented( iTaskRec As DBRecord, sErrorText As String) As Boolean
+Dim bRes As Boolean
+Dim sFieldValue As String
+Dim sHour As String
+Dim sMin As String
+
+On Error GoTo ERRORHANDLER
+' initialize
+ sErrorText =""
+	iRequiredField.anl_ausfall = IS_REQUIRED
+	iRequiredField.baueinheit  = IS_REQUIRED
+	iRequiredField.baugruppe   = IS_REQUIRED
+	iRequiredField.bauteil     = IS_REQUIRED
+	iRequiredField.mass_code   = IS_REQUIRED
+	iRequiredField.schad_code  = IS_REQUIRED
+	iRequiredField.stoerbeginn = IS_REQUIRED
+	iRequiredField.stoerdauer  = IS_REQUIRED
+	iRequiredField.success     = False
+
+
+
+ If Not GetEdvinFieldStatus(iRequiredField, sErrorText)	Then
+		isTaskEDVINDocumented = False
+		Exit Function
+ End If
+' Übergrüfung der EDVIN Felder
+'Störbeginn
+	If iRequiredField.stoerbeginn = IS_REQUIRED	 Then
+		sFieldValue = iTaskRec.GetValue("disruption_start")
+		If sFieldValue = "" Or sFieldValue = ":" Then
+			sErrorText = "Störbeginn ist Pflichtfeld"
+			GoTo CANCEL_Function
+		End If
+	End If
+'Stördauer
+	If iRequiredField.stoerdauer  = IS_REQUIRED	 Then
+	   sHour = iTaskRec.GetValue("disruption_h") 
+	   sMin =  iTaskRec.GetValue("disruption_m")
+		If sHour = "" And sMin = "" Then
+			sErrorText = "Stördauer ist Pflichtfeld"
+			GoTo CANCEL_Function
+		End If
+	End If
+
+'Produktionsausfall		
+	If iRequiredField.anl_ausfall = IS_REQUIRED Then
+	   sHour = iTaskRec.GetValue("productionloss_h") 
+	   sMin =  iTaskRec.GetValue("productionloss_m")
+		If sHour = "" And sMin = "" Then
+			sErrorText = "Anlagenausfall ist Pflichtfeld"
+			GoTo CANCEL_Function
+		End If
+	End If
+
+'Baueinheit
+	If iRequiredField.baueinheit  = IS_REQUIRED Then
+		sFieldValue = iTaskRec.GetValue("edvin_beh_code")
+		If sFieldValue = "" Then
+			sErrorText = "Baueinheit ist Pflichtfeld"
+				GoTo CANCEL_Function
+		Else 
+			If 	Not IsValidEdvinField("isValidBaueinheitForHwg",iRequiredField.ExtSystem,iRequiredField.ih_gruppe,sFieldValue,sErrorText) Then
+				If sErrorText = "" Then 
+					sErrorText = "Baueinheit ist nicht gültig"
+				End If
+		  		GoTo CANCEL_Function
+			End If
+		End If
+	End If
+
+'Baugruppe
+	If iRequiredField.baugruppe   = IS_REQUIRED	 Then
+		sFieldValue = iTaskRec.GetValue("edvin_bgr_code")
+		If sFieldValue = "" Then
+			sErrorText = "Baugruppe ist Pflichtfeld"
+				GoTo CANCEL_Function
+		Else 
+			If 	Not IsValidEdvinField("isValidBaugruppeForHwg",iRequiredField.ExtSystem,iRequiredField.ih_gruppe,sFieldValue,sErrorText) Then
+				If sErrorText = "" Then
+					sErrorText = "Baugruppe ist nicht gültig"
+				End If
+		  		GoTo CANCEL_Function
+			End If
+		End If
+	End If
+'Bauteil
+	If iRequiredField.bauteil     = IS_REQUIRED	Then
+		sFieldValue = iTaskRec.GetValue("edvin_btl_code")
+		If sFieldValue = "" Then
+			sErrorText = "Bauteil ist Pflichtfeld"
+				GoTo CANCEL_Function
+		Else 
+			If 	Not IsValidEdvinField("isValidBauteilForHwg",iRequiredField.ExtSystem,iRequiredField.ih_gruppe,sFieldValue,sErrorText)	Then
+				If sErrorText = "" Then
+				 sErrorText = "Bauteil ist nicht gültig"
+				End If
+		  		GoTo CANCEL_Function
+			End If
+		End If
+	End If
+'Massnahmencode
+	If iRequiredField.mass_code   = IS_REQUIRED	Then
+		sFieldValue = iTaskRec.GetValue("edvin_mah_code")
+		If sFieldValue = "" Then
+			sErrorText = "Maßnahmencode ist Pflichtfeld"
+				GoTo CANCEL_Function
+		Else 
+			If 	Not IsValidEdvinField("isValidMassnahmencodeForHwg",iRequiredField.ExtSystem,iRequiredField.ih_gruppe,sFieldValue,sErrorText) Then
+				If sErrorText = "" Then
+					 sErrorText = "Maßnahmencode ist nicht gültig"
+				End If
+		  		GoTo CANCEL_Function
+			End If
+		End If
+	End If
+'Schadenscode
+	If iRequiredField.schad_code  = IS_REQUIRED	Then
+		sFieldValue = iTaskRec.GetValue("edvin_sha_code")
+		If sFieldValue = "" Then
+			sErrorText = "Schadenscode ist Pflichtfeld"
+				GoTo CANCEL_Function
+		Else 
+			If 	Not IsValidEdvinField("isValidSchadenscodeForHwg",iRequiredField.ExtSystem,iRequiredField.ih_gruppe,sFieldValue,sErrorText) Then
+				If sErrorText = "" Then
+					 sErrorText = "Schadenscode ist nicht gültig"
+				End If
+		  		GoTo CANCEL_Function
+			End If
+		End If
+	End If
+
+isTaskEDVINDocumented = True
+Exit Function
+CANCEL_Function:
+	isTaskEDVINDocumented = False
+	Exit Function
+
+ERRORHANDLER:
+	sErrorText= "IsValidEdvinField error " & CStr(Err) & ": " & Error$
+isTaskEDVINDocumented = False
+
+End Function				
+ '----------------------------------------------------------------
+Function CheckTaskDocumented(iApp As Application, iNetwork As DBNetwork, iTaskRec As DBRecord, sErrorText As String) As Boolean
+
+Dim isOK As Boolean
+Dim dTaskStart As Date
+Dim dTaskDone As Date
+Dim iRecord As DBRecord
+Dim dInterval As Date
+Dim sResolver As String
+Dim nResolver As Integer
+Dim dTotalTimespent As Date
+Dim dDokumentationTime As Date
+Dim sTotalTimespent As String
+Dim sDokumentationTime As String
+Dim sExtSystemType As String
+Dim sExtSystem As String
+Dim sTaskType  As String
+Dim sHWG As String
+
+	sErrorText = ""
+	isOK =False
+On Error GoTo error_handler
+	dTaskStart = iTaskRec.GetValueAsDate("taskstart")	
+	dTaskDone = iTaskRec.GetValueAsDate("taskdone")
+	sResolver = iTaskRec.GetValue("no_resolver")
+	nResolver = val(sResolver )
+	sTotalTimespent	= iTaskRec.GetValue("totaltimespent")
+	sDokumentationTime =iTaskRec.GetValue("timedocumentation") 
+ 	dTotalTimespent = iApp.IntervalToSeconds(sTotalTimespent)
+	dDokumentationTime = iApp.IntervalToSeconds(sDokumentationTime)
+	If Not((dTaskStart > 0) And (dTaskDone >0 ) And (sResolver<> "" ) And (dTotalTimespent >=0) And (sDokumentationTime <>"")) Then
+		sErrorText ="Auftragsbearbeitungszeiten sind nicht dokumentiert." 
+		GoTo Exit_Function
+	End If
+	If dTaskstart > dTaskDone Then
+		sErrorText = "Das Arbeitsende kann nicht vor Arbeitsbeginn liegen."
+		GoTo Exit_Function
+	End If
+	If nResolver < 1 Or nResolver >999 Then
+		sErrorText =  "Die Anzahl der Arbeiter stimmt nicht."
+		GoTo Exit_Function
+	End If
+	If dTotalTimespent < 0 Or dTotalTimespent >(36000000) Then
+		sErrorText = "Der Durchführungsaufwand ist ungültig." 
+		GoTo Exit_Function
+	End If
+	If dDokumentationTime < 0 Or dDokumentationTime >(36000000) Then
+		sErrorText = "Der Dokumentationsaufwand ist ungültig."
+		GoTo Exit_Function
+	End If
+
+	sExtSystemType= ""
+	If iTaskRec.HasLinkedRecord("ext_system") Then
+		sExtSystemType = iTaskRec.GetLinkedRecord("ext_system").GetValue("systemtype") 
+	End If
+	If sExtSystemType="GDS"  Then 
+	   If Not iNetwork.GetTable("errorcodetaskdata").InDatabase("task_key", iTaskRec.GetValue("pkey")) Then
+				sErrorText =  "Es ist keine GDS Rückmeldung angegeben."
+				GoTo Exit_Function
+	   End If				
+	Else
+		If sExtSystemType="EDVIN" Then
+			
+			If Not( iTaskRec.HasLinkedRecord("tasktype")) Then 
+			   	sErrorText =  "Es ist keine Auftragsart angegeben."
+			   	GoTo Exit_Function
+			End If
+				sExtSystem  = iTaskRec.GetLinkedRecord("ext_system").GetValue("name")
+				sHWG  = iTaskRec.GetLinkedRecord("taskworkgroup").GetValue("hwg_name")
+				sTaskType = iTaskRec.GetLinkedRecord("tasktype").GetValue("taskcode")
+  				sMediatorRoot = GetAppProfileValue(iNetwork,"mediatorroot")
+ 			 	sSequencesRoot = GetAppProfileValue(iNetwork,"sequenceroot")
+ 				iRequiredField.ExtSystem  = sExtSystem
+   				iRequiredField.ih_art      = sTaskType
+   				iRequiredField.ih_gruppe   = sHWG
+				If Not isTaskEDVINDocumented( iTaskRec, sErrorText) Then
+					 GoTo Exit_Function
+				End If
+		Else
+	   		If sExtSystemType="virtuell" Then
+				' Do nothing
+		   	Else
+
+				sErrorText =  "Es ist kein Abrechnungssystem definiert."
+				GoTo Exit_Function
+			End If
+		End If
+	End If 
+
+	isOK  = True 
+    GoTo Exit_Function
+Error_handler:
+	sErrorText = "Fehler bei der Überprüfung des Dokumentiert-Status"	
+Exit_Function:
+	CheckTaskDocumented= isOK
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

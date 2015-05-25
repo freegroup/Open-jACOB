@@ -1,0 +1,730 @@
+/*Quintus*/
+
+div.menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: verdana;
+}
+
+div.menu a 
+{
+    display: block;
+    text-decoration: none;
+    cursor: default;
+    outline: none;
+    font-size: 11px;
+}
+.menu ul, .menu li 
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu li 
+{
+    list-style-position: none;
+}
+
+.menu.desktop {
+    background: #f9f8f7;
+    border: 1px solid #999;
+    padding: 0;
+}
+.menu.desktop ul, .menu.desktop li {
+    margin: 0;
+    padding: 0;
+}
+
+.menu.desktop a {
+    color: #555;
+    padding: 3px 5px 3px 5px;
+    margin: 0;
+    border: 1px solid #f9f8f7;
+}
+.menu.desktop a.delete {
+}
+/* we need explicit enabled class to overcome css deficiences (without creating unnecessary markup) */
+.menu.desktop a.enabled:hover {
+    background-color: #0A246A;
+    color: #fff;
+}
+#sideBar
+{
+  position:absolute;
+  top:20px;
+  right:0;
+  height:300px;
+  width:auto;
+  white-space:nowrap;
+  color:white;
+  font-size:8pt;
+}
+
+#sideBar li
+{
+  background-color:#DA1074;
+  padding:2px;
+  margin:0 10px 3px;
+  list-style-type:none;
+}
+
+#sideBar ul
+{
+  margin:0px;
+  padding:0px;
+}
+
+#sideBarTab {
+float:left;
+height:137px;
+width:23px;
+cursor:pointer;
+background:transparent url("images/sidebar_handle.png") no-repeat;
+}
+
+#sideBarContents
+{
+  float:left;
+  width:200px;
+  background-color:#333333;
+}
+
+#sideBarContentsInner
+{
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  height:300px;
+}
+
+a.search_criteria
+{
+  color:#f0f0f0;
+}
+ul.mktree, ul.mktree ul , ul.mktree li 
+{ 
+	margin-left:10px; padding:1px; 
+}
+	
+	     /* Format menu items differently depending on what level of the tree they are in */
+ul.mktree  li { font-size:12pt; font-family:Arial, Helvetica, sans-serif; font-weight:bold;}
+ul.mktree  li ul li { font-size:7pt; font-weight: bold; font-weight:normal; color:blue;}
+ul.mktree  li ul li ul li { font-size:9pt; color:#1E90FF; }
+ul.mktree  li ul li ul li ul li { font-size:7pt; font-weight: bold; color:#008B8B;}
+}
+.waitDiv
+{
+border:3px solid green;
+}
+
+.listbox_normal
+{
+border:0px;
+border-top:0px;
+border-right:0px;
+border-left:0px;
+border-bottom:0px;
+color:#000000;
+font:normal 11px verdana;
+overflow:auto;
+cursor:pointer;
+}
+
+.listbox_selected
+{
+background-color:rgb( 243, 245, 247 );
+border-top:0px;
+border-right:0px;
+border-left:0px;
+border-bottom:0px;
+color:#000000;
+font:normal 11px verdana;
+overflow:auto;
+}
+
+.listboxitem
+{
+cursor:pointer;
+font-size:9pt; font-weight: bold;
+}
+
+
+.listboxitem_selected
+{
+font-size:9pt; font-weight: bold;
+background-color:green;
+}
+
+.divider
+{
+border-left:2px solid #66CC66;
+border-right:1px solid #66CC66;
+border-top:2px solid #66CC66;
+border-bottom:1px solid #66CC66;
+}
+
+.divider_over
+{
+border-left:2px solid #C3D9C3;
+border-right:1px solid #C3D9C3;
+border-top:2px solid #C3D9C3;
+border-bottom:1px solid #C3D9C3;
+} 
+.combobox_readonly 
+{
+	font-weight: bold;
+font-size: 10pt;
+}
+table.Multiselection
+{
+border:1px solid black;
+}
+
+
+td.Multiselection_Title
+{
+border:0px;
+}
+
+input.Multiselection_Title
+{
+font-weight:bold;
+font-size:10pt;
+}
+
+
+.Multiselection_BodyTable
+{
+border:1px solid black;
+}
+
+.Multiselection_ItemTitle
+{
+font-size:7pt; font-weight: bold;
+}
+.Multiselection_ItemTitleOver
+{
+font-size:7pt; font-weight: bold;
+}
+.Multiselection_ItemIcon
+{
+font-size:7pt; font-weight: bold;
+}
+
+div.wizard_info
+{
+background-color:#C3D9C3;
+}
+
+div.wizard_content
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+}
+
+.sbh_container
+{
+background-color:#008000;
+margin-bottom:1px;
+border-bottom:1px solid black;
+border-top:1px solid black;
+}
+
+.sbh
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+color:black;
+background-color:transparent;
+border-width:0px;
+border-left:1px solid white;
+}
+
+.sbh_icon
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:#008000;
+border-width:2px;
+}
+.sbh_counter
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+}
+.sbc
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size:7pt; font-weight: bold;
+}
+.sbr_s
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:#66CC66;
+font-size:9pt;
+font-weight:bold;
+}
+
+.sbr_o
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:transparent;
+}
+.sbr_e
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:transparent;
+}
+.sbr_h
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:#C3D9C3;
+}
+.sbr_u
+{
+}
+
+.outlookbar
+{
+width:120px;
+}
+
+.outlookbarPaneSelected 
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+/*text-decoration:underline;*/
+font-weight: bold;
+background-image:url("images/OutlButSel.gif");
+color:black;
+white-space: normal;
+font-size: 8pt;
+}
+
+.outlookbarPane
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+border-left:2px solid #002D40;
+border-right:1px solid #002D40;
+border-top:2px solid #E6EDF0;
+border-bottom:1px solid #002D40;
+background-image:url("images/OutlButNor.gif");
+color:black;
+white-space: normal;
+font-size: 8pt;
+font-stretch: condensed;
+}
+
+.outlookbarButtonLabel
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size:7pt; font-weight: bold;
+color:black;
+}
+.outlookbarButtonDown
+{
+border-width:5;
+border-style:inset;
+border-color:8aa9e5;
+color:white;
+width:30px;
+}
+
+.outlookbarButtonSelected
+{
+border-width:3px;
+border-style:inset;
+border-color:8aa9e5;
+width:30px;
+}
+
+.outlookbarButtonOver
+{
+border-width:3px;
+border-style:outset;
+border-color:8aa9e5;
+width:30px;
+}
+
+.outlookbarButtonNormal
+{
+width:30px;
+margin:3px;
+}
+
+img.outlookbarButtonSelected{ margin-top:8 ;}
+img.outlookbarButtonDown{ margin-top:8 ;}
+img.outlookbarButtonNormal{ margin-top:8 ;}
+img.outlookbarButtonOver{ margin-top:8 ;}
+tr.outlookbarButtonAreaNormal
+{
+height:70px;
+}
+
+body.contentBody
+{
+background-color:#FFFFF6;
+}
+
+td.locationbar 
+{
+background-color:ThreeDFace;
+font-size:7pt; font-weight: bold;
+padding-right:18px;
+}
+
+td.toolbar 
+{
+padding:1px 0px 1px 0px;
+background-color:#CC9933;
+font-size:7pt; font-weight: bold;
+}
+
+
+.toolbarButton_normal
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background:transparent url(images/bn.gif);
+background-repeat:repeat-x;
+font-size:7pt; font-weight: bold;
+width:auto;
+height:22px;
+border:none;
+white-space:nowrap;
+margin-left:2px;
+}
+
+.toolbarButton_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background:transparent url(images/bn.gif);
+background-repeat:repeat-x;
+color:#000000;
+font-size:7pt; font-weight: bold;
+width:auto;
+height:22px;
+border:none;
+white-space:nowrap;
+margin-left:2px;
+}
+
+
+
+.toolbarButton_emphasize
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background:transparent url(images/bn.gif);
+background-repeat:repeat-x;
+font-size:7pt; font-weight: bold;
+font-weight:bold;
+width:auto;
+height:22px;
+border:none;
+white-space:nowrap;
+margin-left:2px;
+}
+
+.toolbarButton_emphasize_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background:transparent url(images/bn.gif);
+background-repeat:repeat-x;
+color:#000000;
+font-weight:bold;
+font-size:7pt; font-weight: bold;
+width:auto;
+height:22px;
+border:none;
+white-space:nowrap;
+}
+
+
+.text_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:rgb( 252, 252, 254 );
+height:20px;
+padding:0px 2px 0px 5px;
+color:gray;
+border:1px solid gray;
+font-size:9pt; font-weight: bold;
+}
+
+.text_normal
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:#FFFFFF;
+color:black;
+height:20px;
+padding:0px 2px 0px 5px;
+border:1px solid #000000;
+font-size:9pt; font-weight: bold;
+}
+
+textarea.longtext_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:rgb( 252, 252, 254 );
+color:gray;
+height:20px;
+padding:0px 2px 0px 5px;
+border:1 solid gray;
+font-size:9pt; font-weight: bold;
+}
+
+textarea.longtext_normal
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:#FFFFFF;
+color:black;
+height:20px;
+padding:0px 2px 0px 5px;
+border:1px solid #000000;
+font-size:9pt; font-weight: bold;
+}
+
+textarea.longtextdialog_disabled
+{
+font-family:courier,monospace,Tahoma,Verdana,Arial,Helvetica,sans-serif;
+background-color:rgb( 252, 252, 254 );
+color:gray;
+height:20px;
+padding:0px 2px 0px 5px;
+border:1 solid gray;
+font-size:9pt; font-weight: bold;
+}
+
+textarea.longtextdialog_normal
+{
+font-family:courier,monospace,Tahoma,Verdana,Arial,Helvetica,sans-serif;
+background-color:#FFFFFF;
+color:black;
+height:20px;
+padding:0px 2px 0px 5px;
+border:1px solid #000000;
+font-size:9pt; font-weight: bold;
+}
+
+input.foreign_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:rgb( 252, 252, 254 );
+padding:0px 2px 0px 5px;
+border:1px solid #909CAE;
+font-size:9pt; font-weight: bold;
+}
+input.foreign_normal
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+background-color:white;
+color:black;
+padding:0px 2px 0px 5px;
+border:1px solid #000000;
+font-size:9pt; font-weight: bold;
+}
+
+a.foreign_normal
+{
+}
+
+.button_disabled
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size:7pt; font-weight: bold;
+border:2px solid gray;
+border-style:groove;
+color:#a0a0a0;
+background-color:#EEEEEE;
+text-decoration:none;
+}
+
+
+
+
+
+.button_normal
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size:7pt; font-weight: bold;
+border:2px solid gray;
+border-style:groove;
+color:black;
+background-color:#EEEEEE;
+text-decoration:none;
+font-weight:bold;
+}
+
+.button_default
+{
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size:7pt; font-weight: bold;
+font-weight:bold;
+background-color:#EEEEEE;
+}
+
+
+.caption_normal_update 
+{
+font-size:7pt; font-weight: bold;
+}
+.caption_normal_new 
+{
+font-size:7pt; font-weight: bold;
+}
+.caption_normal_search 
+{
+font-size:7pt; font-weight: bold;
+}
+
+.caption_normal_selected
+{
+font-size:7pt; font-weight: bold;
+}
+
+.caption_linked_update 
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_linked_new 
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_linked_search 
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_linked_selected
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_linked_required_update 
+{
+font-size:7pt; font-weight: bold;
+color:red;
+}
+.caption_linked_required_new 
+{
+font-size:7pt; font-weight: bold;
+color:red;
+}
+
+.caption_linked_required_search 
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_linked_required_selected
+{
+font-size:7pt; font-weight: bold;
+color:blue;
+}
+
+.caption_required_search 
+{
+font-size:7pt; font-weight: bold;
+}
+
+.caption_required_selected
+{
+font-size:7pt; font-weight: bold;
+}
+.caption_required_update 
+{
+font-size:7pt; font-weight: bold;
+color:red;
+}
+.caption_required_new 
+{
+font-size:7pt; font-weight: bold;
+color:red;
+}
+fieldset.group_disabled
+{
+font-size:7pt; font-weight: bold;
+}
+fieldset.group_normal
+{
+font-size:7pt; font-weight: bold;
+}
+input.datetime_disabled
+{
+background-color:rgb( 252, 252, 254 );
+font-family:Verdana,Arial,Helvetica,sans-serif;
+padding:0px 2px 0px 5px;
+border:1px solid #909CAE;
+font-size:8pt; font-weight: bold;
+}
+
+input.datetime_normal
+{
+background-color:white;
+color:black;
+font-family:Verdana,Arial,Helvetica,sans-serif;
+padding:0px 2px 0px 5px;
+border:1px solid #000000;
+font-size:8pt; font-weight: bold;
+}
+
+div.dialog_content
+{
+font-size:70%;
+background-color:#FFFFF6;
+scrollbar-3dlight-color:#008000;
+scrollbar-arrow-color:#008000;
+scrollbar-base-color:#CC9933;
+scrollbar-darkshadow-color:#CC9933;
+scrollbar-face-color:#CC9933;
+scrollbar-highlight-color:rgb(247,249,244);
+scrollbar-shadow-color:rgb(153,198,153);
+scrollbar-track-color:CDBFA4;
+}
+
+div.dialog_buttonbar
+{
+background-color:#CC9933;
+}
+
+td.searchTabFooter
+{
+background-image:url("images/line.png");
+background-color:ThreeDFace;
+}
+
+.downtab
+{
+width:150px;
+height:17px;
+background-image:url( "images/downtab.png" );
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font:11px;
+}
+
+.downtabSelected
+{
+width:150px;
+height:17px;
+background-image:url( "images/downtab.active.png" );
+}
+
+.downtab:hover
+{
+width:150px;
+height:17px;
+background-image:url( "images/downtab.hover.png" );
+}
+
+table.contextMenu
+{
+background-image:url("images/normal_bg.bmp");
+}
+
+a.contextMenuItem:hover
+{
+background-image:url("images/outlook_bg.bmp");
+}
+

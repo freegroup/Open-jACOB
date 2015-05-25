@@ -1,0 +1,67 @@
+//
+// 
+//  
+// Source File Name:   Demo1RoundRect.java
+
+package de.shorti.dragdrop.examples.demo1;
+
+import de.shorti.dragdrop;
+
+
+
+import de.shorti.dragdrop.*;
+import java.awt.*;
+
+public class Demo1RoundRect extends FREERoundRect
+{
+
+    public Demo1RoundRect(Point point, Dimension dimension, Dimension dimension1)
+    {
+        super(point, dimension, dimension1);
+        updateFill();
+    }
+
+    public Demo1RoundRect()
+    {
+    }
+
+    public void geometryChange(Rectangle rectangle)
+    {
+        super.geometryChange(rectangle);
+        if(!getBoundingRect().equals(rectangle))
+            updateFill();
+    }
+
+    public Rectangle handleResize(Graphics2D graphics2d, FREEView view, Rectangle rectangle, Point point, int i, int j, int k, 
+            int l)
+    {
+        Rectangle rectangle1 = super.handleResize(graphics2d, view, rectangle, point, i, j, k, l);
+        if(j == 2)
+            setBoundingRect(rectangle1);
+        return null;
+    }
+
+    public void updateFill()
+    {
+        Rectangle rectangle = getBoundingRect();
+        if(getBrush() != null && getBrush().getStyle() == 65535)
+        {
+            setBrush(new FREEBrush(getBrush().getPaint()));
+            return;
+        } else
+        {
+            setBrush(new FREEBrush(new GradientPaint(rectangle.x, rectangle.y, Color.magenta, rectangle.x + rectangle.width, rectangle.y + rectangle.height, Color.blue)));
+            return;
+        }
+    }
+
+    public String getToolTipText()
+    {
+        if(getBrush() == null)
+            return "this doesn't have any brush filling in the inside";
+        if(getBrush().getPaint() instanceof GradientPaint)
+            return "this is filled with a color gradient";
+        else
+            return "this is filled with a solid color";
+    }
+}

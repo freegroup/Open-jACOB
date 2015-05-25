@@ -1,0 +1,504 @@
+/*
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+*/
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
+parser code  {: 
+  private static Log logger = LogFactory.getLog(AliasConditionScanner.class);
+
+  static public final transient String RCS_ID = "$Id: aliascondition.cup,v 1.5 2009/12/14 12:00:43 ibissw Exp $";
+  static public final transient String RCS_REV = "$Revision: 1.5 $";
+
+  private String errorMessage(String message, Object info)
+  {
+    StringBuffer m = new StringBuffer("Parser error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append("(").append(info.toString()).append(")");
+
+    m.append(" : ").append(message);
+
+    return m.toString();
+  }
+
+  public void report_error(String message, Object info)
+  {
+    if (logger.isWarnEnabled())
+    {
+      logger.warn(errorMessage(message, info));
+    }
+  }
+
+  public void report_fatal_error(String message, Object info) throws Exception
+  {
+    throw new Exception("Syntax error: " + errorMessage(message, info));
+  }
+:};
+
+terminal AND;
+terminal OR;
+terminal IN, NOT_IN;
+terminal NOT;
+terminal IS;
+terminal NULL;
+terminal BETWEEN, NOT_BETWEEN;
+terminal LIKE;
+
+terminal MULT;
+terminal DIV;
+terminal PLUS;
+terminal MINUS;
+
+terminal EQ;
+terminal NOTEQ;
+terminal GREATER_THAN, GREATER_OR_EQ_THAN;
+terminal LESS_THAN, LESS_OR_EQ_THAN;
+terminal LPAREN;
+terminal RPAREN;
+terminal LBRACK;
+terminal RBRACK;
+terminal COMMA;
+terminal DOT;
+
+terminal MANDATORID, QUOTED_MANDATORID;
+terminal USERID, QUOTED_USERID;
+terminal LOGINID;
+terminal APPLICATIONNAME;
+terminal ROLES;
+terminal USERPROPERTY, QUOTED_USERPROPERTY;
+
+terminal java.lang.String      IDENTIFIER;
+terminal java.lang.String      PROPERTY;
+terminal java.lang.Long        LONG_LITERAL;
+terminal java.math.BigDecimal  DECIMAL_LITERAL;
+terminal java.lang.String      QUOTED_STRING_LITERAL;
+
+non terminal AliasCondition condition_start; 
+non terminal AliasCondition condition;
+non terminal AliasCondition simple_comparison_condition;
+non terminal String simple_comparison_operator;
+non terminal AliasCondition membership_condition;
+non terminal AliasCondition range_condition;
+non terminal AliasCondition null_condition;
+non terminal AliasCondition like_condition;
+non terminal AliasCondition compound_condition;
+non terminal AliasExpression expression;
+non terminal AliasExpression simple_expression;
+non terminal AliasExpression compound_expression;
+non terminal AliasExpression function_expression;
+non terminal AliasExpression list_expression;
+non terminal AliasExpressionList expression_list_entries;
+non terminal AliasExpressionList expression_list_entries_opt;
+non terminal AliasTableColumn column;
+non terminal Number number;
+
+/* ensure AND has higher priority than OR */
+precedence left OR;
+precedence left AND;
+
+precedence right NOT;
+
+precedence left LIKE, IN, NOT_IN, BETWEEN, NOT_BETWEEN;
+precedence left EQ, NOTEQ, GREATER_THAN, GREATER_OR_EQ_THAN, LESS_THAN, LESS_OR_EQ_THAN;
+precedence left PLUS, MINUS;
+precedence left MULT, DIV;
+
+
+start with condition_start;
+
+/* ------------------- */
+/* General declaration */
+/* ------------------- */
+
+condition_start ::= 
+{:
+	RESULT = null;
+:} 
+	|	condition:cond
+{:
+	RESULT = cond;
+:} 
+	;
+	
+condition ::=
+		simple_comparison_condition:cond	
+{:
+	RESULT = cond;
+:} 
+	|	membership_condition:cond
+{:
+	RESULT = cond;
+:} 
+	|	range_condition:cond
+{:
+	RESULT = cond;
+:} 
+	|	null_condition:cond
+{:
+	RESULT = cond;
+:} 
+	|	like_condition:cond
+{:
+	RESULT = cond;
+:} 
+	|	compound_condition:cond
+{:
+	RESULT = cond;
+:} 
+	;
+	
+simple_comparison_condition ::=
+		expression:expr1 simple_comparison_operator:op expression:expr2
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr1);
+	condition.add(op);
+	condition.add(expr2);
+	RESULT = condition;
+:} 
+	;
+	
+simple_comparison_operator ::=
+		EQ
+{:
+	RESULT = "=";
+:} 
+	|	NOTEQ
+{:
+	RESULT = "<>";
+:} 
+	|	GREATER_THAN
+{:
+	RESULT = ">";
+:} 
+	|	LESS_THAN
+{:
+	RESULT = "<";
+:} 
+	|	GREATER_OR_EQ_THAN
+{:
+	RESULT = ">=";
+:} 
+	|	LESS_OR_EQ_THAN
+{:
+	RESULT = "<=";
+:} 
+	;
+	
+membership_condition ::=
+		expression:expr IN list_expression:exprlist
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr);
+	condition.add(" IN ");
+	condition.add(exprlist);
+	RESULT = condition;
+:} 
+	|	expression:expr NOT_IN list_expression:exprlist
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr);
+	condition.add(" NOT IN ");
+	condition.add(exprlist);
+	RESULT = condition;
+:} 
+	;	
+	
+range_condition ::=
+		expression:expr1 BETWEEN expression:expr2 AND expression:expr3
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr1);
+	condition.add(" BETWEEN ");
+	condition.add(expr2);
+	condition.add(" AND ");
+	condition.add(expr3);
+	RESULT = condition;
+:} 
+	|	expression:expr1 NOT_BETWEEN expression:expr2 AND expression:expr3
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr1);
+	condition.add(" NOT BETWEEN ");
+	condition.add(expr2);
+	condition.add(" AND ");
+	condition.add(expr3);
+	RESULT = condition;
+:} 
+	;	
+	
+null_condition ::=
+		expression:expr IS NULL
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr);
+	condition.add(" IS NULL");
+	RESULT = condition;
+:} 
+	|	expression:expr IS NOT NULL
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr);
+	condition.add(" IS NOT NULL");
+	RESULT = condition;
+:} 
+	;	
+	
+like_condition ::=
+		column:expr LIKE QUOTED_STRING_LITERAL:str
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(expr);
+	condition.add(" LIKE "+ str);
+	RESULT = condition;
+:} 
+	|	column:col NOT LIKE QUOTED_STRING_LITERAL:str
+{:
+	AliasSimpleCondition condition = new AliasSimpleCondition();
+	condition.add(col);
+	condition.add(" NOT LIKE "+ str);
+	RESULT = condition;
+:} 
+	;
+	
+compound_condition ::=
+		LPAREN condition:cond RPAREN
+{:
+	RESULT = new AliasParenthesedCondition(cond);
+:} 
+	|	NOT condition:cond
+{:
+	RESULT = new AliasUnaryCondition("NOT ", cond);
+:} 
+	|	condition:cond1 AND condition:cond2
+{:
+	RESULT = new AliasBinaryCondition(cond1, " AND ", cond2);
+:} 
+	|	condition:cond1 OR condition:cond2
+{:
+	RESULT = new AliasBinaryCondition(cond1, " OR ", cond2);
+:} 
+	;	
+	
+expression ::=
+		simple_expression:expr
+{:
+	RESULT = expr;
+:} 
+	|	compound_expression:expr
+{:
+	RESULT = expr;
+:} 
+	|	function_expression:expr
+{:
+	RESULT = expr;
+:} 
+	;	
+	
+simple_expression ::=
+		column:col
+{:
+	RESULT = col;
+:} 
+	|	QUOTED_STRING_LITERAL:str
+{:
+	RESULT = new AliasSimpleExpression(str);
+:} 
+	|	number:num
+{:
+	RESULT = new AliasSimpleExpression(num.toString());
+:} 
+	|	NULL
+{:
+	RESULT = new AliasSimpleExpression("NULL");
+:} 
+	|	MANDATORID
+{:
+	RESULT = AliasUserExpression.MANDATOR_ID;
+:} 
+	|	QUOTED_MANDATORID
+{:
+	RESULT = AliasUserExpression.QUOTED_MANDATOR_ID;
+:} 
+	|	USERID
+{:
+	RESULT = AliasUserExpression.USER_ID;
+:} 
+	|	QUOTED_USERID
+{:
+	RESULT = AliasUserExpression.QUOTED_USER_ID;
+:} 
+	|	LOGINID
+{:
+	RESULT = AliasUserExpression.LOGIN_ID;
+:} 
+	|	APPLICATIONNAME
+{:
+	RESULT = AliasUserExpression.APPLICATION_NAME;
+:} 
+	|	USERPROPERTY PROPERTY:property
+{:
+	RESULT = AliasUserExpression.getUserPropertyExpression(property, false);
+:} 
+	|	QUOTED_USERPROPERTY PROPERTY:property
+{:
+	RESULT = AliasUserExpression.getUserPropertyExpression(property, true);
+:} 
+	;	
+	
+compound_expression ::=
+		LPAREN expression:expr RPAREN
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add("(");
+	compoundExpression.add(expr);
+	compoundExpression.add(")");
+	RESULT = compoundExpression;
+:} 
+	|	PLUS expression:expr
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add("+");
+	compoundExpression.add(expr);
+	RESULT = compoundExpression;
+:} 
+	|	MINUS expression:expr
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add("-");
+	compoundExpression.add(expr);
+	RESULT = compoundExpression;
+:} 
+	|	expression:expr1 MULT expression:expr2
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(expr1);
+	compoundExpression.add("*");
+	compoundExpression.add(expr2);
+	RESULT = compoundExpression;
+:} 
+	|	expression:expr1 DIV expression:expr2
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(expr1);
+	compoundExpression.add("/");
+	compoundExpression.add(expr2);
+	RESULT = compoundExpression;
+:} 
+	|	expression:expr1 PLUS expression:expr2
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(expr1);
+	compoundExpression.add("+");
+	compoundExpression.add(expr2);
+	RESULT = compoundExpression;
+:} 
+	|	expression:expr1 MINUS expression:expr2
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(expr1);
+	compoundExpression.add("-");
+	compoundExpression.add(expr2);
+	RESULT = compoundExpression;
+:} 
+	;	
+	
+function_expression ::=
+		IDENTIFIER:func LPAREN expression_list_entries_opt:entries RPAREN
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(func);
+	compoundExpression.add(entries);
+	RESULT = compoundExpression;
+:} 
+/*
+	|	IDENTIFIER:func
+{:
+	AliasCompoundExpression compoundExpression = new AliasCompoundExpression();
+	compoundExpression.add(func);
+	RESULT = compoundExpression;
+:} 
+*/
+	;	
+	
+list_expression ::=
+		LPAREN ROLES RPAREN
+{:
+	RESULT = AliasUserExpression.ROLES;
+:} 
+	|	LPAREN expression_list_entries:list RPAREN
+{:
+	RESULT = list;
+:} 
+	;	
+	
+expression_list_entries_opt ::=
+{:
+	RESULT = new AliasExpressionList();
+:} 
+	|	expression_list_entries:entries
+{:
+	RESULT = entries;
+:} 
+	;	
+	
+expression_list_entries ::=
+		expression:expr
+{:
+	AliasExpressionList entries = new AliasExpressionList();
+	entries.add(expr);
+	RESULT = entries;
+:} 
+	|	expression_list_entries:entries COMMA expression:expr
+{:
+	entries.add(expr);
+	RESULT = entries;
+:} 
+	;	
+	
+column ::=
+		IDENTIFIER:name
+{:
+	RESULT = new AliasTableColumn(name);
+:} 
+	|	IDENTIFIER:alias DOT IDENTIFIER:name
+{:
+	RESULT = new AliasTableColumn(alias, name, false);
+:} 
+	|	LBRACK IDENTIFIER:alias RBRACK DOT IDENTIFIER:name
+{:
+	RESULT = new AliasTableColumn(alias, name, true);
+:} 
+	;	
+	
+number ::=
+		LONG_LITERAL:num
+{:
+	RESULT = num;
+:} 
+	|	DECIMAL_LITERAL:num
+{:
+	RESULT = num;
+:} 
+	;					
+	
+	
+	

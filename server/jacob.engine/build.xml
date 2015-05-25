@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="jacob.engine" default="all">
+	<property file="build.properties"/>
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/>
+	</tstamp>
+	<!-- =================================================================== -->
+	<!--  Configuration                                                      -->
+	<!-- =================================================================== -->
+	<property name="openjacob.admin.home" value="${basedir}/../openjacob.admin"/>
+	<property name="openjacob.home" value="${basedir}/../openjacob.engine"/>
+	<property name="buildlib.dir" value="./lib/build"/>
+	<property name="dist.dir" value="./dist"/>
+	<property name="compile.debug" value="true"/>
+	<property name="compile.deprecation" value="false"/>
+	<property name="compile.optimize" value="true"/>
+	<property environment="env"/>
+	<property name="webapp.dir" value="./webapp"/>
+	<property name="ear.dir" value="./ear"/>
+	<property name="jacob.war" value="./dist/${engine.name}-${engine.version}.war"/>
+	<property name="jacobCluster.war" value="./dist/${engine.name}Cluster-${engine.version}.war"/>
+	<property name="jacobOracle.war" value="./dist/${engine.name}Oracle-${engine.version}.war"/>
+	<property name="jacobMysql.war" value="./dist/${engine.name}MySQL-${engine.version}.war"/>
+	<property name="jacobMssql.war" value="./dist/${engine.name}MsSQLServer-${engine.version}.war"/>
+	<property name="debug_jacob.war" value="./dist/debug_${engine.name}-${engine.version}.war"/>
+	<property name="jacob.ear" value="./dist/${engine.name}-${engine.version}.ear"/>
+	<property name="jacobCluster.ear" value="./dist/${engine.name}Cluster-${engine.version}.ear"/>
+	<property name="jacobDaimler.war" value="./dist/${engine.name}DaimlerCluster-${engine.version}.war"/>
+	<property name="jacobDaimler.ear" value="./dist/${engine.name}DaimlerCluster-${engine.version}.ear"/>
+	<property name="jacobAudi.war" value="./dist/${engine.name}Audi-${engine.version}.war"/>
+	<property name="jacobASML.war" value="./dist/${engine.name}ASML-${engine.version}.war"/>
+	<property name="jacobASMLCluster.war" value="./dist/${engine.name}ASMLCluster-${engine.version}.war"/>
+	<!-- Tomcat deploy properties -->
+	<property name="catalina.work.dir" value="${catalina.home}/work/Catalina/localhost/${catalina.context}"/>
+	<property name="catalina.deploy.dir" value="${catalina.home}/webapps/${catalina.context}"/>
+	<!-- =================================================================== -->
+	<!-- Classpath                                                           -->
+	<!-- =================================================================== -->
+	<path id="compile.classpath">
+		<fileset dir="${buildlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${openjacob.home}/${buildlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${openjacob.home}/webapp/WEB-INF/lib">
+			<include name="*.jar"/>
+			<!-- es muss die Castor Version aus dem lib/build Verzeichnis genommen werden, da diese
+			     einen Patch für die Codegenerierung enthält. -->
+			<exclude name="castor-0.9.6.jar"/>
+		</fileset>
+	</path>
+	<path id="compile.admin.classpath">
+		<path refid="compile.classpath"/>
+		<pathelement path="${webapp.dir}/WEB-INF/classes"/>
+	</path>
+	<!-- =================================================================== -->
+	<!-- ALL                                                                 -->
+	<!-- =================================================================== -->
+	<target name="all" depends="cleanAll, jacob.war, jacobcluster.war, jacoboracle.war, jacobmssql.war, jacobmysql.war, jacobdaimler.war, jacobaudi.war, jacobasml.war, jacobasmlcluster.war, jacobQes.jar, jacobLic.jar" description="create the project">
+		<!-- make javadoc for jacob enterprise and jacobBase.jar -->
+		<ant dir="${openjacob.home}" target="javadoc" inheritAll="false">
+			<property name="dist.dir" value="${basedir}/dist"/>
+			<property name="engine.name" value="${engine.name}"/>
+			<property name="engine.version" value="${engine.version}"/>
+		</ant>
+	</target>
+	<!-- =================================================================== -->
+	<!-- CLEAN                                                               -->
+	<!-- =================================================================== -->
+	<target name="clean" description="Delete old build and dist directories">
+		<delete quiet="true" dir="${webapp.dir}/WEB-INF/classes"/>
+		<delete quiet="true" dir="${webapp.dir}/WEB-INF/jacapp"/>
+		<delete quiet="true" file="${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+
+		<!-- make openjACOB clean -->
+		<ant dir="${openjacob.home}" target="clean" inheritAll="false"/>
+	</target>
+	<target name="cleanAll" depends="clean, ADLParser.clean, QWRParser.clean, castor.adf.clean" description="Delete all temporary and generated data">
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="${dist.dir}" includes="**/*" />
+		</delete>
+	</target>
+	<!-- =================================================================== -->
+	<!-- PREPARE                                                             -->
+	<!-- =================================================================== -->
+	<target name="prepare" depends="clean" description="Delete old build and dist directories">
+		<mkdir dir="${webapp.dir}/WEB-INF/classes"/>
+		<mkdir dir="${dist.dir}"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+	<!-- =================================================================== -->
+	<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler">
+		<classpath refid="compile.classpath"/>
+	</taskdef>
+	<target name="castor.adf.clean" description="clean the access classes for the Quintus ADF forms">
+		<!-- remove castor generated classes -->
+		<delete quiet="true" dir="./java/de/tif/qes/adf/castor"/>
+	</target>
+	<target name="castor.adf" depends="castor.adf.clean" description="create the access classes for the Quintus ADF forms">
+		<!-- create the classes for the form handling (migration for Quintus) -->
+		<XSDCompiler package="de.tif.qes.adf.castor" schema="./castor/adf.xsd" force="true" destDir="./java"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JFLEX Task Definition                                               -->
+	<!-- =================================================================== -->
+	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask">
+		<classpath>
+			<fileset dir="${openjacob.home}/${buildlib.dir}">
+				<include name="JFlex.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
+	<!-- =================================================================== -->
+	<!-- GENERATE ADL Parser                                                 -->
+	<!-- =================================================================== -->
+	<target name="ADLParser.clean" description="Delete parser for ADL files">
+		<delete file="./java/de/tif/qes/adl/ADLScanner.java"/>
+		<delete file="./java/de/tif/qes/adl/ADLParser.java"/>
+		<delete file="./java/de/tif/qes/adl/ADLSym.java"/>
+	</target>
+	<target name="ADLParser.create" depends="ADLParser.clean" description="Create parser for ADL files">
+		<!-- generate CUP parser -->
+		<java classname="java_cup.Main" failonerror="true" fork="true" dir="./java/de/tif/qes/adl">
+			<arg value="-package"/>
+			<arg value="de.tif.qes.adl"/>
+			<arg value="-parser"/>
+			<arg value="ADLParser"/>
+			<arg value="-symbols"/>
+			<arg value="ADLSym"/>
+			<arg value="-interface"/>
+			<arg value="../../../../../JFlex/adl.cup"/>
+			<classpath refid="compile.classpath"/>
+		</java>
+		<!-- generate JFlex scanner -->
+		<jflex file="./JFlex/adl.flex" destdir="./java"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- GENERATE QWR Parser (Quintus Report Writer Parser)                  -->
+	<!-- =================================================================== -->
+	<target name="QWRParser.clean" description="Delete parser for QWR files">
+		<delete file="./java/de/tif/qes/report/QWRScanner.java"/>
+		<delete file="./java/de/tif/qes/report/QWRParser.java"/>
+		<delete file="./java/de/tif/qes/report/QWRSym.java"/>
+	</target>
+	<target name="QWRParser.create" depends="QWRParser.clean" description="Create parser for QWR files">
+		<!-- generate CUP parser -->
+		<java classname="java_cup.Main" failonerror="true" fork="true" dir="./java/de/tif/qes/report">
+			<arg value="-package"/>
+			<arg value="de.tif.qes.report"/>
+			<arg value="-parser"/>
+			<arg value="QWRParser"/>
+			<arg value="-symbols"/>
+			<arg value="QWRSym"/>
+			<arg value="-interface"/>
+			<arg value="../../../../../JFlex/qwr.cup"/>
+			<classpath refid="compile.classpath"/>
+		</java>
+		<!-- generate JFlex scanner -->
+		<jflex file="./JFlex/qwr.flex" destdir="./java"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Generate Java Sources                                               -->
+	<!-- =================================================================== -->
+	<target name="generate" depends="castor.adf, ADLParser.create, QWRParser.create" description="Compile Java sources">
+		<!-- generate openjACOB sources -->
+		<ant dir="${openjacob.home}" target="generate" inheritAll="false">
+			<property name="engine.name" value="${engine.name}"/>
+			<property name="engine.version" value="${engine.version}"/>
+		</ant>
+		<!-- prepare the openjacob.enginge compressed javascript version -->
+		<ant dir="${openjacob.home}" target="prepare-compressed" inheritAll="false">
+			<property name="engine.name" value="${engine.name}"/>
+			<property name="engine.version" value="${engine.version}"/>
+		</ant>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Compile                                                             -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare" description="Compile Java sources">
+		<!-- Generate Java sources first -->
+		<antcall target="generate"/>
+		<!-- Compile Java classes as necessary. The TAG-Classes are required for the jspC -->
+		<echo level="info">Open jACOB home source:${openjacob.home}</echo>
+		<javac encoding="ISO-8859-1" debug="on"  destdir="${webapp.dir}/WEB-INF/classes" fork="true" memoryinitialsize="256m"
+		       memorymaximumsize="800m">
+			<src path="${openjacob.home}/java"/>
+			<src path="./java"/>
+			<classpath refid="compile.classpath"/>
+			<exclude name="**/OpenJacobLicenseManager.java"/>
+		</javac>
+		<!-- Move resources to the classes directory -->
+		<copy todir="${webapp.dir}/WEB-INF/classes">
+			<fileset dir="./java">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/java">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Integrate                                                           -->
+	<!-- =================================================================== -->
+	<target name="integrate" depends="prepare" description="Integrate Admin Console, etc.">
+		<!-- integrate jACOB admin application -->
+		<ant dir="${openjacob.admin.home}" target="integrate" inheritAll="false">
+			<property name="webapp.home" value="${basedir}/${webapp.dir}"/>
+			<reference refid="compile.admin.classpath" torefid="compile.classpath"/>
+		</ant>
+		<!-- move the public key to the web directory -->
+		<copy file="./license/public.key" toFile="./${webapp.dir}/WEB-INF/conf/public.key" overwrite="true"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOB.WAR                                                           -->
+	<!-- =================================================================== -->
+	<target name="jacob.war" depends="compile, integrate" description="Create the standard jacob.war without cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/allnocluster"/>
+		</jar>
+		<jar destfile="${jacob.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBCLUSTER.WAR                                                    -->
+	<!-- =================================================================== -->
+	<target name="jacobcluster.war" depends="compile, integrate" description="Create the standard jacob.war with cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/all"/>
+		</jar>
+		<jar destfile="${jacobCluster.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBORACLE.WAR                                                     -->
+	<!-- =================================================================== -->
+	<target name="jacoboracle.war" depends="compile, integrate" description="Create the jacob.war with Oracle, HSQL (without LDAP)">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/oracle"/>
+		</jar>
+		<jar destfile="${jacobOracle.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/ldap/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/MsSQL**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/mssql**"/>
+				<exclude name="WEB-INF/lib/ms**.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/MySQL**"/>
+				<exclude name="WEB-INF/lib/mysql**.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBMSSQLSERVER.WAR                                                -->
+	<!-- =================================================================== -->
+	<target name="jacobmssql.war" depends="compile, integrate" description="Create the jacob.war with MS SQL Server, HSQL (without LDAP)">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/mssql"/>
+		</jar>
+		<jar destfile="${jacobMssql.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/ldap/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/Oracle**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/oracle**"/>
+				<exclude name="WEB-INF/lib/ojdbc**.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/MySQL**"/>
+				<exclude name="WEB-INF/lib/mysql**.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBMYSQL.WAR                                                      -->
+	<!-- =================================================================== -->
+	<target name="jacobmysql.war" depends="compile, integrate" description="Create the jacob.war with MySQL, HSQL (without LDAP)">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/mysql"/>
+		</jar>
+		<jar destfile="${jacobMysql.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/ldap/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/Oracle**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/oracle**"/>
+				<exclude name="WEB-INF/lib/ojdbc**.jar"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/MsSQL**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/core/data/impl/sql/mssql**"/>
+				<exclude name="WEB-INF/lib/ms**.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBDAIMLER.WAR                                                    -->
+	<!-- =================================================================== -->
+	<target name="jacobdaimler.war" depends="compile, integrate" description="Create the Daimler jacob.war with Cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/all"/>
+		</jar>
+		<jar destfile="${jacobDaimler.war}">
+			<fileset dir="${webapp.dir}">
+				<exclude name="themes/**"/>
+			</fileset>
+			<fileset dir="${webapp.dir}">
+				<include name="themes/*"/>
+				<include name="themes/DaimlerNew/**"/>
+				<include name="themes/HunterBold/**"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+				<!-- only working themes -->
+				<exclude name="themes/**"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<include name="themes/*"/>
+				<include name="themes/jACOB/**"/>
+				<include name="themes/Metalic_small/**"/>
+				<include name="themes/Hunter/**"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBAUDI.WAR                                                       -->
+	<!-- =================================================================== -->
+	<target name="jacobaudi.war" depends="compile, integrate" description="Create the Audi jacob.war without Cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/allnocluster"/>
+		</jar>
+		<jar destfile="${jacobAudi.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBASML.WAR                                                       -->
+	<!-- =================================================================== -->
+	<target name="jacobasml.war" depends="compile, integrate" description="Create the ASML jacob.war without Cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/allnocluster"/>
+		</jar>
+		<jar destfile="${jacobASML.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+				<exclude name="WEB-INF/classes/de/tif/jacob/cluster/impl/**"/>
+				<exclude name="WEB-INF/lib/jgroups-all.jar"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+				<!-- no customer themes -->
+				<exclude name="themes/Audi*/**"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBASMLCLUSTER.WAR                                                       -->
+	<!-- =================================================================== -->
+	<target name="jacobasmlcluster.war" depends="compile, integrate" description="Create the ASML jacob.war with Cluster">
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/all"/>
+		</jar>
+		<jar destfile="${jacobASMLCluster.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webappTMP">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+				<!-- no customer themes -->
+				<exclude name="themes/Audi*/**"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBDEBUG.WAR                                                      -->
+	<!-- =================================================================== -->
+	<target name="jacobdebug.war" depends="compile, integrate" description="Build the debug jacob.war with Cluster and Sourcecode">
+		<!-- create the debug war  -->
+		<delete quiet="true" file="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar"/>
+		<jar destfile="./${webapp.dir}/WEB-INF/lib/jacobProviders.jar">
+			<fileset dir="./provider/all"/>
+		</jar>
+		<jar destfile="${debug_jacob.war}">
+			<fileset dir="${webapp.dir}">
+				<!-- no customer themes -->
+				<exclude name="themes/ASML*/**"/>
+				<exclude name="themes/Daimler*/**"/>
+				<exclude name="themes/HunterBold/**"/>
+			</fileset>
+			<fileset dir="${openjacob.home}/webapp">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/conf/**"/>
+				<exclude name="WEB-INF/jacapp/**"/>
+				<exclude name="WEB-INF/lib/jacobProviders.jar"/>
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="login/license.jsp"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOB.EAR                                                           -->
+	<!-- =================================================================== -->
+	<target name="jacob.ear" depends="jacob.war, jacobdaimler.war" description="Build jacob.ear">
+		<!-- create the ear itself -->
+		<copy file="${jacob.war}" toFile="${dist.dir}/jacob.war" overwrite="true"/>
+		<jar destfile="${jacob.ear}" compress="false">
+			<fileset dir="${ear.dir}/root"/>
+			<fileset dir="${dist.dir}">
+				<include name="jacob.war"/>
+			</fileset>
+		</jar>
+		<delete file="${dist.dir}/jacob.war"/>
+		<!-- create the daimler ear itself -->
+		<copy file="${jacobDaimler.war}" toFile="${dist.dir}/jacob.war" overwrite="true"/>
+		<jar destfile="${jacobDaimler.ear}" compress="false">
+			<fileset dir="${ear.dir}/root"/>
+			<fileset dir="${dist.dir}">
+				<include name="jacob.war"/>
+			</fileset>
+		</jar>
+		<delete file="${dist.dir}/jacob.war"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- CATALINA DEPLOY                                                     -->
+	<!-- =================================================================== -->
+	<target name="catalina.deploy" depends="jacob.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacob.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.cluster.deploy" depends="jacobcluster.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobCluster.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.oracle.deploy" depends="jacoboracle.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobOracle.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.mssql.deploy" depends="jacobmssql.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobMssql.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.mysql.deploy" depends="jacobmysql.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobMysql.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.daimler.deploy" depends="jacobdaimler.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobDaimler.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.audi.deploy" depends="jacobaudi.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobAudi.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<target name="catalina.asml.deploy" depends="jacobasml.war" description="Build and unzip jacob.war to tomcat dir">
+		<delete dir="${catalina.deploy.dir}"/>
+		<delete dir="${catalina.work.dir}"/>
+		<mkdir dir="${catalina.deploy.dir}"/>
+		<unzip src="${jacobASML.war}" dest="${catalina.deploy.dir}"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBQES.JAR                                                        -->
+	<!-- =================================================================== -->
+	<target name="jacobQes.jar" depends="compile" description="Build jacobQes.jar">
+		<jar destfile="${dist.dir}/jacobQes.jar">
+			<fileset dir="${webapp.dir}/WEB-INF/classes">
+				<include name="de/tif/qes/**"/>
+				<exclude name="**/*.exe"/>
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+				<attribute name="Built-Time" value="${build.time}"/>
+				<attribute name="jACOB-Engine-Version" value="${engine.version}"/>
+			</manifest>
+		</jar>
+	</target>
+	<!-- =================================================================== -->
+	<!-- JACOBLIC.JAR                                                        -->
+	<!-- =================================================================== -->
+	<target name="jacobLic.jar" depends="compile" description="Build jacobLic.jar">
+		<jar destfile="${dist.dir}/jacobLic.jar">
+			<fileset dir="${webapp.dir}/WEB-INF/classes">
+				<include name="de/tif/jacob/license/**"/>
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+				<attribute name="Built-Time" value="${build.time}"/>
+				<attribute name="jACOB-Engine-Version" value="${engine.version}"/>
+			</manifest>
+		</jar>
+	</target>
+</project>

@@ -1,0 +1,51 @@
+<html>
+<head>
+<title> Netzwerk-Konfiguration in Linux </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="29727.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="28157.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675174.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Netzwerk-Konfiguration in Linux</h2>
+<p class="bodytext">Bei der Einrichtung eines Netzwerks in Linux müssen Sie den DHCP-Client eventuell so konfigurieren, dass er in DHCP-Anfragen die ID der virtuellen Maschine sendet . Weitere Informationen über die Konfiguration Ihres DHCP-Clients finden Sie in der Dokumentation des DHCP-Clients.</p>
+<p class="bodytext">Bei Red Hat Linux-Gast-Betriebssystemen müssen Sie z. B. die Konfigurationsdatei des DHCP-Clients bearbeiten.</p>
+<ol class="listnumber"><li class="listnumber">Öffnen Sie die Datei <code class="monospace">dhclient.conf</code> und überprüfen Sie, ob folgende Zeilen vorhanden sind.<p class="preformatted">interface eth0 {</p>
+<p class="preformatted">	send dhcp-client-identifier 1:&lt;MAC address&gt;;</p>
+<p class="preformatted">} </p>
+</li><li class="listnumber">Sind diese Zeilen nicht vorhanden, fügen Sie sie manuell hinzu und sichern die Datei. </li></ol><p class="bodytext">Wenn die Datei <code class="monospace">dhclient.conf</code> diese Zeilen bereits enthält, sendet der DHCP-Client die ID der virtuellen Maschine an den DHCP-Server. Der DHCP-Server sendet daraufhin eine IP-Adresse zurück.</p>
+<p class="subheading">Tipp</p>
+<p class="bodytext">Zum Auffinden der Datei <code class="monospace">dhclient.conf</code> geben Sie im Terminal folgenden Befehl ein:</p>
+<p class="preformattedbold">strings /sbin/dhclient | grep etc | grep dhclient.conf</p>
+<p class="bodytext">oder:</p>
+<p class="preformattedbold">rpm -ql dhclient</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+28189" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

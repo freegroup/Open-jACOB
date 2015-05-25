@@ -1,0 +1,500 @@
+'NAME = "QuickCall"
+'TYPE = 0
+'TEMPLATE = "Sub QuickCall()"
+'TEXT = [[
+
+'*****************************************************************************
+' File:         QuickCall
+' Purpose:      Fill in a call record with the contents of a QuickCall
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+
+Sub QuickCall()
+
+Dim iApp As Application
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iTable As DBTable
+Dim iCallGroup As SGroup
+Dim iQuickCallRec As DBRecord
+Dim sVal As String
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iForm = iApp.ContextForm()
+    Set iGroup = iApp.ContextGroup()
+    Set iTable = iApp.ContextTable()
+
+    If Not (iGroup.Mode = MODE_FILLED) Then
+        Exit Sub
+    End If
+
+    'We have a record in the QuickCall group
+    Set iQuickCallRec = iGroup.GetCurrentRecord()
+
+    ' Copy the data into the call group
+    Set iCallGroup = iForm.GetGroup("callEntry")
+
+    If Not ((iCallGroup.Mode = MODE_UPDATE) Or _
+            (iCallGroup.Mode = MODE_NEW) Or _
+            (iCallGroup.Mode = MODE_MULTIUPDATE)) Then
+        ' Only create a new call record if one is NOT currently
+        ' being created or changed.    
+        iCallGroup.BtnClick "callNew"
+    End If
+
+    sVal = iQuickCallRec.GetValue("problem")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callProblem", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("callstatus")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callCallstatus", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("busimpact")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callBusimpact", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("priority")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callPriority", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("type")
+    If Len(sVal) Then 
+        iCallGroup.SetValue "callType", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("whypending")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callWhypending", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("action")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callAction", sVal
+    End If
+    sVal = iQuickCallRec.GetValue("problemtext")
+    If Len(sVal) Then
+        iCallGroup.SetValue "callProblemtext", sVal
+    End If
+
+    Exit Sub
+
+ERROR_HANDLER:
+'!!: iApp.UserMsg
+    iApp.UserMsg "QuickCall error " & CStr(Err) & ": " & Error$
+End Sub
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "QuickTask"
+'TYPE = 0
+'TEMPLATE = "Sub QuickTask()"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       QuickTask
+'Purpose:      Create a set of actions
+'Changes:      Jacek Margos (j.margos@quartess.de)
+'              Take the pricebook and contract information
+'              to the new task(s)
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Sub QuickTask()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iForm As SForm
+Dim iGroup As SGroup
+Dim iGroupQC As SGroup
+Dim iTaskForm As SForm
+' Begin modification by Mike Doering
+Dim iTaskgroup As SGroup
+' END
+Dim iTaskTbl As DBTable
+Dim iTaskRec As DBRecord
+Dim iQTaskTbl As DBTable
+Dim iQTaskRec As DBRecord
+
+' BEGIN modification by Jacek Margos
+Dim iPricebookTbl As DBTable
+Dim iContractTbl As DBTable
+Dim sPrice As String
+Dim sSLA As String
+Dim sRLA As String
+Dim sSecurity As String
+Dim sAllowedTo As String
+Dim sPricebookKey As String
+Dim sContractKey As String
+' END   modification by Jacek Margos
+
+Dim iQCallTbl As DBTable
+Dim iQCallRec As DBRecord
+Dim iCallRec As DBRecord
+Dim nVal As Integer
+Dim nNumRecs As Integer
+Dim sCallKey As String
+Dim sKey As String
+Dim i As Integer
+Dim iCategoryTbl As DBTable
+Dim iCategoryRec As DBRecord
+
+    On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp()
+    Set iNetwork = iApp.ContextNetwork()
+
+    '-------------------------------------------------
+    Set iGroup = iApp.ContextGroup()
+    If Not (iGroup.Mode = MODE_UPDATE Or _
+            iGroup.Mode = MODE_FILLED) Then
+'!!: iApp.UserMsg
+'        iApp.UserMsg "You must select or update the call before choosing QuickTask"
+	iApp.UserMsg " Sie müssen erst eine Meldung auswählen oder aktualisieren bevor" & _
+			" Sie Aut.Aufgabe ausführen."
+        Exit Sub
+    End If
+    '-------------------------------------------------
+    'We have a record in call group
+    Set iCallRec = iGroup.GetCurrentRecord()
+
+    ' Get the quickcall record, if any 
+    Set iForm = iApp.ContextForm()
+    Set iGroupQC = iForm.GetGroup ("quickcall")
+    If iGroupQC.Mode = MODE_CLEAR Then
+        ' No quickcall record selected, so exit
+        Exit Sub
+    Else
+        Set iQCallRec = iGroupQC.GetCurrentRecord()
+        If iQCallRec Is Nothing Then
+            Exit Sub
+        End If
+    End If
+    '-------------------------------------------------
+    'To make sure that the table rules for task are run
+    'we need to recreate the for that holds the group.
+	Set iTaskForm = iApp.ContextFocus.GetForm("taskcall")
+    '-------------------------------------------------
+    'Get the quicktask records(s) linked to the quickcall record
+'!!: "task" -> "Aufgabe"
+'    Set iTaskTbl = iNetwork.GetTable("Aufgabe")
+    Set iTaskTbl = iNetwork.GetTable("task")
+    Set iQTaskTbl = iNetwork.GetTable("quicktask")
+
+	' BEGIN modification by Jacek Margos
+	Set iPricebookTbl = iNetwork.GetTable("pricebook")
+	Set iContractTbl = iNetwork.GetTable("contract")
+	' END   modification by Jacek Margos
+
+    ' Set the join condition
+    iQTaskTbl.QBESetValue "quickcallqtask", iQCallRec.GetKeyValue
+    ' Get all quicktask records for this quickcall record
+    iQTaskTbl.Search
+    nNumRecs = iQTaskTbl.RecordCount()
+
+    ' Clear QBE data in iQTaskTbl before exiting
+    iQTaskTbl.QBEClear
+
+    If nNumRecs > 0 Then
+        nVal = iApp.UserResponseMsg(CStr(nNumRecs) & " Aufgabendatensätze " &  _
+                      "werden erzeugt. Fortfahren?", ebYesNo, "Aut.Aufgabe")
+        If nVal = ebNo Then
+            Exit Sub
+        End If
+
+        sCallKey = iCallRec.GetKeyValue
+
+        ' We have the user's permission
+        For i=0 To nNumRecs - 1
+	        Set iQTaskRec = iQTaskTbl.GetRecord(i)
+            Set iTaskRec = iTaskTbl.AddRecord
+
+            ' Apply default values to this record
+'           iTaskRec.SetDefaultValues
+
+            ' Link this action to a call record
+	        iTaskRec.SetValue "calltask", sCallKey
+	        ' Set the sequence # for this action
+	        iTaskRec.SetValue "sequence", iQTaskRec.GetValue("sequence")
+			' Set the modified date to today
+			iTaskRec.SetValue "datemodified", Now
+
+	        ' Fill in remainder of fields
+            iTaskRec.SetValue "taskstatus", iQTaskRec.GetValue("taskstatus")
+            iTaskRec.SetValue "summary", iQTaskRec.GetValue("summary")
+            iTaskRec.SetValue "priority", iQTaskRec.GetValue("priority")
+            iTaskRec.SetValue "scope", iQTaskRec.GetValue("scope")
+            iTaskRec.SetValue "type", iQTaskRec.GetValue("type")
+            iTaskRec.SetValue "cclist", iQTaskRec.GetValue("cclist")
+            iTaskRec.SetValue "plantime", iQTaskRec.GetValue("plantime")
+
+			' BEGIN modifications by Jacek Margos
+			iTaskRec.SetValue "service", iQTaskRec.GetValue("service")
+			sPricebookKey = iQTaskRec.GetValue("pricebookqtask")
+			If sPricebookKey <> "-1" And sPricebookKey <> "" And sPricebookKey <> "NULL" Then
+				sPrice = iPricebookTbl.GetValueWhere("price","pkey",sPricebookKey)
+				iTaskRec.SetValue "plancost", sPrice
+				sAllowedTo = iPricebookTbl.GetValueWhere("allowedto","pkey",sPricebookKey)
+				sSecurity = iPricebookTbl.GetValueWhere("security","pkey",sPricebookKey)
+				iTaskRec.SetValue "allowedto", sAllowedTo
+				iTaskRec.SetValue "security", sSecurity
+				sContractKey = iPricebookTbl.GetValueWhere("contractpricebook","pkey",sPricebookKey)
+				If sContractKey <> "-1" And sContractKey <> "" And sContractKey <> "NULL" Then
+					sSLA = iContractTbl.GetValueWhere("timetoclose","pkey",sContractKey)
+					sRLA = iContractTbl.GetValueWhere("timetorespond","pkey",sContractKey)
+					iTaskRec.SetValue "timetoclose", sSLA
+					iTaskRec.SetValue "timetorespond", sRLA
+				End If
+			End If
+			' END  modifications by Jacek Margos
+
+            ' TODO deal with floats
+'            iTaskRec.SetValue "plancost", iQTaskRec.GetValue("plancost")
+	        'TODO deal with long text
+            'iTaskRec.SetValue "description", iQTaskRec.GetValue("action")
+
+            ' Set the Workgroup
+            iTaskRec.SetValue "workgrouptask", iQTaskRec.GetValue("workgroupqtask")
+        	iTaskTbl.Commit
+		Next i
+
+        ' Save all new records
+	    'iTaskTbl.Commit
+
+	    ' Now we know that the call had already been updated, so we now have to increment the count
+	    ' of tasks in the call.  Add the number of tasks we just created to the number we already
+	    ' had outstanding.
+	    'iCallRec.SetValue "opentaskcount", Val(iCallRec.GetValue("opentaskcount")) + nNumRecs
+	    'iCallRec.GetTable.Commit
+
+        ' Begin changes Mike Doering
+        ' If there a workgroup in the Quicktask then it will not be refreshed
+        ' so clear taskcall group and start a new search
+		Set iTaskGroup = iTaskForm.GetGroup("task")
+		iTaskGroup.clear
+		dummy = iTaskGroup.search("r_task")
+        ' end modification
+    End If
+    Exit Sub
+
+ERROR_HANDLER:
+'!!: iApp.UserMsg
+    iApp.UserMsg "QuickTask error " & CStr(Err) & ": " & Error$
+    ' Clear QBE data before exiting
+    If Not iCategoryTbl Is Nothing Then
+        iCategoryTbl.QBEClear
+    End If
+    If Not iQCallTbl Is Nothing Then
+        iQCallTbl.QBEClear
+    End If
+    If Not iQTaskTbl Is Nothing Then
+        iQTaskTbl.QBEClear
+    End If
+End Sub
+'-------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "QuickCallCount"
+'TYPE = 0
+'TEMPLATE = "Sub QuickCallCount()"
+'TEXT = [[
+'*****************************************************************************
+' File:         QuickCallCount
+' Purpose:      Count the number of QuickCall records, and place in field
+' Copyright:    Quintus Corporation, 1996
+' *****************************************************************************
+Sub QuickCallCount()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iGroup As SGroup
+Dim iTable As DBTable
+Dim iRecord As DBRecord	' /* by Jacek Margos */
+Dim sName As String					' /* by Jacek Margos */
+Dim nRecs As Integer
+
+' { /* Totally rewritten because it
+'	    has to count quick calls for BOTH
+'	    category AND software   */
+'    Set iApp = GetApp()
+'    Set iNetwork = iApp.ContextNetwork()
+'    Set iTable = iNetwork.GetTable("quickcall")
+'    nRecs = iTable.RecordCount
+
+'    Set iGroup = iApp.ContextGroup()
+'	' BEGIN modification my Jacek Margos
+'	' we have included the product table to HelpQ
+'	' design so we have to rely on something else
+'	' to know if it is CustQ or HelpQ
+'    'If iNetwork.HasTable("product") Then
+'    '    iGroup.SetValue "productQuickcall", CStr(nRecs), True
+'    'ElseIf iNetwork.HasTable("category") Then
+'    '        iGroup.SetValue "categoryQuickcall", CStr(nRecs), True
+'    'End If
+'	If iGroup.Name = "product" Then
+'		iGroup.SetValue "productQuickcall", CStr(nRecs), True
+'	ElseIf iGroup.Name = "category" Then
+'		iGroup.SetValue "categoryQuickcall", CStr(nRecs), True
+'	End If
+'	' END   modification my Jacek Margos
+' }
+	
+	On Error GoTo quickcallcount_error_handler
+
+	Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork()
+	Set iGroup = iApp.ContextGroup
+	sName = iGroup.Name
+	If ( ( sName <> "category" ) And ( sName <> "software" ) ) Then
+		Exit Sub ' should never happen !!!
+	End If
+	Set iRecord = iGroup.GetCurrentRecord
+	If iRecord Is Nothing Then Exit Sub ' !!!
+
+	Set iTable = iNetwork.GetTable( "quickcall" & sName & "0" ) ' "category" OR "software"
+	iTable.QBESetValue sName, iRecord.GetKeyValue
+	iTable.Search
+	nRecs = iTable.RecordCount
+	iGroup.SetValue sName & "Quickcall", CStr( nRecs ), True
+
+quickcallcount_error_handler:
+	On Error Resume Next
+	Set iRecord = Nothing
+	If Not( iTable Is Nothing ) Then
+		iTable.QBEClear
+		iTable.Clear
+	End If
+	Set iTable = Nothing
+End Sub
+
+
+
+
+
+
+
+']]
+'NAME = "QuickCallSearch"
+'TYPE = 0
+'TEMPLATE = "Function QuickCallSearch() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         QuickCallSearch
+' Purpose:      Search for the QuickCalls for BOTH category AND software
+' Copyright:    Quartess Corporation, 1999
+' *****************************************************************************
+Function QuickCallSearch() As Boolean
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iForm As SForm
+Dim iRelRecord As DBRecord
+Dim iMNTable As DBTable
+Dim iQuickcallTable AS DBTable
+Dim nRecs As Long
+Dim iMNRecord As DBRecord
+Dim i As Long
+Dim sPkeyList As String
+
+Dim sRelTables( 1 To 2 ) As String
+Dim vItem As Variant
+Dim sRelTable As String
+
+  ' MDO
+   QuickCallSearch = true
+   Exit Function	
+
+
+	On Error GoTo quickcallsearch_error_handler
+	sRelTables( 1 ) = "category"
+	sRelTables( 2 ) = "software"
+
+	Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+	Set iBrowser = iApp.ContextBrowser
+	Set iQuickcallTable = iApp.ContextTable
+	sPkeyList = ""
+	Set iForm = iApp.ContextForm
+
+	For Each vItem In sRelTables
+		sRelTable = CStr( vItem )
+		Set iRelRecord = iForm.GetGroup( sRelTable ).GetCurrentRecord
+		If Not( iRelRecord Is Nothing ) Then
+			Set iMNTable = iNetwork.GetTable( "quickcall" & sRelTable & "0" )
+			iMNTable.QBESetValue sRelTable, iRelRecord.GetKeyValue
+			iMNTable.Search
+			nRecs = iMNTable.RecordCount
+			For i = 1 To nRecs
+				Set iMNRecord = iMNTable.GetRecord( i - 1 )
+				sPkeyList = sPkeyList & "," & iMNRecord.GetValue( "quickcall" )
+			Next i
+			iMNTable.QBEClear
+			iMNTable.Clear
+			Set iMNTable = Nothing
+			Set iRelRecord = Nothing
+		End If
+	Next ' For Each
+
+	If ( sPkeyList <> "" ) Then
+		sPkeyList = Mid$( sPkeyList, 2 ) ' strip the first comma
+		iBrowser.Clear
+		iBrowser.SetWhere "pkey in (" & sPkeyList & ")"
+		'iQuickCallTable.SetWhere "quickcall.pkey in (" & sPkeyList & ")"
+		'*** FEHLERHAFTER CODE:	Nein ! Nur das Designtool kennt die Methode
+		'nicht!!
+		'iBrowser.SearchWhere "cqlocal", QW_DCO_BACK_FILL
+		'iBrowser.Search "cqlocal"
+	End If
+	QuickCallSearch = False ' to prevent standard search
+	Exit Function
+
+
+quickcallsearch_error_handler:
+	QuickCallSearch = False ' to prevent standard search
+End Function
+
+
+
+
+
+
+
+']]

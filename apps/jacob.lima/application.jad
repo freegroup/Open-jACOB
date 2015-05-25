@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="lima" engineVersion="2.6" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="licenseDataSource">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles/>
+  <Tables>
+    <Table datasource="licenseDataSource" dbName="employee" name="employee" representativeField="fullname">
+      <Field dbName="pkey" history="false" label="%EMPLOYEE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="firstname" history="false" label="%EMPLOYEE.FIRSTNAME" name="firstname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="lastname" history="false" label="%EMPLOYEE.LASTNAME" name="lastname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="organization_key" history="false" label="%EMPLOYEE.ORGANIZATION_KEY" name="organization_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="%EMPLOYEE.LOGINNAME" name="loginname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="%EMPLOYEE.PASSWORD" name="password" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="%EMPLOYEE.FULLNAME" name="fullname" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email" history="false" label="%EMPLOYEE.EMAIL" name="email" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="organization_FKey">
+        <Field>organization_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="login_uidx">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="licenseDataSource" dbName="organization" name="organization" representativeField="name">
+      <Field dbName="pkey" history="false" label="%ORGANIZATION.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="name" history="false" label="%ORGANIZATION.NAME" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email_contact" history="false" label="%ORGANIZATION.EMAIL_CONTACT" name="email_contact" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="licenseDataSource" dbName="engine" name="engine" representativeField="version">
+      <Field dbName="pkey" history="false" label="%ENGINE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="version" history="false" label="%ENGINE.VERSION" name="version" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="public_key" history="false" label="%ENGINE.PUBLIC_KEY" name="public_key" readonly="true" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="description" history="false" label="%ENGINE.DESCRIPTION" name="description" readonly="false" required="true">
+        <LongText/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%ENGINE.CREATE_DATE" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="engine_creator_key" history="false" label="%ENGINE.ENGINE_CREATOR_KEY" name="engine_creator_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="license_type" history="false" label="%ENGINE.LICENSE_TYPE" name="license_type" readonly="false" required="true">
+        <Enumeration>
+          <Default>simple</Default>
+          <Value>simple</Value>
+          <Value>enhanced</Value>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="engine_creator_FKey">
+        <Field>engine_creator_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="version_key">
+        <Field>version</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="licenseDataSource" dbName="license" historyField="history" name="license" representativeField="pkey">
+      <Field dbName="pkey" history="true" label="%LICENSE.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="creator_key" history="true" label="%LICENSE.CREATOR_KEY" name="creator_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="licensee_key" history="true" label="%LICENSE.LICENSEE_KEY" name="licensee_key" readonly="false" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="engine_key" history="true" label="%LICENSE.ENGINE_KEY" name="engine_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="description" history="true" label="%LICENSE.DESCRIPTION" name="description" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="80" searchMode="unbound"/>
+      </Field>
+      <Field dbName="hash_key" history="false" label="%LICENSE.HASH_KEY" name="hash_key" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="255" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="true" label="%LICENSE.CREATE_DATE" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="history" history="false" label="%LICENSE.HISTORY" name="history" readonly="true" required="false">
+        <LongText/>
+      </Field>
+      <Field dbName="user_count" history="true" label="%LICENSE.USER_COUNT" name="user_count" readonly="false" required="true">
+        <Integer autoincrement="false" min="1"/>
+      </Field>
+      <Field dbName="expiration_date" history="true" label="%LICENSE.EXPIRATION_DATE" name="expiration_date" readonly="false" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="is_demo" history="true" label="%LICENSE.IS_DEMO" name="is_demo" readonly="false" required="true">
+        <Integer autoincrement="false" max="1" min="0"/>
+      </Field>
+      <Field dbName="indefinite_flag" history="true" label="%LICENSE.INDEFINITE_FLAG" name="indefinite_flag" readonly="false" required="true">
+        <Integer autoincrement="false" max="1" min="0">
+          <Default>0</Default>
+        </Integer>
+      </Field>
+      <Field dbName="type" history="true" label="%LICENSE.TYPE" name="type" readonly="true" required="true">
+        <Enumeration>
+          <Default>simple</Default>
+          <Value>simple</Value>
+          <Value>enhanced</Value>
+        </Enumeration>
+      </Field>
+      <Field dbName="modify_date" history="false" label="%LICENSE.MODIFY_DATE" name="modify_date" readonly="true" required="false">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="creator_FKey">
+        <Field>creator_key</Field>
+      </ForeignKey>
+      <ForeignKey name="licensee_FKey">
+        <Field>licensee_key</Field>
+      </ForeignKey>
+      <ForeignKey name="engine_FKey">
+        <Field>engine_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="licenseDataSource" dbName="licensehistory" name="licensehistory">
+      <Field dbName="pkey" history="false" label="%LICENSEHISTORY.PKEY" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="hash_key" history="false" label="%LICENSEHISTORY.HASH_KEY" name="hash_key" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="255" searchMode="unbound"/>
+      </Field>
+      <Field dbName="user_count" history="false" label="%LICENSEHISTORY.USER_COUNT" name="user_count" readonly="true" required="true">
+        <Integer autoincrement="false" min="1"/>
+      </Field>
+      <Field dbName="expiration_date" history="false" label="%LICENSEHISTORY.EXPIRATION_DATE" name="expiration_date" readonly="true" required="false">
+        <Date/>
+      </Field>
+      <Field dbName="create_date" history="false" label="%LICENSEHISTORY.CREATE_DATE" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field dbName="indefinite_flag" history="false" label="%LICENSEHISTORY.INDEFINITE_FLAG" name="indefinite_flag" readonly="true" required="true">
+        <Integer autoincrement="false" max="1" min="0"/>
+      </Field>
+      <Field dbName="is_demo" history="false" label="%LICENSEHISTORY.IS_DEMO" name="is_demo" readonly="true" required="true">
+        <Integer autoincrement="false" max="1" min="0"/>
+      </Field>
+      <Field dbName="license_key" history="false" label="%LICENSEHISTORY.LICENSE_KEY" name="license_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="license_FKey">
+        <Field>license_key</Field>
+      </ForeignKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="employee" table="employee"/>
+    <TableAlias name="organization" table="organization"/>
+    <TableAlias name="engine" table="engine"/>
+    <TableAlias name="license" table="license"/>
+    <TableAlias name="license_creator" table="employee"/>
+    <TableAlias name="licensee" table="organization"/>
+    <TableAlias name="engine_creator" table="employee"/>
+    <TableAlias name="ownedLicense" table="license"/>
+    <TableAlias name="ownedLicenseEngine" table="engine"/>
+    <TableAlias name="orgEmployee" table="employee"/>
+    <TableAlias name="licensehistory" table="licensehistory"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="employee" name="employeeBrowser" type="inform">
+      <Field label="%EMPLOYEE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%EMPLOYEE.LOGINNAME" name="browserLoginname" visible="true">
+        <TableField tableField="loginname"/>
+      </Field>
+      <Field label="%EMPLOYEE.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+      <Field label="%ORGANIZATION" name="browserOrganization" visible="true">
+        <TableField tableField="name">
+          <Foreign browserToUse="organizationBrowser" filldirection="both" foreignAlias="organization" relationToUse="organization_employee" relationset="local"/>
+        </TableField>
+      </Field>
+      <Field label="%EMPLOYEE.EMAIL" name="browserEmail" visible="true">
+        <TableField tableField="email"/>
+      </Field>
+    </Browser>
+    <Browser alias="organization" name="organizationBrowser" type="inform">
+      <Field label="%ORGANIZATION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ORGANIZATION.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%ORGANIZATION.EMAIL_CONTACT" name="browserEmail_contact" visible="true">
+        <TableField tableField="email_contact"/>
+      </Field>
+    </Browser>
+    <Browser alias="engine" name="engineBrowser" type="inform">
+      <Field label="%ENGINE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ENGINE.VERSION" name="browserVersion" visible="true">
+        <TableField tableField="version"/>
+      </Field>
+      <Field label="%ENGINE.CREATE_DATE" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="%ENGINE_CREATOR" name="browserEngine_creator" visible="true">
+        <TableField tableField="fullname">
+          <Foreign browserToUse="engine_creatorBrowser" filldirection="both" foreignAlias="engine_creator" relationToUse="engine_creator_engine" relationset="local"/>
+        </TableField>
+      </Field>
+      <Field label="%ENGINE.LICENSE_TYPE" name="browserLicense_type" visible="true">
+        <TableField tableField="license_type"/>
+      </Field>
+      <Field label="%ENGINE.PUBLIC_KEY" name="browserPublic_key" visible="true">
+        <TableField tableField="public_key"/>
+      </Field>
+    </Browser>
+    <Browser alias="license" name="licenseBrowser" type="inform">
+      <Field label="%LICENSE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%LICENSE.TYPE" name="browserType" visible="true">
+        <TableField tableField="type"/>
+      </Field>
+      <Field label="%ENGINE" name="browserEngine" visible="true">
+        <TableField tableField="version">
+          <Foreign browserToUse="engineBrowser" filldirection="backward" foreignAlias="engine" relationToUse="engine_license" relationset="local"/>
+        </TableField>
+      </Field>
+      <Field label="%LICENSE.CREATE_DATE" name="browserCreate_date" visible="true">
+        <TableField tableField="create_date"/>
+      </Field>
+      <Field label="%LICENSE.USER_COUNT" name="browserUser_count" visible="true">
+        <TableField tableField="user_count"/>
+      </Field>
+      <Field label="%LICENSE.INDEFINITE_FLAG" name="browserIndefinite_flag" visible="true">
+        <TableField tableField="indefinite_flag"/>
+      </Field>
+      <Field label="%LICENSE.EXPIRATION_DATE" name="browserExpiration_date" visible="true">
+        <TableField tableField="expiration_date"/>
+      </Field>
+      <Field label="%LICENSE.IS_DEMO" name="browserIs_demo" visible="true">
+        <TableField tableField="is_demo"/>
+      </Field>
+    </Browser>
+    <Browser alias="license_creator" name="creatorBrowser" type="inform">
+      <Field label="%EMPLOYEE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%EMPLOYEE.FIRSTNAME" name="browserFirstname" visible="true">
+        <TableField tableField="firstname"/>
+      </Field>
+      <Field label="%EMPLOYEE.LASTNAME" name="browserLastname" visible="true">
+        <TableField tableField="lastname"/>
+      </Field>
+    </Browser>
+    <Browser alias="licensee" name="licenseeBrowser" type="inform">
+      <Field label="%ORGANIZATION.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%ORGANIZATION.NAME" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="%ORGANIZATION.EMAIL_CONTACT" name="browserEmail_contact" visible="true">
+        <TableField tableField="email_contact"/>
+      </Field>
+    </Browser>
+    <Browser alias="engine_creator" name="engine_creatorBrowser" type="inform">
+      <Field label="%EMPLOYEE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%EMPLOYEE.FIRSTNAME" name="browserFirstname" visible="true">
+        <TableField tableField="firstname"/>
+      </Field>
+      <Field label="%EMPLOYEE.LASTNAME" name="browserLastname" visible="true">
+        <TableField tableField="lastname"/>
+      </Field>
+    </Browser>
+    <Browser alias="ownedLicense" name="ownedLicenseIFBrowser" type="inform">
+      <Field label="%LICENSE.PKEY" name="browserPkey" visible="true">
+        <TableField sortOrder="descending" tableField="pkey"/>
+      </Field>
+      <Field label="%OWNEDLICENSEENGINE" name="browserOwnedLicenseEngine" visible="true">
+        <TableField tableField="version">
+          <Foreign browserToUse="ownedLicenseEngineBrowser" filldirection="both" foreignAlias="ownedLicenseEngine" relationToUse="ownedLicenseEngine_ownedLicense" relationset="local"/>
+        </TableField>
+      </Field>
+      <Field label="%LICENSE.IS_DEMO" name="browserIs_demo" visible="true">
+        <TableField tableField="is_demo"/>
+      </Field>
+      <Field label="%LICENSE.USER_COUNT" name="browserUser_count" visible="true">
+        <TableField tableField="user_count"/>
+      </Field>
+      <Field label="%LICENSE.EXPIRATION_DATE" name="browserExpiration_date" visible="true">
+        <TableField tableField="expiration_date"/>
+      </Field>
+      <Field label="%LICENSE.DESCRIPTION" name="browserDescription" visible="true">
+        <TableField tableField="description"/>
+      </Field>
+    </Browser>
+    <Browser alias="ownedLicenseEngine" name="ownedLicenseEngineBrowser" type="inform">
+      <Field label="%ENGINE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="orgEmployee" name="orgEmployeeIFBrowser" type="inform">
+      <Field label="%EMPLOYEE.PKEY" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field label="%EMPLOYEE.FULLNAME" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+    </Browser>
+    <Browser alias="licensehistory" name="licensehistoryIFBrowser" type="inform">
+      <Field label="%LICENSEHISTORY.CREATE_DATE" name="browserCreate_date" visible="true">
+        <TableField sortOrder="descending" tableField="create_date"/>
+      </Field>
+      <Field label="%LICENSEHISTORY.USER_COUNT" name="browserUser_count" visible="true">
+        <TableField tableField="user_count"/>
+      </Field>
+      <Field label="%LICENSEHISTORY.EXPIRATION_DATE" name="browserExpiration_date" visible="true">
+        <TableField tableField="expiration_date"/>
+      </Field>
+      <Field label="%LICENSEHISTORY.IS_DEMO" name="browserIs_demo" visible="true">
+        <TableField tableField="is_demo"/>
+      </Field>
+      <Field label="%LICENSEHISTORY.HASH_KEY" name="browserHash_key" visible="true">
+        <TableField tableField="hash_key"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="organization_employee">
+      <OneToMany fromAlias="organization" toAlias="employee" toKey="organization_FKey"/>
+    </Relation>
+    <Relation name="creator_license">
+      <OneToMany fromAlias="license_creator" toAlias="license" toKey="creator_FKey"/>
+    </Relation>
+    <Relation name="licensee_license">
+      <OneToMany fromAlias="licensee" toAlias="license" toKey="licensee_FKey"/>
+    </Relation>
+    <Relation name="engine_license">
+      <OneToMany fromAlias="engine" toAlias="license" toKey="engine_FKey"/>
+    </Relation>
+    <Relation name="engine_creator_engine">
+      <OneToMany fromAlias="engine_creator" toAlias="engine" toKey="engine_creator_FKey"/>
+    </Relation>
+    <Relation name="licensee_ownedLicense">
+      <OneToMany fromAlias="licensee" toAlias="ownedLicense" toKey="licensee_FKey"/>
+    </Relation>
+    <Relation name="ownedLicenseEngine_ownedLicense">
+      <OneToMany fromAlias="ownedLicenseEngine" toAlias="ownedLicense" toKey="engine_FKey"/>
+    </Relation>
+    <Relation name="organization_orgEmployee">
+      <OneToMany fromAlias="organization" toAlias="orgEmployee" toKey="organization_FKey"/>
+    </Relation>
+    <Relation name="license_licensehistory">
+      <OneToMany fromAlias="license" toAlias="licensehistory" toKey="license_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="organization">
+      <Relation>organization_employee</Relation>
+      <Relation>organization_orgEmployee</Relation>
+      <Property>
+        <Name>employee.x</Name>
+        <Value>194</Value>
+      </Property>
+      <Property>
+        <Name>employee.y</Name>
+        <Value>99</Value>
+      </Property>
+      <Property>
+        <Name>employee.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>employee.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>organization.x</Name>
+        <Value>185</Value>
+      </Property>
+      <Property>
+        <Name>organization.y</Name>
+        <Value>287</Value>
+      </Property>
+      <Property>
+        <Name>organization.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>organization.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>orgEmployee.x</Name>
+        <Value>478</Value>
+      </Property>
+      <Property>
+        <Name>orgEmployee.y</Name>
+        <Value>290</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="license">
+      <Relation>creator_license</Relation>
+      <Relation>licensee_license</Relation>
+      <Relation>engine_license</Relation>
+      <Relation>licensee_ownedLicense</Relation>
+      <Relation>ownedLicenseEngine_ownedLicense</Relation>
+      <Relation>license_licensehistory</Relation>
+      <Property>
+        <Name>creator.x</Name>
+        <Value>96</Value>
+      </Property>
+      <Property>
+        <Name>creator.y</Name>
+        <Value>333</Value>
+      </Property>
+      <Property>
+        <Name>creator.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>creator.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>engine.x</Name>
+        <Value>246</Value>
+      </Property>
+      <Property>
+        <Name>engine.y</Name>
+        <Value>123</Value>
+      </Property>
+      <Property>
+        <Name>engine.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>engine.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>license.x</Name>
+        <Value>246</Value>
+      </Property>
+      <Property>
+        <Name>license.y</Name>
+        <Value>313</Value>
+      </Property>
+      <Property>
+        <Name>license.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>license.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>licensee.x</Name>
+        <Value>209</Value>
+      </Property>
+      <Property>
+        <Name>licensee.y</Name>
+        <Value>483</Value>
+      </Property>
+      <Property>
+        <Name>licensee.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>licensee.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.x</Name>
+        <Value>510</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.y</Name>
+        <Value>71</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>license_creator.x</Name>
+        <Value>518</Value>
+      </Property>
+      <Property>
+        <Name>license_creator.y</Name>
+        <Value>309</Value>
+      </Property>
+      <Property>
+        <Name>license_creator.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>license_creator.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>ownedLicense.x</Name>
+        <Value>522</Value>
+      </Property>
+      <Property>
+        <Name>ownedLicense.y</Name>
+        <Value>484</Value>
+      </Property>
+      <Property>
+        <Name>ownedLicenseEngine.x</Name>
+        <Value>777</Value>
+      </Property>
+      <Property>
+        <Name>ownedLicenseEngine.y</Name>
+        <Value>483</Value>
+      </Property>
+      <Property>
+        <Name>licensehistory.x</Name>
+        <Value>39</Value>
+      </Property>
+      <Property>
+        <Name>licensehistory.y</Name>
+        <Value>217</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="engine">
+      <Relation>engine_creator_engine</Relation>
+      <Property>
+        <Name>engine.x</Name>
+        <Value>444</Value>
+      </Property>
+      <Property>
+        <Name>engine.y</Name>
+        <Value>237</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.x</Name>
+        <Value>435</Value>
+      </Property>
+      <Property>
+        <Name>engine_creator.y</Name>
+        <Value>60</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="%FORM.LICENSE" name="license">
+      <Group alias="license" browser="licenseBrowser" eventHandler="jacob.event.ui.license.LicenseGroup" label="%GROUP.LICENSE" name="licenseGroup">
+        <Dimension height="350" width="776" x="5" y="285"/>
+        <GuiElement name="licenseButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="600" y="24"/>
+            <Action>
+              <Search filldirection="both" relationset="license" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="licenseButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="680" y="24"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.LicenseButtonNewRecord" name="licenseButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="600" y="48"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="licensePkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="130" x="100" y="25"/>
+              <Caption halign="right" label="%LICENSE.PKEY" valign="top">
+                <Dimension height="20" width="90" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseDescription" visible="true">
+          <LocalInputField tableField="description">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="175"/>
+              <Caption halign="right" label="%LICENSE.DESCRIPTION" valign="top">
+                <Dimension height="20" width="90" x="5" y="175"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseCreate_date" visible="true">
+          <LocalInputField tableField="create_date">
+            <TimestampInput>
+              <Dimension height="20" width="130" x="100" y="50"/>
+              <Caption halign="right" label="%LICENSE.CREATE_DATE" valign="top">
+                <Dimension height="20" width="90" x="5" y="50"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseUser_count" visible="true">
+          <LocalInputField tableField="user_count">
+            <TextInput>
+              <Dimension height="20" width="130" x="100" y="125"/>
+              <Caption halign="right" label="%LICENSE.USER_COUNT" valign="top">
+                <Dimension height="20" width="90" x="5" y="125"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseExpiration_date" visible="true">
+          <LocalInputField tableField="expiration_date">
+            <DateInput>
+              <Dimension height="20" width="130" x="100" y="150"/>
+              <Caption halign="right" label="%LICENSE.EXPIRATION_DATE" valign="top">
+                <Dimension height="20" width="90" x="5" y="150"/>
+              </Caption>
+            </DateInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.LicenseIs_demo" name="licenseIs_demo" visible="true">
+          <LocalInputField tableField="is_demo">
+            <CheckBox>
+              <Dimension height="16" width="16" x="380" y="127"/>
+              <Caption halign="right" label="%LICENSE.IS_DEMO" valign="top">
+                <Dimension height="16" width="140" x="235" y="127"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseHash_key" visible="true">
+          <LocalInputField tableField="hash_key">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="200"/>
+              <Caption halign="right" label="%LICENSE.HASH_KEY" valign="top">
+                <Dimension height="20" width="90" x="5" y="200"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseHistory" visible="true">
+          <LocalInputField tableField="history">
+            <LongTextInput htmlInput="false" inForm="false" mode="readonly">
+              <Dimension height="20" width="20" x="730" y="75"/>
+              <Caption halign="right" label="%LICENSE.HISTORY" valign="top">
+                <Dimension height="20" width="130" x="600" y="75"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseEngine" visible="true">
+          <ForeignInputField browserToUse="engineBrowser" filldirection="backward" foreignAlias="engine" foreignTableField="version" relationToUse="engine_license" relationset="engine">
+            <Dimension height="20" width="180" x="380" y="24"/>
+            <Caption halign="right" label="%ENGINE" valign="top">
+              <Dimension height="20" width="140" x="235" y="24"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="licenseLicense_creator" visible="true">
+          <ForeignInputField browserToUse="creatorBrowser" filldirection="both" foreignAlias="license_creator" foreignTableField="fullname" relationToUse="creator_license" relationset="local">
+            <Dimension height="20" width="180" x="380" y="50"/>
+            <Caption halign="right" label="%LICENSE_CREATOR" valign="top">
+              <Dimension height="20" width="140" x="235" y="50"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="licenseLicensee" visible="true">
+          <ForeignInputField browserToUse="licenseeBrowser" filldirection="both" foreignAlias="licensee" foreignTableField="name" relationToUse="licensee_license" relationset="local">
+            <Dimension height="20" width="180" x="380" y="76"/>
+            <Caption halign="right" label="%LICENSEE" valign="top">
+              <Dimension height="20" width="140" x="235" y="76"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.LicenseIndefinite_flag" name="licenseIndefinite_flag" visible="true">
+          <LocalInputField tableField="indefinite_flag">
+            <CheckBox>
+              <Dimension height="16" width="16" x="380" y="152"/>
+              <Caption halign="right" label="%LICENSE.INDEFINITE_FLAG" valign="top">
+                <Dimension height="16" width="140" x="235" y="152"/>
+              </Caption>
+            </CheckBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseType" visible="true">
+          <LocalInputField tableField="type">
+            <ComboBox>
+              <Dimension height="20" width="130" x="100" y="100"/>
+              <Value>simple</Value>
+              <Value>enhanced</Value>
+              <Caption halign="right" label="%LICENSE.TYPE" valign="top">
+                <Dimension height="20" width="70" x="25" y="100"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.LicenseButtonUpdateRecord" name="licenseButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="680" y="48"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.ShowLicenseInfo" name="showLicenseInfo" visible="true">
+          <Button label="%BUTTON_SHOW_LICENSE_INFO">
+            <Dimension height="20" width="150" x="600" y="200"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.license.LicenseLicensehistoryBrowser" name="licenseLicensehistoryBrowser" visible="true">
+          <InFormBrowser browserToUse="licensehistoryIFBrowser" deleteMode="false" newMode="false" relationToUse="license_licensehistory" updateMode="false">
+            <Dimension height="106" width="650" x="100" y="230"/>
+            <Caption halign="right" label="%BROWSER.LICENSEHISTORY" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement name="licenseModify_date" visible="true">
+          <LocalInputField tableField="modify_date">
+            <TimestampInput>
+              <Dimension height="20" width="130" x="100" y="75"/>
+              <Caption halign="right" label="%LICENSE.MODIFY_DATE" valign="top">
+                <Dimension height="20" width="90" x="5" y="75"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+      <Group alias="licensee" browser="licenseeBrowser" label="%GROUP.LICENSEE" name="licenseeGroup">
+        <Dimension height="275" width="776" x="5" y="5"/>
+        <GuiElement name="licenseeButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="600" y="25"/>
+            <Action>
+              <Search filldirection="both" relationset="organization" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="licenseeButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="680" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="licenseeButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="680" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="licenseeButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="600" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.licensee.LicenseeOwnedLicenseBrowser" name="licenseeOwnedLicenseBrowser" visible="true">
+          <InFormBrowser browserToUse="ownedLicenseIFBrowser" deleteMode="false" newMode="false" relationToUse="licensee_ownedLicense" updateMode="false">
+            <Dimension height="161" width="650" x="100" y="100"/>
+            <Caption halign="right" label="%BROWSER.OWNEDLICENSE" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <GuiElement name="licenseeEmail_contact" visible="true">
+          <LocalInputField tableField="email_contact">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="75"/>
+              <Caption halign="right" label="%ORGANIZATION.EMAIL_CONTACT" valign="top">
+                <Dimension height="20" width="90" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseePkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="130" x="100" y="25"/>
+              <Caption halign="right" label="%ORGANIZATION.PKEY" valign="top">
+                <Dimension height="20" width="90" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="licenseeName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="50"/>
+              <Caption halign="right" label="%ORGANIZATION.NAME" valign="top">
+                <Dimension height="20" width="90" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="%FORM.ENGINE" name="engine">
+      <Group alias="engine" browser="engineBrowser" label="%GROUP.ENGINE" name="engineGroup">
+        <Dimension height="206" width="776" x="5" y="5"/>
+        <GuiElement name="engineButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="600" y="25"/>
+            <Action>
+              <Search filldirection="backward" relationset="engine" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="engineButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="680" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="engineButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="680" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.engine.EngineButtonNewRecord" name="engineButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="600" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="enginePkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="130" x="100" y="25"/>
+              <Caption halign="right" label="%ENGINE.PKEY" valign="top">
+                <Dimension height="20" width="95" x="0" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="engineVersion" visible="true">
+          <LocalInputField tableField="version">
+            <TextInput>
+              <Dimension height="20" width="180" x="380" y="25"/>
+              <Caption halign="right" label="%ENGINE.VERSION" valign="top">
+                <Dimension height="20" width="130" x="245" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="engineCreate_date" visible="true">
+          <LocalInputField tableField="create_date">
+            <TimestampInput>
+              <Dimension height="20" width="130" x="100" y="50"/>
+              <Caption halign="right" label="%ENGINE.CREATE_DATE" valign="top">
+                <Dimension height="20" width="95" x="0" y="50"/>
+              </Caption>
+            </TimestampInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="enginePublicKey" visible="true">
+          <LocalInputField tableField="public_key">
+            <DocumentInput>
+              <Dimension height="20" width="180" x="380" y="75"/>
+              <Caption halign="right" label="%ENGINE.PUBLIC_KEY" valign="top">
+                <Dimension height="20" width="130" x="245" y="75"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="engineEngine_creator" visible="true">
+          <ForeignInputField browserToUse="engine_creatorBrowser" filldirection="both" foreignAlias="engine_creator" foreignTableField="fullname" relationToUse="engine_creator_engine" relationset="local">
+            <Dimension height="20" width="180" x="380" y="50"/>
+            <Caption halign="right" label="%ENGINE_CREATOR" valign="top">
+              <Dimension height="20" width="130" x="245" y="50"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement name="engineDescription" visible="true">
+          <LocalInputField tableField="description">
+            <LongTextInput htmlInput="false" inForm="true" mode="fulledit">
+              <Dimension height="90" width="460" x="100" y="100"/>
+              <Caption halign="right" label="%ENGINE.DESCRIPTION" valign="top">
+                <Dimension height="20" width="95" x="0" y="100"/>
+              </Caption>
+            </LongTextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.engine.EngineLicense_type" name="engineLicense_type" visible="true">
+          <LocalInputField tableField="license_type">
+            <ComboBox>
+              <Dimension height="20" width="130" x="100" y="75"/>
+              <Value>simple</Value>
+              <Value>enhanced</Value>
+              <Caption halign="right" label="%ENGINE.LICENSE_TYPE" valign="top">
+                <Dimension height="20" width="95" x="0" y="75"/>
+              </Caption>
+            </ComboBox>
+          </LocalInputField>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+    <Form label="%FORM.USER" name="user">
+      <Group alias="employee" browser="employeeBrowser" label="%GROUP.EMPLOYEE" name="employeeGroup">
+        <Dimension height="166" width="776" x="5" y="295"/>
+        <GuiElement name="employeeButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="600" y="25"/>
+            <Action>
+              <Search filldirection="both" relationset="organization" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="680" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="680" y="48"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="600" y="48"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="employeeFirstname" visible="true">
+          <LocalInputField tableField="firstname">
+            <TextInput>
+              <Dimension height="20" width="170" x="100" y="75"/>
+              <Caption halign="right" label="%EMPLOYEE.FIRSTNAME" valign="top">
+                <Dimension height="20" width="90" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeLastname" visible="true">
+          <LocalInputField tableField="lastname">
+            <TextInput>
+              <Dimension height="20" width="170" x="390" y="75"/>
+              <Caption halign="right" label="%EMPLOYEE.LASTNAME" valign="top">
+                <Dimension height="20" width="109" x="276" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeLoginname" visible="true">
+          <LocalInputField tableField="loginname">
+            <TextInput>
+              <Dimension height="20" width="170" x="100" y="50"/>
+              <Caption halign="right" label="%EMPLOYEE.LOGINNAME" valign="top">
+                <Dimension height="20" width="90" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePassword" visible="true">
+          <LocalInputField tableField="password">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="125"/>
+              <Caption halign="right" label="%EMPLOYEE.PASSWORD" valign="top">
+                <Dimension height="20" width="90" x="5" y="125"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeePkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="80" x="100" y="25"/>
+              <Caption halign="right" label="%EMPLOYEE.PKEY" valign="top">
+                <Dimension height="20" width="90" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeEmail" visible="true">
+          <LocalInputField tableField="email">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="100"/>
+              <Caption halign="right" label="%EMPLOYEE.EMAIL" valign="top">
+                <Dimension height="20" width="90" x="5" y="100"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="employeeOrganization" visible="true">
+          <ForeignInputField browserToUse="organizationBrowser" filldirection="both" foreignAlias="organization" foreignTableField="name" relationToUse="organization_employee" relationset="local">
+            <Dimension height="20" width="170" x="390" y="50"/>
+            <Caption halign="right" label="%ORGANIZATION" valign="top">
+              <Dimension height="20" width="109" x="276" y="50"/>
+            </Caption>
+          </ForeignInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.employee.ResetPassword" name="resetPassword" visible="true">
+          <Button label="%BUTTON_RESET_PASSWORD">
+            <Dimension height="20" width="150" x="600" y="125"/>
+            <Action>
+              <RecordSelected/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+      <Group alias="organization" browser="organizationBrowser" label="%GROUP.ORGANIZATION" name="organizationGroup">
+        <Dimension height="286" width="776" x="5" y="5"/>
+        <GuiElement name="organizationButtonSearch" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="600" y="25"/>
+            <Action>
+              <Search filldirection="both" relationset="organization" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="organizationButtonClearGroup" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="680" y="25"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="organizationButtonUpdateRecord" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="680" y="50"/>
+            <Action>
+              <UpdateRecord changeUpdate="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="organizationButtonNewRecord" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="600" y="50"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="organizationPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="80" x="100" y="25"/>
+              <Caption halign="right" label="%ORGANIZATION.PKEY" valign="top">
+                <Dimension height="20" width="95" x="0" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="organizationName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="50"/>
+              <Caption halign="right" label="%ORGANIZATION.NAME" valign="top">
+                <Dimension height="20" width="95" x="0" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="organizationEmail_contact" visible="true">
+          <LocalInputField tableField="email_contact">
+            <TextInput>
+              <Dimension height="20" width="460" x="100" y="75"/>
+              <Caption halign="right" label="%ORGANIZATION.EMAIL_CONTACT" valign="top">
+                <Dimension height="20" width="95" x="0" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="organizationOrgEmployeeBrowser" visible="true">
+          <InFormBrowser browserToUse="orgEmployeeIFBrowser" deleteMode="false" newMode="false" relationToUse="organization_orgEmployee" updateMode="false">
+            <Dimension height="166" width="460" x="100" y="105"/>
+            <Caption halign="right" label="%BROWSER.ORGEMPLOYEE" valign="top">
+              <Dimension height="50" width="200" x="0" y="0"/>
+            </Caption>
+          </InFormBrowser>
+        </GuiElement>
+        <ContextMenuEntry label="%BUTTON_COMMON_DELETE" name="defaultName" visible="true">
+          <Action>
+            <DeleteRecord/>
+          </Action>
+        </ContextMenuEntry>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain name="license" title="%DOMAIN.LICENSE" visible="true">
+      <Form>license</Form>
+    </Domain>
+    <Domain name="administration" title="%DOMAIN.ADMINISTRATION" visible="true">
+      <Form>engine</Form>
+      <Form>user</Form>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandlerLookupMethod="reference" name="lima" title="lima Application">
+      <Domain>license</Domain>
+      <Domain>administration</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

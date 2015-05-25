@@ -1,0 +1,217 @@
+<html>
+<head>
+<meta name="description" content="Explore the structure of a Parallels virtual machine." />
+
+<title> Parallels virtuelle Maschine </title>
+<meta name="Keywords" content="Arbeitsspeicher	in Virtual Machine, Aufgeteilte Festplatten, CPU	emuliert in Virtual Machine, Dateien	HDD-Datei, Dateien	PVS-Datei, Dateien	SAV-Datei, Dateien	Snapshot-Dateien, Dateien	Virtual Machine-Dateien, Disketten-Image	in Virtual Machines verwenden, Diskettenlaufwerk, Festplatte	Formate und Typen, FreeBSD	unterstützte Versionen, Geräte	emuliert in Virtual Machine, Hauptplatine, Konfiguration einer Virtual Machine	Konfiguration erstellen, Konfigurationsdatei, Prozessor	emuliert in Virtual Machine, RAM	in Virtual Machine, SCSI-Geräte, Virtual Machine	Virtual Machine-Dateien, 
+Virtuelle Festplatte	expandierende virtuelle Festplatte, Virtuelle Festplatte	Festplattenformate, Virtuelle Festplatte	HDD-Datei, Windows-Festplatten (Ordner), Windows-Programme	Windows-Programme (Ordner)" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23711.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23292.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967512.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Parallels virtuelle Maschine</h2>
+<p class="bodytext">Parallels Desktop verbindet die Vorteile der VM- und der Intel-Virtualisierungstechnologie und ermöglicht Ihnen so, virtuelle Maschinen mit einer Vielzahl von Hardwaregeräten zu erstellen.</p>
+<p class="bodytext">Eine virtuelle Maschine von Parallels funktioniert wie ein selbstständiger Computer mit folgender Hardware:</p>
+<table width="510" cellpadding="2" cellspacing="0" border="0" style="border-collapse:collapse">
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">CPU</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">bis zu 8-Core Intel/AMD CPU (Intel Celeron oder AMD Duron für Kompatibilität mit Legacy-Betriebssystemen)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Hauptplatine</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">Auf einem Intel i965-Chipset basierende Hauptplatine</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">RAM</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">bis zu 8 GB Arbeitsspeicher</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Grafikkarte</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">VGA und SVGA mit VESA 3.0 kompatiblem Video-Adapter</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Grafik-RAM</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">bis zu 256 MB Grafikspeicher</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Diskettenlaufwerk</strong></p>
+</td>
+<td valign=bottom style = "border:1px solid #010101;" width="336"><p class="tablebodytext">1.44 MB Diskettenlaufwerk, zugeordnet einer Imagedatei oder einem physischen Diskettenlaufwerk</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">IDE-Geräte</strong></p>
+</td>
+<td valign=bottom style = "border-right:1px solid #010101;border-top:1px solid #010101;border-bottom:1px solid #010101;" width="336"><p class="tablebodytext">bis zu vier IDE-Geräte</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border-left:1px solid #010101;border-right:1px solid #010101;" width="174"><ul class="tablelistbullet2"><li class="tablelistbullet2"><strong class="specialbold">Festplatte</strong></li></ul></td>
+<td valign=bottom style = "border-right:1px solid #010101;" width="336"><p class="tablebodytext">Festplattenlaufwerk zugeordnet einer Imagedatei (jeweils bis zu 2 TB)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td valign=bottom style = "border-left:1px solid #010101;border-right:1px solid #010101;border-bottom:1px solid #010101;" width="174"><ul class="tablelistbullet2"><li class="tablelistbullet2"><strong class="specialbold">CD/DVD-ROM-Laufwerk</strong></li></ul></td>
+<td valign=bottom style = "border-right:1px solid #010101;border-bottom:1px solid #010101;" width="336"><p class="tablebodytext">CD/DVD-ROM-Laufwerk zugeordnet einem echten Laufwerk oder einer Imagedatei</p>
+</td>
+</tr>
+
+</table>
+<p class="bodytext"></p>
+<table width="510" cellpadding="2" cellspacing="0" border="0" style="border-collapse:collapse">
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">SCSI-Geräte</strong></p>
+</td>
+<td style = "border-right:1px solid #010101;border-top:1px solid #010101;border-bottom:1px solid #010101;" width="336"><p class="tablebodytext">Bis zu 15 SCSI-Geräte</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border-left:1px solid #010101;border-right:1px solid #010101;" width="174"><ul class="tablelistbullet2"><li class="tablelistbullet2"><strong class="specialbold">Festplatte</strong></li></ul></td>
+<td style = "border-right:1px solid #010101;" width="336"><p class="tablebodytext">Festplatte, die einer Imagedatei zugeordnet ist (je bis zu 2 TB)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border-left:1px solid #010101;border-right:1px solid #010101;border-bottom:1px solid #010101;" width="174"><ul class="tablelistbullet2"><li class="tablelistbullet2"><strong class="specialbold">Generisches SCSI-Gerät</strong></li></ul></td>
+<td style = "border-right:1px solid #010101;border-bottom:1px solid #010101;" width="336"><p class="tablebodytext">Generisches SCSI-Gerät</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Netzwerkschnittstellen</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">Bis zu 16 Netzwerkschnittstellen: einschließlich einer virtuellen Netzwerkkarte (Ethernet), die mit RTL8029 kompatibel ist</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Serielle Ports (COM)</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">Bis zu 4 serielle Ports (COM), die einem Socket oder einer Ausgabedatei zugeordnet sind</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Parallel-Ports (LPT)</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">Bis zu 3 Parallel-Ports (LPT), die einer Ausgabedatei, einem echten Port oder einem Drucker zugeordnet sind</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Soundkarte</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">AC'97-kompatible Soundkarte mit Aufnahmeunterstützung</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Tastatur</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">Generische PC-Tastatur</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="174"><p class="tablebodytext"><strong class="specialbold">Maus</strong></p>
+</td>
+<td style = "border:1px solid #010101;" width="336"><p class="tablebodytext">PS/2-Radmaus</p>
+</td>
+</tr>
+
+</table>
+<p class="bodytext">Jede virtuelle Maschine entspricht einem Ordner unter Mac OS X und einer Reihe darin gespeicherter Dateien: die VM-Konfigurationsdatei (.pvs), die virtuelle Festplattendatei (.hdd) und andere Dateien.</p>
+<p class="bodytext">Eine virtuelle Maschine kann über folgende Dateien verfügen:</p>
+<table width="546" cellpadding="2" cellspacing="0" border="1" style="border-collapse:collapse; border:1px solid #010101">
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.pvm</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Paket mit den Dateien der virtuellen Maschine.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.pvs</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Konfigurationsdatei einer virtuellen Maschine. Sie definiert die Konfiguration der Hardware und der Ressourcen einer virtuellen Maschine. Die Konfigurationsdatei wird beim Erstellen der virtuellen Maschine generiert.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.sav</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Eine Datei, die erstellt wird, wenn eine virtuelle Maschine in Standby geschaltet wird. Sie enthält den Zustand der virtuellen Maschine und der zugehörigen Programme in dem Moment, in dem die virtuelle Maschine in Standby geschaltet wurde.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.mem</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Eine Datei, die ein Speicherabbild der in Standby geschalteten virtuellen Maschine enthält. Bei einer laufenden virtuellen Maschine handelt es sich dabei um eine temporäre Datei des virtuellen Speichers.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.hdd</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Ein Paket von Dateien, das die virtuelle Festplatte einer virtuellen Maschine von Parallels darstellt. Beim Erstellen einer virtuellen Maschine können Sie eine neue virtuelle Festplatte erstellen oder eine vorhandene verwenden.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.iso</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Imagedatei einer CD oder DVD. Virtuelle Maschinen behandeln ISO-Images wie echte CD/DVDs.</p>
+</td>
+</tr>
+
+</table>
+<p class="bodytext"></p>
+<table width="546" cellpadding="2" cellspacing="0" border="1" style="border-collapse:collapse; border:1px solid #010101">
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.fdd</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Eine Disketten-Imagedatei. Virtuelle Maschinen behandeln FDD-Images wie echte Disketten.</p>
+<p class="bodytext">Wenn Sie ein Windows-Gastbetriebssystem im Installationsmodus Windows Express installieren, erstellt Parallels Desktop die Disketten-Imagedatei <code class="monospace">unattended.fdd</code> und sichert diese im Ordner der virtuellen Maschine. Die Datei ist für die Installation von Windows Server 2003, Windows XP und Windows Vista erforderlich.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style = "border:1px solid #010101;" width="108"><p class="bodytext"><code class="monospace">.txt</code></p>
+</td>
+<td style = "border:1px solid #010101;" width="438"><p class="bodytext">Ausgabedateien für serielle und Parallel-Ports. Die <code class="monospace">.txt</code>-Dateien werden generiert, wenn der mit einer Ausgabedatei verbundene serielle oder Parallel-Port zur Konfiguration der virtuellen Maschine hinzugefügt wird.</p>
+</td>
+</tr>
+
+</table>
+<p class="bodytext">Bei virtuellen Maschinen, in denen ein Windows-Betriebssystem installiert ist (ab Windows 2000), werden im VM-Ordner automatisch folgende Unterordner erstellt:</p>
+<ul class="listbullet"><li class="listbullet">Der Ordner <code class="monospace">Windows-Programme</code>.<em class="emphasis"> </em>Dieser Ordner enthält Verknüpfungen zu den Windows-Programmen, die in der virtuellen Maschine installiert sind. Es werden Verweise verwendet, um die Transparenz der Dateierweiterungen zu unterstützen.</li><li class="listbullet">Der Ordner <code class="monospace">Windows-Festplatten</code>.<em class="emphasis"> </em>Dieser Ordner enthält Verweise auf die Windows-Festplatten, die in der virtuellen Maschine verfügbar sind.</li></ul>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+22943" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

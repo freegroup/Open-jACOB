@@ -1,0 +1,210 @@
+'NAME = "CTISearch"
+'TYPE = 0
+'TEMPLATE = "Function CTISearch(field_value_1 As String, field_value_2 As String, field_value_3 As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CTISearch
+'Purpose:      Executed when Search needs to be made for a Telephone Call
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+ Public dDatecallconnected As Date
+
+Function CTISearch(field_value_1 As String, field_value_2 As String, field_value_3 As String) As Boolean
+  Dim iApp As Application
+  Dim iFocus As SFocus
+  Dim iNetwork As  DBNetwork
+  Dim iForm As  SForm 
+  Dim iCustomerBrowser As DBBrowser
+  Dim iCustomerTable As  DBTable
+  Dim sCTISearchStr	As String
+  Dim sFocus As String
+  Dim sCustform As String
+
+    On Error GoTo cti_error_handler
+    '------------------- GUI ------------------------------
+   	CTISearch = True
+
+	Set iApp = GetApp()
+	sCTISearchStr =  field_value_1
+
+	If Left(sCTISearchStr,3) ="010" Then 	  ' wenn extern dann 01 abschneiden
+			sCTISearchStr = Mid$( sCTISearchStr,3)
+	End If
+   '	Msgbox sCTISearchStr
+	Select Case	iApp.Name
+		Case "caretaker","testtaker2"
+		 sFocus ="FWT-SMC Meldungserfassung"
+		 sCustForm ="orgcustomerInt"
+
+		Case "imsys", "testimsys"
+		 sFocus ="Meldungsbearbeitung"
+		 sCustForm ="UTorgcustomerInt"
+	End Select
+
+'Get a clear focus
+	Set iFocus = iApp.GetClearFocus(sFocus)
+	If iFocus Is Nothing Then
+		CTISearch = False
+		Exit Function
+	End If
+
+	'Get the Form, Network and Tables
+	Set iForm = iFocus.GetForm(sCustForm)
+	Set iNetwork = iFocus.Network()
+	Set iCustomerTable = iNetwork.GetTable("customerint")
+
+    'Get all the Browsers
+	Set iCustomerBrowser = iNetwork.GetBrowser("customerintBrowser")
+
+	'Clear this form
+	iForm.Clear
+
+	'Set values into the GUI
+
+'Set the search constraints (on DCO) For Customer
+	iCustomerTable.QBESetValue "phonecti", sCTISearchStr  & "#" ' right anchor search
+	iCustomerBrowser.Search "r_customer", 2
+
+'Clear the QBE data for future search bu GUI or anything else
+	iCustomerTable.QBEClear
+	'Show the form
+	iFocus.ShowForm iForm.Name
+	iFocus.Show
+
+	'At this point everything is successful, so return TRUE
+	dDatecallconnected = Now()			  ' set Timestamp dDatecallconnected
+	CTISearch = True
+	Exit Function
+
+cti_error_handler:
+    iApp.UserMsg "CTISearch error " & CStr(Err) & ": " & Error$, ebCritical
+    ' Clear the QBE data
+    If Not iCustomerTable Is Nothing Then
+        iCustomerTable.QBEClear
+    End If
+	CTISearch = False
+End Function
+
+
+']]
+'NAME = "CTIPlaceCall"
+'TYPE = 0
+'TEMPLATE = "Function CTIPlaceCall(sNumber As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CTIPlaceCall
+'Purpose:      Executed when an Outbound Telephone Call needs to be placed
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Function CTIPlaceCall(sNumber As String) As Boolean
+  Dim iApp As CustomerQ.Application
+  Dim iGroup As CustomerQ.SGroup
+  Dim sFieldname As String
+    On Error GoTo cti_place_error_handler
+    '------------------- GUI ------------------------------
+	Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	If sNumber = ebNullString Then
+		sFieldname = iGroup.GUIName("phone")
+		
+		If Len(sFieldname) > 0 Then	sNumber = iGroup.GetValue(sFieldname)
+		
+		' If the first phone field does not have a value in it , try the second phone field
+		If sNumber = ebNullString Then
+			sFieldname = iGroup.GUIName("phone2")
+
+			If Len(sFieldname) > 0 Then	sNumber = iGroup.GetValue(sFieldname)
+		End If
+	End If
+
+    iApp.CTIPlaceCall sNumber, "2"
+
+    'At this point everything is successful, so return TRUE
+    CTIPlaceCall = True
+    Exit Function
+
+cti_place_error_handler:
+	If Err = 16020 Then ' This error occurs if context is not initialized
+		iApp.CTIPlaceCall ebNullString, "2"
+		CTIPlaceCall = True
+	Else
+		iApp.UserMsg "CTIPlaceCall error " & CStr(Err) & ": " & Error$, ebCritical
+		CTIPlaceCall = False
+	End If
+End Function
+
+
+
+
+
+
+']]
+'NAME = "CTITransferCall"
+'TYPE = 0
+'TEMPLATE = "Function CTITransferCall(sNumber As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CTITransferCall
+'Purpose:      Executed when an inbound Telephone Call needs to be transferred
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Function CTITransferCall(sNumber As String) As Boolean
+  Dim iApp As CustomerQ.Application
+
+    On Error GoTo cti_transfer_error_handler
+    '------------------- GUI ------------------------------
+	Set iApp = GetApp()
+	iApp.CTITransferCall sNumber, "3"
+
+	'At this point everything is successful, so return TRUE
+	CTITransferCall = True
+	Exit Function
+
+cti_transfer_error_handler:
+    iApp.UserMsg "CTITransferCall error " & CStr(Err) & ": " & Error$, ebCritical
+    CTITransferCall = False
+End Function
+
+
+
+
+
+
+
+']]
+'NAME = "CTIDiscardCall"
+'TYPE = 0
+'TEMPLATE = "Function CTIDiscardCall() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CTIDiscardCall
+'Purpose:      Executed when an inbound Telephone Call needs to be discarded
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+
+Function CTIDiscardCall() As Boolean
+  Dim iApp As CustomerQ.Application
+
+    On Error GoTo cti_discard_error_handler
+    '------------------- GUI ------------------------------
+	Set iApp = GetApp()
+	iApp.CTITransferCall "DISCARD", "3"
+
+	'At this point everything is successful, so return TRUE
+	CTIDiscardCall = True
+	Exit Function
+
+cti_discard_error_handler:
+    iApp.UserMsg "CTIDiscardCall error " & CStr(Err) & ": " & Error$, ebCritical
+    CTIDiscardCall = False
+End Function
+
+
+
+
+
+
+
+']]

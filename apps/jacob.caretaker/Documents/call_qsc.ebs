@@ -1,0 +1,2192 @@
+
+'*****************************************************************************
+'Script:       CallPreUpdate
+'Purpose:      Business rules that are executed before a call is updated.
+'*****************************************************************************
+
+Function CallPreUpdate() As Boolean
+
+	If nGroupMode = MODE_FILLED Then
+' Check ob Änderung erlaubt ist
+			If AccessAllowed( iApp, iCallGroup) Then
+				iCallGroup.Change
+	   	   		If iCallRec.GetValue("datecallconnected") = "" And iCallRec.GetValue("callstatus") = "Rückruf" Then
+		   			iCallRec.SetValue "datecallconnected", "now"
+		   		End If	
+				CallPreUpdate = True
+				Exit Function
+			Else 
+				iApp.UserMsg "Sie haben keinen schreibenden Zugriff auf diese Meldung",ebExclamation
+				CallPreUpdate = False
+				Exit Function
+			End If
+	ElseIf nGroupMode = MODE_MULTISELECT _
+	    Or nGroupMode = MODE_MULTIUPDATE Then
+		' no checks are being performed
+		' and the function will not be invoked
+		' for multiupdate
+		CallPreUpdate = True
+		Exit Function
+	ElseIf nGroupMode = MODE_UPDATE _
+	    Or nGroupMode = MODE_NEW Then
+			' go and make the job
+	Else
+		' should never happen
+		' but if the group's mode is not OK
+		CallPreUpdate = False
+		Exit Function
+	End If
+	If iCallGroup.GetCurrentRecord.GetValue("callbackmethod")= "" Then
+		iApp.UserMsg "Sie müssen die Art der Kundenrückmeldung angeben.", ebInformation
+		CallPreUpdate = False
+		Exit Function
+	End If
+	If iCallGroup.GetForeignKey("callWorkgroup") = "" Or  iCallGroup.GetForeignKey("callWorkgroup") = "NULL"	Then
+		iApp.UserMsg "Der Meldung muß ein AK zugewiesen sein.", ebInformation
+		CallPreUpdate = False
+		Exit Function
+	Else
+		If ( iCallGroup.GetCurrentRecord.GetValue("workgroupcall") <> iCallGroup.GetForeignKey("callWorkgroup")) Or nGroupMode = MODE_NEW Then
+			sWkgpKey = iCallGroup.GetForeignKey("callWorkgroup")
+		   Set iWorkgroupTable = iApp.ContextNetwork.GetTable("callworkgroup")
+			sIsConference = iWorkgroupTable.GetValueWhere("groupconferencecall", "pkey", sWkgpKey)
+			If sIsConference = "Ja"  Then
+    			sWorkgroupPhone = iWorkgroupTable.GetValueWhere("phone", "pkey", sWkgpKey)
+				If iCallRec.GetValue("mastercall_key") = "" Or iCallRec.GetValue("mastercall_key") = "NULL" Then
+					iApp.UserMsg "Bitte starten Sie einen Gruppenruf mit der Nummer: " & sWorkgroupPhone, ebInformation,"Gruppenruf"
+				Else
+					iApp.UserMsg "Gruppenruf: Bitte benachrichtigen Sie den AK (Tel." & sWorkgroupPhone & ")" & Basic.Eoln$ & _
+								 "oder rufen Sie den Service Desk (Tel. 47111) an und teilen Sie die Nummer der" & Basic.Eoln$ & _
+							     "Untermeldung mit.	" ,ebInformation,"Gruppenruf"
+				End If
+			End If
+		End If
+	End If
+	
+	CallPreUpdate = True
+    Exit Function  
+
+End Function
+'-----------------------------------------------------------------------------------------
+Function AccessAllowed( iApp As Application, iCallGroup As SGroup) As Boolean
+
+	If (InStr( iApp.GetUserGroups, "CQ_PM" ) > 0 ) Or _
+		(InStr( iApp.GetUserGroups, "CQ_ADMIN" ) > 0 ) Or _
+		(InStr( iApp.GetUserGroups, "CQ_AGENT" ) > 0 ) Or _
+		(InStr( iApp.GetUserGroups, "CQ_SUPERAK" ) > 0 ) Or _
+		(InStr( iApp.GetUserGroups, "CQ_SDADMIN" ) > 0 )Then
+		AccessAllowed = True
+		Exit Function
+	End If
+	Set iNetwork = iApp.ContextNetwork
+
+	Set iTable = iNetwork.GetTable( "groupmember" )
+	iTable.Clear
+	iTable.QBEClear
+    iTable.QBESetValue "employeegroup", iApp.CurrentUserKey
+    iTable.QBESetValue "workgroupgroup", iCallGroup.GetCurrentRecord.GetValue("workgroupcall")
+    iTable.QBESetValue "accessallowed", "lesen/schreiben"
+	iTable.Search
+	If iTable.RecordCount >0 Then
+		AccessAllowed = True
+	Else
+		AccessAllowed = False
+	End If
+End Function
+
+
+
+'*****************************************************************************
+'Script:       CallUpdate
+'Purpose:      Business rules that are executed when a call is updated.
+'Copyright:    Quintus Corporation, 1996
+'*****************************************************************************
+'Option Explicit
+Public bAutoDocumented As Boolean
+Public bSendFAX As Boolean
+Public bFirstLevelCloseCall As Boolean
+Public bNotifyCustomer As Boolean
+Public bManuellSearch As Boolean
+Public bWebQ As Boolean
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallTable As DBTable
+Dim iCallRec As DBRecord
+
+Declare Function GetContractFromLocation(iNetwork As DBNetwork, iLocationRec As DBRecord) As String
+
+'----------------------------------------------------------------
+Global Const STATUS = "callstatus"
+Global Const sNull = ""
+'----------------------------------------------------------------
+Dim OldStatus As String, NewStatus As String
+'----------------------------------------------------------------
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, sFieldname As String) As String
+
+'----------------------------------------------------------------
+
+Sub FindSLKSL(iApp As Application, iNetwork As DBNetwork, iCallRec As DBRecord) 
+Dim iRoutingTable As DBTable
+Dim iCategoryTable As DBTable
+Dim iRoutingRecord As DBRecord
+Dim sCategoryKey As String
+Dim sCurrentCategoryKey As String
+Dim sProcessKey As String
+Dim sContractKey As String
+Dim sCurrentContractKey As String
+Dim sDefaultContractKey As String
+Dim bHasContract As Boolean
+Dim bSuccessfull As Boolean
+Dim bSetDefaultContract As Boolean
+Dim bFinish As Boolean
+Dim sSL As String
+Dim sKSL As String
+
+
+On Error GoTo Error_handler
+
+
+	If Not ( iCallRec.HasChanged("categorycall") Or iCallRec.HasChanged("process_key")) Then Exit Sub
+	If iCallRec.HasLinkedRecord("location") Then
+		sContractKey = GetContractFromLocation(iNetwork, iCallRec.GetLinkedRecord("location"))
+	Else
+		sContractKey =""
+	End If
+	If sContractKey = "NULL" Or sContractKey = "" Then
+	   bSetDefaultContract = True	
+	   bHasContract = False	
+	Else
+		bSetDefaultContract = False
+		bHasContract = True
+	End If
+
+	sDefaultContractKey = GetAppProfileValue(iNetwork, "contract_key") ' Standardvertrag	
+
+	sCategoryKey = iCallRec.GetValue("categorycall")
+
+	sProcessKey = iCallRec.GetValue("process_key")
+	sCurrentCategoryKey = sCategoryKey
+
+	If bHasContract Then
+		sCurrentContractKey = sContractKey
+	Else
+		sCurrentContractKey = sDefaultContractKey
+	End If
+
+	bSuccessfull = False
+	bFinish = False
+
+'  Suchen des Routingsatzes
+	Set iCategoryTable = iNetwork.GetTable("category")
+	Set iRoutingTable = iNetwork.GetTable("contractsl")
+
+	Do
+		iRoutingTable.Clear
+ 		iRoutingTable.QBEClear
+  		iRoutingTable.QBESetValue "category_key", sCurrentCategoryKey
+		iRoutingTable.QBESetValue "process_key", sProcessKey
+		iRoutingTable.QBESetValue "contract_key", sCurrentContractKey
+		iRoutingTable.Search
+		If iRoutingTable.RecordCount > 0 Then
+		'We have a  record Lets Select selected.
+			Set iRoutingRecord  = iRoutingTable.GetRecord(0)
+			bSuccessfull= True
+		End If
+		'Wenn keine Abdeckung schauen ob Vatergewerk Abdeckung hat
+		If Not bSuccessfull Then
+			sCurrentCategoryKey =iCategoryTable.GetValueWhere("parentcategory_key","pkey",sCurrentCategoryKey)
+			If (sCurrentCategoryKey = "" Or sCurrentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums erreicht
+				If bHasContract Then ' wenn nicht der spezielle Vertrag vielleicht der Standardvertrag
+					bHasContract = False
+					bSetDefaultContract = True
+					sCurrentCategoryKey = sCategoryKey
+					sCurrentContractKey =sDefaultContractKey	
+				Else
+					bFinish = True ' Nichts gefunden :-(
+				End If
+			End If
+		End If 
+	Loop Until bSuccessfull Or bFinish
+	If bSuccessfull Then
+		'We have a single record selected.  Let's link.
+	   	sSL = iRoutingRecord.GetValue("sl")
+		sKSL = iRoutingRecord.GetValue("ksl")
+	Else
+	   	sSL = ""
+		sKSL = ""
+    End If
+   	iCallRec.SetValue "sl", sSL
+   	iCallRec.SetValue "ksl",sKSL
+
+
+GoTo Exit_Sub
+Error_handler:
+    iApp.UserMsg "FindSLKS error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+' Clean up
+Set iCategoryTable = Nothing
+Set iRoutingTable = Nothing
+Set iRoutingRecord = Nothing
+
+End Sub
+'--------------------------------------------------------------------------------------------------------------
+Function SetReadOnly(iApp As Application, iCallRec As DBRecord, sField As String, sMsg As String) As Boolean
+Dim sOldKey As String
+Dim sKey As String
+Dim iGroupTAble As DBTable
+	SetReadOnly = True
+ '  	iF iCallRec.Mode = 3 Then Exit Function	   'Mode_new
+   '	If iCallRec.GetValue(sField) <> iCallRec.GetOldValue(sField) Then	
+	  ' IRec.HasChanged() funktioniert nicht Problem: Fehler bei GetOldVAlue falls nicht vorhanden
+	If iCallRec.HasChanged(sField) Then
+		If sField ="workgroupcall" Then
+		   sKey = iCallRec.GetVAlue("workgroupcall")
+		   sOldKey = iCallRec.GetOldValue("workgroupcall")
+		   Set iGroupTable = iApp.ContextNetwork.GetTAble("callworkgroup")
+		   If ((iGroupTable.GetValueWhere("organization_key","pkey",skey) <> iGroupTable.GetValueWhere("organization_key","pkey",sOldKey) ) Or _
+			  (iGroupTable.GetValueWhere("orgexternal_key","pkey",skey) <> iGroupTable.GetValueWhere("orgexternal_key","pkey",sOldKey) )) Or _
+				(iApp.Name = "imsys" Or iApp.Name = "testimsys") Then
+   		   		iApp.UserMsg "Änderung von " & sMsg & " ist nicht erlaubt.", ebInformation
+   		   		SetReadOnly = false
+   		   End If
+		Else
+	   		iApp.UserMsg "Änderung von " & sMsg & " ist nicht erlaubt.", ebInformation
+	   		SetReadOnly = false
+		End If
+	End If
+Set iGroupTable = Nothing
+
+End Function
+'-------------------------------------------------------------------------
+
+Function CheckValueChange(iApp As Application, iCallRec As DBRecord) As Boolean
+' Get the old and new status field values.  Based on these, enforce
+' the state change rules.
+' This rule makes no assumptions about GUI state.
+Dim sStatus As String
+Dim dDatecallconnected As Date
+Dim dNow As Date
+Dim isOK As Boolean
+	CheckValueChange =False
+	isOK = True
+	sStatus = iCallRec.GetValue("callstatus")
+	If iCallRec.Mode = 3 Then 'MODE_NEW  ' Set sd_time
+		If iCallRec.GetValue("datecallconnected") <> ""	Then
+	   		dDatecallconnected=iCallRec.GetValueAsDate("datecallconnected") 
+			dNow =iCallRec.GetValue( "datereported") ' iApp.ContextNetwork.GetTable("appprofile").DBNow
+			iCallRec.SetValue "sd_time" ,  iApp.SecondsToInterval( int ( iApp.BusinessInterval(dDatecallconnected,dNow)	) )
+		Else
+			iCallRec.SetValue "datecallconnected" , iCallRec.GetValue( "datereported")
+			iCallRec.SetValue "sd_time" ,"00:00:00"
+		End If
+	End If	
+    Select Case sStatus
+
+
+    Case "AK zugewiesen"
+	  If iCallRec.Mode <> 3 Then 'MODE_NEW	
+	  	isOK =SetReadOnly( iApp, iCallRec, "agentcall", "Agent")
+	  End If
+
+    Case "Fehlgeroutet"
+	  isOK =SetReadOnly( iApp, iCallRec, "agentcall","Agent")
+
+    Case "Angenommen" 
+	  isOK =SetReadOnly( iApp, iCallRec, "agentcall","Agent")
+	   If OldStatus = "Angenommen"	 Then
+	  		isOK =isOK And SetReadOnly( iApp, iCallRec, "workgroupcall", "Auftragskoordinator")
+	   End If
+
+    Case  "Fertig gemeldet", "Dokumentiert", "Geschlossen"
+	  isOK =SetReadOnly( iApp, iCallRec, "workgroupcall", "Auftragskoordinator")
+	  isOK = isOK And SetReadOnly( iApp, iCallRec, "agentcall","Agent")
+    End Select
+	CheckValueChange =	isOK
+	If iCallRec.HasChanged("workgroupcall") And bManuellSearch Then
+		iCallRec.SetValue "routinginfo", "von Hand geroutet"	
+		bManuellSearch = False
+	End If
+End Function
+
+'----------------------------------------------------------------
+Function LinkThroughTable(iNetwork As DBNetwork, iCallRec As DBRecord, sTableName As String, sFieldName As String) As Boolean
+
+' Try to link the records through the table.  Could already have selected
+' a record, but with the workings of the GUI, not have the foreign field
+' filled in for the call.
+Dim iTable As DBTable
+Dim sNewValue As String
+
+	Set iTable = iNetwork.GetTable(sTableName)
+	LinkThroughTable = False
+If bWebQ Then
+	LinkThroughTable = True
+	If iCallRec.Mode = MODE_NEW Then
+	   sNewValue = iCallRec.GetValue(sFieldName)
+	   If sNewValue <> "" And sNewValue <> "NULL" Then					  ' wenn im Call ein Key ist, dann mimm diesen!
+		   iTable.Clear
+		   iTable.QBEClear	
+  		   iTable.QBESetValue iTable.KeyName, sNewValue
+  		   iTable.Search
+		Else
+			If iTable.RecordCount = 1 Then
+				iCallRec.SetValue sFieldName, iTable.GetRecord(0).GetKeyValue
+	   		Else
+				LinkThroughTable = False
+			End If
+		End If
+	Else
+	   sNewValue = iCallRec.GetValue(sFieldName)
+	   If sNewValue <> "" And sNewValue <> "NULL" Then					  ' wenn im Call ein Key ist, dann mimm diesen!
+		   iTable.Clear
+		   iTable.QBEClear	
+  		   iTable.QBESetValue iTable.KeyName, sNewValue
+  		   iTable.Search
+		Else
+			LinkThroughTable = False
+		    iTable.QBEClear	
+			iTable.Clear		'wen Key leer, dann soll wohl das Feld "gelöscht" werden.
+		End If
+	End If			
+Else
+
+	If iTable.RecordCount = 1 Then
+		iCallRec.SetValue sFieldName, iTable.GetRecord(0).GetKeyValue
+		LinkThroughTable = True
+	End If
+End If
+Set iTable = Nothing
+End Function
+'-----------------------------------------------------------------------------------------------------------------------------
+Function CheckCallDocumented(iApp As Application, iNetwork As DBNetwork, iCallRec As DBRecord, sErrorMsg As String) As Boolean
+Dim sCoordinationtime As String
+Dim  isOK As Boolean
+Dim iObjectRec As DBRecord	
+Dim sObjCategoryKey As String
+Dim sClosedTasks As String
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallduplicateTable As DBTable
+Dim sCallID As String
+Dim nOpenTaskCount As Integer
+On Error GoTo Exit_Function
+
+	CheckCallDocumented= True
+	isOK = True	
+	If iCallRec.GetValue("callstatus") <> "Dokumentiert" Then Exit Function
+	'sCoordinationtime = iCallRec.GetValue("coordinationtime")
+
+	'If sCoordinationtime = "" Then
+	'	iApp.UserMsg " Sie müssen Ihren Koordinationsaufwand angeben um die Meldung zu dokumentieren", ebInformation
+	'	isOK = False
+	'End If
+ 	Set iSearchNetwork = iApp.CreateNetwork( "q_task1", " q_task1" )	  ' mit  iApp.CreateNetwork( "q_task", "q_task" )  gab es Ärger	
+ 	Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+ 	Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+ 	iCallduplicateTable.Clear
+  	sCallID = iCallRec.GetKeyValue
+  	iCallduplicateTable.QBEClear
+   	iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+   	iCallduplicateTable.QBESetValue "callstatus", "Rückruf|Durchgestellt|AK zugewiesen|Fehlgeroutet|Angenommen|Fertig gemeldet"
+	iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+	If iBrowser.RecordCount	>0  Then
+		sErrorMsg = "Es müssen erst alle Untermeldungen dokumentiert sein um die Meldung zu dokumentieren"
+		isOK= False
+		GoTo Exit_Function
+	End If 
+ 	Set iTaskTable = iSearchNetwork.GetTable( "tasktable" )
+ 	iTaskTable.Clear
+  	iTaskTable.QBEClear
+   	iTaskTable.QBESetValue "calltask", sCallID
+   	iTaskTable.QBESetValue "taskstatus", "Neu|Angelegt|Freigegeben|In Arbeit|Fertig gemeldet"
+	iTaskTable.Search
+	If iTaskTable.RecordCount	>0 Then
+		sErrorMsg =  "Es müssen erst alle Aufträge dokumentiert sein um die Meldung zu dokumentieren"
+		isOK= False
+		GoTo Exit_Function
+	End If 
+		If iCallRec.HasLinkedRecord("object") Then
+	   		Set iObjectRec = iNetwork.GetTable("object").GetRecord(0) 
+	   		sObjCategoryKey	= iObjectRec.GetValue("objectcategory_key")
+	   		If 	sObjCategoryKey = "" Or sObjCategoryKey="NULL" Then
+				If GetAppProfileValue(iNetwork,"checkobjcategory") ="1" Then
+			 		sErrorMsg = "Sie müssen dem Objekt ein Gewerk zuordnen um die Meldung zu dokumentieren"
+			  		isOK = False
+				End If
+	   		End If
+		End If
+Exit_Function:
+	Set iTaskTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+ 	Set iCallduplicateTable =Nothing
+	CheckCallDocumented = isOK
+End Function
+'----------------------------------------------------------------
+Function CheckCallLinks(iApp As Application, iNetwork As DBNetwork, iCallRec As DBRecord) As Boolean
+' Check to make sure that tha call is linked to the tables that
+' are required depending on the application.
+
+Dim iContract As DBRecord
+Dim iTable As DBTable
+Dim iAgentTable As DBTable
+Dim sString As String
+Dim sStatus As String
+Dim lTimeToClose As Long
+Dim lCommitment As Long
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallduplicateTable As DBTable
+Dim iObjectTable As DBTable
+Dim sCallID As String
+Dim nOpenTaskCount As Integer
+Dim nOpenSubCalls As Integer
+Dim nOpenTasks As Integer
+Dim nTasks As Integer
+Dim nTotalcoordsubcall As Long
+Dim sDefaultExtSystemKey As String
+Dim sDummy As String
+Dim sOpenTasks As String
+Dim sObjectkey As String
+Dim sExtSystemKey As String
+Dim sExtSystemName As String
+Dim IsOK As Boolean
+Dim bHasChangedsl_overdue As Boolean
+Dim bHasChangeddate_sl_overdue As Boolean
+Dim bHasOldsl_overdue As Boolean
+Dim sOldsl_overdue As String
+Dim bHasOlddate_sl_overdue As Boolean 
+Dim sOlddate_sl_overdue As String
+Dim sDate_sl_overdue As String
+Dim sSl_overdue As String 
+Dim sAgentkey As String
+Dim sObjectPriority As String
+Dim sCustomerKey As String
+Dim sWkgpKey As String
+Dim sIsConference As String
+Dim sWorkgroupPhone As String
+
+
+	' We will reset only if we have an error, assume that everything is here.
+	CheckCallLinks = True
+
+' Check SL overdue
+	bNotifyCustomer = False
+	bHasChangedsl_overdue = False
+	bHasChangeddate_sl_overdue= False
+	bHasOldsl_overdue = False
+	IsOK = True
+	sOldsl_overdue =iCallRec.GetValue("sl_overdue")
+	bHasOlddate_sl_overdue= False
+	sOlddate_sl_overdue = iCallRec.GetValue("date_sl_overdue") 
+	sDate_sl_overdue =iCallRec.GetValue("date_sl_overdue") 
+	sSl_overdue	 = iCallRec.GetValue("sl_overdue")
+	
+	If iCallRec.HasChanged("sl_overdue") Then
+		bHasChangedsl_overdue = True
+		If iCallRec.HasOldValue("sl_overdue") Then
+			 sOldsl_overdue = iCallRec.GetOldValue("sl_overdue")
+			If sOldsl_overdue <> "" Then bHasOldsl_overdue = True		
+		End If
+   		If sOldsl_overdue = sSl_overdue Then bHasChangedsl_overdue = False
+	End If 
+	If iCallRec.HasChanged("date_sl_overdue") Then
+		bHasChangeddate_sl_overdue = True
+		If iCallRec.HasOldValue("date_sl_overdue") Then
+		   sOlddate_sl_overdue = iCallRec.GetOldValue("date_sl_overdue")	
+		   If sOlddate_sl_overdue <> "" Then bHasOlddate_sl_overdue = True
+		End If
+   		If sOlddate_sl_overdue = sDate_sl_overdue Then bHasChangeddate_sl_overdue = False
+	End If 
+	' Änderung nur im Status Angenommen
+	If iCallRec.GetValue("sl") <> "" And (bHasChangedsl_overdue And iCallRec.GetValue("sl_overdue") <> "" )Then
+     	If (cDate(Now()) > dateadd("s",iApp.IntervalToSeconds(iCallRec.GetValue("sl")),iCallRec.GetValue("datereported"))) Then
+	   		iApp.UserMsg "Eine Verschiebung des Servicelevels ist nach dem Ablauf der Frist nicht mehr möglich.", ebInformation
+		iCallRec.SetValue "date_sl_overdue", sOlddate_sl_overdue
+		iCallRec.SetValue "sl_overdue", sOldsl_overdue
+		sSl_overdue =  sOldsl_overdue
+		sDate_sl_overdue = sOlddate_sl_overdue
+		IsOK = False
+		End If
+	Else
+		If iCallRec.GetValue("sl") = "" And iCallRec.HasChanged("sl_overdue") And (iCallRec.GetValue("sl_overdue") <> "" ) Then
+	   		iApp.UserMsg "Eine Verschiebung des Servicelevels ist nicht nötig da kein SL definiert ist.", ebInformation
+		iCallRec.SetValue "date_sl_overdue", sOlddate_sl_overdue
+		iCallRec.SetValue "sl_overdue", sOldsl_overdue
+		sSl_overdue =  sOldsl_overdue
+		sDate_sl_overdue = sOlddate_sl_overdue
+		IsOK = False
+		End If
+	End If 
+    If (bHasChangeddate_sl_overdue Or bHasChangedsl_overdue) And iCallRec.GetValue("callstatus")<> "Angenommen" Then
+		iApp.UserMsg "SL darf nur einmal im Status 'Angenommen' verschoben werden.", ebCritical
+		iCallRec.SetValue "date_sl_overdue", sOlddate_sl_overdue
+		iCallRec.SetValue "sl_overdue", sOldsl_overdue
+		IsOK = False
+	Else
+     If (bHasChangeddate_sl_overdue And bHasOlddate_sl_overdue) Or (bHasChangedsl_overdue And bHasOldsl_overdue) Then
+		iApp.UserMsg "SL darf nur einmal im Status 'Angenommen' verschoben werden.", ebCritical
+		iCallRec.SetValue "date_sl_overdue", sOlddate_sl_overdue
+		iCallRec.SetValue "sl_overdue", sOldsl_overdue
+		sSl_overdue =  sOldsl_overdue
+		sDate_sl_overdue = sOlddate_sl_overdue
+		IsOK = False
+	 End If 
+
+   	 If ((sSl_overdue = "") And  (sDate_sl_overdue<> ""))  Then
+		iApp.UserMsg "Sie müssen eine Begründung für den Verzug des Service Levels eingeben", ebInformation
+		CheckCallLinks = False
+		IsOK = False
+		Exit Function
+   	 End If
+
+     If ((sSl_overdue <> "") And (sDate_sl_overdue = "")) Then
+		iApp.UserMsg "Ene Begründung ohne Datum der Wiederherstellung ist unzulässig", ebInformation
+		CheckCallLinks = False
+		IsOK = False
+		Exit Function
+	 End If
+	If bHasChangeddate_sl_overdue And IsOK And sDate_sl_overdue <> "" Then
+   		 If (CDate(sDate_sl_overdue) < Now()) Then
+	   	    iApp.UserMsg "Der Verzug des Service Levels kann nicht in der Vergangenheit liegen", ebInformation
+	   		iCallRec.SetValue "date_sl_overdue", sOlddate_sl_overdue
+	  		iCallRec.SetValue "sl_overdue", sOldsl_overdue
+	   		sSl_overdue =  sOldsl_overdue
+			sDate_sl_overdue = sOlddate_sl_overdue
+	   		IsOK = False
+   	 	 End If
+   	 End If
+
+    If bHasChangedsl_overdue And IsOK Then bNotifyCustomer = True
+	End If
+	' Now we fill in the links that we have.  To do this we first check it a table is 
+	' in our network.  If so then it is a part of this focus, so we will link the table
+	' to our call.
+
+	' First look for the type of product/category associated with this call.  Here is where 
+	' another table could be substituted for a new application.
+
+	' BEGIN modification by Jacek Margos
+	' we have included the table "product" into the design
+	' we do not link the product with the call (like CustQ)
+	' but the category
+	' the following code has been commented out
+
+
+	If iNetwork.HasTable("category") Then
+        ' We need to make sure we have an category.
+        If Not(iCallRec.HasLinkedRecord("category")) And _
+		   Not(LinkThroughTable(iNetwork,iCallRec,"category","categorycall")) Then
+                iApp.UserMsg "Für diese Meldung müssen Sie erst ein Gewerk auswählen"
+                CheckCallLinks = False
+       	        Exit Function
+		End If
+	End If
+'workgroup ist Pflicht!
+	If iNetwork.HasTable("callworkgroup") Then
+        ' We need to make sure we have an workgroup.
+        If Not(iCallRec.HasLinkedRecord("callworkgroup"))  Then	iApp.UserMsg "Für diese Meldung müssen Sie erst einen AK auswählen"
+                CheckCallLinks = False
+       	        Exit Function
+		End If
+	End If
+
+
+'Tätigkeit ist Pflicht
+	If iNetwork.HasTable("process") Then
+        ' We need to make sure we have an category.
+        If Not(iCallRec.HasLinkedRecord("process"))	 Then iApp.UserMsg "Für diese Meldung müssen Sie erst ein Tätigkeit auswählen"
+                CheckCallLinks = False
+       	        Exit Function
+		End If
+	End If
+
+
+' Ort ist nur Pflicht wenn in Tätigkeit und Gewerk angegeben
+	If  iNetwork.GetTable("category").GetRecord(0).GetValue("locationrequired") = "Ja"	 Then
+        ' We need to make sure we have alocation.
+        If Not(iCallRec.HasLinkedRecord("location")) And _
+		   Not(LinkThroughTable(iNetwork,iCallRec,"location","location_key")) And _
+			 (iCallRec.Mode = MODE_NEW ) Then
+                    iApp.UserMsg "Für diese Meldung müssen Sie erst ein Meldungsort angeben"
+                CheckCallLinks = False
+       	        Exit Function
+		Else
+  	   		If iCallRec.HasChanged( "location_key" ) Then
+				sDummy = iCallRec.GetValue("location_key")
+				If sDummy <> "" Then
+					If iCallRec.GetTable.InDatabase("location_key",sDummy) Then
+		   				iApp.UserMsg "Es muß immer ein NEUER Störungsort angegegeben werden. ",ebInformation, "Störungsort nicht eindeutig in der Datenbank"
+                		CheckCallLinks = False
+       	         		Exit Function
+					End If
+				End If
+			End If	
+		End If	
+	End If
+
+
+	If iNetwork.GetTable("process").GetRecord(0).GetValue("considerpriority") = 1 And iCallRec.Mode= MODE_NEW Then
+
+		If iNetwork.HasTable("object") Then
+        ' We need to make sure we have an category.
+     	   If (iCallRec.HasLinkedRecord("object")) Or _
+	  		   (LinkThroughTable(iNetwork,iCallRec,"object","object_key")) Then
+
+	   		Set iObjectTable = iNetwork.GetTable("object")
+
+		  		If iObjectTable.RecordCount = 1 Then
+
+	    	 		sObjectPriority = iObjectTable.Getrecord(0).GetValue("priority")
+
+			  		If 	iObjectTable.MapEnumStrToInt("priority",iCallRec.GetValue("priority")) < iObjectTable.MapEnumStrToInt("priority",sObjectPriority)	Then
+			  			iCallRec.SetValue "priority", sObjectPriority
+			  		End If
+				End If
+			Set iObjectTable = Nothing
+	   		End If
+		End If
+	
+	End If
+
+	' Now we have to link to the person who made the call.  In some applications this is
+	' a customer in others it is an employee.  Here also is where a modification can
+	' be made for a new application.
+	If iNetwork.HasTable("customerint") Then
+	       If Not(iCallRec.HasLinkedRecord("customerint")) And _
+		   Not(LinkThroughTable(iNetwork,iCallRec,"customerint","employeecall")) Then
+		    	iApp.UserMsg "Für diese Meldung müssen Sie erst einen Melder auswählen"	
+    	        CheckCallLinks = False
+        	    Exit Function
+		End If
+      End If
+	' OK let's check for the agent link.  This is only going to be needed
+	' when a call is created from WebQ.
+   	 ' Check to be sure that there is an agent.  If not, supply one
+   	 	If iCallRec.GetValue("agentcall") = "" Then
+     	     sAgentkey = CurrentUserKey(iNetwork, "agent")
+			 If sAgentkey = "" Then	
+			 	iApp.UserMsg "Sie sind kein Agent. Beschaffen Sie sich die entsprechenden Rechte beim Administrator"
+                CheckCallLinks = False
+                Exit Function
+			 Else 
+				iCallRec.SetValue "agentcall", sAgentkey
+			 End If
+ 		 
+    	End If
+
+	End If
+
+    ' Now deal with the status fields.  Different things can happen for a status.
+    sStatus = iCallRec.GetValue("callstatus")
+
+  
+  	If sStatus = "Fertig gemeldet" Then
+		sOpenTasks = iCallRec.GetValue("opentaskcount")
+
+        If  val(sOpenTasks) <> 0 And iCallRec.Mode <> 3 Then	 ' 3 = ModE_New
+            iApp.UserMsg "Sie müssen erst alle assoziierten Aufträge fertig melden bevor Sie die Meldung fertig melden. " &_
+				"Der Status war " & iCallRec.GetOldValue("callstatus")
+            CheckCallLinks = False
+            Exit Function
+        End If
+
+		' Sub Calls checken
+	 		Set iSearchNetwork = iApp.CreateNetwork( "q_taskcount", "q_taskcount" )
+ 	 		Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+   	 		Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+  			iCallduplicateTable.Clear
+   			sCallID = iCallRec.GetKeyValue
+   			iCallduplicateTable.QBEClear
+   			iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+   			iCallduplicateTable.QBESetValue "callstatus", "Rückruf|Durchgestellt|AK zugewiesen|Fehlgeroutet|Angenommen"
+   			iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+  			nOpenSubCalls = iBrowser.RecordCount
+
+  			Set iCallduplicateTable = Nothing
+  			Set iBrowser = Nothing
+   			Set iSearchNetwork = Nothing
+			If nOpenSubCalls >0 Then
+        	    iApp.UserMsg "Sie müssen erst alle assoziierten Untermeldungen fertig melden bevor Sie diese Meldung fertig melden. " &_
+	   				"Der Status war " & iCallRec.GetOldValue("callstatus")
+       	     CheckCallLinks = False
+         	   Exit Function
+   	    	End If
+
+    End If
+
+	Set iTaskTable = Nothing
+	Set iObjectTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+
+End Function
+'--------------------------------------------------------
+
+Function CheckCallStatusChange(iApp As Application, _
+    iNetwork As DBNetwork, iCallTable As DBTable, _
+    iCallRec As DBRecord) As Boolean
+' Get the old and new status field values.  Based on these, enforce
+' the state change rules.
+' This rule makes no assumptions about GUI state.
+Dim iCallWorkgroupRec As DBRecord
+Dim dDateAssigned As Date
+Dim dDateConnected As Date
+Dim dDateDocumented As Date
+Dim dCloseBy As Date
+Dim sClosedBy As String
+Dim OldStatus As String
+Dim NewStatus As String
+Dim lInterval As Long
+Dim nSD_Time As Long
+Dim isOK As Boolean
+Dim sErrorMsg As String
+	CheckCallStatusChange =False
+	isOK = True
+    If iCallRec.HasChanged(STATUS) Then
+		If iCallRec.Mode = MODE_NEW Then
+        	OldStatus = iCallRec.GetValue(STATUS)
+        	NewStatus = iCallRec.GetValue(STATUS)
+		Else
+        	OldStatus = iCallRec.GetOldValue(STATUS)
+        	NewStatus = iCallRec.GetValue(STATUS)
+		End If
+    Else
+ 	    If iCallRec.GetValue (STATUS) = "Geschlossen" Then
+			iApp.UserMsg "Geschlossene Meldungen dürfen nicht mehr geändert werden.",ebCritical
+			isOK =FALSE
+		Else
+			isOK =TRUE
+    	End If
+		CheckCallStatusChange =	isOK
+    	Exit Function
+    End If
+
+    If OldStatus = "Geschlossen" Then
+		iApp.UserMsg "Geschlossene Meldungen dürfen nicht mehr geändert werden.",ebCritical
+		CheckCallStatusChange =	FALSE
+    	Exit Function
+    End If
+
+    Select Case NewStatus
+    Case "Verworfen"
+
+        If OldStatus = "Rückruf" Or OldStatus = "Verworfen" Then
+    	  ' Check out what to do
+		Else
+			isOK = False
+		End If
+
+    Case "Rückruf"
+
+        If OldStatus = sNull Then
+            	iCallRec.SetValue "dateclosed", "now"
+				 
+    			iCallRec.SetValue "agentcall", CurrentUserKey(iNetwork, "agent")
+
+		Else
+			isOK = False
+		End If
+
+    Case "Durchgestellt"
+
+        If OldStatus = "Rückruf" Or OldStatus = sNull Or OldStatus = "Durchgestellt" Then
+    	  ' Check out what to do
+        ' If status is being set back to New, reset all dates
+        	If OldStatus <> sNull Then
+            	iCallRec.SetValue "dateassigned", sNull
+            	iCallRec.SetValue "dateresolved", sNull
+        	End If
+
+		Else
+			isOK = False
+		End If
+
+
+    Case "AK zugewiesen"
+
+        If OldStatus = "Fehlgeroutet" Or OldStatus = "Durchgestellt" Or OldStatus = "AK zugewiesen"   Then
+  		' If there is no workgroup, set the status back to "Durchgestellt"
+        	If Not(iCallRec.HasLinkedRecord("callworkgroup")) Then
+
+         	   iCallRec.SetValue STATUS, "Durchgestellt"
+         	   iCallRec.SetValue "dateassigned", sNull
+        	Else ' Set the date
+         	   iCallRec.SetValue "dateassigned", "now"
+        	End If
+			If iApp.IntervalToSeconds(iCallRec.GetValue( "sd_time")) = 0 And  _
+				 (iCallRec.GetValue( "mastercall_key") = "" Or iCallRec.GetValue( "mastercall_key") = "NULL") Then
+	      	    dDateConnected = iCallRec.GetValueAsDate("datecallconnected")
+		   		dDateAssigned= iCallRec.GetValueAsDate("dateassigned") 
+				nSD_Time= iApp.DateToSeconds(dDateAssigned) - iApp.DateToSeconds(dDateConnected)
+				iCallRec.SetValue "sd_time", iApp.SecondsToInterval( nSD_Time)
+			End If
+		Else
+			isOK = False
+		End If
+
+    Case "Fehlgeroutet"
+
+        If OldStatus = "AK zugewiesen" Or OldStatus = "Fehlgeroutet"  Then
+    	  ' Check out what to do
+		Else
+			isOK = False
+		End If
+
+    Case "Angenommen"
+        If OldStatus = "AK zugewiesen" Or OldStatus = "Angenommen" Or OldStatus = "Fehlgeroutet" Or bCalledFromRuleServer Then
+			' Problemmanager dürfen auch fehlgeroutete Meldungen annehmen
+		   If OldStatus = "Fehlgeroutet" And ( InStr(iApp.GetUserGroups,"CQ_PM") <> 0 ) Then	
+	   			iCallRec.SetValue "dateowned", "now"
+		   Else
+			  If OldStatus = "Fehlgeroutet" Then
+				isOK = False
+			  End If
+	   		  iCallRec.SetValue "dateowned", "now"
+		   	End If	
+		Else
+			isOK = False
+		End If
+
+    Case "Fertig gemeldet"
+        If OldStatus = "Angenommen" Or OldStatus = "Fertig gemeldet" Or bCalledFromRuleServer Then
+			If OldStatus = "Angenommen" Then
+	        	iCallRec.SetValue "dateresolved", "now"
+			End If
+			If iCallRec.HasLinkedRecord("callworkgroup") Then
+				Set iCallWorkgroupRec = iNetwork.GetTable("callworkgroup").GetRecord(0)
+				If 	iCallWorkgroupRec.GetValue("autodocumented")="Ja" Then
+					iCallRec.SetValue "callstatus", "Dokumentiert"
+				    If CheckCallDocumented( iApp, iNetwork, iCallRec, sErrorMsg) Then
+	        			iCallRec.SetValue "datedocumented", "now"
+						iCallRec.SetValue "callstatus", "Dokumentiert"
+						bAutoDocumented = True
+					Else
+						iCallRec.SetValue "callstatus","Fertig gemeldet"
+					End If
+				End If
+			   Set iCallWorkgroupRec = Nothing
+			End If
+		Else
+			isOK = False
+		End If
+
+    Case "Dokumentiert"
+        If OldStatus = "Fertig gemeldet" Or OldStatus = "Fertig akzeptiert" Or OldStatus = "Dokumentiert"  Or bCalledFromRuleServer Then
+	        	iCallRec.SetValue "datedocumented", "now"
+		Else
+			isOK = False
+		End If
+    Case "Geschlossen"
+        If OldStatus = "Dokumentiert" Or bCalledFromRuleServer Then
+	        iCallRec.SetValue "dateclosed", "now"
+		Else
+			isOK = False
+		End If
+    End Select
+	If Not isOK Then
+		iApp.UserMsg "Der Statusübergang von '" & Oldstatus & "' zu '" & NewStatus & "' ist nicht erlaubt.", ebCritical
+	End If
+	CheckCallStatusChange =	isOK
+
+End Function
+' --------------------------------------------------
+Sub SetCallStatus(iNetwork As DBNetwork, iCallRec As DBRecord)
+' Set the status if foreign fields require.
+Dim sStatus As String
+Dim bBadrouting As Boolean
+    sStatus = iCallRec.GetValue(STATUS)
+
+
+	bBadrouting = False
+
+    If iCallRec.HasLinkedRecord("callworkgroup") Then
+        If sStatus = "Fehlgeroutet" And iCallRec.HasChanged("workgroupcall") Then
+			If iCallRec.HasChanged(STATUS)  And iCallRec.Mode <> MODE_NEW Then
+				If iCallRec.GEtOldValue(STATUS) = "Fehlgeroutet" Then bBadrouting = True
+  			End If
+			If ( Not iCallRec.HasChanged(STATUS) ) Or bBadrouting Then
+            	iCallRec.SetValue STATUS, "AK zugewiesen"
+            	iCallRec.SetValue "dateassigned", "now"
+			End If
+        End If
+
+        If sStatus = "Neu" Or sStatus = "Durchgestellt" Then
+            iCallRec.SetValue STATUS, "AK zugewiesen"
+            iCallRec.SetValue "dateassigned", "now"
+        End If
+    Else
+        If sStatus = "AK zugewiesen" Then
+            iCallRec.SetValue STATUS, "Fehlgeroutet"
+        End If
+    End If
+End Sub
+'----------------------------------------------------------------
+
+Function SetFlag(nTarget As Long, nFlag As Integer) As Long
+' Sets the nFlag'th bit of the target integer
+' Note that nFlag is actually off-by-one.  When nFlag = 0, set the 1 bit
+    SetFlag = nTarget Or 2 ^ (nFlag)
+End Function
+
+'----------------------------------------------------------------
+
+'----------------------------------------------------------------
+Sub SetEscalationState(iNetwork As DBNetwork, iCallRec As DBRecord)
+' The escalation state is an integer that records the current state of
+' the DB record.  This state is used by the event server to determine 
+' whether an escalation should be fired.
+' The state is represented by setting bits of the integer that correspond
+' to record states.  Here, we check those record states and set bits 
+' appropriately.  Note that in the case of a closed call, we want to set
+' all flags, preventing unnecessary escalations.
+Dim nState As Long
+Dim bIsClosed As Boolean
+Dim nEscType As Integer
+Dim iEscTbl As DBTable
+Dim sCallPriority As String
+Dim nCallType As Integer
+
+Const nWalkBitMask =  2147483632 ' 0x7FFFFFF0
+Const nMultiplMask =  1073741808 ' 0x3FFFFFF0 - to avoid overflow
+Const nNewWalkBit  =  2147483616 ' 0x7FFFFFE0 - the lowest available bit
+
+    Set iEscTbl = iNetwork.GetTable("callescalation")
+
+	' Escalation will have the version coded in the bits 31 - 5
+	' as a "0" between a large ammount of "1"
+	' interesting is the bit position os a zero
+	' Warning: there should be only one zero in the band
+	nState = 0
+	If ( iCallRec.Mode = MODE_NEW ) Then
+		nState = nNewWalkBit
+	Else
+		If Not( _
+				iCallRec.HasChanged( "priority" ) _
+				Or iCallRec.HasChanged( "categorycall" ) _
+				Or iCallRec.HasChanged( "workgroupcall" ) _   
+		) Then
+			nState = CLng( iCallRec.GetValue( "escstatus" ) ) And nWalkBitMask
+		End If
+	End If
+	If ( nState = 0 ) Then
+		' compute the value because some escalation relevant
+		' parameters have changed
+		nState = CLng( iCallRec.GetValue( "escstatus" ) ) And nMultiplMask
+		If ( nState = nMultiplMask ) Then
+			' multiplication would cause overflow error
+			nState = nNewWalkBit ' Recycling !!
+		Else
+			nState = Not( nState ) And nMultiplMask ' turn "0" to "1"
+			nState = nState * 2 ' shift left
+			nState = Not( nState ) And nWalkBitMask ' turn back
+		End If
+	End If
+    bIsClosed = False
+
+    ' For each state that is important to this record, set the flag
+    ' if the condition no longer applies
+'!!: "Closed" -> "geschlossen"
+	' changed by Jacek Margos - "Warten" should escalate
+	' only the rules for "Warten"
+
+    If iCallRec.GetValue("callstatus") = "Geschlossen" _
+	Or iCallRec.GetValue("callstatus") = "Fertig gemeldet" _
+	Or iCallRec.GetValue("callstatus") = "Fertig akzeptiert" _
+	Or iCallRec.GetValue("callstatus") = "Verworfen" _
+	Or iCallRec.GetValue("callstatus") = "Dokumentiert" Then
+        bIsClosed = True
+        nEscType = iEscTbl.MapEnumStrToInt("type", "nicht fertig gemeldet")
+'        nEscType = iEscTbl.MapEnumStrToInt("type", "Not Closed")
+        nState = SetFlag(nState, nEscType)
+    End If
+
+    If iCallRec.HasLinkedRecord("callworkgroup")  Or bIsClosed Then
+        nEscType = iEscTbl.MapEnumStrToInt("type", "nicht zugewiesen")
+        nState = SetFlag(nState, nEscType)
+    End If
+    If iCallRec.GetValue("callstatus") = "Angenommen" Or bIsClosed Then
+        nEscType = iEscTbl.MapEnumStrToInt("type", "nicht Angenommen")
+        nState = SetFlag(nState, nEscType)
+    End If
+
+
+	If iCallRec.GetValue("callstatus") <> "Fehlgeroutet" Then
+		nEscType = iEscTbl.MapEnumStrToInt("type", "Fehlgeroutet")
+        nState = SetFlag(nState, nEscType)
+	End If
+
+    iCallRec.SetValue "escstatus", nState
+	    Set iEscTbl = Nothing
+End Sub
+'----------------------------------------------------------------------
+Function CallUpdate() As Boolean
+' Database record modifications.  No GUI required.
+Dim bRes As Boolean
+
+If iCallRec.Mode = MODE_NEW Then
+			 iCallRec.SetValue "coordinationtime", "00:00:00"
+			 iCallRec.SetValue "totaltasktimespent", "00:00:00"
+			 iCallRec.SetValue "totaltaskdoc", "00:00:00"
+             iCallRec.SetValue "datereported", "now"
+
+End If
+iCallRec.SetValue "datemodified", "now"
+iCallRec.SetValue "modifiedby", iApp.DBUser
+bRes = True
+bRes = 	CheckCallLinks(iApp, iNetwork, iCallRec) 
+	
+If Not bFirstLevelCloseCall Then
+       SetCallStatus iNetwork, iCallRec
+        bRes =CheckCallStatusChange( iApp, iNetwork, iCallTable, iCallRec)
+		bRes = CheckValueChange(iApp, iCallRec)	
+		bRes = CheckCallDocumented( iApp, iNetwork, iCallRec, sErrorMsg) 
+End If
+SetEscalationState iNetwork, iCallRec
+FindSLKSL iApp, iNetwork, iCallRec
+
+bRes = bRes And iCallRec.WriteHistory("history")
+If Not bRes Then   iCallRec.SetValue STATUS, OldStatus ' damit die Maske nicht blockiert wird im falschen Status
+CallUpdate = bRes
+
+
+'*****************************************************************************
+'Script:       CallPostUpdate
+'Purpose:      Business rules that are executed after a call is updated.
+'Copyright:    Quartess 2002
+'
+'*****************************************************************************
+'Option Explicit
+Declare Function SaveMessage( iNetwork As DBNetwork,  sTo As String, sSubject As String, sMsg As String, sStylesheet As String, sTable As String, sKey As String) As Boolean
+
+Declare Function ConvertFormular(iApp As Application, iNetwork As DBNetwork, sTemplateFile As String, bHTML As Boolean )  As String
+Declare Function GetAppProfileValue(iNetwork As DBNetwork, _
+									sFieldname As String) As String
+
+Public 	bFirstLevelCloseCall As Boolean
+Public bAutoDocumented As Boolean
+Public bNotifyCustomer As Boolean
+Public bWebQ As Boolean
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver		
+Global Const sEmptyStr = ""	 
+Dim iDoc_TemplateTable As DBTable
+Dim iNetwork As DBNetwork
+Dim iCallTable As DBTable
+Dim iCallRec As DBRecord
+Dim iApp As Application
+'----------------------------------------------------------------------------------------
+Sub NotifyCustomer(iApp As Application, iNetwork As DBNetwork,  iCallRec As DBRecord)
+Dim iRelRec As DBRecord
+Dim sTo As String
+Dim sMethod As String
+Dim sAddr As String
+Dim sSubject As String
+Dim sMsg As String
+Dim nPriority As Integer
+Dim sPriority As String
+Dim bStatus As Boolean
+Dim sName As String
+        
+	If iCallRec.HasLinkedRecord("customerint") Then
+            Set iRelRec = iCallRec.GetLinkedRecord("customerint")
+			'sMethod = iRelRec.GetValue("communicatepref")	' nicht die Methode am Kunden sondern ander Meldung
+			sMethod = iCallRec.GetValue("callbackmethod")
+	Else 
+		Exit Sub
+    End If
+
+
+
+    Select Case sMethod
+    Case "Signal"
+'    Case "Alert"
+    Case "Email"
+        sAddr = iRelRec.GetValue("emailcorr")
+    Case "FAX", "Fax"
+    Case "Funkruf","SMS"
+'    Case "Pager"
+    End Select
+
+	sSubject = "Die Meldung " & iCallRec.GetValue("pkey") & " wird voraussichtlich bis zum "  & iCallRec.GetValue("date_sl_overdue") & " fertig gestellt" 
+	sMsg = sSubject	& ", weil " & Basic.Eoln$ & iCallRec.GetValue("sl_overdue")
+
+     Select Case sMethod
+        Case "Signal"
+        	sAddr = iRelRec.GetValue("loginname")
+			sPriority =  iRelRec.GetValue("priority")
+   			nPriority = iCallRec.GetTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           "call", iCallRec.GetKeyValue,"Warnung"
+        Case "Email","Telefon","keine","Keine"
+       	    sAddr = iRelRec.GetValue("emailcorr")
+			bStatus = iApp.SendMail(sAddr, sSubject, "", sMsg,True)
+
+        Case "FAX","Fax"
+        	sAddr = iRelRec.GetValue("faxcorr")
+        	sName = iRelRec.GetValue("fullname")
+            bStatus = iApp.SendFax(sAddr, sSubject, sName, sMsg,True)
+
+        Case "Funkruf","SMS"
+        	sAddr = iRelRec.GetValue("pager")
+            bStatus = iApp.SendPage(sAddr, sSubject,True)
+	 End Select
+End Sub 
+'----------------------------------------------------------------------------------------
+
+
+Sub CheckAutoClosed(iApp As Application, iNetwork As DBNetwork,  iCallRec As DBRecord)
+Dim iCallmasterRec As DBRecord
+Dim nOpenSubCalls As Integer
+Dim nOpenTasks As Integer
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iTaskTable As DBTable
+Dim iCallduplicateTable As DBTable
+Dim sCallID As String
+Dim bRes As Boolean
+    If (iCallRec.HasLinkedRecord("callmaster")) And ((iCallRec.GetValue("callstatus")="Fertig gemeldet") Or (iCallRec.GetValue("callstatus")="Dokumentiert") ) Then
+        Set iCallmasterRec = iCallRec.GetLinkedRecord("callmaster")
+		If iCallmasterRec.GetValue("autoclosed") <> "Ja" Then	 Exit Sub
+    Else
+        Exit Sub
+    End If
+	If iCallmasterRec.GetValue("callstatus") <>"Angenommen" Then 		' Nur Angenommene Calls können Fertig gemeldet werden
+        Exit Sub
+	End If
+' Now check possible autoclosed for this call
+' Sind noch offene Aufträge da?
+ 		Set iSearchNetwork = iApp.CreateNetwork( "q_taskcount2", "q_taskcount2" )
+   		Set iBrowser = iSearchNetwork.GetBrowser( "taskcountBrowser" )
+   		Set iTaskTable = iSearchNetwork.GetTable( "task" )
+		sCallID = iCallmasterRec.GetKeyValue
+   		iTaskTable.QBEClear
+   		iTaskTable.QBESetValue "calltask", sCallID
+
+   		iTaskTable.QBESetValue "taskstatus", "In Arbeit"
+		iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+		nOpenTasks = iBrowser.RecordCount
+   		iTaskTable.QBEClear
+        If  nOpenTasks <> 0 Then
+            GoTo Exit_Sub
+        End If
+' Sub Calls checken
+ 		Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+   		Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+		iCallduplicateTable.Clear
+		sCallID = iCallmasterRec.GetKeyValue
+   		iCallduplicateTable.QBEClear
+   		iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+   		iCallduplicateTable.QBESetValue "callstatus", "Rückruf|Durchgestellt|AK zugewiesen|Fehlgeroutet|Angenommen"
+		iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+		nOpenSubCalls = iBrowser.RecordCount
+		If nOpenSubCalls >0 Then
+            GoTo Exit_Sub
+        End If
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+' Mastercall fertig melden
+	If iCallmasterRec.GetValue("callstatus") ="Angenommen" Then 
+  		iCallmasterRec.SetValue "callstatus", "Fertig gemeldet"
+   		iCallmasterRec.SetValue "dateresolved", "now"
+		'Msgbox "Try Commit on " & iCallmasterRec.GetTable.Alias
+        bRes = iCallmasterRec.WriteHistory("history")
+		iCallmasterRec.GetTable.Commit
+   End If
+
+
+Exit_Sub:
+	Set iCallmasterRec = Nothing
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+End Sub
+'----------------------------------------------------------------------
+Sub UpdateCooridinationtime(iApp As Application, iNetwork As DBNetwork,  iCallRec As DBRecord)
+Dim iCallmasterRec As DBRecord
+Dim i As Integer
+Dim iSearchNetwork As DBNetwork
+Dim iBrowser As DBBrowser
+Dim iCallduplicateTable As DBTable
+Dim sCallID As String
+Dim nTotalCoordTimeSubcall As Long
+Dim nTotalCallTimeSubCall As Long
+Dim nTotalCoordTime As Long
+Dim nTotalCallTime As Long
+
+
+    If Not (iCallRec.HasLinkedRecord("callmaster"))Then	Exit Sub
+
+    Set iCallmasterRec = iCallRec.GetLinkedRecord("callmaster")
+ 	Set iSearchNetwork = iApp.CreateNetwork( "q_taskcount", "q_taskcount" )
+' Sub Calls checken
+ 		Set iBrowser = iSearchNetwork.GetBrowser( "callduplicateBrowser" )
+   		Set iCallduplicateTable = iSearchNetwork.GetTable( "callduplicate" )
+		iCallduplicateTable.Clear
+		sCallID = iCallmasterRec.GetKeyValue
+   		iCallduplicateTable.QBEClear
+   		iCallduplicateTable.QBESetValue "mastercall_key", sCallID
+		iBrowser.Search "cqlocal" ', QW_DCO_BACK_FILL  Ruleserver kennt das nicht
+		nTotalCoordTimeSubcall = 0
+		nTotalCallTimeSubCall = 0
+		   nCoordTime= iApp.IntervalToSeconds(iCallmasterRec.GetValue("coordinationtime"))	
+		   nTotalCallTime = iApp.IntervalToSeconds(iCallmasterRec.GetValue("totalcalltime"))	
+		For i = 1 To iBrowser.RecordCount
+		   nTotalCoordTimeSubcall = nTotalCoordTimeSubcall + iApp.IntervalToSeconds(iBrowser.GetRecord(i-1).GetValue("coordinationtime"))	
+		   nTotalCallTimeSubCall = nTotalCallTimeSubCall + iApp.IntervalToSeconds(iBrowser.GetRecord(i-1).GetValue("totalcalltime"))	
+		Next i
+		iCallmasterRec.SetValue "sumcoordtime" ,iApp.SecondsToInterval(nCoordTime+ nTotalCoordTimeSubcall)
+		iCallmasterRec.SetValue "totalcalltime" ,iApp.SecondsToInterval(nTotalCallTime+ nTotalCallTimeSubCall)
+		iCallmasterRec.GetTable.Commit
+
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+
+Exit_Sub:
+	Set iCallmasterRec = Nothing
+	Set iTaskTable = Nothing
+	Set iCallduplicateTable = Nothing
+	Set iBrowser = Nothing
+	Set iSearchNetwork = Nothing
+
+End Sub
+'----------------------------------------------------------------------
+
+' deleting ALL alerts for the specified call
+Sub DeleteAlerts( iApp As Application, sCallKey As String )
+Dim iTable As DBTable
+Dim nRecs As Long
+Dim i As Long
+Dim iAlertRecord As DBRecord
+
+	Set iTable = iApp.SysNetwork.GetTable("qw_alert")
+	iTable.Clear
+	iTable.QBEClear
+	On Error Resume Next
+	iTable.QBESetValue "tablename", "=call"
+	iTable.QBESetValue "tablekey", "=" & sCallKey
+	iTable.MaxRecords = -1
+	iTable.Search
+	nRecs = iTable.RecordCount
+	For i = nRecs - 1 To 0 Step -1
+		iTable.GetRecord( i ).Delete
+	Next i
+	iTable.Commit
+	iTable.QBEClear
+	iTable.Clear
+	Set iTable = Nothing
+End Sub
+'----------------------------------------------------------------
+Function NewRecord(iCallRec As DBRecord) As Boolean
+' Determine whether this record is "new", even though we are post
+' update.  To do this, look to see if the "datereported" field has
+' an empty old value.
+Dim sValue As String
+
+    If iCallRec.HasOldValue("datemodified") Then
+        sValue = iCallRec.GetOldValue("datemodified")
+        If sValue = sEmptyStr Then
+            NewRecord = True
+        Else
+            NewRecord = False
+        End If
+    End If
+
+End Function
+'----------------------------------------------------------------
+' if the workgroup changes, then write the actual date and
+' time to the old record and create a new record with
+' the new workgroup and the actual time
+
+Sub WriteCallDuration( iApp As Application, _
+    iNetwork As DBNetwork, iCallRec As DBRecord )
+
+Const FKey_WkGp = "workgroupcall"
+Const STATUS = "callstatus"
+Const CLOSED = "Geschlossen"
+
+Dim bNewCall As Boolean
+Dim bGrpChange As Boolean
+Dim bOldClosed As Boolean
+Dim bNewClosed As Boolean
+Dim bClosing As Boolean
+Dim bOpening As Boolean
+Dim sCallID As String
+Dim sNewGrpKey As String
+Dim sOldGrpKey As String
+Dim sDurNewGrp As String
+Dim sDurOldGrp As String
+Dim sNow As String
+Dim iDurationTbl As DBTable
+Dim nRecs As Long
+Dim i As Long
+Dim iDurationRec As DBRecord
+'Dim sNewGroupRec As DBRecord
+
+	On Error GoTo writecallduration_error_handler
+
+	sNow = CStr( Now() )
+	sCallID = iCallRec.GetValue( "pkey" )
+	sNewGrpKey = iCallRec.GetValue( FKey_WkGp )
+	sOldGrpKey = sNewGrpKey ' !!
+	sDurNewGrp = ""
+	sDurOldGrp = ""
+	bNewCall = NewRecord( iCallRec )
+	bNewClosed = ( InStr( CLOSED, iCallRec.GetValue( STATUS ) ) > 0 )
+	bOldClosed = bNewClosed
+
+	If Not( bNewCall ) Then
+		bGrpChange = iCallRec.HasChanged( FKey_WkGp )
+		If bGrpChange Then
+			If iCallRec.HasOldValue( FKey_WkGp ) Then
+				sOldGrpKey = iCallRec.GetOldValue( FKey_WkGp )
+			End If
+			If ( sOldGrpKey = "" ) _
+			Or ( sOldGrpKey = "-1" ) _
+			Or ( sOldGrpKey = sNewGrpKey ) Then
+				sOldGrpKey = sNewGrpKey ' !!
+				bNewCall = True
+				bGrpChange = False
+			Else
+				sDurNewGrp = sNewGrpKey
+				sDurOldGrp = sOldGrpKey
+			End If
+		End If
+	End If
+	If Not( bNewCall ) Then
+		If iCallRec.HasChanged( STATUS ) Then
+			bOldClosed = ( InStr( CLOSED, iCallRec.GetOldValue( STATUS ) ) > 0 )
+		Else
+			bOldClosed = bNewClosed
+		End If
+		bClosing = ( bNewClosed And Not( bOldClosed ) )
+		bOpening = ( Not( bNewClosed ) And bOldClosed )
+		If Not( bGrpChange Or bClosing Or bOpening ) Then
+			Exit Sub
+		End If
+	Else
+		bClosing = False
+		bOpening = False
+	End If
+
+	If bOpening Then		' just like a new call (the old status
+		bGrpChange = False	' is "closed": like "non-existent")
+		sDurNewGrp = ""	' no new workgroup
+		sDurOldGrp = ""	' no old workgroup
+	End If
+	If bGrpChange And bNewClosed And bOldClosed Then
+		'sDurNewGrp = "-1"	' forwarded in the closed status
+		'sDurOldGrp = "-1"	' a record without new and old group
+		Exit Sub			' do nothing: "closed" is like "non-existent"
+	End If
+
+	' because backiffling in the GUI causes problems
+	' GUI sets additional search constraints
+	Set iDurationTbl = iNetwork.GetTable( "q_callduration" )
+	iDurationTbl.Clear
+	iDurationTbl.QBEClear
+
+
+	If ( bGrpChange Or bClosing ) Then
+		iDurationTbl.QBESetValue "callcallduration", sCallID
+		iDurationTbl.QBESetValue "groupcallduration", sOldGrpKey
+		iDurationTbl.QBESetValue "date_until", "NULL" ' !! only these
+		iDurationTbl.Search
+		nRecs = iDurationTbl.RecordCount
+		If nRecs > 0 Then
+			For i = 0 To nRecs - 1
+				Set iDurationRec = iDurationTbl.GetRecord( i )
+				iDurationRec.SetValue "date_until", sNow
+				iDurationRec.SetValue "newgroup", sDurNewGrp
+				iDurationRec.SetValue "isclosed", IIF( bClosing, 1, 0 )
+				Set iDurationRec = Nothing
+			Next i
+		End If
+	End If
+
+	If ( bNewCall Or bGrpChange Or bOpening ) Then
+		Set iDurationRec = iDurationTbl.AddRecord
+		iDurationRec.SetValue "callcallduration", sCallID
+		iDurationRec.SetValue "groupcallduration", sNewGrpKey
+		iDurationRec.SetValue "oldgroup", sDurOldGrp
+		iDurationRec.SetValue "date_from", sNow
+		If bNewClosed Then
+			iDurationRec.SetValue "date_until", sNow
+			iDurationRec.SetValue "isclosed", 1			
+		End If
+	End If
+
+	iDurationTbl.Commit
+	iDurationTbl.Clear
+	iDurationTbl.QBEClear
+
+writecallduration_error_handler:
+	' there is nothing we can do !!
+	Set iDurationRec = Nothing
+	Set iDurationTbl = Nothing
+End Sub
+
+'----------------------------------------------------------------
+Sub WriteEventRecord(iApp As Application, _
+    iNetwork As DBNetwork, iCallRec As DBRecord)
+Dim iEventTbl As DBTable
+Dim iEventRec As DBRecord
+Dim iTable As DBTable
+Dim sStr As String
+Dim lInterval As Long
+Dim sRelTable As String, sRelFieldName As String
+
+    Set iEventTbl = iNetwork.GetTable("callevent")
+    Set iEventRec = iEventTbl.AddRecord()
+    iEventRec.SetValue "callcallevent", iCallRec.GetKeyValue
+    iEventRec.SetValue "eventdate", "now"
+    iEventRec.SetValue "creator", iApp.DBUser
+
+    If iCallRec.HasChanged("priority") Then
+        iEventRec.SetValue "priority", iCallRec.GetValue("priority")
+    End If
+
+    If iCallRec.HasChanged("callstatus") Then
+        iEventRec.SetValue "callstatus", iCallRec.GetValue("callstatus")
+    End If
+
+    ' Decide which customer table to use
+    If iNetwork.HasTable("customerint") Then
+        sRelTable = "customerint"
+    End If
+
+    If iCallRec.HasChanged("employeecall") Then
+        Set iTable = iNetwork.GetTable(sRelTable)
+        sStr = iCallRec.GetValue("employeecall")
+        If Len(sStr) > 0 Then
+            If CLng(sStr) > 0 Then
+                sStr = iTable.GetValueWhere("fullname", "pkey", sStr)
+            Else
+                sStr = sEmptyStr
+            End If
+        Else
+            sStr = sEmptyStr
+        End If
+        iEventRec.SetValue "customer", sStr
+    End If
+
+    If iCallRec.HasChanged("workgroupcall") Then
+        Set iTable = iNetwork.GetTable("callworkgroup")
+        sStr = iCallRec.GetValue("workgroupcall")
+        If Len(sStr) > 0 Then
+            If CLng(sStr) > 0 Then
+                sStr = iTable.GetValueWhere("name", "pkey", sStr)
+            Else
+                sStr = sEmptyStr
+            End If
+        Else
+            sStr = sEmptyStr
+        End If
+        iEventRec.SetValue "workgroup", sStr
+    End If
+
+    If iCallRec.HasChanged("categorycall") Then
+        Set iTable = iNetwork.GetTable("category")
+        sStr = iCallRec.GetValue("categorycall")
+        If Len(sStr) > 0 Then
+            If CLng(sStr) > 0 Then
+                sStr = iTable.GetValueWhere("name", "pkey", sStr)
+            Else
+                sStr = sEmptyStr
+            End If
+        Else
+            sStr = sEmptyStr
+        End If
+        iEventRec.SetValue "category", sStr
+    End If
+
+    If iCallRec.HasChanged("process_key") Then
+        Set iTable = iNetwork.GetTable("process")
+        sStr = iCallRec.GetValue("process_key")
+        If Len(sStr) > 0 Then
+            If CLng(sStr) > 0 Then
+                sStr = iTable.GetValueWhere("processname", "pkey", sStr)
+            Else
+                sStr = sEmptyStr
+            End If
+        Else
+            sStr = sEmptyStr
+        End If
+        iEventRec.SetValue "processname", sStr
+    End If
+
+    iEventTbl.Commit
+	Set iEventTbl = Nothing
+End Sub
+
+'----------------------------------------------------------------
+Sub ScheduleEscalations(iApp As Application, _
+    iNetwork As DBNetwork, iCallTable As DBTable, _
+    iCallRec As DBRecord)
+Dim iEscTbl As DBTable
+Dim iEscRec As DBRecord
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+Dim nTblKey As Long
+Dim sEscWrkgrpKey As String
+Dim sWrkgrpKey As String
+Dim nWrkgrpKey As Long
+' changed by Jacek Margos
+Dim sCategoryKey As String
+Dim sPriority As String
+Dim nPriority As Integer
+Dim nRecs As Long
+Dim i As Integer
+Dim nDelay As Long
+Dim nRepeatMins As Long
+Dim dWhen As Date
+Dim sStr As String
+Dim sUnits As String
+Dim sType As String
+Dim sSubject As String
+Dim nStatus As Long
+
+' for the Escalation by Jacek Margos
+Dim dNow As Date
+Dim dReported As Date
+Dim nWalkBit As Long
+Dim sOldEscStatus As String
+Dim sNewEscStatus As String
+Const nWalkBitMask =  2147483632 ' 0x7FFFFFF0
+
+
+''   Escalations are scheduled for new calls or if the call priority has
+''   changed or if the workgroup has changed.
+	' Escalation should be written for new calls
+	' and if some escalation relevant parameter
+	' of the call has changed
+	If 	iCallRec.HasOldValue( "escstatus" )	Then
+		sOldEscStatus = iCallRec.GetOldValue( "escstatus" )
+	Else
+		sOldEscStatus =""
+	End If
+	sNewEscStatus = iCallRec.GetValue( "escstatus" )
+	If Not( NewRecord( iCallRec ) ) Then
+		If Not( iCallRec.HasChanged( "escstatus" ) ) Then
+			' we are sure the version of
+			' the escalation has not changed
+			Exit Sub
+		End If
+		' even if the "escstatus" has changed it does not
+		' mean we have to write new escalations - the field's
+		' value changes on group assignment and closing, too
+		If ( ( sOldEscStatus <> "" ) And ( sNewEscStatus <> "" ) ) Then
+			If ( _
+				( CLng( sOldEscStatus ) And nWalkBitMask ) _
+					= _
+				( CLng( sNewEscStatus ) And nWalkBitMask ) _
+			) Then
+				' I knew it - it has not changed !
+				Exit Sub
+			End If
+		End If
+	'Else
+		' we have to schedule all escalations for new records
+	End If
+	dNow = Now()
+	sStr = iCallRec.GetValue( "datereported" )
+	If sStr <> "" Then
+		dReported = CDate( sStr )
+	Else
+		dReported = dNow ' it should never happen
+	End If
+
+	nWalkBit = CLng( sNewEscStatus )
+	nWalkBit = ( Not( nWalkBit ) ) And nWalkBitMask ' turn "0" to "1"
+
+	' end of modifications
+
+
+    ' Find all escalation records that match the current call's 
+    ' priority.  Note that this could be modified to use other
+    ' selection criteria, depending on the structure of the 
+    ' escalation table.
+    sPriority = iCallRec.GetValue("priority")
+    nPriority = iCallTable.MapEnumStrToInt("priority", sPriority)
+
+    Set iEscTbl = iNetwork.GetTable("callescalation")
+    iEscTbl.Clear
+    ' Select on call priority
+    iEscTbl.QBESetValue "priority", "|" & sPriority
+'!!: "call" -> "Meldung"
+    iEscTbl.QBESetValue "targettable", "Meldung"
+'    iEscTbl.QBESetValue "targettable", "call"
+    ' Select on call business impact
+
+    ' Select on organization alert (HOT)
+
+    sWrkgrpKey = iCallRec.GetValue("workgroupcall")
+	sCategoryKey = iCallRec.GetValue( "categorycall" )
+	If (sWrkgrpKey = "") Or (sWrkgrpKey = "NULL") Then
+		iEscTbl.QBESetValue "groupescalation", "NULL"
+	Else
+		iEscTbl.QBESetValue "groupescalation", "NULL|" & sWrkgrpKey
+	End If
+	If (sCategoryKey = "") Or (sCategoryKey = "NULL")  Then
+		iEscTbl.QBESetValue "categoryescalation", "NULL"
+	Else
+		iEscTbl.QBESetValue "categoryescalation", "NULL|" & sCategoryKey
+	End If
+    iEscTbl.Search
+    nRecs = iEscTbl.RecordCount
+
+    ' For each escalation record, calculate the firing time,
+    ' using the business calendar.  Then schedule.
+    If nRecs > 0 Then
+        Set iTable = iApp.SysNetwork.GetTable("qw_events")
+        iTable.Clear
+        For i=0 To nRecs - 1
+            Set iEscRec = iEscTbl.GetRecord(i)
+            nDelay = Val(iEscRec.GetValue("delay"))
+            sUnits = iEscRec.GetValue("delayunits")
+            Select Case sUnits
+'!!: "Hours" -> "Stunden"
+       	        Case "Stunden"
+                    nRepeatMins = nDelay*60
+'!!: "Minutes" -> "Minuten"
+       	        Case "Minuten"
+'       	        Case "Minutes"
+'                    dWhen = iApp.AddBusinessTime(Now, 0, nDelay)
+                    nRepeatMins = nDelay
+            End Select
+'           The reference is always datereported - the startpoint
+'           for the escalation process
+			'dWhen = CDate( iCallRec.GetValue( "datereported" ) )
+			' modification by Jacek Margos
+			' we need to decide if the base time is "datereported" or now()
+			If ( iEscRec.GetValue("basetime") = "Gemeldet" ) Then
+				dWhen = dReported
+			Else
+				dWhen = dNow
+			End If
+			' the customer wants to use the business time (work schedule)
+			'dWhen = DateAdd( "n", nRepeatMins, dWhen )
+			' the customer does not want to use BusinessTime anymore
+			dWhen = DateAdd( "n", nRepeatMins, dWhen )
+			'dWhen = iApp.AddBusinessTime( dWhen, 0, nRepeatMins )
+			' end modification by Jacek Margos
+
+'           If the event should have happen in the past
+'           it's probably happened
+'           If dWhen < Now() Then
+'           End If
+'       End Changes
+            sSubject = ConvertFormular(iApp, iNetwork, CStr(iEscRec.GetValue("subject")),true)
+			If Len(sSubject) > 240 Then				' qw_events table limitation
+			   sSubject = Left$(sSubject,240)
+	  		End If
+
+            If iEscRec.GetValue("repeated") = "0" Then
+                nRepeatMins = 0
+            End If
+
+'           Type of the escalation
+            sType = iEscRec.GetValue("type")
+            nStatus = iEscTbl.MapEnumStrToInt("type", sType)
+            nStatus = 2 ^ (nStatus)  ' Set the bit position
+'			Type of the call ( see CallUpdate() - SetEscalationState
+'			we set the escalation state so we need to change it here also
+			'sType = iCallRec.GetValue( "priority" )
+			'nStatus = nStatus Or 2 ^ ( 8 + iEscTbl.MapEnumStrToInt( "priority", sType ) )
+			nStatus = nStatus Or nWalkBit
+
+
+'           Try the workgroup of the call - if no workgroup
+'           send to the escalation workgroup
+            sStr = iEscRec.GetValue("notifytarget")
+
+'           Which is the workgroup of the call ?
+			' modified by Jacek Margos - do not destroy the value of "sWrkgrpKey"
+			'sWrkgrpKey = iCallRec.GetValue("workgroupcall")
+			If sStr = "Eskalationsgruppe" Or sWrkgrpKey = "-1" _
+			 Or sWrkgrpKey = "" Or sWrkgrpKey = "NULL" Then
+				' changed by Jacek Margos
+				'sWrkGrpKey = iEscRec.GetValue("groupescalation")
+				sStr = iEscRec.GetValue("escgroupescalation")
+			Else
+				sStr = sWrkgrpKey
+			End If
+
+			' modification by Jacek Margos - chedule all escalations
+			' schedule Escalations which should have been written in
+			' the past only if the option is set
+			If ( dWhen >= dNow ) Or ( iEscRec.GetValue( "past" ) = "1" ) Then
+			'' if only the workgroup has changed
+			'' and the escalation rule is for the 'Escalation Group'
+			'' do not re-schedule: the old escalation is (has been) OK
+			'If Not( bGroupOnly And ( sStr = "Eskalationsgruppe" ) _
+			'		And ( iEscRec.GetValue("groupescalation") = "-1" ) ) Then
+	            Set iRecord = iTable.AddRecord
+	            iRecord.SetValue "when", CStr(dWhen)
+	            iRecord.SetValue "workgroupkey", sStr ' modification Jacek Margos
+	            iRecord.SetValue "escalationkey", iEscRec.GetKeyValue
+	            iRecord.SetValue "tablename", "call"
+	            iRecord.SetValue "tablekey", iCallRec.GetKeyValue
+	            iRecord.SetValue "severity", nPriority
+	            iRecord.SetValue "message", sSubject
+	            iRecord.SetValue "escstatus", nStatus
+	            iRecord.SetValue "tier", iEscRec.GetValue("tier")
+	            iRecord.SetValue "agent", CStr(iApp.EscalationAgent)
+	            iRecord.SetValue "sender", "support@quartess.de" 'iApp.Name
+	            iRecord.SetValue "datemodified", Now
+	            iRecord.SetValue "repeatinterval", nRepeatMins
+			End If
+			''End Changes
+			' end of modification
+
+		Next i
+        iTable.Commit
+        iTable.Clear
+    End If
+    ' Clear the QBE data in escalation
+    iEscTbl.QBEClear
+	Set iEscTbl = Nothing	
+	Set iTable = Nothing
+End Sub
+'----------------------------------------------------------------
+Function ActionMsg(iApp As Application, iNetwork As DBNetwork, iCallRec As DBRecord, _
+    iActionRec As DBRecord, sSubject As String, sStylesheet As String) As String
+' Collect important information for a call and format it into an
+' message.
+
+Dim sMsg As String
+Dim iXMLTable As DBTable
+Dim sDoc_key As String
+Dim sXML_key As String
+ On Error GoTo Error_handler
+    sDoc_key= iActionRec.GetValue("doc_template_key") 
+    If sDoc_key <> "" And sDoc_key <> "NULL" Then
+		 iDoc_TemplateTable.QBEClear
+		 iDoc_TemplateTable.Clear
+		 iDoc_TemplateTable.QBESetValue	"pkey",sDoc_key
+		 iDoc_TemplateTable.Search
+		 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("xsl_stylesheet")
+    	sXML_key= iDoc_TemplateTable.GetRecord(0).GetValue("xml_template_key") 
+    	If sXML_key <> "" And sXML_key <> "NULL" Then
+			Set iXMLTable = iNetwork.GetTable("xml_template")
+		 	sMsg = iXMLTable.GetValueWhere("xmltext","pkey",sXML_key)
+			sMsg = ConvertFormular(iApp,iNetwork,  sMsg,true)
+		Else
+	   		sMsg ="<doc>Fehler! Kein Text!</doc>"
+			sStylesheet= "default.xsl"
+		End If
+	Else
+		sMsg ="<doc>Fehler! Kein Text!</doc>"
+		sStylesheet= "default.xsl"
+	End If
+    ActionMsg = sMsg
+	Set iXMLTable = Nothing
+	Exit Function
+	Error_handler:
+		sMsg ="<doc>Error:" & CStr(Err) & ": " & Error$ & "</doc>"
+		sStylesheet= "default.xsl"
+	    ActionMsg = sMsg
+   		Set iXMLTable = Nothing
+
+End Function
+
+'----------------------------------------------------------------
+Function ActionAddr(iRecord As DBRecord, _
+     iActionRec As DBRecord, sName As String) As String
+' Build the action's address list 
+Dim iRelRec As DBRecord
+Dim sTo As String
+Dim sMethod As String
+Dim sAddr As String
+
+    sTo = iActionRec.GetValue("recipient")
+    sMethod = iActionRec.GetValue("method")
+	sAddr=""
+    Select Case sTo
+    Case "Kunde"
+'    Case "Customer"
+        If iRecord.HasLinkedRecord("customerint") Then
+		   	sMethod = iRecord.GetValue("callbackmethod")
+            Set iRelRec = iRecord.GetLinkedRecord("customerint")
+		  '	sMethod = iRelRec.GetValue("communicatepref")
+	    GoTo EmployeeAddress
+        End If
+    Case "Mitarbeiter"
+'    Case "Agent"
+        If iRecord.HasLinkedRecord("agent") Then
+            Set iRelRec = iRecord.GetLinkedRecord("agent")
+	    GoTo EmployeeAddress
+        End If
+    Case "Arbeitsgruppe"
+'    Case "Workgroup"
+        If iRecord.HasLinkedRecord("callworkgroup") Then
+            Set iRelRec = iRecord.GetLinkedRecord("callworkgroup")
+            sAddr = iRelRec.GetValue("notificationaddr")
+        End If
+'!!: "CC List" -> "CC Liste"
+    Case "CC Liste"
+'    Case "CC List"
+            sAddr = iRecord.GetValue("cclist")
+    End Select
+
+    ActionAddr = sAddr
+    Exit Function
+
+
+
+EmployeeAddress:
+    Select Case sMethod
+'!!: "Alert" -> "Signal"
+    Case "Signal"
+'    Case "Alert"
+        sAddr = iRelRec.GetValue("loginname")
+    Case "Email"
+        sAddr = iRelRec.GetValue("emailcorr")
+    Case "FAX", "Fax"
+        sAddr = iRelRec.GetValue("faxcorr")
+        sName = iRelRec.GetValue("fullname")
+    Case "Funkruf","SMS"
+'    Case "Pager"
+        sAddr = iRelRec.GetValue("pager")
+    End Select
+
+    ActionAddr = sAddr
+End Function
+'----------------------------------------------------------------
+
+Sub NotifyWorkgroup( iApp As Application, iAlertNetwork As DBNetwork ,iNetwork As DBNetwork, iWorkgroupRecord As DBRecord,  sSubject As String,  sMsg As String, sTable As String, sTableKey  As String)
+Dim iGroupmemberTbl As DBTable
+Dim iEmployeeTbl As DBTable
+Dim iMemberRec As DBRecord
+Dim i As Integer
+Dim sAddr As String
+Dim nPriority As Integer
+Dim sPriority As String
+Dim sStylesheet As String
+Dim bStatus As Boolean
+Dim sCurrenUserKey As String
+Dim sMethod As String
+
+ ' Achtung sStylesheet wird überschrieben!
+	On Error GoTo NotifyWorkgroup_errorhandler
+	sCurrenUserKey = iApp.CurrentUserKey
+	Set	 iGroupmemberTbl =	iAlertNetwork.GetTable("groupmember")
+	If iWorkgroupRecord.GetValue("notifyowngroup") = "Nein" And sCurrenUserKey <> "" Then
+		iGroupmemberTbl.Clear
+		iGroupmemberTbl.QBEClear
+		iGroupmemberTbl.QBESetValue "workgroupgroup", "=" & iWorkgroupRecord.GetValue("pkey")
+		iGroupmemberTbl.QBESetValue "employeegroup","=" & sCurrenUserKey
+   		iGroupmemberTbl.Search
+		If iGroupmemberTbl.RecordCount > 0 Then GoTo Exit_Sub 
+	End If
+	Set	 iEmployeeTbl =	iAlertNetwork.GetTable("employee")
+	iGroupmemberTbl.Clear
+	iGroupmemberTbl.QBEClear
+	iGroupmemberTbl.QBESetValue "workgroupgroup", "=" & iWorkgroupRecord.GetValue("pkey")
+	iGroupmemberTbl.QBESetValue "notifymethod","!Keine"
+	iGroupmemberTbl.Search
+	For i=1 To iGroupmemberTbl.RecordCount
+	   Set iMemberRec = iGroupmemberTbl.GetRecord(i-1)
+	   sMethod = iMemberRec.GetValue("notifymethod")
+	   If sCurrenUserKey = iMemberRec.GetValue("employeegroup") Then sMethod = "Keine"  ' keine Eigenbenachrichtigung!
+	   Select Case 	sMethod
+	
+        Case "Signal"
+			sPriority = iApp.ContextRecord.GetValue("priority")
+   			nPriority = iApp.ContextTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+			sAddr = iEmployeeTbl.GetValueWhere("loginname","pkey", iMemberRec.GetValue("employeegroup"))
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           sTable , sTableKey,"Warnung"
+        Case "Email"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("email_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("emailcorr","pkey", iMemberRec.GetValue("employeegroup"))
+			If sAddr <> "" Then		
+				bStatus = SaveMessage( iNetwork,  "email://" & sAddr, sSubject, sMsg, sStylesheet, sTable , sTableKey )
+			Else
+				iApp.UserMsg "Email-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+        Case "FAX","Fax"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("fax_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("faxcorr","pkey", iMemberRec.GetValue("employeegroup"))	
+			If sAddr <> "" Then				
+				bStatus = SaveMessage( iNetwork, "rightfax://" &  sAddr, sSubject, sMsg, sStylesheet,sTable , sTableKey)
+			Else
+				iApp.UserMsg "FAX-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+        Case "Funkruf","SMS"
+			sStylesheet =iMemberRec.GetValue("xsl_stylesheet")
+			If sStylesheet = "" Then
+				 sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("sms_xsl")
+			End If
+			sAddr = iEmployeeTbl.GetValueWhere("pager","pkey", iMemberRec.GetValue("employeegroup"))
+			If sAddr <> "" Then							
+	  			bStatus = SaveMessage( iNetwork,  "sms://" & sAddr, sSubject, sMsg, sStylesheet, sTable , sTableKey )
+			Else
+				iApp.UserMsg "SMS-Benachrichtigung für Mitarbeiter ID. " & iMemberRec.GetValue("employeegroup") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+
+	   End Select		
+	Next i 	
+	Set iGroupmemberTbl = Nothing 
+	Set iMemberRec = Nothing 
+	Exit Sub
+NotifyWorkgroup_errorhandler:
+    iApp.UserMsg "CallPostUpdate-NotifyWorkgroup error " & CStr(Err) & ": " & Error$  
+Exit_Sub:
+	Set iGroupmemberTbl = Nothing 
+	Set iMemberRec = Nothing 
+End Sub 
+'----------------------------------------------------------------
+Function CheckAddress(iApp As Application,iNetwork As DBNetwork, iCallRec As DBRecord, sMethod As String,sAddr As String) As Boolean
+Dim iTable As DBTable
+Dim sQuestion As String
+Dim sGroupName As String
+	 If sMethod ="Bearbeiter" Or sMethod ="Keine"  Then
+ 		 CheckAddress = True
+  		 Exit Function		
+	 End If	
+
+	 Set iTable = iNetwork.GetTAble("callworkgroup")
+	 sGroupName = iTable.GetValueWhere("name","pkey", iCallRec.GetValue("workgroupcall"))
+	 sQuestion =  "Ist die " & sMethod & "-Adresse von " & sGroupname & " richtig?"
+ 	 sAddr = Inputbox$(sQuestion,"System möchte " & sMethod & " an " & sGroupname & "versenden.",sAddr)	
+	 If sAddr = "" Then 
+		 CheckAddress= False
+	 Else
+		CheckAddress = True
+	End If
+	Set iTable = Nothing	
+End Function
+'----------------------------------------------------------------
+Sub RunActions(iApp As Application,iNetwork As DBNetwork, iCallTable As DBTable, iCallRec As DBRecord)
+Dim iAlertNetwork As DBNetwork
+Dim iActionTbl As DBTable
+Dim iActionRec As DBRecord
+Dim iCustomerRec As DBRecord
+Dim iTable As DBTable
+Dim iWorkgroupTable As DBTable
+Dim iWorkgroupRecord As DBRecord
+Dim nTblKey As Long
+Dim nRecs As Long
+Dim i As Integer
+Dim sType As String
+Dim sStatus As String
+Dim sPriority As String
+Dim sGrpKey As String
+Dim sCategoryKey As String
+Dim sAddr As String
+Dim sName As String
+Dim sSubject As String
+Dim sMethod As String
+Dim sMsg As String
+Dim bStatus As Boolean
+Dim nPriority As Integer
+Dim bFeedback As Boolean
+Dim sStylesheet As String
+Dim sDefaultStylesheet As String
+Dim sDummy As String
+
+    ' Only do this if the status has changed
+    If Not( iCallRec.HasChanged("callstatus") Or iCallRec.HasChanged("workgroupcall") ) Then
+        Exit Sub
+    End If
+
+    ' Find all action records that match the current call's 
+    ' status.  Note that this could be modified to use other
+    ' selection criteria, depending on the structure of the 
+    ' action table.
+    sStatus = iCallRec.GetValue("callstatus")
+	sPriority = iCallRec.GetValue("priority")
+	sCategoryKey = iCallRec.GetValue( "categorycall" )
+    Set iActionTbl = iNetwork.GetTable("callaction")
+    iActionTbl.Clear
+    iActionTbl.QBEClear
+	If bAutoDocumented Then
+	    iActionTbl.QBESetValue "statusevent", sStatus & "|Fertig gemeldet"
+		bAutoDocumented = False
+	Else
+	    iActionTbl.QBESetValue "statusevent", sStatus 
+	End If
+
+	If sPriority <>"" Then
+    	iActionTbl.QBESetValue "priority", "NULL|" & sPriority
+	Else
+	   iActionTbl.QBESetValue "priority", "NULL"
+	End If
+    iActionTbl.QBESetValue "targettable", "Meldung"
+	sGrpKey = iCallRec.GetValue( "workgroupcall" )
+	If (sGrpKey = "") Or (sGrpKey = "NULL") Then
+		' the call does not have a workgroup
+		iActionTbl.QBESetValue "groupaction", "NULL"
+	Else
+		' the call does have a workgroup
+		iActionTbl.QBESetValue "groupaction", "NULL|" & sGrpKey
+		Set iWorkgroupRecord = iCallRec.GetLinkedRecord("callworkgroup")
+		iActionTbl.QBESetValue "migration", iWorkgroupRecord.GetValue("migration")
+	End If
+	If (sCategoryKey = "") Or (sCategoryKey = "NULL") Then
+		iActionTbl.QBESetValue "categoryaction", "NULL"
+	Else
+		iActionTbl.QBESetValue "categoryaction", "NULL|" & sCategoryKey
+	End If
+    iActionTbl.Search
+
+    nRecs = iActionTbl.RecordCount
+    If nRecs =0 Then
+        Exit Sub
+    End If
+	Set	 iAlertNetwork = iApp.CreateNetwork( "q_alert")
+
+    ' For each action record, do the right thing
+    For i=0 To nRecs - 1
+        Set iActionRec = iActionTbl.GetRecord(i)
+        sSubject = ConvertFormular(iApp, iNetwork,CStr(iActionRec.GetValue("subject")),true)
+        sMethod = iActionRec.GetValue("method")
+        sAddr = ActionAddr(iCallRec, iActionRec, sName)
+		If Len(sSubject) > 240 Then				' qw_events table limitation
+			   sSubject = Left$(sSubject,240)
+		End If
+
+        ' An action that notifies a workgroup is a special case, since
+        ' the event server knows how to extract the workgroup's preferred 
+        ' notification method, and explode the workgroup into owners.
+        If iActionRec.GetValue("recipient") = "Arbeitsgruppe" Then
+		   sMethod = iWorkgroupRecord.GetValue("notifymethod")
+		   bFeedback =False
+		   sAddr = 	iWorkgroupRecord.GetValue("notificationaddr")
+        End If
+        If iActionRec.GetValue("recipient") = "Kunde" And Not bFirstLevelCloseCall Then
+		   If iCallRec.HasLinkedRecord("customerint") Then
+				' Kundenfeedback nur bei Hauptmeldungen
+				If Len(iCallRec.GetValue("mastercall_key")) > 0 Then
+					 sMethod = "Keine"
+				Else
+					Set iCustomerRec = iCallRec.GetLinkedRecord("customerint")
+		   			'sMethod = iCustomerRec.GetValue("communicatepref")
+		   			sMethod = iCallRec.GetValue("callbackmethod")
+				End If 
+		   Else	
+		   		sMethod = "Keine" 
+		   End If	
+		End If
+		If iActionRec.GetValue("recipient") = "Kunde" And bFirstLevelCloseCall Then	   ' keine Meldung senden
+		   			sMethod = "Keine" 
+        End If
+		
+		If iActionRec.GetValue("recipient") = "folgende Adresse" Then
+		   sAddr=iActionRec.GetValue("notificationaddr")
+		End If
+		If iActionRec.GetValue("recipient") = "NM Meisterei" And Not (iWorkgroupRecord Is Nothing) Then		
+		   sMethod = iWorkgroupRecord.GetValue("notifymethod")
+		   sAddr = 	iWorkgroupRecord.GetValue("notificationaddr")
+
+     Select Case sMethod
+        Case "Signal"
+   			nPriority = iCallTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           "call", iCallRec.GetKeyValue,"Warnung"
+        Case "Email"
+            sMsg = ActionMsg(iApp,iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			'bStatus = iApp.SendMail(sAddr, sSubject, "", sMsg,bFeedback)
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("email_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+			If sAddr <> "" Then
+				bStatus = SaveMessage( iNetwork,  "email://" & sAddr, sSubject, sMsg, sStylesheet, "call", iCallRec.GetKeyValue )
+			Else
+				iApp.UserMsg "Email-Benachrichtigung für Aktionsregel Nr. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+        Case "FAX","Fax"
+            sMsg = ActionMsg(iApp,iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("fax_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+            'bStatus = iApp.SendFax(sAddr, sSubject, sName, sMsg,bFeedback)
+			If sAddr <> "" Then	
+		   		bStatus = SaveMessage( iNetwork, "rightfax://" &  sAddr, sSubject, sMsg, sStylesheet, "call", iCallRec.GetKeyValue )
+			Else
+				iApp.UserMsg "FAX-Benachrichtigung für Aktionsregel Nr. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+        Case "Funkruf","SMS"
+            sMsg = ActionMsg(iApp,iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+			sDummy= iNetwork.GetTable("appprofile").GetValueWhere("pkey","pkey","1")
+			sStylesheet = iDoc_TemplateTable.GetRecord(0).GetValue("sms_xsl")
+			If sStylesheet = "" Then sStylesheet = sDefaultStylesheet
+            'bStatus = iApp.SendPage(sAddr, sSubject,bFeedback)
+			If sAddr <> "" Then	
+				bStatus = SaveMessage( iNetwork,  "sms://" & sAddr, sSubject, sMsg, sStylesheet, "call", iCallRec.GetKeyValue )
+			Else
+				iApp.UserMsg "SMS-Benachrichtigung für Aktionsregel Nr. " & iActionRec.GetValue("pkey") & " fehlgeschlagen da keine Adresse vorhanden ist." & Basic.Eoln$ & _
+						     "Benachrichtigen Sie bitte einen Administrator."
+			End If
+        Case "Drucker", ""
+			 iApp.UserMsg "Der AK konnte nicht benachrichtigt werden, weil die Stammdaten nicht stimmen." & Basic.Eoln$ & _ 
+							" Bitte benachrichtigen Sie ihn von Hand.", ebInformation
+        Case "Telefon"
+			sAddr =  GetAppProfileValue(iNetwork, "custfeedbacklogin")
+   			nPriority = iCallTable.MapEnumStrToInt( "priority",sPriority) +1
+   			If nPriority > 3 Then nPriority = 3
+            iApp.SendAlert sAddr, iApp.DBUser, sSubject, nPriority, _
+                           "call", iCallRec.GetKeyValue,"Warnung"
+        Case "Bearbeiter"
+   			 If iCallRec.HasLinkedRecord("callworkgroup") Then
+        	 	Set iWorkgroupRecord = iCallRec.GetLinkedRecord("callworkgroup")
+            	 sPriority = iCallRec.GetValue("priority")
+            	 nPriority = iCallTable.MapEnumStrToInt("priority", sPriority)
+                 sMsg = ActionMsg(iApp,iNetwork, iCallRec, iActionRec, sSubject, sDefaultStylesheet)
+	             NotifyWorkgroup iApp,iAlertNetwork, iNetwork, iWorkgroupRecord,  sSubject,  sMsg, "call", iCallRec.GetKeyValue
+    	     End If
+ 
+	 End Select
+    Next i
+
+    ' Clear the QBE data in action table
+    iActionTbl.QBEClear
+    Set iActionTbl = Nothing
+	Set iAlertNetwork = Nothing 
+
+End Sub
+'----------------------------------------------------------------
+Sub CallPostUpdate()
+
+	WriteCallDuration iApp, iNetwork, iCallRec
+	If iCallRec.HasChanged( "callstatus" ) Then DeleteAlerts iApp, iCallRec.GetValue( "pkey" )
+    ScheduleEscalations iApp, iNetwork, iCallTable, iCallRec
+    RunActions iApp, iNetwork, iCallTable, iCallRec
+    WriteEventRecord iApp, iNetwork, iCallRec
+	UpdateCooridinationtime	iApp, iNetwork,  iCallRec
+	CheckAutoClosed iApp, iNetwork,  iCallRec
+	If bNotifyCustomer Then NotifyCustomer  iApp, iNetwork, iCallRec  ' Bei SL Overdue!
+ 
+
+End Sub
+'----------------------------------------------------------------
+
+
+
+

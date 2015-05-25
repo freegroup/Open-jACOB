@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="jacob-application" default="all" basedir=".">
+<property file="build.properties" />
+
+<tstamp><format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+
+<!-- =================================================================== -->
+<!--  Configuration                                                      -->
+<!-- =================================================================== -->
+<property name="dist.dir"            value="./dist"/>
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+<property environment="env"/>
+
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+  <fileset dir="./lib">
+   	<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+<!-- =================================================================== -->
+<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler" >
+<classpath>
+   <fileset dir="./lib">
+   	<include name="*.jar"/>
+   </fileset>
+</classpath>	
+</taskdef>
+
+<target name="castor.clean" description="clean the access classes for the TaskSynchronizer and filescan">	
+    <!-- remove castor generated classes -->
+    <delete quiet="true" dir="./java/jacob/scheduler/system/callTaskSynchronizer/castor"/>
+    <delete quiet="true" dir="./java/jacob/scheduler/system/filescan/castor"/>
+</target>
+
+<target name="castor" depends="" description="create the access classes for the TaskSynchronizer and filescan">
+    <XSDCompiler 
+        package="jacob.scheduler.system.callTaskSynchronizer.castor"
+        schema="./castor/ttsjob.xsd"
+        force="true"
+        destDir="./java">
+    </XSDCompiler>
+        <XSDCompiler 
+        package="jacob.scheduler.system.filescan.castor"
+        schema="./castor/filescan.xsd"
+        force="true"
+        destDir="./java">
+    </XSDCompiler>
+</target>
+
+<!-- =================================================================== -->
+<!-- ALL                                                                 -->
+<!-- =================================================================== -->
+<target name="all"  depends="jacapp"  description="create the project">
+</target>
+
+<target name="version" description="generate a propertie file with the engine version id and load them">
+	<exec dir="." executable="/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java" output="runtime.properties">
+	  <arg line="-classpath ./lib/jacobBase.jar de.tif.jacob.core.Version"/>
+	</exec>
+    <loadproperties srcFile="runtime.properties"/>
+</target>
+
+<!-- =================================================================== -->
+<!-- jACAPP                                                               -->
+<!-- =================================================================== -->
+<target name="jacapp" depends="version, compile" description="create the .jacapp file for the application"  >
+
+	<mkdir dir="${dist.dir}/"/>
+	<jar compress="true" destfile="${dist.dir}/${app.name}-${app.version}${app.fix}.jacapp" >
+		<fileset dir="./classes">
+			<exclude name="applications/${app.name}/**/*.java"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+			<attribute name="jACOB-Engine-Version"      value="${jacob.version}"/>
+			<attribute name="jACOB-Application-Version" value="${app.version}"/>
+			<attribute name="jACOB-Application-Name"    value="${app.name}"/>
+			<attribute name="jACOB-Application-Fix"     value="${app.fix}"/>
+		</manifest>
+   </jar>
+
+	<jar destfile="${dist.dir}/xsl_${app.name}.war" basedir="./templates/webapp/"/>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- CLEAN                                                               -->
+<!-- =================================================================== -->
+<target name="clean" depends="castor.clean" description="Delete old build and dist directories">
+    <delete quiet="true" dir="./classes"/>
+    <delete quiet="true" dir="./dist"/>
+</target>
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean, castor" description="Compile Java sources">
+
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+	<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true">
+	</copy>
+
+	<mkdir dir="./classes"/>
+	<!-- Compile Java classes as necessary -->
+	<javac encoding="ISO-8859-1" srcdir="java" debug="on" source="1.4" target="1.4" destdir="./classes" >
+       <classpath refid="compile.classpath" />
+	</javac>
+
+	<!-- move the images to the class directory for the jar -->
+    <copy todir="./classes">
+		<fileset dir="./java">
+      		<include name="**"/>
+		</fileset>
+    </copy>
+	
+	<!-- move the jad-file to the required position -->
+	<copy file="./application.jad" toFile="./classes/jacob/config/${app.name}.jad" overwrite="true">
+	</copy>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- HOT DEPLOY                                                                 -->
+<!-- =================================================================== -->
+<target name="deploy" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)"  >
+	<copy file="${dist.dir}/${app.name}-${app.version}${app.fix}.jacapp" toFile="${deploy.home}/${app.name}-${app.version}${app.fix}.jacapp" overwrite="true">
+	</copy>
+</target>
+
+<!-- =================================================================== -->
+<!-- HOT DEPLOY                                                                 -->
+<!-- =================================================================== -->
+<target name="deployETR" depends="jacapp" description="Copy the .jacapp file to the jACOB-Application server (hot deployment)"  >
+	<copy file="${dist.dir}/${app.name}-${app.version}${app.fix}.jacapp" toFile="${jacob.home}/${app.name}-${app.version}${app.fix}.jacapp" overwrite="true">
+	</copy>
+</target>
+
+</project>
+

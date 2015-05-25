@@ -1,0 +1,308 @@
+'NAME = "SendLetterHook"
+'TYPE = 1
+'TEMPLATE = "Function SendLetterHook(iLetter As SLetter, nTemplateType as Integer, sTemplateKey as String, sItemPackKey as String, sFileName As String) As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:	SendLetterHook
+'Purpose:	Hook called for each item that is sent to a Batch from the 
+'			Letter Generation module
+'Copyright:	Quintus Corporation, 1998
+'*****************************************************************************
+
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+Type ItemAddressInfo
+	Email As String
+	Fax As String
+	Title As String
+	Fullname As String
+	Organization As String
+	Address1 As String
+	Address2 As String
+	City As String
+	State As String
+	Zipcode As String
+	Country As String
+End Type
+
+Const OPEN_BATCH = 0 
+
+Const REPORT_TEMPLATETYPE = 0	
+Const LETTER_TEMPLATETYPE = 1
+Const FORM_TEMPLATETYPE = 2
+
+Const LETTER_ITEM_RECORD_TYPE = 0
+Const CC_LETTER_ITEM_RECORD_TYPE = 1
+Const BCC_LETTER_ITEM_RECORD_TYPE = 2
+Const LABEL_ITEM_RECORD_TYPE = 3
+Const FORM_ITEM_RECORD_TYPE = 4
+Const MISC_ITEM_RECORD_TYPE = 5
+Const STR_PIPE = "|"
+
+'Declare 4 global variables to store the template type, template key,
+'itempack key, and document file name which are used throughout this QScript
+Dim m_nTemplateType as Integer
+Dim m_sTemplateKey as String
+Dim m_sItemPackKey as String
+Dim m_sFileName As String
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Sub ItemPostAddToBatch(iItemRecord As DBRecord, _
+								iLetter As SLetter)
+
+Declare Function GetSubjectLine() As String
+
+Declare Function ValidRecipientAlias(sTableAliasName As String) As Boolean
+
+Declare Sub GetAddressInfo(iNetwork As DBNetwork, _
+							iRecipientRecord As DBRecord, _
+							iAddressInfo As ItemAddressInfo)
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+Sub UpdateItemPack(iApp As Application, iLetter As SLetter, _
+					iRecipientRecord As DBRecord, sTableName As String)
+Dim iItemPackTable As DBTable
+Dim iitemPackRecord As DBRecord
+Dim iAddressInfo As ItemAddressInfo
+
+	Set iItemPackTable = iApp.SysNetwork.GetTable("qw_itempack")
+
+ 	If Len(m_sItemPackKey) > 0 Then
+
+ 		iItemPackTable.QBESetKeyValue iItemPackTable.PrimaryKeyName, m_sItemPackKey
+
+		iItemPackTable.Search
+
+		If iItemPackTable.RecordCount > 0 Then
+			Set iItemPackRecord = iItemPackTable.GetRecord(0)
+
+			If Not Len(iItemPackRecord.GetValue("recipient")) > 0 Then
+				GetAddressInfo iApp.ContextNetwork, iRecipientRecord, iAddressInfo
+
+				iItemPackRecord.SetValue "recipient", iAddressInfo.Fullname
+
+				iItemPackTable.Commit				
+			End If
+		End If
+	End If
+End Sub
+
+'---------------------------------------------------------------------------
+
+Function CreateItemRecord(nItemRecordType As Integer, iApp As Application, _
+							iLetter As SLetter, iRecipientRecord As DBRecord, _
+							sTableName As String) As DBRecord
+Dim iItemTable As DBTable
+Dim iItemRecord As DBRecord
+Dim iAddressInfo As ItemAddressInfo
+Dim sSubjectLine As String
+Dim sAddress as String
+
+	Set iItemTable = iApp.SysNetwork.GetTable("qw_item")
+
+	If Not ValidRecipientAlias(sTableName) Then
+		Set CreateItemRecord = Nothing
+		Exit Function
+	End If
+	
+	GetAddressInfo iApp.ContextNetwork, iRecipientRecord, iAddressInfo
+
+	sSubjectLine = GetSubjectLine
+
+	If nItemRecordType = LABEL_ITEM_RECORD_TYPE Then
+		sAddress = iAddressInfo.Address1 & STR_PIPE & iAddressInfo.Address2
+		sAddress = sAddress & STR_PIPE & iAddressInfo.City & STR_PIPE & iAddressInfo.State
+		sAddress = sAddress & STR_PIPE & iAddressInfo.Zipcode & STR_PIPE & iAddressInfo.Country
+	End If
+	Set iItemRecord = iItemTable.AddRecord
+
+ 	iItemRecord.SetValue "batch_key", iLetter.BatchKey
+ 	iItemRecord.SetValue "reports_key", m_sTemplateKey
+ 	iItemRecord.SetValue "itempack_key", m_sItemPackKey
+ 	iItemRecord.SetValue "itemid", iLetter.LetterID
+	iItemRecord.SetValue "agentid", iApp.DBUser
+	If m_sTemplateKey = "" and nItemRecordType = FORM_ITEM_RECORD_TYPE then
+		iItemRecord.SetValue "itemtype", iItemTable.MapEnumIntToStr("itemtype", MISC_ITEM_RECORD_TYPE)
+	Else
+        iItemRecord.SetValue "itemtype", iItemTable.MapEnumIntToStr("itemtype", nItemRecordType)
+	End If
+	If nItemRecordType = LABEL_ITEM_RECORD_TYPE Then
+		iItemRecord.SetValue "itemtext", sAddress
+	Else
+ 		iItemRecord.SetLTValueFromFile "itemtext", Trim(m_sFileName)
+	End If
+	iItemRecord.SetValue "email", iAddressInfo.Email
+	iItemRecord.SetValue "faxnumber", iAddressInfo.Fax
+	iItemRecord.SetValue "subject", sSubjectLine
+	iItemRecord.SetValue "mr_ms", iAddressInfo.Title
+	iItemRecord.SetValue "name", iAddressInfo.Fullname
+	iItemRecord.SetValue "organization", iAddressInfo.Organization
+	iItemRecord.SetValue "zipcode", iAddressInfo.Zipcode
+	iItemRecord.SetValue "datecreated", Now
+
+	iItemTable.Commit
+
+	Set CreateItemRecord = iItemRecord
+
+End Function
+
+'---------------------------------------------------------------------------
+
+Function GetRecipientRecord(iApp As Application, iLetter As SLetter, _
+								sTableName As String) As DBRecord
+Dim iTable As DBTable
+Dim iBrowser As DBBrowser
+Dim nIndex As Integer
+
+    Set iTable = iApp.ContextNetwork.GetTable(sTableName)
+    Set iBrowser = iApp.ContextBrowser
+
+    nIndex = iLetter.LetterIndex
+
+    Set GetRecipientRecord = iBrowser.GetTableRecord(nIndex, iTable)
+
+End Function
+
+'---------------------------------------------------------------------------
+
+Function CreateItem(nItemRecordType As Integer, iApp As Application, iLetter As SLetter, _
+					iRecipientRecord As DBRecord, sTableName As String) As Boolean
+Dim iItemRecord As DBRecord
+
+	Set iItemRecord = CreateItemRecord(nItemRecordType, iApp, iLetter, iRecipientRecord, sTableName)
+
+	If iItemRecord Is Nothing Then
+		CreateItem = False
+		Exit Function
+	End If
+		
+	ItemPostAddToBatch iItemRecord, iLetter
+
+  	If m_nTemplateType = LETTER_TEMPLATETYPE Then
+		Set iItemRecord = CreateItemRecord(LABEL_ITEM_RECORD_TYPE, iApp, iLetter, iRecipientRecord, sTableName)
+
+		If Not iItemRecord Is Nothing Then
+			  ItemPostAddToBatch iItemRecord, iLetter
+		End If
+	End If
+
+	CreateItem = True
+
+End Function
+
+'---------------------------------------------------------------------------
+
+Function AddItemToBatch(iApp As Application, iLetter As SLetter) As Boolean
+Dim iBatchTable As DBTable
+Dim iRecipientRecord As DBRecord
+Dim sTableName As String
+Dim bSuccessful As Boolean
+
+	Set iBatchTable = iApp.SysNetwork.GetTable("qw_batch")
+
+	iBatchTable.QBESetKeyValue iBatchTable.PrimaryKeyName, iLetter.BatchKey
+	iBatchTable.QBESetValue "batchstatus", iBatchTable.MapEnumIntToStr("batchstatus", OPEN_BATCH)
+
+	iBatchTable.Search
+
+	If iBatchTable.RecordCount = 0 Then
+		AddItemToBatch = False
+		iApp.UserMsg "Invalid batch"
+		Exit Function
+	End If
+
+    sTableName = iLetter.Addressee
+	Set iRecipientRecord = GetRecipientRecord(iApp, iLetter, sTableName)
+
+	If iRecipientRecord Is Nothing Then
+		AddItemToBatch = False
+		Exit Function
+	End If
+
+	UpdateItemPack iApp, iLetter, iRecipientRecord, sTableName
+
+	If m_nTemplateType = LETTER_TEMPLATETYPE Then
+		If Not CreateItem(LETTER_ITEM_RECORD_TYPE, iApp, iLetter, iRecipientRecord, sTableName) Then
+			AddItemToBatch = False
+			Exit Function
+		End If
+		' Process an item for each Cc
+		nCopyCount = iLetter.GetCcCount
+		For nCtr = 0 To nCopyCount - 1
+			sTableName = iLetter.GetCcRecipient(nCtr)
+			Set iRecipientRecord = GetRecipientRecord(iApp, iLetter, sTableName)
+	 
+			If Not iRecipientRecord Is Nothing Then
+				bSuccessful = CreateItem(CC_LETTER_ITEM_RECORD_TYPE, iApp, iLetter, iRecipientRecord, sTableName)
+			End If
+		Next nCtr
+
+		' Process an item for each Bcc
+		nCopyCount = iLetter.GetBccCount
+		For nCtr = 0 To nCopyCount - 1
+			sTableName = iLetter.GetBccRecipient(nCtr)
+			Set iRecipientRecord = GetRecipientRecord(iApp, iLetter, sTableName)
+	 
+			If Not iRecipientRecord Is Nothing Then
+				bSuccessful = CreateItem(BCC_LETTER_ITEM_RECORD_TYPE, iApp, iLetter, iRecipientRecord, sTableName)
+			End If
+		Next nCtr
+	ElseIf m_nTemplateType = FORM_TEMPLATETYPE Then
+		If Not CreateItem(FORM_ITEM_RECORD_TYPE, iApp, iLetter, iRecipientRecord, sTableName) Then
+			AddItemToBatch = False
+			Exit Function
+		End If
+	End If
+
+	AddItemToBatch = True
+
+End Function
+
+'---------------------------------------------------------------------------
+' Main Function
+'---------------------------------------------------------------------------
+Function SendLetterHook(iLetter As SLetter, nTemplateType as Integer, sTemplateKey as String, sItemPackKey as String, sFileName As String) As Boolean
+Dim iApp As Application
+
+    On Error GoTo SendLetterErrorHandler
+    '-------------------------------------------------
+
+    Set iApp = GetApp
+    m_nTemplateType = nTemplateType
+    m_sTemplateKey =  sTemplateKey 
+    m_sItemPackKey =  sItemPackKey 
+	m_sFileName = sFileName
+
+    ' Be sure there is an addressee
+    If Len(iLetter.Addressee) = 0 Then
+        iApp.UserMsg "No addressee specified for letter"
+        SendLetterHook = False
+        Exit Function
+    End If
+
+    ' Validate that the addressee alias is OK to use
+	If Not ValidRecipientAlias(iLetter.Addressee) Then
+		iApp.UserMsg "Addressee specified is not valid"
+		SendLetterHook = False
+		Exit Function
+	End If
+
+	SendLetterHook = AddItemToBatch(iApp, iLetter)
+
+    Exit Function
+
+SendLetterErrorHandler:
+    iApp.UserMsg "SendLetterHook error " & CStr(Err) & ": " & Error$
+    SendLetterHook = False
+End Function
+
+
+
+
+
+']]

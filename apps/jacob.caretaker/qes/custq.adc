@@ -1,0 +1,19 @@
+VERSION "ADL-5.5";
+
+DEFINE CONNECTION custqConnection
+{
+	DBMS_NAME	= "caretaker"
+	DBMS_TYPE	= "ORACLE"
+	DBMS_SERVER	= "SMCP.world"
+	DBMS_HOME	= "/opt/oracle/product/8.1.7"
+	CQDATA_SERVER	= "53.11.51.25"
+	CQDATA_PORT	= "5334"
+	TIMEOUT		= "60"
+	DISPLAY_TIME	= "DBMSTIME"
+	DB_LOCATION	= "SMCPAU001"
+	DB_LOCATION2	= "TEMP"
+};
+
+DEFINE CONNECTIONSET Qconnections WITH CONNECTIONS
+	reposDataSource USING custqConnection WITH PRIMARY LOGIN DBNAME "qrepository",
+	custqDataSource USING custqConnection PRIMARY;

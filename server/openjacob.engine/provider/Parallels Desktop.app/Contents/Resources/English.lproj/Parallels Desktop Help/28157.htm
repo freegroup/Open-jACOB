@@ -1,0 +1,47 @@
+<html>
+<head>
+<title> Eine Boot Camp-VM in Standby schalten </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="28189.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="26941.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675174.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Eine Boot Camp-VM in Standby schalten</h2>
+<p class="bodytext">Standardmäßig können Sie Ihre Boot Camp-VM <a id="h27584" class="nowordtemplate" title="Unterbrechen und Standby-Schalten einer virtuellen Maschine" href="22834.htm" target="_self">in Standby setzen</a>. Wenn man das Betriebssystem einer in Standby geschalteten Boot Camp virtuelle Maschine direkt (also nicht über die Boot Camp-VM) bootet, wird die Boot Camp-Partition schwer beschädigt und unbrauchbar. Alle Daten auf der Boot Camp-Partition können in einem solchen Fall verloren gehen.</p>
+<p class="bodytext">Wenn Sie Ihre Boot Camp virtuelle Maschine dennoch in Standby schalten möchten, gehen Sie folgendermaßen vor:</p>
+<ol class="listnumber"><li class="listnumber">Öffnen Sie die Konfiguration der virtuellen Maschine (wählen Sie zum Beispiel <strong class="specialbold">Virtuelle Maschine</strong> &gt; <strong class="specialbold">Konfigurieren</strong>), klicken Sie oben im Dialogfenster auf die Schaltfläche <strong class="specialbold">Hardware</strong> und klicken Sie in der Randleiste auf <strong class="specialbold">Boot-Sequenz</strong>.</li><li class="listnumber">Geben Sie in dem Feld <strong class="specialbold">Boot-Kennzeichen</strong> Folgendes ein:<p class="preformattedbold">disp.allow_to_suspend_bootcamp_vm=1</p>
+</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>, um die Einstellungen zu sichern.</li></ol><p class="bodytext">Mit dieser Systemmarkierung in der Konfiguration der virtuellen Maschine können Sie Ihre Boot Camp virtuelle Maschine in Standby schalten.</p>
+<p class="warning">          <strong class="buttons">Achtung!</strong> Verwenden Sie die Windows Boot Camp-Partition nicht nativ, wenn Ihre Boot Camp-VM sich in Standby befindet: das könnte die Boot Camp-Partition beschädigen.</p>
+<p class="bodytext">Zur Deaktivierung dieser Option ändern Sie die Boot-Kennzeichen folgendermaßen:</p>
+<p class="preformattedbold">disp.allow_to_suspend_bootcamp_vm=0</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30326" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

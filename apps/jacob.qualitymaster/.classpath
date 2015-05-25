@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="build/castor-0.9.5.3.jar"/>
+	<classpathentry kind="lib" path="build/commons-lang-1.0.jar"/>
+	<classpathentry kind="lib" path="build/commons-logging-1.0.2.jar"/>
+	<classpathentry kind="lib" path="build/jacobBase.jar"/>
+	<classpathentry kind="lib" path="build/jacobRule.jar"/>
+	<classpathentry kind="lib" path="build/xerces-1.2.3.jar"/>
+	<classpathentry kind="lib" path="build/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="build/imap.jar"/>
+	<classpathentry kind="lib" path="build/mail.jar"/>
+	<classpathentry kind="lib" path="build/mailapi.jar"/>
+	<classpathentry kind="lib" path="build/pop3.jar"/>
+	<classpathentry kind="lib" path="build/smtp.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

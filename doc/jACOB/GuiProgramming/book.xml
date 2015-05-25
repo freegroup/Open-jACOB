@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<book>
+  <title>Gui Programmierung</title>
+
+  &guiProgramming_messageDialog;
+  &guiProgramming_gridDialog;
+  &guiProgramming_customUserDialogs;
+</book>

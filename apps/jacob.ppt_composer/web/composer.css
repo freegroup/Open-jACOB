@@ -1,0 +1,157 @@
+
+.details{
+	padding: 10px;
+	text-align: center;
+}
+.details-header{
+	color: #555555;
+	display: block;
+	margin-bottom: 4px;
+	font: 12px Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	margin-top: 5px;
+	padding-top: 5px;
+	padding-bottom: 15px;
+	text-align: left;
+	border-bottom: 1px solid #cccccc;
+}
+
+.details img
+{
+	width:180px;
+	height:150px;
+}
+.details-info{
+	border-top: 1px solid #cccccc;
+	font: 11px Arial, Helvetica, sans-serif;
+	margin-top: 5px;
+	padding-top: 5px;
+	text-align: left;
+}
+.details-info b{
+	color: #555555;
+	display: block;
+	margin-bottom: 4px;
+}
+.details-info span{
+	display: block;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+select{
+	font-size:11px;
+}
+.image-tip{
+	padding:4px;
+	height:228px;
+	width:450px;
+	white-space:nowrap;
+}
+.image-tip img {
+	margin-right:10px;
+	border:2px solid #083772;
+	width:300px;
+	height:220px;
+}
+.image-tip b{
+	color: #083772;
+	display: block;
+	margin-bottom: 4px;
+}
+.image-tip span{
+	display: block;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+#images{
+	background: #fff url(center-bg.gif) repeat-x top left;
+	font: 11px Arial, Helvetica, sans-serif;
+	overflow: auto;
+}
+#images .thumb{
+	background: #dddddd;
+	padding:3px;
+}
+#images .thumb img{
+	border:1px solid white;
+	height: 60px;
+	width: 80px;
+}
+
+#images .thumb-wrap{
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+}
+#images .thumb-wrap span{
+	display: block;
+	overflow: hidden;
+	text-align: center;
+}
+#images .x-view-selected .thumb{
+	background:#8db2e3;
+}
+#images .loading-indicator {
+	font-size:8pt;
+	background-image:url(./images/default/grid/loading.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left:20px;
+	margin:10px;
+}
+.x-dd-drag-proxy .multi-proxy .thumb-img{
+	height: 20px;
+	width: 30px;
+	margin:1px;
+}
+.x-dd-drag-proxy .thumb-img{
+	height: 60px;
+	width: 80px;
+}
+
+.image-node .x-tree-node-icon{
+    margin-bottom:1px;
+    height:15px;
+}
+
+#layout{
+	height:350px;
+	width:650px;
+	overflow:hidden;
+	position:relative;
+}
+#layout-rzwrap{
+	background-color:#deecfd;
+}
+#folders{
+	position:relative;
+}
+
+.x-toolbar {
+	height:50px;
+	padding:14px;
+}
+
+.x-btn button
+{
+  border:2px solid #929292;
+  background-color:#E3E3E3;
+  border-style:outset;
+ }
+
+ .msg .x-box-mc 
+{
+    font-size:14px;
+}
+
+#msg-div
+{
+    position:absolute;
+    left:35%;
+    top:10px;
+    width:250px;
+    z-index:20000;
+}
+ 

@@ -1,0 +1,182 @@
+#tag_cloud_hint
+{
+  position:absolute;
+  top:300px;
+  left:300px;
+}
+
+#hint_arrow
+{
+  position:absolute;
+  top:300px;
+  left:250px;
+}
+
+.filter_tag
+{
+  background-color:#181818;
+  color:#999999;
+  padding-left:10px;
+  padding-right:5px;
+  margin-left:10px;
+  margin-right:10px;
+  -moz-border-radius: 5px;  
+  -khtml-border-radius: 5px;  
+  -webkit-border-radius: 5px;  
+}
+
+
+.filter_tag img
+{
+  border:0px;
+  vertical-align:middle;
+  padding-left:10px;
+}
+
+.gallery
+{
+   padding: 0;
+   margin: 0 auto;
+   width: 100%;
+}
+
+.gallery li
+{
+   border: 1px solid #2A2A2A;
+   background-color: #222222;
+   margin: 0.1em;
+   padding: 0.1em;
+   width: 160px;
+   height:160px;
+   overflow:hidden;
+   display: inline-block;
+   vertical-align: top;
+   text-align:center;
+}
+
+.image
+{
+   text-align: center;
+   width:140px;
+   border:0px;
+}
+
+.image_optimal
+{
+   text-align: center;
+   border:0px;
+}
+
+.caption
+{
+  color:#2A2A2A;
+}
+
+body
+{
+  margin:0px;
+  padding:0px;
+  font-family:Trebuchet, sans-serif;
+  background-color:#161613;
+  color:#FFFFFF;
+  overflow:hidden;
+}
+
+
+.hint
+{
+color: black;
+font-weight:bold;
+background-color:yellow;
+}
+
+.label
+{
+color: black;
+font-weight:bold;
+padding:10px;
+}
+
+.location_bar
+{
+  height:22px;
+  background-color:#C0DB5A;
+  color:black;
+  font-weight:bold;
+  font-size:14px;
+  padding-top:5px;
+  padding-left:5px;
+}
+
+.location_bar > a
+{
+  color:#485124;
+  font-weight:bold;
+  margin-left:10px;
+}
+
+
+.tag_bar
+{
+  width: 210px;
+  height:100%;
+  border-right:1px solid gray;
+  float: left;
+}
+
+.tag_bar_header
+{
+  border-bottom:1px solid #202020;
+  padding:5px;
+  font-weight:bold;
+}
+
+
+.tag
+{
+  padding:5px;
+  color:#FFFFFF;
+  text-decoration:none;
+}
+
+.tag:hover
+{
+  color:#D0EB6A;
+}
+
+.tag_selected
+{
+  color:#D0EB6A;
+}
+
+
+.image_button
+{
+  cursor:pointer;
+}
+
+.image_button_bar
+{
+  background-color;#202020;
+  text-align:left;
+}
+
+.document_bar
+{
+  margin-left:220px; 
+  height:100%;
+  overflow:scroll;
+}
+
+#dialog_tagging
+{
+  background-color:white;
+  border:1px solid #2A2A2A;
+}
+
+.dialog_buttonbar
+{
+  background-color:#C0DB5A;
+  text-align:right;
+  padding:5px;
+}

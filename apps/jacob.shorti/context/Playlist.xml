@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_PlayList" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="station">
+					<question pattern="radio(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="playlist(?:e)?(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="(?:jetzt\s+)?(?:gerade\s+)?(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="was\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="wie\s+(?:(?:heisst)|(?:hiess))\s+der\s+(?:(?:titel)|(?:song))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="wie\s+(?:(?:heisst)|(?:hiess))\s+das\s+lied(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="welcher\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+					<question pattern="was\s+fuer\s+ein\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+im\s+radio[?!]*" 	              defaultAnswer="Hmmm... Da liefen viele Lieder. Auf welchem Sender meinst Du denn?"/>
+				</forward>
+
+				<forward toNode="frequency">
+					<question pattern="radio\s+(?:(?:auf\s+)|(?:bei\s+))([0-9.,]+)(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" defaultAnswer=""/>
+					<question pattern="playlist(?:e)?(?:(?:auf)|(?:bei)|(?:von))\s+([0-9.,]+)(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" defaultAnswer=""/>
+					<question pattern="()(?:jetzt\s+)?(?:gerade\s+)?(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+					<question pattern="()was\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+					<question pattern="()wie\s+(?:(?:heisst)|(?:hiess))\s+das\s+lied(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+					<question pattern="()wie\s+(?:(?:heisst)|(?:hiess))\s+der\s+(?:(?:titel)|(?:song))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+					<question pattern="()welcher\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+					<question pattern="()was\s+fuer\s+ein\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([0-9.,]+)()[?!]*" defaultAnswer=""/>
+				</forward>
+
+				<forward toNode="name">
+					<question pattern="radio\s+(?:(?:auf\s+)|(?:bei\s+))?([a-zäöüß\s-.0-9]+)(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" defaultAnswer=""/>
+					<question pattern="playlist(?:e)?(?:(?:auf)|(?:bei)|(?:von))\s+([a-zäöüß\s-.0-9]+)(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?[?!]*" defaultAnswer=""/>
+					<question pattern="(?:jetzt\s+)?(?:gerade\s+)?(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+					<question pattern="was\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+					<question pattern="wie\s+(?:(?:heisst)|(?:hiess))\s+das\s+lied(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+					<question pattern="wie\s+(?:(?:heisst)|(?:hiess))\s+der\s+(?:(?:titel)|(?:song))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+					<question pattern="welcher\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+					<question pattern="was\s+fuer\s+ein\s+(?:(?:titel)|(?:song))\s+(?:(?:läuft)|(?:lief)|(?:kommt)|(?:kam))(?:\s+jetzt)?(?:\s+gerade)?(\s+(?:(?:heute)|(?:gestern)|(?:vorgestern)|(?:(?:am\s+)[0-9./-]+)))?(\s+(?:um\s+)?[0-9:]+)?\s+(?:(?:auf)|(?:bei))\s+([a-zäöüß\s-.0-9]+)[?!]*" defaultAnswer=""/>
+				</forward>
+			</node>
+
+			<node name="station">
+				<forward toNode="frequency">
+					<question pattern="(?:ich\s+meine\s+)?(?:(?:auf\s+)|(?:bei\s+)|(?:von\s+))?([0-9.,]+)"          	defaultAnswer="Titel leider nicht gefunden" />
+				</forward>
+
+				<forward toNode="name">
+					<question pattern="(?:ich\s+meine\s+)?(?:(?:auf\s+)|(?:bei\s+)|(?:von\s+))?([a-zäöüß\s-.0-9]+)" 	defaultAnswer="Titel leider nicht gefunden" />
+				</forward>
+			</node>
+
+			<node name="frequency">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+			<node name="name">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

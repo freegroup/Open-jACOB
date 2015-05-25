@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>SSI-Beispiele auf Server: <!--#echo var="SERVER_NAME" --></title>
+</head>
+<body>
+
+<!--#config timefmt="%d.%m.%Y, %H:%M Uhr" --> 
+<!--#config errmsg="<b>SSI-Beispiel: FEHLER</b>"-->
+
+<h1>SSI-Beispiele auf Server: <!--#echo var="SERVER_NAME" --></h1><br>
+<h2>Aktuelle Zeit: <!--#echo var="DATE_LOCAL" --></h2>
+<h3>Bitte schauen Sie sich auch die Beispiele weiter unten an...</h3>
+<hr>
+
+<h5>Die Befehle "#exec cgi" und "#exec cmd" sind aus Sicherheitsgr&uuml;nden nicht erlaubt, benutzen Sie bitte stattdessen "#include":</h5>
+<h3><u>Einbinden einer Datei (relativer Pfad): #include file="index.html"</u></h3>
+<!--#include virtual="index.html"-->
+<hr>
+
+<h3><u>Einbinden einer Datei (absoluter Pfad): #include virtual="/index.html"</u></h3>
+<!--#include virtual="/index.html"-->
+<hr>
+
+<h3><u>Einbinden von "#fsize virtual" und "#flastmod file":</u></h3>
+<h3>Die Datei /index.html ist <!--#fsize virtual="/index.html" --> Bytes gross und wurde zuletzt am <!--#flastmod file="index.html" --> ge&auml;ndert.</h3>
+<hr>
+
+<h3><u>Einbinden eines CGI-Skripts: #include virtual="/cgi-std/hello.pl?name=U387269AA"</u></h3>
+<!--#include virtual="/cgi-std/hello.pl?name=U387269AA"-->
+<hr>
+
+</body>
+</html>

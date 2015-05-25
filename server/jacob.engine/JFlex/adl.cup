@@ -1,0 +1,1445 @@
+/*
+     This file is part of Open-jACOB
+     Copyright (C) 2005-2006 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+*/
+
+import java.util.*;
+import de.tif.qes.adl.element.*;
+import de.tif.jacob.core.definition.*;
+import de.tif.jacob.core.definition.impl.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+	
+parser code  {: 
+	static private final transient Log logger = LogFactory.getLog(ADLParser.class);
+
+	static public final transient String RCS_ID = "$Id: adl.cup,v 1.2 2009-03-23 00:33:57 sonntag Exp $";
+	static public final transient String RCS_REV = "$Revision: 1.2 $";
+  
+	private String errorMessage(String message, Object info)
+	{
+		StringBuffer m = new StringBuffer("Error ");
+
+		if (info instanceof java_cup.runtime.Symbol)
+			m.append("(").append(info.toString()).append(")");
+
+		m.append(": ").append(message);
+
+		return m.toString();
+	}
+
+	public void report_error(String message, Object info)
+	{
+		logger.error(errorMessage(message, info));
+	}
+
+	public void report_fatal_error(String message, Object info)
+	{
+		logger.fatal(errorMessage(message, info));
+		throw new RuntimeException("Syntax error");
+	}
+:};
+
+action code  {: 
+	private ADLDefinition adlDefinition = new ADLDefinition();  
+:};
+
+terminal VERSION;
+terminal APPVERSION;
+terminal SET;
+terminal DEFINE;
+terminal TABLE;
+terminal WITH;
+terminal DATASOURCE;
+terminal SYSTEMTABLE;
+terminal SYSTEMTABLEKEY;
+terminal SYSTEMFIELD;
+terminal CACHE;
+terminal SIZE;
+terminal DESC;
+terminal ORDER;
+terminal BY;
+terminal PRIMARY;
+terminal KEY;
+terminal FOREIGN;
+terminal INDEX;
+terminal UNIQUE;
+terminal INFOFIELD;
+terminal LABEL;
+terminal STRING, VSTRING;
+terminal OF;
+terminal LENGTH;
+terminal REQUIRED;
+terminal INTEGER, SHORT, BYTE;
+terminal FLOAT;
+terminal DOUBLE;
+terminal ENUM;
+terminal DEFAULT;
+terminal READONLY;
+terminal SERIAL;
+terminal MAX, MIN;
+terminal DATE, DATETIME;
+terminal BINARY;
+terminal TEXT;
+terminal HISTORY;
+terminal HISTORYFIELD;
+terminal INTERVAL;
+terminal MONEY;
+terminal SYMBOL;
+terminal SCALE;
+terminal ANCHORLEFT;
+terminal CASESENSITIVE;
+terminal TABLESET, SYSTEMTABLESET;
+terminal TABLES;
+terminal ALIAS;
+terminal CONDITION;
+terminal TABLERULE;
+terminal BEFOREUPDATE, AFTERUPDATE, BEFORESEARCH;
+terminal NEW, DELETE;
+terminal SCRIPT;
+terminal FROM;
+terminal FILE;
+terminal FORMULA;
+terminal SUMMARYROW;
+terminal COLSUMMARY;
+terminal BROWSER, BROWSERS;
+terminal FOR;
+terminal TYPE;
+terminal STATIC, DYNAMIC, INFRAME;
+terminal ASCENDING, DESCENDING;
+terminal RELATIONSET;
+terminal FILLDIRECTION;
+terminal FORWARD;
+terminal BACKWARD;
+terminal RELATION;
+terminal USING, USE;
+terminal INVISIBLE;
+terminal INCLUDE;
+terminal XMLFORMS;
+terminal MODULE, MODULES;
+terminal TABLESETS;
+terminal AS;
+terminal TO;
+terminal ONETON, MTON;
+terminal WEBQ;
+terminal DISABLED;
+terminal FORMS;
+terminal FORMORDER;
+terminal DES;
+terminal SAME;
+terminal NODES, EDGES;
+terminal PERMISSION, READ, WRITE, REMOVE, ALL, NONE;
+terminal APPLICATION;
+terminal TITLE;
+terminal RULE;
+terminal RULESERVER;
+terminal CATEGORY;
+terminal REPEAT;
+
+terminal SEMICOLON, COMMA, LBRACE, RBRACE, LPAREN, RPAREN, DOT;
+terminal EQ;
+
+/* ADL 6.1 */
+
+/* Is used in the QDesigner 6 to lock out off the box tables */
+terminal LOCKED;
+terminal DIRECT;
+
+/* ADL 5.0 */
+terminal NOT;
+terminal NULL;
+
+/* ADL 5.6 */
+terminal AFTERNETCREATE;
+
+
+terminal java.lang.Integer     INTEGER_LITERAL;
+terminal java.lang.Double      FLOATING_POINT_LITERAL;
+terminal java.lang.String      STRING_LITERAL;
+terminal java.lang.String      MULTILINE_STRING_LITERAL;
+terminal java.lang.String      IDENTIFIER; // name
+
+non terminal adl_definition;
+non terminal declarations_opt;
+non terminal declarations;
+non terminal declaration;
+non terminal version_declaration;
+non terminal appversion_declaration;
+non terminal set_declaration;
+non terminal ADLTable table_declaration;
+non terminal List table_other_keys_opt, table_other_keys;
+non terminal List table_fields;
+non terminal String table_datasource_opt;
+non terminal ADLKey table_other_key;
+non terminal String table_order_by_opt;
+non terminal Boolean table_systemtable_opt;
+non terminal String table_desc_opt;
+non terminal String table_from_opt;
+non terminal ADLKey table_primary_key_opt, table_foreign_key, table_unique_key, table_index_key;
+non terminal String table_infofield_opt;
+non terminal table_permissions_opt, tablefield_permissions_opt;
+non terminal table_permissions, tablefield_permissions;
+non terminal table_permission, tablefield_permission;
+non terminal List permission_roles;
+non terminal List table_key_fields;
+non terminal Boolean table_systemtablekey_opt;
+non terminal Boolean table_systemfield_opt;
+non terminal Integer table_cachesize_opt;
+non terminal Integer table_field_length_opt;
+non terminal ADLField table_field;
+non terminal Boolean table_field_readonly_opt;
+non terminal ADLFieldType table_field_type;
+non terminal String table_field_db_name_opt;
+non terminal String table_field_max_opt, table_field_min_opt;
+non terminal ADLString table_field_string_type;
+non terminal ADLVString table_field_vstring_type;
+non terminal ADLInteger table_field_integer_type;
+non terminal ADLShort table_field_short_type;
+non terminal ADLByte table_field_byte_type;
+non terminal ADLFloat table_field_float_type;
+non terminal ADLDouble table_field_double_type;
+non terminal ADLSerial table_field_serial_type;
+non terminal ADLEnum table_field_enum_type;
+non terminal ADLDatetime table_field_datetime_type;
+non terminal ADLDate table_field_date_type;
+non terminal ADLBinary table_field_binary_type;
+non terminal ADLText table_field_text_type;
+non terminal ADLInterval table_field_interval_type;
+non terminal ADLMoney table_field_money_type;
+non terminal List table_field_enum_values;
+non terminal String table_field_desc_opt;
+non terminal Boolean table_field_history_opt;
+non terminal Boolean table_field_historyfield_opt;
+non terminal String table_field_default_opt;
+non terminal Integer table_field_int_default_opt;
+non terminal Double table_field_floatdouble_default_opt;
+non terminal Boolean table_field_required_opt;
+non terminal String table_field_symbol_opt;
+non terminal Integer table_field_scale_opt;
+non terminal Boolean table_field_anchorleft_opt;
+non terminal Boolean table_field_casesensitive_opt;
+non terminal ADLTableSet tableset_declaration;
+non terminal Boolean tableset_systemtableset_opt;
+non terminal List tablealias_declarations_opt;
+non terminal ADLTableAlias tablealias_declaration;
+non terminal String tablealias_alias_opt;
+non terminal String tablealias_desc_opt, tablealias_condition_opt;
+non terminal Set tablerule_declarations_opt, tablerule_declarations, module_tablerule_declarations_opt;
+non terminal ADLTableRule tablerule_declaration;
+non terminal String tablerule_type;
+non terminal ADLBrowser browser_declaration;
+non terminal browser_infofield_opt;
+non terminal List browser_field_declarations;
+non terminal List browser_summaryrow_declarations;
+non terminal List browser_summaryrow_declarations_opt;
+non terminal AbstractBrowserField browser_field_declaration;
+non terminal ADLSummaryRow browser_summaryrow_declaration;
+non terminal SortOrder browser_field_sortorder_opt;
+non terminal Filldirection browser_field_filldirection;
+non terminal Boolean browser_field_readonly_opt;
+non terminal Boolean browser_field_invisible_opt;
+non terminal include_declaration;
+non terminal ADLModule module_declaration;
+non terminal String module_label_opt;
+non terminal Boolean module_invisible_opt;
+non terminal String module_desc_opt;
+non terminal Boolean module_webq_disabled_opt;
+non terminal List module_permission_opt;
+non terminal List module_modules_opt;
+non terminal List module_namelist;
+non terminal List module_tablesets_opt;
+non terminal List module_browsers;
+non terminal List module_forms;
+non terminal List module_formorder;
+non terminal module_bracecontents_opt;
+non terminal module_bracecontents;
+non terminal module_bracecontent;
+non terminal AbstractRelation relation_declaration;
+non terminal String relation_sameas_opt;
+non terminal ADLRelationSet relationset_declaration;
+non terminal Set relationset_relationnames;
+non terminal ADLApplication application_declaration;
+non terminal List application_modules_opt;
+non terminal List application_modulenames;
+non terminal String application_title_opt;
+non terminal application_rules_opt;
+non terminal application_rules;
+non terminal application_rule;
+non terminal application_rule_category_opt;
+non terminal application_rule_category;
+non terminal application_rule_repeat_opt;
+non terminal application_rule_repeat;
+non terminal String relation_desc_opt;
+
+/* ADL 6.1 */
+non terminal locked_opt;
+non terminal direct_opt;
+
+
+/* ADL 5.0 */
+non terminal Boolean not_null_opt;
+
+
+start with adl_definition;
+
+
+/* ------------------- */
+/* General declaration */
+/* ------------------- */
+
+adl_definition ::= declarations_opt
+{:
+	RESULT = this.adlDefinition;
+:} 
+;
+
+declarations_opt ::= declarations | ;
+
+declarations ::= 
+		declaration
+	|	declarations declaration
+	;
+
+declaration ::= 
+		version_declaration 
+	|	appversion_declaration 
+	|	set_declaration 
+	|	table_declaration:table 
+{:
+	this.adlDefinition.add(table);
+:} 
+	|	tableset_declaration:tableset
+{:
+	this.adlDefinition.add(tableset);
+:} 
+	|	browser_declaration:browser
+{:
+	this.adlDefinition.add(browser);
+:} 
+	|	include_declaration 
+	|	module_declaration:module 
+{:
+	this.adlDefinition.add(module);
+:} 
+	|	application_declaration:application
+{:
+	this.adlDefinition.add(application);
+:} 
+	;
+
+version_declaration ::=
+		VERSION STRING_LITERAL:version SEMICOLON
+{:
+	this.adlDefinition.setAdlVersionString(version);
+:} 
+	;
+
+appversion_declaration ::=
+		APPVERSION EQ STRING_LITERAL SEMICOLON
+	;
+
+set_declaration ::=
+		SET IDENTIFIER EQ STRING_LITERAL SEMICOLON
+	|	SET IDENTIFIER EQ MULTILINE_STRING_LITERAL SEMICOLON
+	;
+	
+not_null_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	NOT NULL
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;	
+
+locked_opt ::= LOCKED | ;
+
+direct_opt ::= DIRECT | ;
+
+/* ----------------- */
+/* Table declaration */
+/* ----------------- */
+
+table_declaration ::=
+		DEFINE TABLE IDENTIFIER:name table_datasource_opt:datasource 
+			table_desc_opt:desc 
+			table_from_opt:dbname 
+			table_order_by_opt:orderby
+			table_systemtable_opt:systemtable
+			locked_opt
+			table_primary_key_opt:primarykey
+			table_other_keys_opt:keys 
+			table_infofield_opt:infofield
+			table_permissions_opt
+			LBRACE table_fields:fields RBRACE SEMICOLON
+{:
+	RESULT = new ADLTable(name, dbname, desc, datasource, primarykey, keys, fields, infofield, systemtable);
+:} 
+	;
+
+table_permissions_opt ::=
+	|	table_permissions
+	;
+
+table_permissions ::=
+		table_permission
+	|	table_permissions table_permission
+	;
+
+table_permission ::=
+		PERMISSION READ permission_roles
+	|	PERMISSION READ ALL
+	|	PERMISSION READ NONE
+	|	PERMISSION WRITE permission_roles
+	|	PERMISSION WRITE ALL
+	|	PERMISSION WRITE NONE
+	|	PERMISSION REMOVE permission_roles
+	|	PERMISSION REMOVE ALL
+	|	PERMISSION REMOVE NONE
+	;
+
+tablefield_permissions_opt ::=
+	|	tablefield_permissions
+	;
+
+tablefield_permissions ::=
+		tablefield_permission
+	|	tablefield_permissions tablefield_permission
+	;
+
+tablefield_permission ::=
+		PERMISSION READ permission_roles
+	|	PERMISSION READ ALL
+	|	PERMISSION READ NONE
+	|	PERMISSION WRITE permission_roles
+	|	PERMISSION WRITE ALL
+	|	PERMISSION WRITE NONE
+	;
+
+permission_roles ::=
+		STRING_LITERAL:role
+{:
+	List list = new java.util.ArrayList();
+	list.add(role);
+	RESULT = list;
+:} 
+	|	permission_roles:list COMMA STRING_LITERAL:role
+{:
+	list.add(role);
+	RESULT = list;
+:} 
+	;
+
+table_datasource_opt ::= 
+	|	WITH DATASOURCE IDENTIFIER:name
+{:
+	RESULT = name;
+:} 
+	;
+
+table_other_keys_opt ::= 
+	table_other_keys:list
+{:
+	RESULT = list;
+:} 
+	| 
+{:
+	RESULT = new java.util.ArrayList();
+:} 
+	;
+
+table_other_keys ::= 
+		table_other_key:key
+{:
+	List list = new java.util.ArrayList();
+	list.add(key);
+	RESULT = list;
+:} 
+	|	table_other_keys:list table_other_key:key
+{:
+	list.add(key);
+	RESULT = list;
+:} 
+	;
+
+table_other_key ::= 
+		table_foreign_key:key
+{:
+	RESULT = key;
+:} 
+	|	table_unique_key:key
+{:
+	RESULT = key;
+:} 
+	|	table_index_key:key
+{:
+	RESULT = key;
+:} 
+	;
+
+table_desc_opt ::=
+	|	DESC STRING_LITERAL:description
+{:
+	RESULT = description;
+:} 
+	;
+
+table_from_opt ::=
+	|	FROM STRING_LITERAL:dbname
+{:
+	RESULT = dbname;
+:} 
+	;
+
+table_order_by_opt ::=
+	|	ORDER BY STRING_LITERAL:orderby
+{:
+	RESULT = orderby;
+:} 
+	;
+
+table_systemtable_opt ::=
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	SYSTEMTABLE
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_systemtablekey_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	SYSTEMTABLEKEY
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_systemfield_opt ::=
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	SYSTEMFIELD
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_cachesize_opt ::= 
+	|	CACHE SIZE INTEGER_LITERAL:size
+{:
+	RESULT = size;
+:} 
+	;
+
+table_primary_key_opt ::=
+	|	PRIMARY KEY table_systemtablekey_opt:systemtablekey locked_opt IDENTIFIER:name LPAREN table_key_fields:fields RPAREN
+{:
+	RESULT = new ADLKey(name, KeyType.PRIMARY, fields, systemtablekey);
+:} 
+	;
+
+table_foreign_key ::=
+		FOREIGN KEY table_systemtablekey_opt:systemtablekey locked_opt IDENTIFIER:name LPAREN table_key_fields:fields RPAREN
+{:
+	RESULT = new ADLKey(name, KeyType.FOREIGN, fields, systemtablekey);
+:} 
+	;
+
+table_unique_key ::=
+		UNIQUE KEY table_systemtablekey_opt:systemtablekey locked_opt IDENTIFIER:name LPAREN table_key_fields:fields RPAREN
+{:
+	RESULT = new ADLKey(name, KeyType.UNIQUE, fields, systemtablekey);
+:} 
+	;
+
+table_index_key ::=
+		INDEX KEY table_systemtablekey_opt:systemtablekey locked_opt IDENTIFIER:name LPAREN table_key_fields:fields RPAREN
+{:
+	RESULT = new ADLKey(name, KeyType.INDEX, fields, systemtablekey);
+:} 
+	;
+
+table_key_fields ::= 
+		STRING_LITERAL:keyfield
+{:
+	List keyfields = new java.util.ArrayList();
+	keyfields.add(keyfield);
+	RESULT = keyfields;
+:} 
+	|	table_key_fields:keyfields COMMA STRING_LITERAL:keyfield
+{:
+	keyfields.add(keyfield);
+	RESULT = keyfields;
+:} 
+	;
+
+table_infofield_opt ::=
+	|	INFOFIELD STRING_LITERAL:infofield
+{:
+	RESULT = infofield;
+:} 
+	;
+
+table_fields ::= 
+		table_field:field
+{:
+	List fields = new java.util.ArrayList();
+	fields.add(field);
+	RESULT = fields;
+:} 
+	|	table_fields:fields table_field:field
+{:
+	fields.add(field);
+	RESULT = fields;
+:} 
+	;
+
+table_field ::= 
+		STRING_LITERAL:name table_field_db_name_opt:dbname
+			LABEL STRING_LITERAL:label 
+			table_field_history_opt:history
+			table_field_historyfield_opt:historyfield
+			table_field_readonly_opt:readonly 
+			not_null_opt:not_null
+			table_systemfield_opt:systemfield 
+			locked_opt
+			tablefield_permissions_opt
+			table_field_type:type SEMICOLON
+{:
+	RESULT = new ADLField(name, dbname, type, label, readonly, not_null, systemfield, history, historyfield);
+:} 
+	;
+
+table_field_db_name_opt ::= 
+	|	STRING_LITERAL:dbname
+{:
+	RESULT = dbname;
+:} 
+	;
+
+table_field_length_opt ::= 
+	|	OF LENGTH INTEGER_LITERAL:length
+{:
+	RESULT = length;
+:} 
+	;
+
+table_field_readonly_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	READONLY
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_field_type ::= 
+		table_field_vstring_type:type {: RESULT = type; :} 
+	|	table_field_string_type:type {: RESULT = type; :}  
+	|	table_field_integer_type:type {: RESULT = type; :}  
+	|	table_field_short_type:type {: RESULT = type; :}  
+	|	table_field_byte_type:type {: RESULT = type; :}  
+	|	table_field_float_type:type {: RESULT = type; :}  
+	|	table_field_double_type:type {: RESULT = type; :}  
+	|	table_field_money_type:type {: RESULT = type; :} 
+	|	table_field_date_type:type {: RESULT = type; :} 
+	|	table_field_datetime_type:type {: RESULT = type; :} 
+	|	table_field_interval_type:type {: RESULT = type; :} 
+	|	table_field_serial_type:type {: RESULT = type; :} 
+	|	table_field_binary_type:type {: RESULT = type; :} 
+	|	table_field_text_type:type {: RESULT = type; :} 
+	|	table_field_enum_type:type {: RESULT = type; :} 
+	;
+
+table_field_vstring_type ::=
+		VSTRING table_field_length_opt:length table_field_max_opt table_field_min_opt table_field_desc_opt:desc table_field_default_opt:def table_field_anchorleft_opt:anchorleft table_field_casesensitive_opt:casesensitive table_field_required_opt:required
+{:
+	RESULT = new ADLVString(length, desc, def, anchorleft, casesensitive, required);
+:} 
+	;
+
+table_field_string_type ::=
+		STRING table_field_length_opt:length table_field_max_opt table_field_min_opt table_field_desc_opt:desc table_field_default_opt:def table_field_anchorleft_opt:anchorleft table_field_casesensitive_opt:casesensitive table_field_required_opt:required
+{:
+	RESULT = new ADLString(length, desc, def, anchorleft, casesensitive, required);
+:} 
+	;
+
+table_field_integer_type ::=
+		INTEGER table_field_length_opt:length table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_int_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLInteger(length, max, min, desc, def, required);
+:} 
+	;
+
+table_field_short_type ::=
+		SHORT table_field_length_opt:length table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_int_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLShort(length, max, min, desc, def, required);
+:} 
+	;
+
+table_field_byte_type ::=
+		BYTE table_field_length_opt:length table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_int_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLByte(length, max, min, desc, def, required);
+:} 
+	;
+
+table_field_float_type ::=
+		FLOAT table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_floatdouble_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLFloat(max, min, desc, def, required);
+:} 
+	;
+
+table_field_double_type ::=
+		DOUBLE table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_floatdouble_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLDouble(max, min, desc, def, required);
+:} 
+	;
+
+table_field_money_type ::=
+		MONEY table_field_symbol_opt:symbol table_field_scale_opt:scale table_field_max_opt:max table_field_min_opt:min table_field_desc_opt:desc table_field_floatdouble_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLMoney(symbol, scale, max, min, desc, def, required);
+:} 
+	;
+
+table_field_date_type ::=
+		DATE table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLDate(desc, required);
+:} 
+	;
+
+table_field_datetime_type ::=
+		DATETIME table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLDatetime(desc, required);
+:} 
+	;
+
+table_field_interval_type ::=
+		INTERVAL table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLInterval(desc, required);
+:} 
+	;
+
+table_field_serial_type ::=
+		SERIAL table_cachesize_opt table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLSerial(desc, required);
+:} 
+	;
+
+table_field_binary_type ::=
+		BINARY table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLBinary(desc, required);
+:} 
+	;
+
+table_field_text_type ::=
+		TEXT direct_opt table_field_desc_opt:desc table_field_required_opt:required
+{:
+	RESULT = new ADLText(desc, required);
+:} 
+	;
+
+table_field_enum_type ::=
+		ENUM table_field_enum_values:values table_field_max_opt table_field_min_opt table_field_desc_opt:desc table_field_default_opt:def table_field_required_opt:required
+{:
+	RESULT = new ADLEnum(values, desc, def, required);
+:} 
+	;
+
+table_field_enum_values ::= 
+		STRING_LITERAL:value
+{:
+	List values = new java.util.ArrayList();
+	values.add(value);
+	RESULT = values;
+:} 
+	|	table_field_enum_values:values COMMA STRING_LITERAL:value
+{:
+	values.add(value);
+	RESULT = values;
+:} 
+	;
+
+table_field_min_opt ::= 
+	|	MIN STRING_LITERAL:min
+{:
+	RESULT = min;
+:} 
+	;
+
+table_field_max_opt ::= 
+	|	MAX STRING_LITERAL:max
+{:
+	RESULT = max;
+:} 
+	;
+
+table_field_desc_opt ::= 
+	|	DESC EQ STRING_LITERAL:description
+{:
+	RESULT = description;
+:} 
+	;
+
+table_field_default_opt ::= 
+	|	DEFAULT EQ STRING_LITERAL:def
+{:
+	RESULT = def;
+:} 
+	;
+
+table_field_int_default_opt ::= 
+	|	DEFAULT EQ INTEGER_LITERAL:def
+{:
+	RESULT = def;
+:} 
+	;
+
+table_field_floatdouble_default_opt ::= 
+	|	DEFAULT EQ FLOATING_POINT_LITERAL:def
+{:
+	RESULT = def;
+:} 
+	;
+
+table_field_symbol_opt ::= 
+	|	SYMBOL EQ STRING_LITERAL:symbol
+{:
+	RESULT = symbol;
+:} 
+	;
+
+table_field_scale_opt ::= 
+	|	SCALE EQ INTEGER_LITERAL:scale
+{:
+	RESULT = scale;
+:} 
+	;
+
+table_field_anchorleft_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	ANCHORLEFT
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_field_casesensitive_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	CASESENSITIVE
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_field_required_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	REQUIRED
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_field_history_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	HISTORY
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+table_field_historyfield_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	HISTORYFIELD
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+/* -------------------- */
+/* Tableset declaration */
+/* -------------------- */
+
+tableset_declaration ::=
+		DEFINE TABLESET IDENTIFIER:name tableset_systemtableset_opt:systemtableset WITH TABLES tablealias_declarations_opt:aliases SEMICOLON
+{:
+	RESULT = new ADLTableSet(name, aliases, systemtableset);
+:} 
+	;
+
+tableset_systemtableset_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	SYSTEMTABLESET
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+tablealias_declarations_opt ::= 
+	|	tablealias_declaration:alias
+{:
+	List list = new java.util.ArrayList();
+	list.add(alias);
+	RESULT = list;
+:} 
+	|	tablealias_declarations_opt:list COMMA tablealias_declaration:alias
+{:
+	list.add(alias);
+	RESULT = list;
+:} 
+	;
+
+tablealias_declaration ::=
+		IDENTIFIER:tablename tablealias_alias_opt:alias tablealias_desc_opt:desc tablealias_condition_opt:condition tablerule_declarations_opt:rules
+{:
+	RESULT = new ADLTableAlias(tablename, alias, desc, condition, rules);
+:} 
+	;
+
+tablealias_alias_opt ::= 
+	|	ALIAS IDENTIFIER:alias
+{:
+	RESULT = alias;
+:} 
+	;
+
+tablealias_desc_opt ::= 
+	|	DESC EQ STRING_LITERAL:desc
+{:
+	RESULT = desc;
+:} 
+	;
+
+tablealias_condition_opt ::= 
+	|	CONDITION STRING_LITERAL:condition
+{:
+	RESULT = condition;
+:} 
+	;
+
+tablerule_declarations_opt ::= 
+{:
+	RESULT = new java.util.HashSet();
+:} 
+	|	tablerule_declarations:set
+{:
+	RESULT = set;
+:} 
+	;
+	
+tablerule_declarations ::= 
+		tablerule_declaration:rule
+{:
+	Set set = new java.util.HashSet();
+	set.add(rule);
+	RESULT = set;
+:} 
+	|	tablerule_declarations:set tablerule_declaration:rule
+{:
+	set.add(rule);
+	RESULT = set;
+:} 
+	;
+
+tablerule_declaration ::=
+		TABLERULE tablerule_type:type SCRIPT STRING_LITERAL:script FROM FILE STRING_LITERAL:file 
+{:
+	RESULT = new ADLTableRule(file, script, type);
+:} 
+	;
+
+tablerule_type ::= 
+		BEFOREUPDATE
+{:
+	RESULT = "BEFOREUPDATE";
+:} 
+	|	AFTERUPDATE
+{:
+	RESULT = "AFTERUPDATE";
+:} 
+	|	BEFORESEARCH
+{:
+	RESULT = "BEFORESEARCH";
+:} 
+	|	NEW
+{:
+	RESULT = "NEW";
+:} 
+	|	DELETE
+{:
+	RESULT = "DELETE";
+:} 
+	|	AFTERNETCREATE
+{:
+	RESULT = "AFTERNETCREATE";
+:} 
+	;
+
+/* ------------------- */
+/* Browser declaration */
+/* ------------------- */
+
+browser_declaration ::=
+		DEFINE BROWSER IDENTIFIER:name FOR TABLE IDENTIFIER:tablealias TYPE STATIC tablerule_declarations_opt browser_infofield_opt LBRACE browser_field_declarations:fields RBRACE SEMICOLON
+{:
+	RESULT = new ADLSearchBrowser(name, tablealias, fields, false);
+:} 
+	|	DEFINE BROWSER IDENTIFIER:name FOR TABLE IDENTIFIER:tablealias TYPE DYNAMIC tablerule_declarations_opt browser_infofield_opt LBRACE browser_field_declarations:fields RBRACE SEMICOLON
+{:
+	RESULT = new ADLSearchBrowser(name, tablealias, fields, true);
+:} 
+	|	DEFINE BROWSER IDENTIFIER:name FOR TABLE IDENTIFIER:tablealias TYPE INFRAME tablerule_declarations_opt browser_infofield_opt LBRACE browser_field_declarations:fields browser_summaryrow_declarations_opt:summaryrows RBRACE SEMICOLON
+{:
+	RESULT = new ADLInFormBrowser(name, tablealias, fields, summaryrows);
+:} 
+	;
+
+browser_infofield_opt ::=
+	|	INFOFIELD IDENTIFIER DOT STRING_LITERAL
+	;
+
+browser_field_declarations ::= 
+		browser_field_declaration:field
+{:
+	List list = new java.util.ArrayList();
+	list.add(field);
+	RESULT = list;
+:} 
+	|	browser_field_declarations:list browser_field_declaration:field
+{:
+	list.add(field);
+	RESULT = list;
+:} 
+	;
+
+browser_field_declaration ::=
+		IDENTIFIER:tablealias DOT STRING_LITERAL:tablefield STRING_LITERAL:name LABEL STRING_LITERAL:label browser_field_sortorder_opt:sortorder browser_field_readonly_opt:readonly browser_field_invisible_opt:invisible SEMICOLON
+{:
+	RESULT = new ADLBrowserAnchorField(name, tablealias, tablefield, label, sortorder, readonly, invisible);
+:} 
+	|	IDENTIFIER:tablealias DOT STRING_LITERAL:tablefield STRING_LITERAL:name LABEL STRING_LITERAL:label browser_field_sortorder_opt:sortorder browser_field_readonly_opt:readonly browser_field_invisible_opt:invisible BROWSER IDENTIFIER:foreignbrowser RELATIONSET IDENTIFIER:relationset FILLDIRECTION browser_field_filldirection:filldirection USING RELATION IDENTIFIER:relation SEMICOLON
+{:
+	RESULT = new ADLBrowserForeignField(name, tablealias, tablefield, label, sortorder, readonly, invisible, foreignbrowser, relationset, filldirection, relation);
+:} 
+	|	STRING_LITERAL:name FORMULA STRING_LITERAL:formula LABEL STRING_LITERAL:label browser_field_invisible_opt:invisible SEMICOLON
+{:
+	RESULT = new ADLBrowserFormulaField(name, label, formula, invisible);
+:} 
+	|	STRING_LITERAL:name FORMULA STRING_LITERAL:formula LABEL STRING_LITERAL:label browser_field_invisible_opt:invisible COLSUMMARY FORMULA STRING_LITERAL:colformula SEMICOLON
+{:
+	RESULT = new ADLBrowserFormulaField(name, label, formula, colformula, invisible);
+:} 
+	|	IDENTIFIER:tablealias DOT STRING_LITERAL:tablefield STRING_LITERAL:name LABEL STRING_LITERAL:label browser_field_sortorder_opt:sortorder browser_field_readonly_opt:readonly browser_field_invisible_opt:invisible COLSUMMARY LABEL STRING_LITERAL:collabel SEMICOLON
+{:
+	// TODO: inserted for QSMQ (unnötiger Schrott 'COLSUMMARY LABEL STRING_LITERAL:collabel '?)
+	RESULT = new ADLBrowserAnchorField(name, tablealias, tablefield, label, sortorder, readonly, invisible);
+:} 
+	|	IDENTIFIER:tablealias DOT STRING_LITERAL:tablefield STRING_LITERAL:name LABEL STRING_LITERAL:label browser_field_sortorder_opt:sortorder browser_field_readonly_opt:readonly browser_field_invisible_opt:invisible COLSUMMARY FORMULA STRING_LITERAL:collabel SEMICOLON
+{:
+	// TODO: inserted for QSMQ (unnötiger Schrott 'COLSUMMARY FORMULA STRING_LITERAL:collabel '?)
+	RESULT = new ADLBrowserAnchorField(name, tablealias, tablefield, label, sortorder, readonly, invisible);
+:} 
+	;
+
+browser_summaryrow_declarations_opt ::= 
+{:
+	RESULT = new java.util.ArrayList();
+:} 
+	|	browser_summaryrow_declarations:list
+{:
+	RESULT = list;
+:} 
+	;
+	
+browser_summaryrow_declarations ::= 
+		browser_summaryrow_declaration:summaryrow
+{:
+	List list = new java.util.ArrayList();
+	list.add(summaryrow);
+	RESULT = list;
+:} 
+	|	browser_summaryrow_declarations:list browser_summaryrow_declaration:summaryrow
+{:
+	list.add(summaryrow);
+	RESULT = list;
+:} 
+	;
+
+browser_summaryrow_declaration ::=
+		SUMMARYROW INTEGER_LITERAL:order STRING_LITERAL:name STRING_LITERAL:caption STRING_LITERAL:formula STRING_LITERAL:targetfield SEMICOLON
+{:
+	RESULT = new ADLSummaryRow(name, order, caption, formula, targetfield);
+:} 
+	;
+
+browser_field_sortorder_opt ::= 
+{:
+	RESULT = SortOrder.NONE;
+:} 
+	|	ASCENDING
+{:
+	RESULT = SortOrder.ASCENDING;
+:} 
+	|	DESCENDING
+{:
+	RESULT = SortOrder.DESCENDING;
+:} 
+	;
+
+browser_field_filldirection ::=
+		FORWARD
+{:
+	RESULT = Filldirection.FORWARD;
+:} 
+	|	BACKWARD
+{:
+	RESULT = Filldirection.BACKWARD;
+:} 
+	;
+
+browser_field_readonly_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	READONLY
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+browser_field_invisible_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	INVISIBLE
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+/* ------------------- */
+/* Include declaration */
+/* ------------------- */
+
+include_declaration ::=
+		INCLUDE FORMS FROM FILE STRING_LITERAL SEMICOLON /* ADL 5.0 */
+	|	INCLUDE XMLFORMS FROM FILE STRING_LITERAL SEMICOLON
+	;
+
+/* ------------------ */
+/* Module declaration */
+/* ------------------ */
+
+module_declaration ::=
+		DEFINE MODULE IDENTIFIER:name module_label_opt:label module_invisible_opt:invisible module_desc_opt:desc WITH module_modules_opt module_tablesets_opt module_webq_disabled_opt module_tablerule_declarations_opt module_permission_opt:roles LBRACE module_bracecontents_opt RBRACE SEMICOLON
+{:
+	RESULT = new ADLModule(name, label, invisible, desc, roles, this.adlDefinition.getTempBrowserNames(), this.adlDefinition.getTempFormNames(), this.adlDefinition.getTempFormorderNames());
+	this.adlDefinition.clearTemp();
+:} 
+	;
+
+module_label_opt ::=
+	|	LABEL STRING_LITERAL:label
+{:
+	RESULT = label;
+:} 
+	;
+
+module_desc_opt ::=
+	|	DESC STRING_LITERAL:desc
+{:
+	RESULT = desc;
+:} 
+	;
+
+module_invisible_opt ::=
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	INVISIBLE
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+module_webq_disabled_opt ::= 
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	|	WEBQ DISABLED
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	;
+
+module_permission_opt ::=
+{:
+	RESULT = new java.util.ArrayList();
+:} 
+	|	PERMISSION READ permission_roles:list
+{:
+	RESULT = list;
+:} 
+	|	PERMISSION READ ALL
+{:
+	List res = new java.util.ArrayList();
+	res.add("ALL");
+	RESULT = res;
+:} 
+	|	PERMISSION READ NONE
+{:
+	List res = new java.util.ArrayList();
+	res.add("NONE");
+	RESULT = res;
+:} 
+	;
+
+module_tablerule_declarations_opt ::=
+		tablerule_declarations_opt:list
+{:
+	// TODO: inserted for QSMQ
+	RESULT = list;
+:} 
+	;
+
+module_modules_opt ::= 
+{:
+	RESULT = new java.util.ArrayList();
+:} 
+	|	MODULES module_namelist:list
+{:
+	RESULT = list;
+:} 
+	;
+
+module_tablesets_opt ::= 
+	|	TABLESETS module_namelist:list
+{:
+	RESULT = list;
+:} 
+	;
+
+module_browsers ::= 
+	USE BROWSERS module_namelist:list SEMICOLON
+{:
+	RESULT = list;
+:} 
+	;
+
+module_forms ::= USE FORMS module_namelist:list SEMICOLON
+{:
+	RESULT = list;
+:} 
+	;
+
+module_formorder ::= FORMORDER module_namelist:list SEMICOLON
+{:
+	RESULT = list;
+:} 
+	;
+
+module_namelist ::=
+		IDENTIFIER:name
+{:
+	List list = new java.util.ArrayList();
+	list.add(name);
+	RESULT = list;
+:} 
+	|	module_namelist:list COMMA IDENTIFIER:name
+{:
+	list.add(name);
+	RESULT = list;
+:} 
+	;
+
+module_bracecontents_opt ::= module_bracecontents | ;
+
+module_bracecontents ::=
+		module_bracecontent
+	|	module_bracecontents module_bracecontent
+	;
+
+module_bracecontent ::=
+		relation_declaration:relation
+{:
+	this.adlDefinition.add(relation);
+:} 
+	|	relationset_declaration:relationset
+{:
+	this.adlDefinition.add(relationset);
+:} 
+	|	module_browsers:names
+{:
+	this.adlDefinition.setTempBrowserNames(names);
+:} 
+	|	module_forms:names
+{:
+	this.adlDefinition.setTempFormNames(names);
+:} 
+	|	module_formorder:names
+{:
+	this.adlDefinition.setTempFormorderNames(names);
+:} 
+	;
+
+/* -------------------- */
+/* Relation declaration */
+/* -------------------- */
+
+relation_declaration ::=
+		DEFINE RELATION IDENTIFIER:name relation_desc_opt:desc OF TYPE ONETON FROM IDENTIFIER:fromTableAlias DOT STRING_LITERAL:fromKey TO IDENTIFIER:toTableAlias DOT STRING_LITERAL:toKey relation_sameas_opt:sameas SEMICOLON
+{:
+	RESULT = new ADLOneToManyRelation(name, desc, fromTableAlias, fromKey, toTableAlias, toKey, sameas);
+:} 
+	|	DEFINE RELATION IDENTIFIER:name relation_desc_opt:desc OF TYPE MTON WITH NODES IDENTIFIER:fromTableAlias COMMA IDENTIFIER:intermediateTableAlias COMMA IDENTIFIER:toTableAlias EDGES IDENTIFIER:intermediateFromField COMMA IDENTIFIER:intermediateToField relation_sameas_opt:sameas SEMICOLON
+{:
+	RESULT = new ADLManyToManyRelation(name, desc, fromTableAlias, toTableAlias, intermediateTableAlias, intermediateFromField, intermediateToField, sameas);
+:} 
+	;
+
+relation_desc_opt ::= 
+	|	DESC EQ STRING_LITERAL:desc
+{:
+	RESULT = desc;
+:} 
+	;
+	
+relation_sameas_opt ::= 
+	|	DES LPAREN SAME AS IDENTIFIER:key RPAREN
+{:
+	RESULT = key;
+:} 
+	;
+	
+/* ----------------------- */
+/* Relationset declaration */
+/* ----------------------- */
+
+relationset_declaration ::=
+		DEFINE RELATIONSET IDENTIFIER:name relation_desc_opt:desc AS relationset_relationnames:relationnames SEMICOLON
+{:
+	RESULT = new ADLRelationSet(name, desc, relationnames);
+:} 
+	;
+
+relationset_relationnames ::=
+		IDENTIFIER:relationname
+{:
+	Set set = new java.util.HashSet();
+	set.add(relationname);
+	RESULT = set;
+:} 
+	|	relationset_relationnames:set COMMA IDENTIFIER:relationname
+{:
+	set.add(relationname);
+	RESULT = set;
+:} 
+	;
+
+/* ----------------------- */
+/* Application declaration */
+/* ----------------------- */
+
+application_declaration ::=
+		DEFINE APPLICATION IDENTIFIER:name application_modules_opt:modulenames LBRACE application_title_opt:title application_rules_opt RBRACE SEMICOLON
+{:
+	RESULT = new ADLApplication(name, title, modulenames);
+:} 
+	;
+
+application_title_opt ::=
+	|	TITLE STRING_LITERAL:title SEMICOLON 
+{:
+	RESULT = title;
+:} 
+	;
+	
+application_modules_opt ::= 
+{:
+	RESULT = new java.util.ArrayList();
+:} 
+	|	WITH MODULES application_modulenames:list
+{:
+	RESULT = list;
+:} 
+	;
+	
+application_modulenames ::=
+		IDENTIFIER:name
+{:
+	List list = new java.util.ArrayList();
+	list.add(name);
+	RESULT = list;
+:} 
+	|	application_modulenames:list COMMA IDENTIFIER:name
+{:
+	list.add(name);
+	RESULT = list;
+:} 
+	;
+
+application_rules_opt ::= application_rules | ;
+
+application_rules ::=
+		application_rule
+	|	application_rules application_rule
+	;
+
+application_rule ::=
+		DEFINE RULE STRING_LITERAL FROM FILE STRING_LITERAL OF TYPE RULESERVER application_rule_category_opt application_rule_repeat_opt SEMICOLON
+	;
+
+application_rule_category_opt ::= application_rule_category | ;
+
+application_rule_category ::=
+		CATEGORY EQ INTEGER_LITERAL
+	;
+
+application_rule_repeat_opt ::= application_rule_repeat | ;
+
+application_rule_repeat ::=
+		REPEAT EQ INTEGER_LITERAL
+	;

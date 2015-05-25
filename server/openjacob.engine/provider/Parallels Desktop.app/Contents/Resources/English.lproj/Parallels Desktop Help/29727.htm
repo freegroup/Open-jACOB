@@ -1,0 +1,46 @@
+<html>
+<head>
+<title> Probleme Speichernutzung </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="29520.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="28189.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675174.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Probleme Speichernutzung</h2>
+<p class="bodytext">Die Menge an physischen Speicher des Hosts, die für jeden Vorgang in der virtuellen Maschine benötigt wird, kann wie folgt dargestellt werden:</p>
+<p class="bodytext">Speicher virtuelle Maschine = <em class="emphasis">Gastbetriebssystemspeicher + Grafik-Speicher </em> + <em class="emphasis">Speicher für den Monitor der virtuellen Maschine</em></p>
+<ul class="listbullet"><li class="listbullet">          <em class="emphasis">Der Arbeitsspeicher für das Gastbetriebssystem </em> entspricht der Menge an RAM, die für das Gastbetriebssystem verfügbar ist. Sie können die Speichermenge für das Gastbetriebssystem im Bereich <a id="h22627" class="jumptemplate" title="Allgemeine Einstellungen" href="22497.htm" target="_self">Hauptspeicher</a><strong class="specialbold"><a id="h22627_2" class="jumptemplate" title="Allgemeine Einstellungen" href="22497.htm" target="_self"> in der Konfiguration der virtuellen Maschine ändern.</a></strong></li><li class="listbullet">          <em class="emphasis">Grafik-Speicher</em> ist die Menge an physischen Speicher, der der Grafikkarte der virtuellen Maschine zur Verfügung steht. Sie können die Speichermenge für das Gastbetriebssystem im Bereich <a id="h22918" class="jumptemplate" title="Grafikeinstellungen" href="22895.htm" target="_self">Grafik</a><strong class="specialbold"><a id="h22918_2" class="jumptemplate" title="Grafikeinstellungen" href="22895.htm" target="_self"> in der Konfiguration der virtuellen Maschine ändern.</a></strong></li><li class="listbullet">          <em class="emphasis">Monitor der virtuellen Maschine</em> ist das Modul, das für die Virtualisierung des Gastbetriebssystems verantwortlich ist. Der Monitor der virtuellen Maschine verbraucht zur Ausführung von Vorgängen Arbeitsspeicher und ist verantwortlich für die Paging Emulation. Die erforderliche Speichermenge für den Monitor der virtuellen Maschine ist abhängig vom Gastbetriebssystem und liegt 50 MB und 200 MB.</li></ul><p class="bodytext">Sie können den gesamten verfgübaren physischen Speicher für alle ausgeführten virtuellen Maschinen in der <a id="h22625" class="jumptemplate" title="Speichereinstellungen" href="22624.htm" target="_self">Registerkarte </a><strong class="specialbold"><a id="h22625_2" class="jumptemplate" title="Speichereinstellungen" href="22624.htm" target="_self">Speicher </a></strong> in den Eigenschaften der Anwendung konfigurieren. </p>
+<p class="subheading">Speicherüberlastung</p>
+<p class="bodytext">Falls mehrere virtuelle Maschinen gleichzeitig ausgeführt werden und Sie versuchen eine weitere virtuelle Maschine zu starten, kann es passieren, dass der Arbeitsspeicher überlastet ist (Memory Overcommitment). Die Applikation wird Sie mit einer entsprechenden Meldung darüber informieren. Das bedeutet, dass alle ausgeführten virtuellen Maschinen mehr Speicher benötigen als in der Registerkarte <strong class="specialbold"><a id="h22625_3" class="jumptemplate" title="Speichereinstellungen" href="22624.htm" target="_self">Speicher</a></strong> festgelegt wurden. Wenn Sie eine weitere virtuelle Maschinen starten, reduziert dies erheblich die Performance von allen virtuellen Maschinen. Um dieses Problem zu behebn, können Sie folgendermaßen vorgehen:</p>
+<ul class="listbullet"><li class="listbullet">eine oder mehrere virtuelle Maschine anhalten oder</li><li class="listbullet">die Konfiguration der virtuellen Maschinen verändern, so dass sie weniger Speicher benötigen, oder</li><li class="listbullet">die Speicheranforderungen ändern, so dass Ihren virtuellen Maschinen mehr Speicher zugewiesen wird.</li></ul>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+29727" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>

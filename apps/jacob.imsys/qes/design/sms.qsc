@@ -1,0 +1,49 @@
+'NAME = "sms"
+'TYPE = 0
+'TEMPLATE = "Sub sms()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       sms
+'Purpose:      Starts the ServerManagementSystem program for the
+'              selected equipment, details provided Mr. Stinz.
+'              Remark: GUI
+'Copyright:    Quartess GmbH, 1997
+'*****************************************************************************
+Sub sms()
+
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iRec As DBRecord
+Dim sComputerName As String
+Dim sCommand As String
+
+	On Error GoTo sms_error_handler
+	Set iApp = GetApp
+	Set iGroup = iApp.ContextGroup
+	Set iRec = iGroup.GetCurrentRecord
+	If iRec is Nothing Then
+		iApp.UserMsg "Kein Gerät selektiert, SMS wird nicht gestartet"
+		Exit Sub
+	End If
+
+	' sCommand changed to local path by Th.Knoop on 7-4-98
+ 	' sCommand = "\\s59bdb05\g_sni\machview.exe /q " & _
+	sComputerName = iRec.GetValue("computername")
+ 	sCommand = "c:\smsadmin\site.srv\x86.bin\machview.exe /q " & _
+		"""Personal Computer:MICROSOFT|IDENTIFICATION|1.0:Name=" & sComputerName & """"
+	PID = shell( sCommand, ebNormalFocus )
+	Exit Sub
+sms_error_handler:
+	iApp.UserMsg "SMS error" & CStr(Err) & ": " & Error$ 
+End Sub
+
+
+
+
+
+
+
+
+
+
+']]

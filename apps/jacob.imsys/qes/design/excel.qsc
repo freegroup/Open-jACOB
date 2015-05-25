@@ -1,0 +1,315 @@
+'NAME = "ExcelImport"
+'TYPE = 0
+'TEMPLATE = "Sub ExcelImport()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       ExcelImport
+'Purpose:      Script to toimport an Excelsheet
+'Copyright:    Tarragon, 2005
+'*****************************************************************************
+'Option Explicit
+' Excelsheetinformation
+Const SHEETNAME="Tabelle1"
+Const STARTROW =1
+Const ERRORROW=18
+Const ESTIMATEDSTARTDATE=1
+Const ESTIMATEDSTARTHOUR=2
+Const ESTIMATEDDONEHOUR=3
+Const LOCATION=4
+Const ORDERNO=5
+Const ORDERTYPE =6
+Const PRODUCT = 13 'Bestellung in Problemtext
+Const CUSTOMER =8
+Const ACCOUNTINGCODE=10
+Const SITE_PERSONALNO=11 
+Const AK_KEY = 15
+Const CATEGORY_KEY = 14
+'Konstanten, für die Meldung selbst
+Const PROCESS_KEY = "10"
+
+
+Type OrderData
+	employeecall  As String
+	locationnote  As String
+	problem  As String
+	problemtext As String
+	acountingcodetext As String
+	Estimatedstart As String
+	EstimatedDone As String
+	agentcall As String
+	workgroupcall As String
+	custtext As String
+	categorycall As String	
+End Type
+Dim iOrderRec As orderData
+
+
+'Global Varibles
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iCallTable As DBTable
+Dim iCustTable As DBTable
+Dim iLocationTable As DBTable
+Dim iWorkgroupTable As DBTable
+Dim iRec As DBRecord
+Dim isError As Boolean
+Dim sErrorMsg As String
+
+'-----------------------------------------------------------------------------------
+Function GetCustomerkey(oSheet As Object,nRow As Long) As String
+Dim sFullName As String
+Dim sFirstName As String
+Dim sLastname As String
+Dim sEmployeeID As String
+Dim nRecs As Integer
+	On Error GoTo ErrorHandler
+	  sFullName = oSheet.Cells(nRow,CUSTOMER).Value 	
+	  sLastname = UCase$(item$(sFullname,1,1,", "))
+	  sFirstname= UCase$(item$(sFullname,3,3,", "))	   ' verstehe ich nicht warum 3?
+	  sEmployeeID =	oSheet.Cells(nRow,SITE_PERSONALNO)	
+	  iCustTable.Clear
+	  iCustTable.qbeclear	
+	  iCustTable.qbeSetValue "employeeid", sEmployeeID  
+	  iCustTable.qbeSetValue "lastnamecorr", sLastname
+ 	  iCustTable.qbeSetValue "firstnamecorr", sFirstname 
+		
+	  iCustTable.search
+	  nRecs= iCustTable.RecordCount
+	  If nRecs =1 Then
+		 GetCustomerkey = iCustTable.GetRecord(0).GetValue("pkey")
+	  Else
+		 GetCustomerkey=""
+	  End If
+	  Exit Function		
+	ErrorHandler:
+Print "GetCustomerkey error " & CStr(Err) & ": " & Error$
+
+	  GetCustomerkey = ""
+
+End Function
+'-----------------------------------------------------------------------------------
+Function GetLocationKey(sNote As String) As String
+Dim iLocationRec As DBRecord
+	 Set iLocationRec =  iLocationTable.AddRecord()
+	 iLocationRec.SetValue "note", sNote
+	 iLocationTable.Commit	
+	 GetLocationKey =iLocationRec.getValue("pkey")
+Exit Function		
+
+End Function
+'-----------------------------------------------------------------------------------
+Function SetTableRecord(sTableName As String,sKeyName As String,sPkeyValue As String) As Boolean
+Dim iTable As DBTable
+	 Set iTable =  iNetwork.getTable( sTableName)
+	 iTable.clear
+	 iTable.qbeclear
+	 iTable.qbeSetValue sKeyName, sPkeyValue
+	 iTable.search
+	 If iTable.Recordcount() =1 Then
+		SetTableRecord = True
+	 Else 
+		SetTableRecord = False
+	 End If
+	Set iTable = Nothing
+End Function
+'-----------------------------------------------------------------------------------
+
+Function GetAKKey(oSheet As Object,nRow As Long) As String
+On Error GoTo ErrorHandler
+	 iWorkgroupTable.clear
+	 iWorkgroupTable.qbeclear
+	 iWorkgroupTable.qbeSetValue "pkey", "=" & oSheet.Cells(nRow,AK_KEY)
+	 iWorkgroupTable.search
+	 If iWorkgroupTable.Recordcount() =1 Then
+		GetAKKey = iWorkgroupTable.GEtRecord(0).GetValue("pkey")
+	 Else 
+		GetAKKey = ""
+	 End If
+Exit Function		
+ErrorHandler:
+iApp.UserMsg "GetAKKey error " & CStr(Err) & ": " & Error$
+
+	  GetAKKey = ""
+
+End Function
+
+'-----------------------------------------------------------------------------------
+Function ParseRow(oSheet As Object,nRow As Long) As Boolean
+Dim sCustKey As String
+Dim sAKKey	 As String
+Dim sEstimatedstart As String
+Dim sOrderNo As String
+Dim sOrderYear As String
+Dim sOrderMonth As String
+Dim sOrderDay As String
+Dim sOrderDate As String
+
+	sCustKey = GetCustomerkey(oSheet,nRow )
+	If sCustKey ="" Then
+			  ParseRow = False
+			  sErrorMsg = "Kunde nicht gefunden"
+			  Exit Function		  ' Wieder entkommentieren
+	End If
+	iOrderRec.employeecall= sCustKey
+
+	sOrderNo = oSheet.Cells(nRow,ORDERNO).Value		  ' Format IB'2005'01'10'103
+
+ 	sOrderYear = Mid$(sOrderNo,3,4)
+	sOrderMonth = Mid$(sOrderNo,7,2)
+ 	sOrderDay = Mid$(sOrderNo,9,2)
+	sOrderDate =  sOrderDay & "." & sOrderMonth & "." &	sOrderYear
+	
+	sEstimatedstart = oSheet.Cells(nRow,ESTIMATEDSTARTDATE).Value
+	iOrderRec.locationnote  = oSheet.Cells(nRow,LOCATION).Value
+
+	iOrderRec.custtext ="Bewirtungsservice für den " & sEstimatedstart & " (" & sOrderNo & ")"
+	iOrderRec.problem  = iOrderRec.locationnote
+
+	iOrderRec.problemtext =  oSheet.Cells(nRow,PRODUCT).Value
+	iOrderRec.acountingcodetext = oSheet.Cells(nRow,ACCOUNTINGCODE).Value
+	iOrderRec.Estimatedstart = sEstimatedstart & " " & CDate(oSheet.Cells(nRow,ESTIMATEDSTARTHOUR).Value )
+	iOrderRec.EstimatedDone = sEstimatedstart & " " & CDate(oSheet.Cells(nRow,ESTIMATEDDONEHOUR).Value	)
+	iOrderRec.agentcall =iApp.CurrentUserKey
+	sAKKey	 = GetAKKey(oSheet,nRow)
+	If sAKKey ="" Then
+			  ParseRow = False
+			  sErrorMsg = "AK  mit Key ='" & oSheet.Cells(nRow,AK_KEY) & "' nicht gefunden"
+			  Exit Function		  
+	End If
+	iOrderRec.workgroupcall = sAKKey
+	iOrderRec.categorycall = oSheet.Cells(nRow,CATEGORY_KEY).Value
+	ParseRow = True
+End Function
+'-----------------------------------------------------------------------------------
+Sub CreateCall() 
+On Error GoTo ErrorHandler
+	iCallTable.clear
+	Set iRec = iCallTable.AddRecord()
+	iRec.SetValue "workgroupcall" ,	iOrderRec.workgroupcall
+	iRec.SetValue "employeecall" ,	iOrderRec.employeecall
+	iRec.SetValue "custtext" ,	iOrderRec.custtext
+	iRec.SetValue "problem" ,	iOrderRec.problem
+	iRec.SetValue "problemtext" ,	iOrderRec.problemtext
+	iRec.SetValue "accountingcodetext" ,	iOrderRec.acountingcodetext
+	iRec.SetValue "estimatedstart" ,	iOrderRec.Estimatedstart
+	iRec.SetValue "estimateddone" ,	iOrderRec.EstimatedDone
+	iRec.SetValue "agentcall" ,	iOrderRec.agentcall
+	'category
+	If SetTableRecord("category","pkey",iOrderRec.categorycall)  Then
+		iRec.SetValue "categorycall" ,	iOrderRec.categorycall
+	Else
+   		Err.Raise 999,"CreateCall", "Gewerk nicht gefunden"
+	End If
+	' process
+	If SetTableRecord("process","pkey",PROCESS_KEY)  Then
+		iRec.SetValue "process_key" ,	PROCESS_KEY
+	Else
+   		Err.Raise 999,"CreateCall", "Tätigkeit nicht gefunden"
+	End If
+
+	iRec.SetValue "location_key" ,	GetLocationKey(iOrderRec.locationnote)
+	iCallTable.Commit
+
+	Exit Sub
+
+ErrorHandler:
+	iCallTable.clear
+	sErrorMsg = Error$
+	isError =True
+
+End Sub
+'-----------------------------------------------------------------------------------
+
+Sub ExcelImport()
+On Error GoTo Error_handler
+Dim sFilename As String
+Dim nRow As Long
+Dim nMaxRows As Long
+Dim bRes As Boolean
+Dim globalError As Boolean
+
+	Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+	Set iCustTable = iNetwork.getTable("customerint")
+	Set iLocationTable = iNetwork.getTable("location")
+	Set iCallTable = iNetwork.getTable("call")
+	Set iWorkgroupTable = iNetwork.getTable("callworkgroup")
+		iApp.ContextFocus.Clear
+		sFilename = ReadINI$("ExcelImport", "PATH","imsys.ini" )
+		bRes=FileExists(sFilename)
+		sFilename = OpenFileName$("zu importierendes Dokument","Exceldatei:*.xls")
+        
+		If sFilename="" Then Exit Sub
+
+        Dim oExcel As Object
+        Dim oBook As Object
+        Dim oSheet As Object
+        Set oExcel = CreateObject("Excel.Application")
+       	oExcel.Workbooks.open sFilename
+		Set oBook = oExcel.Workbooks(1)
+        Set oSheet = oBook.Worksheets(SHEETNAME)
+
+		globalError = False
+		nMaxRows = STARTROW	-1
+		' Anzahl der Spalten ermitteln
+		Do 
+		  nMaxRows= nMaxRows +1	
+		Loop Until 	oSheet.Cells(nMaxRows, ESTIMATEDSTARTDATE).Value =""
+		nMaxRows=nMaxRows-STARTROW	
+		nRow = STARTROW
+		Msg.Open "Importiere...",0,True,True
+		' Spalten bearbeiten
+		oSheet.Cells(nRow, ERRORROW).Value = "Fehler beim Import/Meldungsnummer"
+		Do
+		   Msg.Thermometer = int((nRow-STARTROW)*100/nMaxRows)	
+		   isError = False
+		   If ParseRow(oSheet,nRow) Then
+		   	  CreateCall
+		   Else
+				isError =True	
+		   End If
+
+		   If isError Then
+				 globalError = True					
+       			 oSheet.Cells(nRow, ERRORROW).Value = sErrorMsg
+		   Else
+				 oSheet.Cells(nRow, ERRORROW).Value = "Meldung: " & iRec.getValue("pkey")
+		   End If
+			
+		   nRow = nRow+1
+		Loop Until 	oSheet.Cells(nRow, ESTIMATEDSTARTDATE).Value ="" 	 
+		Msg.Close
+		oBook.save
+		If globalError Then
+			iApp.UserMsg "Import war nicht erfolgreich. Schauen Sie bitte in das Dokument"
+			nPID = shell( Environ$( "COMSPEC" ) & " /c """ & sFileName & """", ebHide )
+			
+		Else
+			iApp.UserMsg "Exceltabelle wurde erfolgreich importiert"
+		End If
+
+        Set oSheet = Nothing
+        Set oBook = Nothing
+        oExcel.Quit
+        Set oExcel = Nothing
+		WriteIni "ExcelImport", "PATH", sFilename,"imsys.ini"
+
+Exit Sub
+Error_Handler:
+	MsgBox "Excelimport error " & CStr(Err) & ": " & Error$
+
+End Sub
+'-----------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+']]

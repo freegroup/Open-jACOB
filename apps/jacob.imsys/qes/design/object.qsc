@@ -1,0 +1,277 @@
+'NAME = "ObjectUpdate"
+'TYPE = 0
+'TEMPLATE = "Function ObjectUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'SCript:     ObjectUpdate
+'Purpose:    Business rules that are executed when object table is updated
+'Copyright:  Quartess , 2002
+'*****************************************************************************
+
+
+Function ObjectUpdate() As Boolean
+'Database record modifications.  No GUI required.
+Dim iApp As Application
+Dim iObjRec As DBRecord
+Dim bResult As Boolean
+
+    'On Error GoTo ERROR_HANDLER
+    '-------------------------------------------------
+    Set iApp = GetApp
+    Set iObjRec = iApp.ContextRecord
+		iObjRec.SetValue "datemodified", Now()
+		iObjRec.SetValue "change_user", iApp.CurrentUserName
+		'If iObjRec.Mode = MODE_NEW Then
+		'	iObjRec.SetValue "timestamp", Now()
+		'End IF
+        ObjectUpdate = True
+
+    Exit Function
+
+ERROR_HANDLER:
+    ObjectUpdate = False
+'!!: iApp.UserMsg
+    iApp.UserMsg "ObjectUpdate error " & CStr(Err) & ": " & Error$
+End Function
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "GotoObject"
+'TYPE = 0
+'TEMPLATE = "Sub GotoObject()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       GotoObject
+'Purpose:      GUI script to jump to Object form
+'Type:	       GUI Rule
+'Copyright:    Quartess MDo, 2002
+'*****************************************************************************
+
+Sub GotoObject()
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iForm As SForm
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iGroup = iApp.ContextGroup
+	Set iForm = iApp.ContextForm
+	If	iForm.Name = "orgcustomerInt" Or iForm.Name = "orgcustomerIntAK" Then
+	    If iForm.GetGroup( "customer" ).Mode <> MODE_FILLED Then
+							iApp.UserMsg "Wählen Sie bitte erst einen Melder aus.", ebExclamation
+							GoTo Exit_Sub
+		End If
+		iApp.ContextFocus.ShowForm "object"
+
+	End If
+
+Exit Sub
+Error_handler:
+    iApp.UserMsg "GotoObject error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "BeforeObjectSearch"
+'TYPE = 0
+'TEMPLATE = "Sub BeforeObjectSearch()"
+'TEXT = [[
+'*****************************************************************************
+' File:         BeforeObjectSearch
+' Purpose:      Constrain objstatus to not verschrottet
+' *****************************************************************************
+
+Sub BeforeObjectSearch()
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iGroup As SGroup
+    Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+    If iApp.ContextFocus.Name <>" Stammdaten" Then
+       iApp.ContextFocus.ApplyCurrentConstraints "r_taskroles"
+	   Set iGroup =iApp.ContextGroup
+	   If iGroup.Name = "object" Then
+		  sStatus = iGroup.GetValue("objectObjstatus")
+		  If sStatus = "" Then
+			 sStatus = "!verschrottet"
+		  Else
+			 sStatus =sStatus & "+!verschrottet"
+		  End If	
+		 sStatus = "!verschrottet"
+	  End If
+	  iNetwork.GetTable("object").QBESetValue "objstatus", sStatus				
+	End If
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TableSearch"
+'TYPE = 0
+'TEMPLATE = "Function TableSearch() As Boolean"
+'TEXT = [[
+
+'*****************************************************************************
+'Script:       TableSearch
+'Purpose:      Before searching in the  table: set DCO 
+'			   status= aktiv
+'Copyright:    Tarragon, 2002
+'*****************************************************************************
+
+Function TableSearch() As Boolean
+Dim iTable As DBTable
+Dim iDummyTable As DBTable
+Dim iApp As Application
+Dim sControlName As String
+	On Error GoTo search_error_handler
+
+	Set iApp = GetApp()
+	sControlName = iApp.ContextControlName
+	' msgbox sControlName  
+	sControlName=Mid$(sControlName,Instr(sControlName,".")+1)
+	Select Case sControlName
+   		Case "objectExt_system"
+  			Set iTable = iApp.ContextNetwork.GetTable("ext_system")
+	  		iTable.QBESetValue "systemstatus", "aktiv"
+   		Case "taskExtsystem"
+  			Set iTable = iApp.ContextNetwork.GetTable("ext_system")
+	  		iTable.QBESetValue "systemstatus", "aktiv"
+			Set iDummyTable = iApp.ContextNetwork.GetTable("taskworkgroup")
+			If iDummyTable.RecordCount = 1 Then
+   				iApp.ContextNetwork.GetTable("hwgtasktype").QBESetValue "taskworkgroup_key", iDummyTable.GetRecord(0).GetValue("pkey")
+			End If
+			Set iDummyTable = iApp.ContextNetwork.GetTable("callworkgroup")
+			If iDummyTable.RecordCount = 1 Then
+   				iApp.ContextNetwork.GetTable("workgrouphwg").QBESetValue "workgroup_key", iDummyTable.GetRecord(0).GetValue("pkey")
+			End If
+    		iApp.ContextFocus.ApplyCurrentConstraints "r_tasktype_AK"
+   		Case "taskTasktype"
+  			Set iTable = iApp.ContextNetwork.GetTable("tasktype")
+	  		iTable.QBESetValue "tasktypestatus", "gültig"
+   		Case "objectAccountingcode"
+  			Set iTable = iApp.ContextNetwork.GetTable("objaccountingcode")
+	  		iTable.QBESetValue "accountingstatus", "gültig"
+   		Case "callAccounting"
+  			Set iTable = iApp.ContextNetwork.GetTable("accountingcode")
+	  		iTable.QBESetValue "accountingstatus", "gültig"
+   		Case "taskObject"
+  			Set iTable = iApp.ContextNetwork.GetTable("taskobject")
+	  		iTable.QBESetValue "objstatus", "in Betrieb|in Reparatur"
+	End Select
+	TableSearch = True
+	Exit Function
+	 
+search_error_handler:
+	iApp.UserMsg "CategorySearch error " & CStr(Err) & ": " & Error$
+	TableSearch = False
+End Function
+
+
+']]
+'NAME = "CallObjectBackfill"
+'TYPE = 0
+'TEMPLATE = "Sub CallObjectBackfill()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       CallObjectBackfill
+'Purpose:      GUI script to backfill some Object Infos
+'Type:	       GUI Rule
+'Copyright:    Tarragon MDo, 2002
+'*****************************************************************************
+
+Sub CallObjectBackfill()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iLocationGroup As SGroup
+Dim iObjectGroup As SGroup
+Dim iObjCategoryGroup As SGroup
+Dim iCategoryGroup As SGroup
+Dim iCallGroup As SGroup
+Dim iTable As DBTable
+Dim iForm As SForm
+Dim sKey As String
+Dim sName As String	
+
+	On Error GoTo ERROR_HANDLER
+    '----------------------------------
+    Set iApp = GetApp()
+	Set iNetwork = iApp.ContextNetwork
+		Set iObjectGroup = iApp.ContextForm.GetGroup("object")
+		Set iCategoryGroup = iApp.ContextForm.GetGroup("category")
+	   	Set iCallGroup = iApp.ContextForm.GetGroup("callEntry")
+		sCategoryKey = iObjectGroup.GetForeignKey("objectCategory") 
+		If (iCategoryGroup.Mode <> MODE_FILLED) And  sCategoryKey <> "NULL" And  sCategoryKey <> "" Then ' Category füllen!
+	  	 iCategoryGroup.BtnClick "categoryClear"	
+	   	 iCategoryGroup.SetValue "categoryPkey", sCategoryKey	
+	   	 bRes=iCategoryGroup.Search( "r_category")
+		End If
+   		sAccountingcode = iObjectGroup.GetValue("objectAccountingcode")
+   		sCallAccountingcode = iCallGroup.GetValue("callAccounting")
+  		If (iCallGroup.Mode <> MODE_FILLED) And  Len(sAccountingcode) >0 And sCallAccountingcode = "" Then
+  			iCallGroup.SetForeignValue "callAccounting", sAccountingcode, iObjectGroup.GetForeignKey("objectAccountingcode") 
+ 			'  Hier muß Tabelle accountingcode gefüllt werden!	- Wegen Standardvertrag!
+  		    Set iTable = iNetwork.GetTable("accountingcode")
+ 			iTable.QBESetValue "code" , sAccountingcode
+		   	iTable.Search
+		End If
+	 Exit Sub	
+Error_handler:
+    iApp.UserMsg "ObjectBack error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+End Sub
+
+
+
+
+
+
+
+
+
+']]

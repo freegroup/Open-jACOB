@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/Strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Vector draw Editor</title>
+        <!-- common, all times required, imports -->
+	<SCRIPT src="wz_jsgraphics.js"></SCRIPT>
+	<SCRIPT src="events.js"></SCRIPT>
+	<SCRIPT src="debug.js"></SCRIPT>
+	<SCRIPT src="color.js"></SCRIPT>
+	<SCRIPT src="point.js"></SCRIPT>
+	<SCRIPT src="dragdrop.js"></SCRIPT>
+	<SCRIPT src="border.js"></SCRIPT>
+	<SCRIPT src="line_border.js"></SCRIPT>
+	<SCRIPT src="figure.js"></SCRIPT>
+	<SCRIPT src="label.js"></SCRIPT>
+	<SCRIPT src="oval.js"></SCRIPT>
+	<SCRIPT src="circle.js"></SCRIPT>
+	<SCRIPT src="window.js"></SCRIPT>
+	<SCRIPT src="tool_palette.js"></SCRIPT>
+	<SCRIPT src="rectangle.js"></SCRIPT>
+	<SCRIPT src="node.js"></SCRIPT>
+	<SCRIPT src="port.js"></SCRIPT>
+	<SCRIPT src="input_port.js"></SCRIPT>
+	<SCRIPT src="output_port.js"></SCRIPT>
+	<SCRIPT src="line.js"></SCRIPT>
+	<SCRIPT src="connection.js"></SCRIPT>
+	<SCRIPT src="resize_handle.js"></SCRIPT>
+	<SCRIPT src="line_start_resize_handle.js"></SCRIPT>
+	<SCRIPT src="line_end_resize_handle.js"></SCRIPT>
+	<SCRIPT src="canvas.js"></SCRIPT>
+	<SCRIPT src="workflow.js"></SCRIPT>
+	<SCRIPT src="tool_generic.js"></SCRIPT>
+
+        <!-- vectordraw specific imports -->
+	<SCRIPT src="vectordraw/tool_rectangle.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_oval.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_circle.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_circle_unfilled.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_rectangle_unfilled.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_oval_unfilled.js"></SCRIPT>
+	<SCRIPT src="vectordraw/tool_line.js"></SCRIPT>
+
+	<SCRIPT src="vectordraw/vector_palette.js"></SCRIPT>
+
+</head>
+<body onselectstart="return false;" style="margin:0px;padding:0px;" onkeydown="">
+<div id="paintarea" style="width:3000px;height:3000px" ></div>
+<script>
+  var workflow  = new Workflow("paintarea");
+
+  // Add the Tool Window to the screen
+  //
+  var w = new VectorPalette();
+
+  workflow.setToolWindow(w);
+
+</script>
+</body>
+</html>

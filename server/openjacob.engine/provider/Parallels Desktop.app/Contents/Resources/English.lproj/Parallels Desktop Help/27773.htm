@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta name="description" content="If you added a new blank disk to the virtual machine configuration, you need to initialize it before using it inside the virtual machine." />
+
+<title> Neu hinzugefügte Festplatte initialisieren </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="30894.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="23119.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675135.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h4 class="heading4">Neu hinzugefügte Festplatte initialisieren</h4>
+<p class="bodytext">Wenn Sie eine neue virtuelle Festplatte zur Konfiguration der virtuellen Maschine hinzugefügt haben, ist sie im Betriebssystem, das in der virtuellen Maschine installiert ist, erst sichtbar, nachdem sie initialisiert wurde.</p>
+<p class="subheading">Initialisieren der neuen virtuellen Festplatte in Windows</p>
+<p class="bodytext">Zur Initialisierung der neuen virtuellen Festplatte in einem Windows-Gastbetriebssystem wird das Dienstprogramm Datenträgerverwaltung benötigt, das folgendermaßen zugänglich ist:</p>
+<ul class="listbullet"><li class="listbullet">In Windows Vista: <strong class="specialbold">Start</strong> &gt; <strong class="specialbold">Systemsteuerung</strong> &gt;<strong class="specialbold"> System und Wartung</strong> &gt; <strong class="specialbold">Verwaltung</strong> &gt; <strong class="specialbold">Festplattenpartitionen erstellen und formatieren </strong>&gt; <strong class="specialbold">Datenträgerverwaltung</strong>.</li><li class="listbullet">In Windows XP: <strong class="specialbold">Start</strong> &gt; <strong class="specialbold">Systemsteuerung</strong> &gt; <strong class="specialbold">Verwaltung</strong> &gt; <strong class="specialbold">Computerverwaltung</strong> &gt; <strong class="specialbold">Datenspeicher</strong> &gt; <strong class="specialbold">Datenträgerverwaltung</strong>.</li></ul><p class="bodytext">Wenn Sie das Dienstprogramm Datenträgerverwaltung öffnen, erkennt es die neu hinzugefügte Festplatte automatisch und startet den <strong class="specialbold">Assistenten zum Initialisieren und Konvertieren von Datenträgern</strong>.</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie im Fenster Einführung auf <strong class="specialbold">Weiter</strong>.</li><li class="listnumber">Markieren Sie im Fenster <strong class="specialbold">Wählen Sie die Datenträger aus, die initialisiert werden sollen</strong> die neu hinzugefügte Festplatte und klicken Sie auf <strong class="specialbold">Weiter</strong>.</li><li class="listnumber">Markieren Sie im Fenster <strong class="specialbold">Wählen Sie den zu konvertierenden Datenträger</strong> die neu hinzugefügte Festplatte und klicken Sie auf <strong class="specialbold">Fertig stellen</strong>.</li></ol><p class="bodytext">Die hinzugefügte Festplatte erscheint im Fenster des Dienstprogramms Datenträgerverwaltung anschließend als neue Festplatte ohne zugewiesenen Speicherplatz. Zur Zuweisng von Festplatten-Speicherplatz klicken Sie im Fenster des Dienstprogramms Datenträgerverwaltung mit rechts auf den Namen dieser Festplatte und wählen <strong class="specialbold">Neues einfaches Volume </strong>in Windows Vista oder <strong class="specialbold">Neues Volume </strong>in Windows XP. Das Fenster <strong class="specialbold">Assistent zum Erstellen einfacher Volumes</strong>/<strong class="specialbold">Assistent zum Erstellen neuer Volumes</strong> wird angezeigt. Folgen Sie den Schritten des Assistenten und erstellen Sie in der neu hinzugefügten Festplatte ein neues Volume.</p>
+<p class="bodytext">Danach wird die Festplatte unter <strong class="specialbold">Arbeitsplatz</strong>/<strong class="specialbold">Arbeitsplatz</strong> angezeigt und Sie können sie als Datenfestplatte in der virtuellen Maschine verwenden.</p>
+<p class="subheading">Initialisieren der neuen virtuellen Festplatte in Linux</p>
+<p class="bodytext">Die Initialisierung der neuen virtuellen Festplatte in einem Linux-Gastbetriebssystem erfolgt in zwei Schritten: Zuordnung des Speicherplatzes der virtuellen Festplatte und Mounten der Festplatte im Gastbetriebssystem.</p>
+<p class="bodytext">Um den Speicherplatz zuordnen zu können, müssen Sie mit dem Dienstprogramm <code class="monospace">fdisk</code> eine neue Partition auf der virtuellen Festplatte erstellen.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Das Dienstprogramm <code class="monospace">fdisk</code> kann nur mit <code class="monospace">root</code>-Rechten ausgeführt werden.</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie das Terminal.</li><li class="listnumber">Geben Sie Folgendes ein, um die in der Konfiguration  der virtuellen Maschine enthaltenen IDE-Festplatten aufzulisten:<p class="preformatted">fdisk /dev/hd*</p>
+<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn Sie eine SCSI-Festplatte zur Konfiguration der virtuellen Maschine hinzugefügt haben, verwenden Sie stattdessen den Befehl <code class="monospace">fdisk /dev/sd*</code>.</p>
+</li><li class="listnumber">Standardmäßig wird in der virtuellen Maschine mit Linux die zweite virtuelle Festplatte als <code class="monospace">/dev/hdc</code> angezeigt. Geben Sie Folgendes ein, um dieses Gerät zu benutzen:<p class="preformatted">fdisk /dev/hdc</p>
+<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn es sich hierbei um eine SCSI-Festplatte handelt, geben Sie stattdessen den Befehl <code class="monospace">fdisk /dev/sdc</code> ein.</p>
+</li><li class="listnumber">Zur Abfrage von umfassenden Informationen zur Festplatte geben Sie Folgendes ein:<p class="preformatted">p</p>
+</li><li class="listnumber">Zum Erstellen einer neuen Partition geben Sie Folgendes ein:<p class="preformatted">n</p>
+</li><li class="listnumber">Zum Erstellen einer primären Partition geben Sie Folgendes ein:<p class="preformatted">p</p>
+</li><li class="listnumber">Geben Sie die Partitionsnummer ein. Standardmäßig ist dies die <code class="monospace">1</code>.</li><li class="listnumber">Geben Sie den ersten Zylinder an. Wenn Sie auf dieser Festplatte nur eine einzige Partition erstellen möchten, verwenden Sie den Standardwert.</li><li class="listnumber">Geben Sie den letzten Zylinder an. Wenn Sie auf dieser Festplatte nur eine einzige Partition erstellen möchten, verwenden Sie den Standardwert.</li><li class="listnumber">Um eine Partition mit den vorgegebenen Einstellungen zu erstellen, geben Sie Folgendes ein:<p class="preformatted">w</p>
+</li></ol><p class="bodytext">Wenn Sie den Speicherplatz auf der neu hinzugefügten virtuellen Festplatte zugeordnet haben, müssen Sie die Festplatte formatieren, indem Sie folgenden Befehl im Terminal eingeben:</p>
+<p class="preformatted">mkfs -t <code class="monospaceitalics">&lt;Dateisystem&gt;</code> /dev/hdc1</p>
+<p class="listnote"><strong class="buttons">Hinweis:</strong> <code class="monospaceitalics">&lt;Dateisystem&gt;</code> bezeichnet das Dateisystem, das auf dieser Festplatte verwendet werden soll. Es wird empfohlen, <code class="monospace">ext3</code> oder <code class="monospace">ext2</code> zu verwenden.</p>
+<p class="bodytext">Wenn die hinzugefügte virtuelle Festplatte formatiert wurde, können Sie sie im Gastbetriebssystem mounten.</p>
+<ol class="listnumber"><li class="listnumber">Um einen Mountpunkt für die neue virtuelle Festplatte zu erstellen, geben Sie Folgendes ein:<p class="preformatted">mkdir /mnt/hdc1</p>
+<p class="listnote"><strong class="buttons">Hinweis:</strong> Bei Bedarf können Sie auch einen anderen Mountpunkt vorgeben.</p>
+</li><li class="listnumber">Um die neue virtuelle Festplatte an dem angegebenen Mountpunkt zu mounten, geben Sie Folgendes ein:<p class="preformatted">mount /dev/hdc1 /mnt/hdc1</p>
+</li></ol><p class="bodytext">Nach dem Mounten der virtuellen Festplatte können Sie ihren Speicherplatz in der virtuellen Maschine verwenden.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+27773" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,250 @@
+/*
+ * jACOB event handler created with the jACOB Application Designer
+ * 
+ * Created on Wed Jul 09 18:42:25 CEST 2008
+ */
+package jacob.event.ui.datasource;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import de.tif.jacob.core.data.IDataAccessor;
+import de.tif.jacob.core.data.IDataBrowserRecord;
+import de.tif.jacob.core.data.IDataTable;
+import de.tif.jacob.core.data.IDataTableRecord;
+import de.tif.jacob.core.data.impl.DataAccessor;
+import de.tif.jacob.core.data.impl.DataBrowser;
+import de.tif.jacob.core.data.impl.DataSource;
+import de.tif.jacob.core.definition.FieldType;
+import de.tif.jacob.core.definition.IAdhocBrowserDefinition;
+import de.tif.jacob.core.definition.IApplicationDefinition;
+import de.tif.jacob.core.definition.IKey;
+import de.tif.jacob.core.definition.ITableAlias;
+import de.tif.jacob.core.definition.ITableDefinition;
+import de.tif.jacob.core.definition.ITableField;
+import de.tif.jacob.core.definition.SortOrder;
+import de.tif.jacob.core.definition.fieldtypes.IntegerFieldType;
+import de.tif.jacob.core.definition.fieldtypes.LongFieldType;
+import de.tif.jacob.deployment.DeployMain;
+import de.tif.jacob.screen.IClientContext;
+import de.tif.jacob.screen.IGuiElement;
+import de.tif.jacob.screen.dialogs.IGridTableDialog;
+import de.tif.jacob.screen.dialogs.form.CellConstraints;
+import de.tif.jacob.screen.dialogs.form.FormLayout;
+import de.tif.jacob.screen.dialogs.form.IFormDialog;
+import de.tif.jacob.screen.dialogs.form.IFormDialogCallback;
+import de.tif.jacob.screen.event.IButtonEventHandler;
+
+/**
+ * The event handler for the AdjustKeysContextMenuEntry record selected button.<br>
+ * The {@link onAction(IClientContext, IGuiElement)} will be called, if the user clicks on this button.<br>
+ * Insert your custom code within this method.<br>
+ * 
+ * @author Andreas
+ */
+public final class AdjustKeysContextMenuEntry extends IButtonEventHandler
+{
+  static public final transient String RCS_ID = "$Id: AdjustKeysContextMenuEntry.java,v 1.1 2008/07/09 19:40:21 ibissw Exp $";
+  static public final transient String RCS_REV = "$Revision: 1.1 $";
+
+  private static final class AdjustKeyResult implements Comparable
+  {
+    private final ITableDefinition tableDefinition;
+    private final long nextKey;
+
+    private AdjustKeyResult(ITableDefinition tableDefinition, long nextKey)
+    {
+      this.tableDefinition = tableDefinition;
+      this.nextKey = nextKey;
+    }
+
+    public int compareTo(Object arg0)
+    {
+      return tableDefinition.getName().compareTo(((AdjustKeyResult) arg0).tableDefinition.getName());
+    }
+  }
+
+  private static class AdjustKeysCallback implements IFormDialogCallback
+  {
+    private final IDataTable applicationSchemaTable;
+    private final DataSource dataSource;
+
+    private AdjustKeysCallback(DataSource dataSource, IDataTable lockTable)
+    {
+      this.dataSource = dataSource;
+      this.applicationSchemaTable = lockTable;
+    }
+
+    public void onSubmit(IClientContext context, String buttonId, Map values) throws Exception
+    {
+      if ("adjust".equals(buttonId))
+      {
+        int index = -1;
+        try
+        {
+          index = Integer.parseInt((String) values.get("schemaIndex"));
+        }
+        catch (Exception ex)
+        {
+          // ignore
+        }
+
+        if (index == -1)
+        {
+          context.createMessageDialog("No application schema selected").show();
+        }
+        else
+        {
+          SortedSet keyResults = new TreeSet();
+
+          // Extract schema definition from application
+          IDataTableRecord schemaRecord = applicationSchemaTable.getRecord(index);
+          IApplicationDefinition applicationDefinition = DeployMain.getApplication(schemaRecord.getStringValue("applicationname"), schemaRecord.getStringValue("applicationversion"));
+          List tableAliases = applicationDefinition.getTableAliases();
+          Set tableDefinitionsProcessed = new HashSet();
+          for (int i = 0; i < tableAliases.size(); i++)
+          {
+            ITableAlias tableAlias = (ITableAlias) tableAliases.get(i);
+            ITableDefinition tableDefinition = tableAlias.getTableDefinition();
+            if (tableDefinitionsProcessed.add(tableDefinition) == false)
+              continue;
+
+            IKey primaryKey = tableDefinition.getPrimaryKey();
+            if (primaryKey == null)
+              continue;
+
+            List primaryKeyFields = primaryKey.getTableFields();
+            if (primaryKeyFields.size() != 1)
+              continue;
+
+            ITableField primaryKeyField = (ITableField) primaryKeyFields.get(0);
+            FieldType primaryKeyFieldType = primaryKeyField.getType();
+            if (primaryKeyFieldType instanceof IntegerFieldType)
+            {
+              IntegerFieldType fieldType = (IntegerFieldType) primaryKeyFieldType;
+              if (fieldType.isAutoGenerated())
+              {
+                IDataBrowserRecord maxKeyRecord = getMax(applicationDefinition, tableAlias, primaryKeyField);
+                if (maxKeyRecord != null)
+                {
+                  int nextkey = maxKeyRecord.getintValue(0) + 1;
+                  if (fieldType.setNextAutoKey(dataSource, tableDefinition, primaryKeyField, nextkey))
+                    keyResults.add(new AdjustKeyResult(tableDefinition, nextkey));
+                }
+              }
+            }
+            else if (primaryKeyFieldType instanceof LongFieldType)
+            {
+              LongFieldType fieldType = (LongFieldType) primaryKeyFieldType;
+              if (fieldType.isAutoGenerated())
+              {
+                IDataBrowserRecord maxKeyRecord = getMax(applicationDefinition, tableAlias, primaryKeyField);
+                if (maxKeyRecord != null)
+                {
+                  long nextkey = maxKeyRecord.getlongValue(0) + 1;
+                  if (fieldType.setNextAutoKey(dataSource, tableDefinition, primaryKeyField, nextkey))
+                    keyResults.add(new AdjustKeyResult(tableDefinition, nextkey));
+                }
+              }
+            }
+          }
+          
+          if (keyResults.size()==0)
+          {
+            context.createMessageDialog("No key adjustment necessary").show();
+          }
+          else
+          {
+            // Dem Benutzer das Resultat in einem GridDialog anzeigen
+            //
+            IGridTableDialog dialog = context.createGridTableDialog(context.getDomain());
+
+            dialog.setHeader(new String[] {
+                "Table", "Next Key" });
+
+            String[][] data = new String[keyResults.size()][2];
+
+            int i = 0;
+            for (Iterator iter = keyResults.iterator(); iter.hasNext();)
+            {
+              AdjustKeyResult keyResult = (AdjustKeyResult) iter.next();
+              data[i++] = new String[] {
+                  keyResult.tableDefinition.getName(), Long.toString(keyResult.nextKey) };
+            }
+            dialog.setData(data);
+            dialog.show(400, 350);
+          }
+        }
+      }
+    }
+
+    private IDataBrowserRecord getMax(IApplicationDefinition applicationDefinition, ITableAlias tableAlias, ITableField primaryKeyField) throws Exception
+    {
+      // AdhocBrowser bauen, welcher nur die Primarykeyfeld-Spalte besitzt,
+      // welche allerdings absteigend sortiert ist
+      //
+      IAdhocBrowserDefinition adhocBrowserDefinition = applicationDefinition.createAdhocBrowserDefinition(tableAlias);
+      adhocBrowserDefinition.addBrowserField(tableAlias.getName(), primaryKeyField.getName(), SortOrder.DESCENDING, "maxPrimaryKey");
+
+      IDataAccessor acc = new DataAccessor(applicationDefinition);
+      DataBrowser databrowser = (DataBrowser) acc.createBrowser(adhocBrowserDefinition);
+      databrowser.setMaxRecords(1);
+      databrowser.searchPlain();
+      if (databrowser.recordCount() == 1)
+        return databrowser.getRecord(0);
+      return null;
+    }
+  }
+
+  public void onAction(IClientContext context, IGuiElement button) throws Exception
+  {
+    IDataTableRecord record = context.getSelectedRecord();
+
+    DataSource dataSource = DataSource.get(record.getStringValue("name"));
+
+    IDataAccessor accessor = context.getDataAccessor().newAccessor();
+    IDataTable table = accessor.getTable("useddatasource");
+    table.qbeSetKeyValue("datasourcename", dataSource.getName());
+    table.search();
+    if (table.recordCount() == 0)
+    {
+      context.createMessageDialog("There are no application versions existing using this data source").show();
+      return;
+    }
+
+    // Retrieve all appropriate application versions.
+    //
+    String[] entries = new String[table.recordCount()];
+    for (int i = 0; i < table.recordCount(); i++)
+    {
+      IDataTableRecord schemaRecord = table.getRecord(i);
+
+      // FREEGROUP: Achtung: Es d�rfen nicht mehrere Leerzeichen hintereinander in einem Entrystring
+      // vorhanden sein, da FormLayout diese durch einfache Leerzeichen zu ersetzen scheint und dann
+      // der Eintrag �ber den HashMap-Eintrag nicht mehr gefunden werden kann.
+      entries[i] = schemaRecord.getStringValue("applicationname") + " " + schemaRecord.getStringValue("applicationversion");
+    }
+
+    // Create a FormDialog with a list of all application versions.
+    //
+    FormLayout layout = new FormLayout("10dlu,grow,10dlu", // columns
+        "10dlu,p,10dlu,grow,10dlu"); // rows
+    CellConstraints cc = new CellConstraints();
+    IFormDialog dialog = context.createFormDialog("Adjust keys", layout, new AdjustKeysCallback(dataSource, table));
+    dialog.addLabel("Select application schema:", cc.xy(1, 1));
+    dialog.addListBox("schema", entries, entries.length == 1 ? 0 : -1, cc.xy(1, 3));
+    dialog.addSubmitButton("adjust", "Adjust Keys");
+
+    // Show the dialog with a prefered size. The dialog trys to resize to the optimum size!
+    dialog.show(250, 300);
+  }
+
+  public void onGroupStatusChanged(IClientContext context, IGuiElement.GroupState status, IGuiElement button) throws Exception
+  {
+  }
+}

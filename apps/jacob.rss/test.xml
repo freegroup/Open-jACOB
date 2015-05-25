@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss xmlns="http://blogs.law.harvard.edu/RSS20.xsd">
+  <channel xmlns="">
+    <title xmlns="">Dies ist der Titel des Channel</title>
+    <link xmlns="">http://www.freegroup.de</link>
+    <description xmlns="">Test RSS für den jACOB</description>
+    <language xmlns="">de_DE</language>
+    <copyright xmlns="">FreeGroup</copyright>
+    <managingEditor xmlns="">Andreas Herz</managingEditor>
+    <lastBuildDate xmlns="">2005-04-21T15:42:59.152+02:00</lastBuildDate>
+    <generator xmlns="">jACOB</generator>
+    <docs xmlns="">Dies ist das Feld &apos;docs&apos;</docs>
+    <item>
+      <title xmlns="">Item title</title>
+      <link xmlns="">my.link.de</link>
+      <description xmlns="">Description</description>
+      <author xmlns="">Andreas Herz</author>
+      <guid xmlns="">my guid</guid>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib    PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"    "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>jacob</shortname>
+
+    <tag>
+       <name>version</name>
+       <tagclass>de.tif.jacob.screen.impl.tag.Version</tagclass>
+       <bodycontent>empty</bodycontent>
+    </tag>
+    
+    <tag>
+       <name>windowTitlePrefix</name>
+       <tagclass>de.tif.jacob.screen.impl.tag.WindowTitlePrefix</tagclass>
+        <attribute>
+          <name>applName</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    <tag>
+       <name>favIcon</name>
+       <tagclass>de.tif.jacob.screen.impl.tag.FavIcon</tagclass>
+        <attribute>
+          <name>applName</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+          <name>applVersion</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    <tag>
+       <name>browserType</name>
+       <tagclass>de.tif.jacob.screen.impl.tag.BrowserType</tagclass>
+       <bodycontent>empty</bodycontent>
+    </tag>
+
+    <tag>
+        <name>dialogTitle</name>
+        <tagclass>de.tif.jacob.screen.impl.tag.DialogTitle</tagclass>
+        <attribute>
+          <name>id</name>
+          <required>true</required>
+        </attribute>
+    </tag>
+    
+    <tag>
+        <name>i18n</name>
+        <tagclass>de.tif.jacob.screen.impl.tag.I18N</tagclass>
+        <attribute>
+          <name>id</name>
+          <required>true</required>
+        </attribute>
+    </tag>
+    
+    <tag>
+        <name>i18n2unicode</name>
+        <tagclass>de.tif.jacob.screen.impl.tag.I18N2Unicode</tagclass>
+        <attribute>
+          <name>id</name>
+          <required>true</required>
+        </attribute>
+    </tag>
+</taglib>

@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta name="description" content="Specify network preferences and set port forwarding rules for Parallels Desktop." />
+
+<title> Netzwerkeinstellungen </title>
+<meta name="Keywords" content="Adresse	IP-Adresse, DHCP-Bereich, Netzwerkadapter	Netzwerkadapter einrichten, Netzwerkeinstellungen, Netzwerkmodus	Shared Network (NAT), Netzwerktreiber	Realtek-Treiber, Parallels Desktop-Einstellungen	Netzwerkeinstellungen, Port-Weiterleitung" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="26819.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22624.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc2967536.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Netzwerkeinstellungen</h3>
+<p class="bodytext">Im Bereich <strong class="specialbold">Netzwerk</strong> der Parallels Desktop-Einstellungen können Sie die Netzwerkeinstellungen für Parallels Desktop und Ihre virtuelle Maschinen konfigurieren.</p>
+<p class="bodytext">          <img src="pd_preferences_network.gif" alt="Netzwerk" height="430" width="445" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Sie können festlegen, aus welchem IP-Adressbereich Ihren virtuellen Maschinen IP-Adressen zugewiesen werden, je nachdem, ob sie im Netzwerkmodus <em class="emphasis"><a id="h28953" class="jumptemplate" title="Shared Network" href="22247.htm" target="_self">Shared Network</a> oder im Netzwerkmodus <a id="h28954" class="jumptemplate" title="Host-exklusives Netzwerk" href="22243.htm" target="_self">Host-exklusives Netzwerk</a>betrieben werden.</em></p>
+<p class="bodytext">So bearbeiten Sie die Host-only-Netzwerkeinstellungen:</p>
+<ol class="listnumber"><li class="listnumber">Wählen Sie in der Liste <strong class="specialbold">Verbindungstyp</strong> den Eintrag <strong class="specialbold">Host-only-Netzwerk</strong>.</li><li class="listnumber">Wählen Sie <strong class="specialbold">In Systemeinstellungen anzeigen</strong>, falls Sie möchten, dass der Parallels Host-exklusive Netzwerkadapter in den Netzwerkeinstellungen Ihres Mac erscheint. </li><li class="listnumber">Wählen Sie die Option <strong class="specialbold">DHCP-Server aktivieren</strong>, um den Parallels-DHCP-Server zu aktivieren. Dieser Server weist den virtuellen Maschinen, die im Host-exklusives Netzwerkmodus ausgeführt werden, automatisch IP-Adressen aus dem IP-Adressbereich zu, den Sie in den entsprechenden Feldern unterhalb dieser Option definieren.</li><li class="listnumber">Konfigurieren Sie bei Bedarf die <strong class="specialbold">Startadresse</strong> und die <strong class="specialbold">Endadresse</strong>, und legen Sie die <strong class="specialbold">Subnetzmaske</strong> fest.<p class="listcontinue">Weitere Informationen zur Konfiguration der Host-only-Netzwerkparameter finden Sie unter <strong class="specialbold"><a id="h22406" class="jumptemplate" title="Host-exklusives Netzwerk" href="22243.htm" target="_self">Host-only-Netzwerk</a></strong>.</p>
+</li></ol><p class="bodytext">So bearbeiten Sie die Shared Network-Einstellungen:</p>
+<ol class="listnumber"><li class="listnumber">Wählen Sie in der Liste <strong class="specialbold">Verbindungstyp</strong> den Eintrag <strong class="specialbold">Shared Network</strong>.</li><li class="listnumber">Wählen Sie <strong class="specialbold">In Systemeinstellungen anzeigen</strong>, falls Sie möchten, dass der Parallels Shared Netzwerkadapter in den Netzwerkeinstellungen Ihres Mac erscheint. </li><li class="listnumber">Wählen Sie die Option <strong class="specialbold">DHCP-Server aktivieren</strong>, um den Parallels-DHCP-Server zu aktivieren. Dieser Server weist den virtuellen Maschinen, die im Shared Network-Modus ausgeführt werden, automatisch IP-Adressen aus dem IP-Adressbereich zu, den Sie in den entsprechenden Feldern unterhalb dieser Option definieren.</li><li class="listnumber">Konfigurieren Sie bei Bedarf die <strong class="specialbold">Startadresse</strong> und die <strong class="specialbold">Endadresse</strong>, und legen Sie die <strong class="specialbold">Subnetzmaske</strong> fest.<p class="listcontinue">Weitere Informationen zur Konfiguration der Shared Network-Einstellungen finden Sie unter <strong class="specialbold"><a id="h27065" class="jumptemplate" title="Shared Network" href="22247.htm" target="_self">Shared Network</a></strong>.</p>
+</li></ol><p class="bodytext">Die Werte für <strong class="specialbold">Startadresse</strong> und <strong class="specialbold">Endadresse</strong> legen die erste und die letzte IP-Adresse fest, wobei die erste IP-Adresse normalerweise dem DHCP-Server zugewiesen wird. Die zweite Adresse wird normalerweise dem Gastbetriebssystem zugewiesen. Alle anderen Adressen werden den virtuellen Maschinen zugewiesen. Alle Adressen des definierten IP-Adressbereichs sollten zum selben Subnetz gehören.</p>
+<p class="subheading">Port-Weiterleitung in Shared Network</p>
+<p class="bodytext">Normalerweise ist es nicht möglich, von externen Computern aus auf virtuelle Maschinen zuzugreifen, die im Shared Network-Modus betrieben werden. Die Port-Weiterleitung ermöglicht Computern im lokalen Netzwerk und im Internet, Daten auf andere virtuelle Maschinen zu übertragen, die den Shared Network-Modus verwenden. Die Daten, die an den spezifischen Port auf Ihr Mac gesendet werden, werden an einen spezifischen Port Ihrer virtuellen Maschine weitergeleitet, entsprechend der Port-Weiterleitungsregel.</p>
+<p class="bodytext">So fügen Sie eine neue Port-Weiterleitungsregel hinzu:</p>
+<ol class="listnumber"><li class="listnumber">Klicken Sie unterhalb der <strong class="specialbold">Port-Weiterleitungstabelle</strong> auf die Schaltfläche<strong class="specialbold">Hinzufügen</strong><img src="21857.gif" alt="PlusButton" height="25" width="25" vspace="0" hspace="0" align="bottom" border="0" />.</li><li class="listnumber">Gehen Sie in dem Fenster, das angezeigt wird, folgendermaßen vor:<ul class="listbullet2"><li class="listbullet2">Geben Sie im Feld <strong class="specialbold">Port-Typ</strong> den Port-Typ an, der beim Herstellen von Netzwerkverbindungen verwendet werden soll. Sie können zwischen den Port-Typen <strong class="specialbold">TCP</strong> und <strong class="specialbold">UDP</strong> wählen.</li><li class="listbullet2">Geben Sie im Feld <strong class="specialbold">Eingehender Port</strong> die Portnummer für Ihr Mac an, die Sie für den Datentransfer verwenden möchten.</li><li class="listbullet2">Geben Sie im Feld <strong class="specialbold">IP-Adresse</strong> die IP-Adresse Ihrer virtuellen Maschine an.</li><li class="listbullet2">Legen Sie im Feld <strong class="specialbold">Zielport</strong> den Port der virtuellen Maschine fest, an den die Daten übertragen werden sollen.</li></ul><p class="listcontinue">          <img src="pd_preferences_network_portforward.gif" alt="Netzwerk-Port-Weiterleitung" height="135" width="203" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+</li><li class="listnumber">Klicken Sie auf <strong class="specialbold">OK</strong>, um die Regel zu übernehmen.</li></ol><p class="bodytext">Wenn die Regel hinzugefügt wurde, verwenden Sie die folgende IP-Adressen-Kombination für externe Verbindungen Ihrer virtuellen Maschine: <code class="monospace">&lt;Ihre Mac-IP -Adresse&gt;:&lt;Quell-Port&gt;</code>.</p>
+<p class="bodytext">          <img src="pd_preferences_portforward_scheme.gif" alt="Preferences_Netw_PortFwd" height="308" width="555" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="bodytext">Um eine vorhandene Port-Weiterleitungsregel zu bearbeiten, wählen Sie sie in der Tabelle <strong class="specialbold">Port-Weiterleitungsliste</strong> aus, klicken Sie auf die Schaltfläche <strong class="specialbold">Bearbeiten</strong><img src="27603.gif" alt="Schaltfläche Bearbeiten" height="20" width="23" vspace="0" hspace="0" align="bottom" border="0" />, und bearbeiten Sie im angezeigten Fenster die nötigen Parameter.</p>
+<p class="bodytext">Um eine vorhandene Port-Weiterleitungsregel zu löschen, wählen Sie sie in der Tabelle <strong class="specialbold">Port-Weiterleitungsliste</strong> aus, und klicken Sie auf die Schaltfläche <strong class="specialbold">Entfernen</strong><img src="21598.gif" alt="CE_Schaltfläche_Delete" height="25" width="25" vspace="0" hspace="0" align="bottom" border="0" />.</p>
+<p class="subheading">          Wiederherstellen der Standardeinstellungen</p>
+<p class="bodytext">Mit der Taste <strong class="specialbold">Standard wiederherstellen</strong> können Sie für alle Optionen in diesem Bereich die Standardeinstellungen wiederherstellen.        </p>
+<p class="bodytext">          Wenn die Einstellungen von Parallels Desktop vor weiteren, nicht authorisierten Änderungen geschützt werden sollen, klicken Sie am unteren Rand des Fensters auf das Schloss-Symbol <img src="30108.png" alt="Schlosssymbol" height="33" width="33" vspace="0" hspace="0" align="bottom" border="0" />. Wenn später irgendein Benutzer die Vorgaben in einem Bereich der Einstellungen von Parallels Desktop ändern möchte, wird das Administrator-Kennwort abgefragt.        </p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30205" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

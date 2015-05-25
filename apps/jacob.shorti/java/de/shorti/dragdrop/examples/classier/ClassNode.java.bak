@@ -1,0 +1,172 @@
+//
+// 
+//  
+// Source File Name:   ClassNode.java
+
+package de.shorti.dragdrop.examples.classier;
+
+import de.shorti.dragdrop;
+
+
+
+import de.shorti.dragdrop.*;
+import de.shorti.dragdrop.examples.TextNode;
+import java.awt.Color;
+import java.io.PrintStream;
+import java.lang.reflect.*;
+
+class ClassNode extends TextNode
+{
+
+    public ClassNode()
+    {
+    }
+
+    public ClassNode(String s)
+    {
+        super(s);
+    }
+
+    public void setObject(Object obj)
+    {
+        if(obj != null && (obj instanceof Class))
+        {
+            Class class1 = (Class)obj;
+            super.setObject(class1);
+            setText(class1.getName());
+            getLabel().setMultiline(false);
+            if(class1.isInterface())
+            {
+                getRect().setPen(m_interfacePen);
+                getRect().setBrush(m_interfaceBrush);
+                getLabel().setItalic(true);
+            } else
+            {
+                getRect().setPen(m_classPen);
+                getRect().setBrush(m_classBrush);
+                getLabel().setItalic(false);
+            }
+        }
+    }
+
+    public void toggleInfo()
+    {
+        Class class1 = (Class)getObject();
+        if(getLabel().isMultiline())
+        {
+            getLabel().setMultiline(false);
+            if(class1.isInterface())
+                getRect().setBrush(m_interfaceBrush);
+            else
+                getRect().setBrush(m_classBrush);
+            setText(class1.getName());
+        } else
+        {
+            getLabel().setMultiline(true);
+            getRect().setBrush(m_detailBrush);
+            String s = class1.getName();
+            s = s + getClassInfo(class1);
+            setText(s);
+        }
+    }
+
+    public String getClassInfo(Class class1)
+    {
+        String s = "";
+        try
+        {
+            String s1 = class1.getName() + ".";
+            Constructor aconstructor[] = class1.getDeclaredConstructors();
+            for(int i = 0; i < aconstructor.length; i++)
+            {
+                Constructor constructor = aconstructor[i];
+                if(isDisplayable(constructor))
+                {
+                    s = s + "\n";
+                    String s2 = constructor.toString();
+                    s2 = replaceSubstring(s2, s1, "");
+                    s2 = replaceSubstring(s2, "de.shorti.dragdrop.", "");
+                    s2 = replaceSubstring(s2, "java.lang.", "");
+                    s = s + s2;
+                }
+            }
+
+            Method amethod[] = class1.getDeclaredMethods();
+            for(int j = 0; j < amethod.length; j++)
+            {
+                Method method = amethod[j];
+                if(isDisplayable(method))
+                {
+                    s = s + "\n";
+                    String s3 = method.toString();
+                    s3 = replaceSubstring(s3, s1, "");
+                    s3 = replaceSubstring(s3, "de.shorti.dragdrop.", "");
+                    s3 = replaceSubstring(s3, "java.lang.", "");
+                    s = s + s3;
+                }
+            }
+
+        }
+        catch(Exception exception)
+        {
+            System.err.println(exception);
+            exception.printStackTrace();
+        }
+        return s;
+    }
+
+    public boolean isDisplayable(Member member)
+    {
+        int i = member.getModifiers();
+        return Modifier.isPublic(i) || Modifier.isProtected(i);
+    }
+
+    private String replaceSubstring(String s, String s1, String s2)
+    {
+        int i = s.indexOf(s1);
+        if(i < 0)
+            return s;
+        else
+            return s.substring(0, i) + s2 + replaceSubstring(s.substring(i + s1.length()), s1, s2);
+    }
+
+    protected void gainedSelection(FREESelection selection)
+    {
+        getDocument().bringObjectToFront(this);
+        Class class1 = (Class)getObject();
+        if(class1.isInterface())
+            getRect().setBrush(m_selInterfaceBrush);
+        else
+            getRect().setBrush(m_selClassBrush);
+    }
+
+    protected void lostSelection(FREESelection selection)
+    {
+        Class class1 = (Class)getObject();
+        if(getLabel().isMultiline())
+            getRect().setBrush(m_detailBrush);
+        else
+        if(class1.isInterface())
+            getRect().setBrush(m_interfaceBrush);
+        else
+            getRect().setBrush(m_classBrush);
+    }
+
+    public static FREEPen m_classPen;
+    public static FREEBrush m_classBrush;
+    public static FREEBrush m_selClassBrush;
+    public static FREEPen m_interfacePen;
+    public static FREEBrush m_interfaceBrush;
+    public static FREEBrush m_selInterfaceBrush;
+    public static FREEBrush m_detailBrush = FREEBrush.makeStockBrush(new Color(250, 250, 200, 200));
+
+    static 
+    {
+        m_classPen = FREEPen.lightGray;
+        m_classBrush = FREEBrush.lightGray;
+        m_selClassBrush = FREEBrush.makeStockBrush(Color.cyan);
+        m_interfacePen = FREEPen.gray;
+        m_interfaceBrush = FREEBrush.white;
+        m_selInterfaceBrush = FREEBrush.makeStockBrush(Color.cyan);
+    }
+}

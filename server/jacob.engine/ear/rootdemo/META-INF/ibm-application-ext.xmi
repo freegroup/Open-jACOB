@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.ejs.models.base.extensions.applicationext:ApplicationExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.extensions.applicationext="applicationext.xmi" xmlns:com.ibm.etools.application="application.xmi" xmi:id="ApplicationExtension_1137573445131">
+  <moduleExtensions xmi:type="com.ibm.ejs.models.base.extensions.applicationext:WebModuleExtension" xmi:id="WebModuleExtension_1137573445131" altRoot="ALT-INF/jacobDemo.war">
+    <module xmi:type="com.ibm.etools.application:WebModule" href="META-INF/application.xml#WebModule_1137573369853"/>
+  </moduleExtensions>
+  <application href="META-INF/application.xml#Application_ID"/>
+</com.ibm.ejs.models.base.extensions.applicationext:ApplicationExtension>

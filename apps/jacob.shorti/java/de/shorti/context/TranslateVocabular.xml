@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_TranslateVocabular" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="original"/>
+            <parameter name="translation"/>
+        </responseItem>
+		<nodelist>
+            <!--
+                Start node of the context
+            -->
+			<node name="start">
+				<forward toNode="start">
+					<question pattern="wie\s+[ueü]*berset?zt?\s+man\s+ein\s+wort[?!]*"    defaultAnswer="Stelle mir z.B. die Frage: ´Was heist Auto auf englisch.´"/>
+					<question pattern="wie\s+[ueü]*berset?zt?\s+man\s+ein\s+wort[?!]*"    defaultAnswer="Stelle mir z.B. die Frage: ´Was heist Hundehütte auf englisch.´"/>
+				</forward>
+
+				<forward toNode="trans">
+					<question pattern="was\s+hei[sß]+t\s+([äüöß\w]+)\s+auf\s+(\w+)"    defaultAnswer=""/>
+				</forward>
+			</node>
+
+            <!--
+                this node trys to translate the hands over word in the requested
+                language.
+            -->
+			<node name="trans">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+
+		</nodelist>
+	</Context>
+</ContextList>

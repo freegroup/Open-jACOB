@@ -1,0 +1,2688 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob defaultApplication="docPool" engineVersion="2.10" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="docPoolDataSource" reconfigure="full" type="sql">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+    <DataSource name="docPoolStandardIndex" reconfigure="full" type="index">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Roles>
+    <Role description="" name="admin"/>
+    <Role description="" name="user"/>
+    <Role description="" name="anonymous"/>
+    <Role description="" name="debug"/>
+    <Role description="" name="password"/>
+  </Roles>
+  <Tables>
+    <Table datasource="docPoolStandardIndex" dbName="globalcontent" name="globalcontent">
+      <Field dbName="id" history="false" label="Id" name="id" readonly="true" required="true">
+        <Long autoincrement="false"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Lucene document id of the index entry.&#xd;
+&#xd;
+Note: Do not used this id for QBE or persistent purposes since this id is highly volatile.</Value>
+        </Property>
+      </Field>
+      <Field dbName="score" history="false" label="Score" name="score" readonly="true" required="true">
+        <Float/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Score value of index entry after a query has been performed.</Value>
+        </Property>
+      </Field>
+      <Field dbName="tablealias" history="false" label="Tablealias" name="tablealias" readonly="true" required="true">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Table alias of the matching data table record</Value>
+        </Property>
+      </Field>
+      <Field dbName="tablename" history="false" label="Tablename" name="tablename" readonly="true" required="true">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Table name of the matching data table record</Value>
+        </Property>
+      </Field>
+      <Field dbName="primarykey" history="false" label="Primarykey" name="primarykey" readonly="true" required="true">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Primary key of the matching data table record</Value>
+        </Property>
+      </Field>
+      <Field dbName="subject" history="false" label="Subject" name="subject" readonly="true" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Subject of the index entry, which is used to identify the entry in a human readable form. E.g. "Jack White", "Project AB12", "IBM Corp.", etc.</Value>
+        </Property>
+      </Field>
+      <Field dbName="category" history="false" label="Category" name="category" readonly="true" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Category, which can be used to categorize the index entry other than tablealias or tablename</Value>
+        </Property>
+      </Field>
+      <Field dbName="contents" history="false" label="Contents" name="contents" readonly="true" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Entire contents of the entry, which is indexed but not stored.&#xd;
+&#xd;
+Note: Use this field for specifiying your search expression (QBE) only.</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>tablealias</Field>
+        <Field>primarykey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="account" name="account" representativeField="loginname">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="loginname" history="false" label="Login Name" name="loginname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="password" history="false" label="Kennwort" name="password" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="fullname" history="false" label="Benutzername" name="fullname" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="240" searchMode="unbound"/>
+      </Field>
+      <Field dbName="email" history="true" label="E-Mail" name="email" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="role" history="false" label="Role" name="role" readonly="false" required="true">
+        <Enumeration>
+          <Default>user</Default>
+          <Value>anonymous</Value>
+          <Value>administrator</Value>
+          <Value>user</Value>
+          <Label>Gast Benutzer</Label>
+          <Label>Administrator</Label>
+          <Label>Normler Benutzer</Label>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <UniqueIndex name="loginname_uniqueKey">
+        <Field>loginname</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="document" name="document" representativeField="name">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="content" history="false" label="Datei" name="content" readonly="false" required="true">
+        <Document/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Angelegt am" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="minbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="change_date" history="false" label="Geändert am" name="change_date" readonly="true" required="false">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <Field dbName="synonyme" history="false" label="Synonyme" name="synonyme" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="document_size_byte" history="false" label="Dokument Größe" name="document_size_byte" readonly="true" required="true">
+        <Long autoincrement="false" min="0">
+          <Default>0</Default>
+        </Long>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Dokumentgröße in Byte</Value>
+        </Property>
+      </Field>
+      <Field dbName="document_size_text" history="false" label="Dokument Größe" name="document_size_text" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Dokumentgröße in "human readable format"</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="folder" name="folder" representativeField="name">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="false" required="true">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Create_date" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="minbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="change_date" history="false" label="Change_date" name="change_date" readonly="true" required="false">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <Field dbName="synonyme" history="false" label="Synonyme" name="synonyme" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="bo" name="bo" representativeField="name">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="folder_key" history="false" label="Folder_key" name="folder_key" readonly="true" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="parent_bo_key" history="false" label="Parent_bo_key" name="parent_bo_key" readonly="true" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="document_key" history="false" label="Dokument_key" name="document_key" readonly="true" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="change_date" history="false" label="Change_date" name="change_date" readonly="true" required="false">
+        <Timestamp resolution="minbase"/>
+      </Field>
+      <Field dbName="favorite_index" history="false" label="Favorite_index" name="favorite_index" readonly="true" required="true">
+        <Integer autoincrement="false">
+          <Default>0</Default>
+        </Integer>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>0=kein favorite&#xd;
+ansonsten ist es die Sortierreihenfolge wie es bei den Favoriten angezeigt werden soll.</Value>
+        </Property>
+      </Field>
+      <Field dbName="type" history="false" label="Type" name="type" readonly="true" required="true">
+        <Enumeration>
+          <Value>folder</Value>
+          <Value>document</Value>
+          <Label>folder</Label>
+          <Label>document</Label>
+        </Enumeration>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>normalerweise kann man anhand von document_key oder folder_key unterscheiden welcher typ von BO dies ist. Type wird aber benötigt um die browser ordentlich zu sortieren.</Value>
+        </Property>
+      </Field>
+      <Field dbName="external_id" history="false" label="External_id" name="external_id" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="40" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Kann vom Importer zur Synchronisation verwendet werden</Value>
+        </Property>
+      </Field>
+      <Field dbName="external_ref_name" history="false" label="External_ref_name" name="external_ref_name" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>External reference name which might be used for misc purposes</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="folder_FKey">
+        <Field>folder_key</Field>
+      </ForeignKey>
+      <ForeignKey name="parent_bo_FKey">
+        <Field>parent_bo_key</Field>
+      </ForeignKey>
+      <ForeignKey name="document_FKey">
+        <Field>document_key</Field>
+      </ForeignKey>
+      <UniqueIndex name="uniqueKey">
+        <Field>name</Field>
+        <Field>parent_bo_key</Field>
+      </UniqueIndex>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="history" name="history" representativeField="pkey">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="create_date" history="false" label="Create Date" name="create_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="type" history="false" label="Type" name="type" readonly="true" required="true">
+        <Enumeration>
+          <Value>new</Value>
+          <Value>update</Value>
+          <Value>delete</Value>
+          <Label>Neu Angelegt</Label>
+          <Label>Geändert</Label>
+          <Label>Gelöscht</Label>
+        </Enumeration>
+      </Field>
+      <Field dbName="record_history" history="false" label="History" name="record_history" readonly="false" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Die Langtexthistorie des Records der verändert worden ist.</Value>
+        </Property>
+      </Field>
+      <Field dbName="record_serialized_pkey" history="false" label="Record Pkey" name="record_serialized_pkey" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="related_alias" history="false" label="Table" name="related_alias" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="user_key" history="false" label="Benutzer Nr" name="user_key" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="user_fullname" history="false" label="Benuztername" name="user_fullname" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="record_representative_field" history="false" label="Record_representative_field" name="record_representative_field" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="record_path" history="false" label="Ort" name="record_path" readonly="false" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Wenn möglich wird der Pfad des Objektes berechnet</Value>
+        </Property>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="history_entry" name="history_entry">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="history_key" history="false" label="History_key" name="history_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="field" history="false" label="Field" name="field" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="field_label" history="false" label="Name" name="field_label" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="old_value" history="false" label="Old_value" name="old_value" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="new_value" history="false" label="New_value" name="new_value" readonly="true" required="false">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="history_FKey">
+        <Field>history_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="bookmark" name="bookmark" representativeField="pkey">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="bo_key" history="false" label="Bo_key" name="bo_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="bookmark_account_key" history="false" label="Bookmark_account_key" name="bookmark_account_key" readonly="true" required="true">
+        <Long autoincrement="false"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+      <ForeignKey name="bo_FKey">
+        <Field>bo_key</Field>
+      </ForeignKey>
+      <ForeignKey name="bookmark_account_FKey">
+        <Field>bookmark_account_key</Field>
+      </ForeignKey>
+    </Table>
+    <Table datasource="docPoolDataSource" dbName="recyclebin" name="recyclebin" representativeField="name">
+      <Field dbName="pkey" history="false" label="Id" name="pkey" readonly="true" required="true">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field dbName="original_path" history="false" label="Pfad" name="original_path" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="4000" searchMode="unbound"/>
+      </Field>
+      <Field dbName="original_pkey" history="false" label="Original_pkey" name="original_pkey" readonly="true" required="false">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field dbName="name" history="false" label="Name" name="name" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+      </Field>
+      <Field dbName="synonyme" history="false" label="Synonyme" name="synonyme" readonly="true" required="false">
+        <LongText editMode="fulledit"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Enthält für alle Synonyme der Dokumente welche hier abgelegt wurden (es kann ein ein Ordner sein der gelöscht wurde). Dies werden für die Wiederherstellung benötigt.</Value>
+        </Property>
+      </Field>
+      <Field dbName="content" history="false" label="Content" name="content" readonly="false" required="true">
+        <Document/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Die Datei welche gelöscht wurde oder der geZIPte Ordner der gelöscht wurde. Falls es ein Ordner ist, welcher gelöscht wurde, dann enthalten die Dateien darin den absoluten Pfad innerhalb des DMS.</Value>
+        </Property>
+      </Field>
+      <Field dbName="delete_date" history="false" label="Gelöscht am" name="delete_date" readonly="true" required="true">
+        <Timestamp resolution="secbase">
+          <Default>NOW</Default>
+        </Timestamp>
+      </Field>
+      <Field dbName="delete_by" history="false" label="Gelöscht von" name="delete_by" readonly="true" required="true">
+        <Text caseSensitive="false" maxLength="400" searchMode="unbound"/>
+        <Property>
+          <Name>DESCRIPTION</Name>
+          <Value>Der Name des Benutzers der das Objekt gelöscht hat. NICHT den PKEY. Man kann sonst keine Benutzer löschen welche mal Dateien entfernt haben.</Value>
+        </Property>
+      </Field>
+      <Field dbName="type" history="false" label="Typ" name="type" readonly="true" required="true">
+        <Enumeration>
+          <Value>folder</Value>
+          <Value>document</Value>
+          <Label>folder</Label>
+          <Label>document</Label>
+        </Enumeration>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="account" table="account"/>
+    <TableAlias name="document" table="document"/>
+    <TableAlias name="folder" table="folder"/>
+    <TableAlias name="bo" table="bo"/>
+    <TableAlias name="history" table="history"/>
+    <TableAlias name="history_entry" table="history_entry"/>
+    <TableAlias name="bookmark" table="bookmark"/>
+    <TableAlias name="bookmark_account" table="account"/>
+    <TableAlias name="parent_bo" table="bo"/>
+    <TableAlias name="favorite" table="bo">
+      <Condition>favorite.favorite_index &lt;&gt; 0</Condition>
+    </TableAlias>
+    <TableAlias name="globalcontent" table="globalcontent"/>
+    <TableAlias name="setpassword" table="account"/>
+    <TableAlias name="recyclebin" table="recyclebin"/>
+  </TableAliases>
+  <Browsers>
+    <Browser alias="account" name="accountBrowser" type="inform">
+      <Field configureable="false" label="Role" name="browserRole" visible="false">
+        <TableField sortOrder="ascending" tableField="role"/>
+      </Field>
+      <Field configureable="false" label="Loginname" name="browserLoginname" visible="true">
+        <TableField sortOrder="ascending" tableField="loginname"/>
+      </Field>
+      <Field label="Fullname" name="browserFullname" visible="true">
+        <TableField tableField="fullname"/>
+      </Field>
+      <Field label="E-Mail" name="browserEmail" visible="false">
+        <TableField tableField="email"/>
+      </Field>
+    </Browser>
+    <Browser alias="document" name="documentBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="folder" name="folderBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="bo" name="boBrowser" type="inform">
+      <Field configureable="false" label="Pkey" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field configureable="false" label="Type" name="browserType" visible="false">
+        <TableField sortOrder="descending" tableField="type"/>
+      </Field>
+      <Field configureable="false" label="Name" name="browserName" visible="true">
+        <TableField sortOrder="ascending" tableField="name"/>
+      </Field>
+      <Field configureable="false" label="Dokument_key" name="browserDocument_key" visible="false">
+        <TableField tableField="document_key"/>
+      </Field>
+      <Field configureable="false" label="Folder_key" name="browserFolder_key" visible="false">
+        <TableField tableField="folder_key"/>
+      </Field>
+      <Field configureable="false" label="Favorite_index" name="browserFavorite_index" visible="false">
+        <TableField tableField="favorite_index"/>
+      </Field>
+      <ConnectByKey name="parent_bo_FKey">
+        <Field>parent_bo_key</Field>
+      </ConnectByKey>
+    </Browser>
+    <Browser alias="history" name="historyBrowser" type="inform">
+      <Field label="Name" name="browserRecord_representative_field" visible="true">
+        <TableField tableField="record_representative_field"/>
+      </Field>
+      <Field label="Geändert von" name="browserUser_fullname" visible="true">
+        <TableField tableField="user_fullname"/>
+      </Field>
+      <Field label="Geändert am" name="browserCreate_date" visible="true">
+        <TableField sortOrder="descending" tableField="create_date"/>
+      </Field>
+      <Field label="Typ" name="browserRelated_alias" visible="false">
+        <TableField tableField="related_alias"/>
+      </Field>
+      <Field configureable="false" label="Type" name="browserType" visible="false">
+        <TableField tableField="type"/>
+      </Field>
+    </Browser>
+    <Browser alias="history_entry" name="history_entryBrowser" type="inform">
+      <Field label="Attribut" name="browserField_label" visible="true">
+        <TableField tableField="field_label"/>
+      </Field>
+      <Field label="Vorher" name="browserOld_value" visible="true">
+        <TableField tableField="old_value"/>
+      </Field>
+      <Field label="Nachher" name="browserNew_value" visible="true">
+        <TableField tableField="new_value"/>
+      </Field>
+    </Browser>
+    <Browser alias="bookmark" name="bookmarkBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="bookmark_account" name="bookmark_accountBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="parent_bo" name="parent_boBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="favorite" name="favoriteBrowser" type="inform">
+      <Field configureable="false" label="Favorite_index" name="browserFavorite_index" visible="false">
+        <TableField sortOrder="descending" tableField="favorite_index"/>
+      </Field>
+      <Field configureable="false" label="Pkey" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field configureable="false" label="Name" name="browserName" visible="true">
+        <TableField tableField="name"/>
+      </Field>
+    </Browser>
+    <Browser alias="globalcontent" name="globalcontentBrowser" type="inform">
+      <Field configureable="true" label="Id" name="browserId" visible="false">
+        <TableField tableField="id"/>
+      </Field>
+      <Field label="Score" name="browserScore" visible="false">
+        <TableField tableField="score"/>
+      </Field>
+      <Field label="Tablealias" name="browserTablealias" visible="false">
+        <TableField tableField="tablealias"/>
+      </Field>
+      <Field label="Name" name="subject" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+      <Field label="Langname" name="subjectlong" visible="true">
+        <TableField tableField="subject"/>
+      </Field>
+      <Field label="Pkey" name="primarykey" visible="false">
+        <TableField tableField="primarykey"/>
+      </Field>
+    </Browser>
+    <Browser alias="setpassword" name="setpasswordBrowser" type="inform">
+      <Field label="Pkey" name="browserPkey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser alias="recyclebin" name="recyclebinBrowser" type="inform">
+      <Field configureable="false" label="Id" name="browserPkey" visible="false">
+        <TableField tableField="pkey"/>
+      </Field>
+      <Field configureable="false" label="Typ" name="browserType" visible="false">
+        <TableField tableField="type"/>
+      </Field>
+      <Field label="Pfad" name="browserOriginal_path" visible="true">
+        <TableField tableField="original_path"/>
+      </Field>
+      <Field label="Name" name="browserName" visible="false">
+        <TableField tableField="name"/>
+      </Field>
+      <Field label="Gelöscht am" name="browserDelete_date" visible="false">
+        <TableField tableField="delete_date"/>
+      </Field>
+      <Field label="Gelöscht von" name="browserDelete_by" visible="false">
+        <TableField tableField="delete_by"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations>
+    <Relation name="folder_bo">
+      <OneToMany fromAlias="folder" toAlias="bo" toKey="folder_FKey"/>
+    </Relation>
+    <Relation name="history_history_entry">
+      <OneToMany fromAlias="history" toAlias="history_entry" toKey="history_FKey"/>
+    </Relation>
+    <Relation name="bo_bookmark">
+      <OneToMany fromAlias="bo" toAlias="bookmark" toKey="bo_FKey"/>
+    </Relation>
+    <Relation name="bookmark_account_bookmark">
+      <OneToMany fromAlias="bookmark_account" toAlias="bookmark" toKey="bookmark_account_FKey"/>
+    </Relation>
+    <Relation name="parent_bo_bo">
+      <OneToMany fromAlias="parent_bo" toAlias="bo" toKey="parent_bo_FKey"/>
+    </Relation>
+    <Relation name="document_bo">
+      <OneToMany fromAlias="document" toAlias="bo" toKey="document_FKey"/>
+    </Relation>
+    <Relation name="document_favorite">
+      <OneToMany fromAlias="document" toAlias="favorite" toKey="document_FKey"/>
+    </Relation>
+  </Relations>
+  <Relationsets>
+    <Relationset name="boRelationset">
+      <Relation>folder_bo</Relation>
+      <Relation>history_history_entry</Relation>
+      <Relation>bo_bookmark</Relation>
+      <Relation>bookmark_account_bookmark</Relation>
+      <Relation>parent_bo_bo</Relation>
+      <Relation>document_bo</Relation>
+      <Property>
+        <Name>bo.x</Name>
+        <Value>324</Value>
+      </Property>
+      <Property>
+        <Name>bo.y</Name>
+        <Value>165</Value>
+      </Property>
+      <Property>
+        <Name>folder.x</Name>
+        <Value>186</Value>
+      </Property>
+      <Property>
+        <Name>folder.y</Name>
+        <Value>314</Value>
+      </Property>
+      <Property>
+        <Name>document.x</Name>
+        <Value>434</Value>
+      </Property>
+      <Property>
+        <Name>document.y</Name>
+        <Value>309</Value>
+      </Property>
+      <Property>
+        <Name>history.x</Name>
+        <Value>549</Value>
+      </Property>
+      <Property>
+        <Name>history.y</Name>
+        <Value>165</Value>
+      </Property>
+      <Property>
+        <Name>history_entry.x</Name>
+        <Value>767</Value>
+      </Property>
+      <Property>
+        <Name>history_entry.y</Name>
+        <Value>165</Value>
+      </Property>
+      <Property>
+        <Name>account.x</Name>
+        <Value>546</Value>
+      </Property>
+      <Property>
+        <Name>account.y</Name>
+        <Value>62</Value>
+      </Property>
+      <Property>
+        <Name>bookmark.x</Name>
+        <Value>64</Value>
+      </Property>
+      <Property>
+        <Name>bookmark.y</Name>
+        <Value>165</Value>
+      </Property>
+      <Property>
+        <Name>bookmark_account.x</Name>
+        <Value>54</Value>
+      </Property>
+      <Property>
+        <Name>bookmark_account.y</Name>
+        <Value>64</Value>
+      </Property>
+      <Property>
+        <Name>parent_bo.x</Name>
+        <Value>318</Value>
+      </Property>
+      <Property>
+        <Name>parent_bo.y</Name>
+        <Value>74</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="favoriteRelationset">
+      <Relation>document_favorite</Relation>
+      <Property>
+        <Name>favorite.x</Name>
+        <Value>251</Value>
+      </Property>
+      <Property>
+        <Name>favorite.y</Name>
+        <Value>142</Value>
+      </Property>
+      <Property>
+        <Name>document.x</Name>
+        <Value>235</Value>
+      </Property>
+      <Property>
+        <Name>document.y</Name>
+        <Value>293</Value>
+      </Property>
+      <Property>
+        <Name>favorite.expanded</Name>
+        <Value>false</Value>
+      </Property>
+    </Relationset>
+    <Relationset name="historyRelationset">
+      <Relation>history_history_entry</Relation>
+      <Property>
+        <Name>history.x</Name>
+        <Value>330</Value>
+      </Property>
+      <Property>
+        <Name>history.y</Name>
+        <Value>142</Value>
+      </Property>
+      <Property>
+        <Name>history_entry.x</Name>
+        <Value>603</Value>
+      </Property>
+      <Property>
+        <Name>history_entry.y</Name>
+        <Value>142</Value>
+      </Property>
+      <Property>
+        <Name>bo.x</Name>
+        <Value>130</Value>
+      </Property>
+      <Property>
+        <Name>bo.y</Name>
+        <Value>370</Value>
+      </Property>
+      <Property>
+        <Name>recyclebin.x</Name>
+        <Value>503</Value>
+      </Property>
+      <Property>
+        <Name>recyclebin.y</Name>
+        <Value>370</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_-3e5e35e9:129cb234321:-8000.x</Name>
+        <Value>20</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_-3e5e35e9:129cb234321:-8000.y</Name>
+        <Value>37</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_-3e5e35e9:129cb234321:-8000.width</Name>
+        <Value>241</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_-3e5e35e9:129cb234321:-8000.height</Name>
+        <Value>160</Value>
+      </Property>
+      <Property>
+        <Name>stickyNote_-3e5e35e9:129cb234321:-8000.text</Name>
+        <Value>Falls ein Dokument oder Ordner gelöscht wird bei dem ein HistoryEntry vorhanden ist, dann werden die HistoryEntries auf das neue RecycleBin Objekt umgebogen
+
+Umgekehrt natürlich auch. Wenn ein Dokument wiederhergestellt wird, dann wird der HistoryEntry ebenfalls angepasst.</Value>
+      </Property>
+      <Property>
+        <Name>history.expanded</Name>
+        <Value>true</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms>
+    <Form label="Übersicht" name="documents_overview">
+      <Group alias="bo" border="false" browser="boBrowser" eventHandler="jacob.event.ui.bo.documents.BoGroup" hideEmptyBrowser="true" label="Bo" name="boGroup">
+        <Dimension height="766" width="991" x="5" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.bo.documents.BoContainer" name="boContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="746" width="841" x="0" y="0"/>
+            <Pane alias="bo" browser="boBrowser" label="Bo" name="boGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+            </Pane>
+            <Pane alias="folder" browser="folderBrowser" label="Folder" name="folderGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="70"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="icon_folder.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="folderName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="461" x="70" y="20"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="476" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="145"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="195" x="20" y="205"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="198" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="199" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.folder.documents</Value>
+              </Property>
+            </Pane>
+            <Pane alias="document" browser="documentBrowser" label="Document" name="documentGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="icon_document.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="300" x="70" y="20"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="316" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="306" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="306" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="146"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="200" x="20" y="206"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentDocument_size_text" visible="true">
+                <Label tableField="document_size_text">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="15" width="200" x="70" y="44"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.documents.DocumentMailDocumentUrlToButton" name="documentMailDocumentUrlToButton" visible="true">
+                <Button label="E-Mail To">
+                  <Dimension height="25" width="170" x="575" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.documents.DocumentDownloadDocumentButton" name="documentDownloadDocumentButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="575" y="105"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.documents.DocumentSendMessageToAdminButton" name="documentSendMessageToAdminButton" visible="true">
+                <Button label="Hinweis an Admin">
+                  <Dimension height="25" width="170" x="575" y="165"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.documents.DocumentWebLink" name="documentWebLink" visible="true">
+                <LocalInputField>
+                  <LongTextInput contentType="text/plain" htmlInput="false" inForm="true">
+                    <Dimension height="123" width="476" x="20" y="287"/>
+                    <Caption eventHandler="jacob.event.ui.document.documents.DocumentWebLinkCaption" halign="left" label="Web Link" valign="top">
+                      <Dimension height="20" width="70" x="20" y="268"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.document.documents</Value>
+              </Property>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <ContextMenuEntry eventHandler="jacob.event.ui.bo.ShowSQL" label="SQL on" name="onSQL" visible="true">
+          <Action>
+            <Generic/>
+          </Action>
+        </ContextMenuEntry>
+        <ContextMenuEntry eventHandler="jacob.event.ui.bo.HideSQL" label="SQL off" name="hideSQL" visible="true">
+          <Action>
+            <Generic/>
+          </Action>
+        </ContextMenuEntry>
+        <Property>
+          <Name>java_default_package</Name>
+          <Value>jacob.event.ui.bo.documents</Value>
+        </Property>
+      </Group>
+    </Form>
+    <Form label="Dokumente" name="verwaltung_overview">
+      <Group alias="bo" border="false" browser="boBrowser" eventHandler="jacob.event.ui.bo.verwaltung.BoGroup" label="Bo" name="boGroup">
+        <Dimension height="636" width="941" x="0" y="0"/>
+        <GuiElement eventHandler="jacob.event.ui.bo.verwaltung.BoContainer" name="boContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="606" width="831" x="5" y="5"/>
+            <Pane alias="bo" browser="boBrowser" label="Bo" name="boGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="boLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Kein Element ausgewählt" valign="top">
+                    <Dimension height="26" width="241" x="20" y="14"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.bo.verwaltung</Value>
+              </Property>
+            </Pane>
+            <Pane alias="folder" browser="folderBrowser" label="Folder" name="folderGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="70"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="icon_folder.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.folder.verwaltung.VerwaltungCreateFolderButton" name="folderCreateFolderButton" visible="true">
+                <Button label="Ordner anlegen">
+                  <Dimension height="25" width="170" x="570" y="180"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="folderName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="461" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.folder.verwaltung.VerwaltungRenameFolderButton" name="folderRenameFolderButton" visible="true">
+                <Button label="Umbenennen">
+                  <Dimension height="25" width="170" x="570" y="70"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.folder.verwaltung.VerwaltungUpdateFolderSynonymeButton" name="folderUpdateFolderSynonymeButton" visible="true">
+                <Button label="Synonyme ändern">
+                  <Dimension height="25" width="170" x="570" y="100"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="folderSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="476" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="145"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="195" x="20" y="205"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="198" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="199" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.folder.verwaltung.VerwaltungUploadFolderDocumentButton" name="folderUploadDocumentButton" visible="true">
+                <Button label="Dokument anlegen">
+                  <Dimension height="25" width="170" x="570" y="210"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.folder.verwaltung.VerwaltungDeleteFolderButton" name="folderDeleteFolderButton" visible="true">
+                <Button label="Ordner löschen">
+                  <Dimension height="25" width="170" x="570" y="130"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.folder.verwaltung</Value>
+              </Property>
+            </Pane>
+            <Pane alias="document" browser="documentBrowser" label="Document" name="documentGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="70"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="icon_document.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="300" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="316" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="306" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="306" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="146"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="200" x="20" y="206"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentRenameDocumentButton" name="documentRenameDocumentButton" visible="true">
+                <Button label="Umbenennen">
+                  <Dimension height="25" width="170" x="570" y="190"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentUpdateDocumentSynonymeButton" name="documentUpdateDocumentSynonymeButton" visible="true">
+                <Button label="Synonyme ändern">
+                  <Dimension height="25" width="170" x="570" y="100"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentToggleDocumentFavoritButton" name="documentToggleDocumentFavoritButton" visible="true">
+                <Button label="Zu Favoriten">
+                  <Dimension height="25" width="170" x="570" y="130"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentUploadNewDocumentVersionButton" name="documentUploadNewDocumentVersionButton" visible="true">
+                <Button label="Neue Version hochladen">
+                  <Dimension height="25" width="170" x="570" y="160"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentDeleteDocumentButton" name="documentDeleteDocumentButton" visible="true">
+                <Button label="Dokument löschen">
+                  <Dimension height="25" width="170" x="570" y="220"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentDownloadDocumentButton" name="documentDownloadDocumentButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="570" y="70"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentCreateFolderButton" name="documentCreateFolderButton" visible="true">
+                <Button label="Ordner anlegen">
+                  <Dimension height="25" width="170" x="570" y="270"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentCreateDocumentButton" name="documentCreateDocumentButton" visible="true">
+                <Button label="Dokument anlegen">
+                  <Dimension height="25" width="170" x="570" y="300"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="documentDocument_size_text" visible="true">
+                <Label tableField="document_size_text">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="15" width="200" x="70" y="44"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.verwaltung.DocumentWebLink" name="documentWebLink" visible="true">
+                <LocalInputField>
+                  <LongTextInput contentType="text/plain" htmlInput="false" inForm="true">
+                    <Dimension height="88" width="511" x="20" y="287"/>
+                    <Caption eventHandler="jacob.event.ui.document.verwaltung.DocumentWebLinkCaption" halign="left" label="Web Link" valign="top">
+                      <Dimension height="20" width="70" x="20" y="267"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.document.verwaltung</Value>
+              </Property>
+            </Pane>
+          </Container>
+        </GuiElement>
+        <Property>
+          <Name>java_default_package</Name>
+          <Value>jacob.event.ui.bo.verwaltung</Value>
+        </Property>
+      </Group>
+    </Form>
+    <Form label="Favoriten" name="documents_favoriten">
+      <Group alias="favorite" border="false" browser="favoriteBrowser" eventHandler="jacob.event.ui.favorite.FavoriteGroup" hideEmptyBrowser="true" label="Favorite" name="favoriteGroup">
+        <Dimension height="586" width="811" x="5" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.favorite.FavoriteContainer" name="favoriteContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="571" width="776" x="0" y="0"/>
+            <Pane alias="favorite" browser="favoriteBrowser" label="Favorite_empty" name="favoriteGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="favoriteStaticImage" visible="true">
+                <StaticImage src="icon_document.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="favoriteLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Es wurden keine Favoriten hinterlegt" valign="top">
+                    <Dimension height="20" width="371" x="70" y="20"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="favoriteLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Favoriten werden durch den Systemverantwortlichen hinterlegt." valign="top">
+                    <Dimension height="20" width="371" x="70" y="45"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="document" browser="documentBrowser" label="Document_selected" name="documentGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="icon_favorite.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="300" x="70" y="20"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="316" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="306" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="306" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="146"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="200" x="20" y="206"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentDocument_size_text" visible="true">
+                <Label tableField="document_size_text">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="15" width="200" x="70" y="44"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.favoriten.DocumentMailDocumentUrlToButton" name="documentMailDocumentUrlToButton" visible="true">
+                <Button label="E-Mail To">
+                  <Dimension height="25" width="170" x="575" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.favoriten.DocumentDownloadDocumentButton" name="documentDownloadDocumentButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="575" y="105"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.favoriten.DocumentSendMessageToAdminButton" name="documentSendMessageToAdminButton" visible="true">
+                <Button label="Hinweis an Admin">
+                  <Dimension height="25" width="170" x="575" y="165"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.document.favoriten</Value>
+              </Property>
+            </Pane>
+          </Container>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Suche" name="documents_search">
+      <Group alias="globalcontent" border="false" browser="globalcontentBrowser" hideEmptyBrowser="true" label="Globalcontent" name="globalcontentGroup">
+        <Dimension height="531" width="886" x="0" y="0"/>
+        <GuiElement eventHandler="jacob.event.ui.globalcontent.GlobalcontentContainer" name="globalcontentContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="501" width="861" x="0" y="0"/>
+            <Pane alias="globalcontent" browser="globalcontentBrowser" label="Empty" name="globalcontentGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Vorschläge:" valign="top">
+                    <Dimension height="20" width="200" x="15" y="90"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="o Vergewisserns Sie sich, dass alle Wörter richtig geschrieben sind." valign="top">
+                    <Dimension height="20" width="511" x="35" y="120"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="o Probieren Sie andere Suchbegriffe" valign="top">
+                    <Dimension height="20" width="511" x="35" y="144"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="o Probieren Sie allgemeinere Suchbegriffe" valign="top">
+                    <Dimension height="20" width="511" x="35" y="169"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Es wurden keine Dokumente gefunden, in dene alle eingegebene Suchbegriffe" valign="top">
+                    <Dimension height="26" width="546" x="15" y="20"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="globalcontentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="vorkommen." valign="top">
+                    <Dimension height="21" width="481" x="15" y="44"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="folder" browser="folderBrowser" label="Folder" name="folderGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="70"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="folderStaticImage" visible="true">
+                <StaticImage src="icon_folder.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="folderName" visible="true">
+                <Label tableField="name">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="461" x="70" y="20"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="476" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="145"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="195" x="20" y="205"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="198" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="folderChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="199" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.folder.search</Value>
+              </Property>
+            </Pane>
+            <Pane alias="document" browser="documentBrowser" label="Document" name="documentGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentStaticImage" visible="true">
+                <StaticImage src="icon_document.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="documentChange_date" visible="true">
+                <Label tableField="change_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="316" x="20" y="115"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentCreate_date" visible="true">
+                <Label tableField="create_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="303" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentSynonyme" visible="true">
+                <Label tableField="synonyme">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="303" x="20" y="215"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Geändert am" valign="top">
+                    <Dimension height="20" width="200" x="20" y="100"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Angelegt am" valign="top">
+                    <Dimension height="20" width="197" x="20" y="150"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Synonyme" valign="top">
+                    <Dimension height="20" width="197" x="20" y="200"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="documentDocument_size_text" visible="true">
+                <Label tableField="document_size_text">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="15" width="200" x="70" y="45"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.search.DocumentMailDocumentUrlToButton" name="documentMailDocumentUrlToButton" visible="true">
+                <Button label="E-Mail To">
+                  <Dimension height="25" width="170" x="575" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.search.DocumentDownloadDocumentButton" name="documentDownloadDocumentButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="575" y="105"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.search.DocumentSendMessageToAdminButton" name="documentSendMessageToAdminButton" visible="true">
+                <Button label="Hinweis an Admin">
+                  <Dimension height="25" width="170" x="575" y="165"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.document.search.DocumentWebLink" name="documentWebLink" visible="true">
+                <LocalInputField>
+                  <LongTextInput contentType="text/plain" htmlInput="false" inForm="true">
+                    <Dimension height="141" width="476" x="20" y="269"/>
+                    <Caption eventHandler="jacob.event.ui.document.DocumentWebLinkCaption" halign="left" label="Web Link" valign="top">
+                      <Dimension height="20" width="70" x="20" y="250"/>
+                    </Caption>
+                  </LongTextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="documentPathLabel" visible="true">
+                <Label>
+                  <Caption ellipsis="true" eventHandler="jacob.event.ui.document.search.DocumentPathLabel" halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="675" x="70" y="20"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <Property>
+                <Name>java_default_package</Name>
+                <Value>jacob.event.ui.document.search</Value>
+              </Property>
+            </Pane>
+          </Container>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="dbg_index" name="dbg_index">
+      <Group alias="globalcontent" border="false" browser="globalcontentBrowser" hideEmptyBrowser="true" label="Globalcontent" name="globalcontentGroup">
+        <Dimension height="516" width="896" x="5" y="10"/>
+        <GuiElement name="globalcontentSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="736" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="globalcontentUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="811" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="globalcontentClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="811" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="globalcontentNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="736" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.globalcontent.GlobalcontentRebuildIndexButton" name="globalcontentRebuildIndexButton" visible="true">
+          <Button label="Rebuild Index">
+            <Dimension height="20" width="150" x="736" y="95"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.globalcontent.DeleteallButton" name="deleteallButton" visible="true">
+          <Button label="Delete all">
+            <Dimension height="20" width="150" x="736" y="180"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Benutzer" name="verwaltung_account">
+      <Group alias="account" border="false" browser="accountBrowser" eventHandler="jacob.event.ui.account.AccountGroup" hideEmptyBrowser="true" label="Account" name="accountGroup">
+        <Dimension height="501" width="801" x="5" y="5"/>
+        <GuiElement eventHandler="jacob.event.ui.account.AccountContainer" name="accountContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="496" width="776" x="0" y="0"/>
+            <Pane alias="account" browser="accountBrowser" label="Account_empty" name="accountGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="vcard_disabled.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#6b6b6b" halign="left" label="Benutzerverwaltung" valign="top">
+                    <Dimension height="20" width="200" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Login Name" valign="top">
+                    <Dimension height="20" width="200" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#6b6b6b" halign="left" label="- kein Benutzer ausgewählt -" valign="top">
+                    <Dimension height="30" width="200" x="20" y="105"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountNewAccountButton" name="accountNewAccountButton" visible="true">
+                <Button label="Benutzer anlegen">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Benutzername" valign="top">
+                    <Dimension height="20" width="200" x="20" y="146"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#6b6b6b" halign="left" label="- kein Benutzer ausgewählt -" valign="top">
+                    <Dimension height="30" width="200" x="20" y="165"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="account" browser="accountBrowser" label="Account_view" name="accountGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="vcard.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Benutzerverwaltung" valign="top">
+                    <Dimension height="30" width="200" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Login Name" valign="top">
+                    <Dimension height="20" width="48" x="20" y="85"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLoginname" visible="true">
+                <Label tableField="loginname">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="401" x="20" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountUpdateRecordButton" visible="true">
+                <Button label="%BUTTON_COMMON_CHANGE">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountNewAccountButton" name="accountNewAccountButton" visible="true">
+                <Button label="Benutzer anlegen">
+                  <Dimension height="25" width="170" x="570" y="215"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountFullname" visible="true">
+                <Label tableField="fullname">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="401" x="20" y="165"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Benutzername" valign="top">
+                    <Dimension height="20" width="200" x="20" y="146"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountRole" visible="true">
+                <Label tableField="role">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="401" x="20" y="285"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Rolle" valign="top">
+                    <Dimension height="20" width="200" x="20" y="268"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountDeleteRecordButton" name="accountDeleteRecordButton" visible="true">
+                <Button label="%BUTTON_COMMON_DELETE">
+                  <Dimension height="25" width="170" x="570" y="165"/>
+                  <Action>
+                    <DeleteRecord/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountResetPasswordButton" name="accountResetPasswordButton" visible="true">
+                <Button label="Kennwort zurücksetzen">
+                  <Dimension height="25" width="170" x="570" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountEmail" visible="true">
+                <Label tableField="email">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="200" x="20" y="225"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="E-Mail" valign="top">
+                    <Dimension height="20" width="200" x="20" y="207"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="account" browser="accountBrowser" label="Account_edit" name="accountGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="vcard.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountUpdateRecordButton" visible="true">
+                <Button label="%BUTTON_COMMON_CHANGE">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountLoginname" visible="true">
+                <LocalInputField tableField="loginname">
+                  <TextInput>
+                    <Dimension height="30" width="210" x="20" y="105"/>
+                    <Caption halign="left" label="Login Name" valign="top">
+                      <Dimension height="20" width="70" x="20" y="85"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Benutzer ändern" valign="top">
+                    <Dimension height="30" width="200" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountCancelUpdateUserButton" name="accountCancelUpdateUserButton" visible="true">
+                <Button label="Abbruch">
+                  <Dimension height="25" width="170" x="570" y="135"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountFullname" visible="true">
+                <LocalInputField tableField="fullname">
+                  <TextInput>
+                    <Dimension height="30" width="350" x="20" y="165"/>
+                    <Caption halign="left" label="Benutzername" valign="top">
+                      <Dimension height="20" width="191" x="20" y="146"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountRole" visible="true">
+                <LocalInputField tableField="role">
+                  <RadioButtonGroup>
+                    <Dimension height="101" width="350" x="20" y="290"/>
+                    <Value>anonymous</Value>
+                    <Value>administrator</Value>
+                    <Value>user</Value>
+                    <Caption halign="left" label="Role: " valign="top">
+                      <Dimension height="20" width="60" x="20" y="271"/>
+                    </Caption>
+                  </RadioButtonGroup>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#c10023" halign="left" label="*" valign="top">
+                    <Dimension height="20" width="26" x="235" y="110"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#c10023" halign="left" label="*" valign="top">
+                    <Dimension height="20" width="26" x="375" y="170"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountEmail" visible="true">
+                <LocalInputField tableField="email">
+                  <TextInput>
+                    <Dimension height="30" width="350" x="20" y="225"/>
+                    <Caption halign="left" label="E-Mail" valign="top">
+                      <Dimension height="20" width="70" x="20" y="206"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+            </Pane>
+            <Pane alias="account" browser="accountBrowser" label="Account_new" name="accountGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountStaticImage" visible="true">
+                <StaticImage src="vcard.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Benutzer anlegen" valign="top">
+                    <Dimension height="30" width="200" x="70" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountUpdateRecordButton" visible="true">
+                <Button label="%BUTTON_COMMON_CHANGE">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountLoginname" visible="true">
+                <LocalInputField tableField="loginname">
+                  <TextInput>
+                    <Dimension height="30" width="210" x="20" y="105"/>
+                    <Caption halign="left" label="Login Name" valign="top">
+                      <Dimension height="20" width="60" x="20" y="85"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.account.AccountCancelNewUserButton" name="accountCancelNewUserButton" visible="true">
+                <Button label="Abbruch">
+                  <Dimension height="25" width="170" x="570" y="135"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="accountFullname" visible="true">
+                <LocalInputField tableField="fullname">
+                  <TextInput>
+                    <Dimension height="30" width="350" x="20" y="165"/>
+                    <Caption halign="left" label="Benutzername" valign="top">
+                      <Dimension height="20" width="70" x="20" y="146"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountRole" visible="true">
+                <LocalInputField tableField="role">
+                  <RadioButtonGroup>
+                    <Dimension height="135" width="350" x="20" y="290"/>
+                    <Value>anonymous</Value>
+                    <Value>administrator</Value>
+                    <Value>user</Value>
+                    <Caption halign="left" label="Role" valign="top">
+                      <Dimension height="20" width="79" x="20" y="271"/>
+                    </Caption>
+                  </RadioButtonGroup>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountEmail" visible="true">
+                <LocalInputField tableField="email">
+                  <TextInput>
+                    <Dimension height="30" width="350" x="20" y="225"/>
+                    <Caption halign="left" label="E-Mail" valign="top">
+                      <Dimension height="20" width="70" x="20" y="206"/>
+                    </Caption>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </TextInput>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#c10023" halign="left" label="*" valign="top">
+                    <Dimension height="20" width="41" x="235" y="110"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="accountLabel" visible="true">
+                <Label>
+                  <Caption color="#c10023" halign="left" label="*" valign="top">
+                    <Dimension height="20" width="21" x="375" y="170"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Kennwort aktualisieren" name="password">
+      <Group alias="setpassword" border="false" browser="setpasswordBrowser" eventHandler="jacob.event.ui.setpassword.AccountSetPasswordGroup" hideEmptyBrowser="true" label="Account" name="accountSetPasswordGroup">
+        <Dimension height="350" width="650" x="5" y="5"/>
+        <GuiElement name="setpasswordStaticImage" visible="true">
+          <StaticImage src="password.png">
+            <Dimension height="48" width="48" x="10" y="10"/>
+          </StaticImage>
+        </GuiElement>
+        <GuiElement name="setpasswordLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Kennwort setzen und erneut anmelden" valign="top">
+              <Dimension height="30" width="516" x="70" y="25"/>
+              <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.setpassword.AccountPassword1" name="accountPassword1" visible="true">
+          <LocalInputField>
+            <PasswordInput>
+              <Dimension height="30" width="300" x="40" y="159"/>
+              <Caption halign="left" label="Kennwort" valign="top">
+                <Dimension height="20" width="161" x="40" y="140"/>
+              </Caption>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.setpassword.AccountPassword2" name="accountPassword2" visible="true">
+          <LocalInputField>
+            <PasswordInput>
+              <Dimension height="30" width="300" x="40" y="224"/>
+              <Caption halign="left" label="Wiederholen" valign="top">
+                <Dimension height="20" width="70" x="40" y="205"/>
+              </Caption>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </PasswordInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.setpassword.AccountSetPasswordButton" name="setpasswordSetPasswordButton" visible="true">
+          <Button emphasize="true" label="1. Kennwort setzen">
+            <Dimension height="30" width="170" x="375" y="224"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="setpasswordLabel2" visible="true">
+          <Label>
+            <Caption halign="left" label="Benutzername" valign="top">
+              <Dimension height="20" width="200" x="40" y="80"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement name="accountLoginname" visible="true">
+          <Label tableField="loginname">
+            <Caption halign="left" label="&lt;unset>" valign="top">
+              <Dimension height="30" width="200" x="40" y="99"/>
+              <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+        <GuiElement eventHandler="jacob.event.ui.setpassword.SetpasswordLoginButton" name="setpasswordLoginButton" visible="true">
+          <Button emphasize="true" label="2. Anmelden">
+            <Dimension height="30" width="170" x="375" y="270"/>
+            <Action>
+              <Generic/>
+            </Action>
+          </Button>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Papierkorb" name="verwaltung_papierkorb">
+      <Group alias="recyclebin" border="false" browser="recyclebinBrowser" eventHandler="jacob.event.ui.recyclebin.RecyclebinGroup" hideEmptyBrowser="true" label="Recyclebin" name="recyclebinGroup">
+        <Dimension height="511" width="801" x="0" y="0"/>
+        <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinContainer" name="recyclebinContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="496" width="781" x="0" y="0"/>
+            <Pane alias="recyclebin" browser="recyclebinBrowser" label="Recyclebin_empty" name="recyclebinGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="recyclebinStaticImage" visible="true">
+                <StaticImage src="Recyclebin_empty.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Papierkorb" valign="top">
+                    <Dimension height="20" width="200" x="75" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel" visible="true">
+                <Label>
+                  <Caption color="#6b6b6b" halign="left" label="- Leer -" valign="top">
+                    <Dimension height="20" width="311" x="75" y="44"/>
+                    <Font family="sans-serif" size="10" style="normal" weight="normal"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="recyclebin" browser="recyclebinBrowser" label="Recyclebin_selected_folder" name="recyclebinGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="recyclebinStaticImage2" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="recyclebinStaticImage" visible="true">
+                <StaticImage src="Recyclebin.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Papierkorb" valign="top">
+                    <Dimension height="20" width="200" x="75" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel2" visible="true">
+                <Label>
+                  <Caption halign="left" label="Ordner" valign="top">
+                    <Dimension height="20" width="48" x="20" y="105"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinOriginal_path" visible="true">
+                <Label tableField="original_path">
+                  <Caption ellipsis="true" halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="526" x="20" y="124"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinDelete_date" visible="true">
+                <Label tableField="delete_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="141" x="20" y="184"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinDelete_by" visible="true">
+                <Label tableField="delete_by">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="186" x="200" y="184"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel3" visible="true">
+                <Label>
+                  <Caption halign="left" label="Gelöscht am:" valign="top">
+                    <Dimension height="20" width="200" x="20" y="165"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinRestoreFolderButton" name="recyclebinRestoreFolderButton" visible="true">
+                <Button label="Wiederherstellen">
+                  <Dimension height="25" width="170" x="570" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinDeleteFolderButton" name="recyclebinDeleteFolderButton" visible="true">
+                <Button label="%BUTTON_COMMON_DELETE">
+                  <Dimension height="25" width="170" x="570" y="165"/>
+                  <Action>
+                    <DeleteRecord/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinDownloadFolderButton" name="recyclebinDownloadFolderButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+            <Pane alias="recyclebin" browser="recyclebinBrowser" label="Recyclebin_selected_document" name="recyclebinGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="recyclebinStaticImage2" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="recyclebinStaticImage" visible="true">
+                <StaticImage src="Recyclebin.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Papierkorb" valign="top">
+                    <Dimension height="20" width="200" x="75" y="25"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel2" visible="true">
+                <Label>
+                  <Caption halign="left" label="Dokument" valign="top">
+                    <Dimension height="20" width="48" x="20" y="105"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinOriginal_path" visible="true">
+                <Label tableField="original_path">
+                  <Caption ellipsis="true" halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="30" width="526" x="20" y="124"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinDelete_date" visible="true">
+                <Label tableField="delete_date">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="141" x="20" y="184"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinDelete_by" visible="true">
+                <Label tableField="delete_by">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="186" x="200" y="184"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="recyclebinLabel3" visible="true">
+                <Label>
+                  <Caption halign="left" label="Gelöscht am:" valign="top">
+                    <Dimension height="20" width="200" x="20" y="165"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinRestoreDocumentButton" name="recyclebinRestoreDocumentButton" visible="true">
+                <Button label="Wiederherstellen">
+                  <Dimension height="25" width="170" x="570" y="135"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinDeleteDocumentButton" name="recyclebinDeleteDocumentRecordButton" visible="true">
+                <Button label="%BUTTON_COMMON_DELETE">
+                  <Dimension height="25" width="170" x="570" y="165"/>
+                  <Action>
+                    <DeleteRecord/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.recyclebin.RecyclebinDownloadDocumentButton" name="recyclebinDownloadDocumentButton" visible="true">
+                <Button label="Anzeigen">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <Generic/>
+                  </Action>
+                </Button>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="History" name="history_overview">
+      <Group alias="bo" browser="boBrowser" label="Bo" name="boGroup">
+        <Dimension height="391" width="621" x="15" y="15"/>
+        <GuiElement name="boLabel" visible="true">
+          <Label>
+            <Caption halign="left" label="Wird nie angezeigt, da hier mit NavigationEntries gearbeitet wird" valign="top">
+              <Dimension height="86" width="451" x="55" y="110"/>
+              <Font family="sans-serif" size="12" style="normal" weight="normal"/>
+            </Caption>
+          </Label>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form label="Änderungsjournal" name="documents_journal">
+      <Group alias="history" border="false" browser="historyBrowser" eventHandler="jacob.event.ui.history.HistoryGroup" hideEmptyBrowser="true" label="History" name="historyGroup">
+        <Dimension height="611" width="896" x="0" y="0"/>
+        <GuiElement eventHandler="jacob.event.ui.history.HistoryContainer" name="historyContainer" visible="true">
+          <Container layout="tab_strip">
+            <Dimension height="516" width="771" x="5" y="5"/>
+            <Pane alias="history" browser="historyBrowser" label="blank" name="historyGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="historyStaticImage" visible="true">
+                <StaticImage src="icon_document_journal.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Änderungsjournal" valign="top">
+                    <Dimension height="20" width="200" x="75" y="10"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.history.HistoryCombobox1" name="historyCombobox1" visible="true">
+                <LocalInputField>
+                  <ComboBox>
+                    <Dimension height="20" width="200" x="75" y="38"/>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption color="#6b6b6b" halign="left" label="Keine Änderungen in dem genannten Zeitraum vorhanden" valign="top">
+                    <Dimension height="36" width="446" x="10" y="104"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="history" browser="historyBrowser" label="history_folder" name="historyGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="historyStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="historyStaticImage" visible="true">
+                <StaticImage src="icon_folder_journal.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="historyRecord_representative_field" visible="true">
+                <Label tableField="record_representative_field">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="25" width="341" x="10" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyType" visible="true">
+                <Label tableField="type">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="200" x="10" y="180"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Aktion" valign="top">
+                    <Dimension height="20" width="200" x="10" y="160"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyHistory_entryBrowser" visible="true">
+                <InFormBrowser browserToUse="history_entryBrowser" deleteMode="false" newMode="false" relationToUse="history_history_entry" searchMode="true" updateMode="false">
+                  <Dimension height="190" width="500" x="10" y="220"/>
+                  <Caption halign="left" label="Geänderte Daten" valign="top">
+                    <Dimension height="50" width="200" x="0" y="0"/>
+                  </Caption>
+                </InFormBrowser>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Änderungsjournal" valign="top">
+                    <Dimension height="20" width="200" x="75" y="10"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.history.HistoryCombobox2" name="historyCombobox2" visible="true">
+                <LocalInputField>
+                  <ComboBox>
+                    <Dimension height="20" width="200" x="75" y="38"/>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.history.HistoryShowFolderInOverviewButton" name="historyShowFolderInOverviewButton" visible="true">
+                <Button label="In der Übersicht">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="historyRecord_path" visible="true">
+                <Label tableField="record_path">
+                  <Caption ellipsis="true" halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="500" x="10" y="125"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+            <Pane alias="history" browser="historyBrowser" label="history_document" name="historyGroup">
+              <Dimension height="0" width="0" x="0" y="0"/>
+              <GuiElement name="historyStaticImage" visible="true">
+                <StaticImage src="line_v.png">
+                  <Dimension height="305" width="10" x="555" y="105"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="historyStaticImage" visible="true">
+                <StaticImage src="icon_document_journal.png">
+                  <Dimension height="48" width="48" x="10" y="10"/>
+                </StaticImage>
+              </GuiElement>
+              <GuiElement name="historyRecord_representative_field" visible="true">
+                <Label tableField="record_representative_field">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="431" x="10" y="105"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Aktion" valign="top">
+                    <Dimension height="20" width="200" x="10" y="160"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyType" visible="true">
+                <Label tableField="type">
+                  <Caption halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="200" x="10" y="180"/>
+                    <Font family="sans-serif" size="12" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement name="historyHistory_entryBrowser" visible="true">
+                <InFormBrowser browserToUse="history_entryBrowser" deleteMode="false" newMode="false" relationToUse="history_history_entry" searchMode="false" updateMode="false">
+                  <Dimension height="190" width="500" x="10" y="220"/>
+                  <Caption halign="left" label="Geänderte Daten" valign="top">
+                    <Dimension height="50" width="200" x="0" y="100"/>
+                  </Caption>
+                </InFormBrowser>
+              </GuiElement>
+              <GuiElement name="historyLabel" visible="true">
+                <Label>
+                  <Caption halign="left" label="Änderungsjournal" valign="top">
+                    <Dimension height="20" width="200" x="75" y="10"/>
+                    <Font family="sans-serif" size="14" style="normal" weight="bold"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.history.HistoryCombobox3" name="historyCombobox3" visible="true">
+                <LocalInputField>
+                  <ComboBox>
+                    <Dimension height="20" width="200" x="75" y="38"/>
+                  </ComboBox>
+                </LocalInputField>
+              </GuiElement>
+              <GuiElement eventHandler="jacob.event.ui.history.HistoryShowDocumentInOverviewButton" name="historyShowDocumentInOverviewButton" visible="true">
+                <Button label="In der Übersicht">
+                  <Dimension height="25" width="170" x="570" y="105"/>
+                  <Action>
+                    <RecordSelected/>
+                  </Action>
+                </Button>
+              </GuiElement>
+              <GuiElement name="historyRecord_path" visible="true">
+                <Label tableField="record_path">
+                  <Caption ellipsis="true" halign="left" label="&lt;unset>" valign="top">
+                    <Dimension height="20" width="506" x="10" y="125"/>
+                  </Caption>
+                </Label>
+              </GuiElement>
+            </Pane>
+          </Container>
+        </GuiElement>
+      </Group>
+    </Form>
+    <Form eventHandler="jacob.event.ui.Dbg_recyclebin" label="Dbg_recyclebin" name="dbg_recyclebin">
+      <Group alias="recyclebin" browser="recyclebinBrowser" label="Recyclebin" name="recyclebinGroup">
+        <Dimension height="526" width="836" x="5" y="10"/>
+        <GuiElement name="recyclebinUpdateRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_CHANGE">
+            <Dimension height="20" width="70" x="751" y="55"/>
+            <Action>
+              <UpdateRecord changeUpdate="false" executeScope="outer group"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recyclebinSearchButton" visible="true">
+          <Button label="%BUTTON_COMMON_SEARCH">
+            <Dimension height="20" width="70" x="676" y="30"/>
+            <Action>
+              <Search filldirection="backward" relationset="default" safeMode="false"/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recyclebinClearGroupButton" visible="true">
+          <Button label="%BUTTON_COMMON_CLEAR">
+            <Dimension height="20" width="70" x="751" y="30"/>
+            <Action>
+              <ClearGroup/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recyclebinNewRecordButton" visible="true">
+          <Button label="%BUTTON_COMMON_NEW">
+            <Dimension height="20" width="70" x="676" y="55"/>
+            <Action>
+              <NewRecord/>
+            </Action>
+          </Button>
+        </GuiElement>
+        <GuiElement name="recyclebinName" visible="true">
+          <LocalInputField tableField="name">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="50"/>
+              <Caption halign="left" label="Name" valign="top">
+                <Dimension height="20" width="70" x="5" y="50"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinOriginal_path" visible="true">
+          <LocalInputField tableField="original_path">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="75"/>
+              <Caption halign="left" label="Pfad" valign="top">
+                <Dimension height="20" width="70" x="5" y="75"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinOriginal_pkey" visible="true">
+          <LocalInputField tableField="original_pkey">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="100"/>
+              <Caption halign="left" label="Original_pkey" valign="top">
+                <Dimension height="20" width="70" x="5" y="100"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinPkey" visible="true">
+          <LocalInputField tableField="pkey">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="125"/>
+              <Caption halign="left" label="Id" valign="top">
+                <Dimension height="20" width="70" x="5" y="125"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinSynonyme" visible="true">
+          <LocalInputField tableField="synonyme">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="150"/>
+              <Caption halign="left" label="Synonyme" valign="top">
+                <Dimension height="20" width="70" x="5" y="150"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinDelete_by" visible="true">
+          <LocalInputField tableField="delete_by">
+            <TextInput>
+              <Dimension height="20" width="200" x="80" y="25"/>
+              <Caption halign="left" label="Gelöscht von" valign="top">
+                <Dimension height="20" width="70" x="5" y="25"/>
+              </Caption>
+            </TextInput>
+          </LocalInputField>
+        </GuiElement>
+        <GuiElement name="recyclebinDocument" visible="true">
+          <LocalInputField tableField="content">
+            <DocumentInput>
+              <Dimension height="20" width="366" x="80" y="194"/>
+              <Caption halign="left" label="Content" valign="top">
+                <Dimension height="20" width="70" x="5" y="194"/>
+              </Caption>
+            </DocumentInput>
+          </LocalInputField>
+        </GuiElement>
+      </Group>
+    </Form>
+  </Forms>
+  <Domains>
+    <Domain canCollapse="false" name="verwaltung" title="Verwaltung" visible="true">
+      <Form>verwaltung_overview</Form>
+      <Form>verwaltung_account</Form>
+      <Form>verwaltung_papierkorb</Form>
+      <Role>admin</Role>
+    </Domain>
+    <Domain canCollapse="false" eventHandler="jacob.event.ui.History" name="history" title="Verlauf" visible="true">
+      <Form>history_overview</Form>
+      <Role>user</Role>
+      <Role>admin</Role>
+    </Domain>
+    <Domain name="debug" title="Debug" visible="true">
+      <Form>dbg_index</Form>
+      <Form>dbg_recyclebin</Form>
+      <Role>debug</Role>
+    </Domain>
+    <Domain name="&lt;password>" title="Password" visible="true">
+      <Form>password</Form>
+      <Role>password</Role>
+    </Domain>
+    <Domain canCollapse="false" name="documents" title="Dokumente" visible="true">
+      <Form>documents_overview</Form>
+      <Form>documents_favoriten</Form>
+      <Form>documents_journal</Form>
+      <Form>documents_search</Form>
+      <Role>anonymous</Role>
+      <Role>user</Role>
+      <Role>admin</Role>
+    </Domain>
+  </Domains>
+  <Applications>
+    <Application eventHandler="jacob.event.ui.Application" eventHandlerLookupMethod="reference" name="docPool" title="docPool Application">
+      <Domain>&lt;password&gt;</Domain>
+      <Domain>documents</Domain>
+      <Domain>verwaltung</Domain>
+      <Domain>history</Domain>
+      <Domain>debug</Domain>
+    </Application>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

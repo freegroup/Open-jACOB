@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="db_field(doc_template.xsl_stylesheet)"?>
+
+<!-- result should be below 32 Kb, otherwise there will be error in yan -->
+
+<doc>
+  <control>
+    <original_to url=""/>
+    <copies>
+      <copy onSuccess ="true">
+      <to url="tts://attachment?task_key=db_field(task.pkey)"/>
+      <stylesheet url="db_field(doc_template.xsl_stylesheet)"/>
+      </copy>
+    </copies>
+
+    <attachments>
+db_field(*ATTACHMENT)
+</attachments>
+
+  </control>
+  <data>
+    <general>
+      <date>db_field(*Date)</date>
+      <time>db_field(*Time)</time>
+      <ortsangabe>db_field(*ASK:Bitte Ortsangabe erfassen:)</ortsangabe>
+      <Kostenstelle>db_field(*ASK:Bitte geben Sie die zu belastende Kostenstelle ein:)</Kostenstelle>
+      <Ansprechpartner>db_field(*ASK:Bitte Ansprechpartner erfassen:)</Ansprechpartner>
+      <Auftraggeber_Name>db_field(*USERRECORD.fullname)</Auftraggeber_Name>
+      <Auftraggeber_Telefon>db_field(*USERRECORD.phonecorr)</Auftraggeber_Telefon>
+      <Auftraggeber_FAX>db_field(*USERRECORD.faxcorr)</Auftraggeber_FAX>
+      <Auftraggeber_Email>db_field(*USERRECORD.emailcorr)</Auftraggeber_Email>
+    </general>
+    <wrkgporg>
+      <department>db_field(callworkgroup.organization_key-wrkgporg.department)</department>
+      <name>db_field(callworkgroup.organization_key-wrkgporg.name)</name>
+    </wrkgporg>
+    <callworkgroup>
+      <name>db_field(call.workgroupcall-callworkgroup.name)</name>
+      <fax>db_field(call.workgroupcall-callworkgroup.fax)</fax>
+      <email>db_field(call.workgroupcall-callworkgroup.email)</email>
+      <phone>db_field(call.workgroupcall-callworkgroup.phone)</phone>
+    </callworkgroup>
+    <customerint>:
+      <fullname>db_field(call.employeecall-customerint.fullname)</fullname>
+      <lastnamecorr>db_field(call.employeecall-customerint.lastnamecorr)</lastnamecorr>
+      <firstnamecorr>db_field(call.employeecall-customerint.firstnamecorr)</firstnamecorr>
+      <phonecorr>db_field(call.employeecall-customerint.phonecorr)</phonecorr>
+      <faxcorr>db_field(call.employeecall-customerint.faxcorr)</faxcorr>
+      <emailcorr>db_field(call.employeecall-customerint.emailcorr)</emailcorr>
+      <emplsite_keycorr>db_field(call.employeecall-customerint.emplsite_keycorr)</emplsite_keycorr>
+      <sitepartcorr>db_field(call.employeecall-customerint.sitepartcorr)</sitepartcorr>
+      <department>db_field(call.employeecall-customerint.department)</department>
+      <accountingcodecorr>db_field(call.employeecall-customerint.accountingcodecorr)</accountingcodecorr>
+      <hpccorr>db_field(call.employeecall-customerint.hpccorr)</hpccorr>
+    </customerint>
+    <call>
+      <pkey>db_field(call.pkey)</pkey>
+      <mastercall_key>db_field(call.mastercall_key)</mastercall_key>
+      <agentcall>db_field(call.agentcall)</agentcall>
+      <employeecall>db_field(call.employeecall)</employeecall>
+      <categorycall>db_field(call.categorycall)</categorycall>
+      <workgroupcall>db_field(call.workgroupcall)</workgroupcall>
+      <callstatus>db_field(call.callstatus)</callstatus>
+      <escstatus>db_field(call.escstatus)</escstatus>
+      <origin>db_field(call.origin)</origin>
+      <phonetime>db_field(call.phonetime)</phonetime>
+      <priority>db_field(call.priority)</priority>
+      <problem>db_field(call.problem)</problem>
+      <datereported>db_field(call.datereported)</datereported>
+      <dateassigned>db_field(call.dateassigned)</dateassigned>
+      <dateresolved>db_field(call.dateresolved)</dateresolved>
+      <datemodified>db_field(call.datemodified)</datemodified>
+      <modifiedby>db_field(call.modifiedby)</modifiedby>
+      <cclist>db_field(call.cclist)</cclist>
+      <callbackmethod>db_field(call.callbackmethod)</callbackmethod>
+
+      <opentaskcount>db_field(call.opentaskcount)</opentaskcount>
+      <closedtaskcount>db_field(call.closedtaskcount)</closedtaskcount>
+      <process_key>db_field(call.process_key)</process_key>
+      <ksl>db_field(call.ksl)</ksl>
+      <sl>db_field(call.sl)</sl>
+      <autoclosed>db_field(call.autoclosed)</autoclosed>
+      <location_key>db_field(call.location_key)</location_key>
+      <object_key>db_field(call.object_key)</object_key>
+      <accountingcode_key>db_field(call.accountingcode_key)</accountingcode_key>
+      <coordinationtime>db_field(call.coordinationtime)</coordinationtime>
+      <datecallconnected>db_field(call.datecallconnected)</datecallconnected>
+      <dateowned>db_field(call.dateowned)</dateowned>
+      <datefirstcontact>db_field(call.datefirstcontact)</datefirstcontact>
+      <cti_phone>db_field(call.cti_phone)</cti_phone>
+      <affectedperson>db_field(call.affectedperson)</affectedperson>
+      <datedocumented>db_field(call.datedocumented)</datedocumented>
+      <dateclosed>db_field(call.dateclosed)</dateclosed>
+      <totaltaskdoc>db_field(call.totaltaskdoc)</totaltaskdoc>
+      <totaltasktimespent>db_field(call.totaltasktimespent)</totaltasktimespent>
+      <sd_time>db_field(call.sd_time)</sd_time>
+      <datecallbackreq>db_field(call.datecallbackreq)</datecallbackreq>
+      <defaultcontract>db_field(call.defaultcontract)</defaultcontract>
+      <closedby_sd>db_field(call.closedby_sd)</closedby_sd>
+      <forwardbyphone>db_field(call.forwardbyphone)</forwardbyphone>
+      <action>db_field(call.action)</action>
+      <sl_overdue>db_field(call.sl_overdue)</sl_overdue>
+      <date_sl_overdue>db_field(call.date_sl_overdue)</date_sl_overdue>
+      <grade>db_field(call.grade)</grade>
+      <gradestatement>db_field(call.gradestatement)</gradestatement>
+      <coordinationtime_m>db_field(call.coordinationtime_m)</coordinationtime_m>
+      <coordinationtime_h>db_field(call.coordinationtime_h)</coordinationtime_h>
+      <estimatedstart>db_field(call.estimatedstart)</estimatedstart>
+      <estimateddone>db_field(call.estimateddone)</estimateddone>
+      <affectedperson_key>db_field(call.affectedperson_key)</affectedperson_key>
+      <totaltaskamount>db_field(call.totaltaskamount)</totaltaskamount>
+      <accountingcodetext>db_field(call.accountingcodetext)</accountingcodetext>
+      <personal_vote>db_field(call.personal_vote)</personal_vote>
+    </call>
+    <location>
+      <faplissite>db_field(call.location_key-location.site_key-faplissite.name)</faplissite>
+      <faplissitepart>db_field(location.sitepart_key-faplissitepart.name)</faplissitepart>
+      <faplisbuilding>db_field(location.building_key-faplisbuilding.shortname)</faplisbuilding>
+      <faplisbuildingpart>db_field(location.buildingpart_key-faplisbuildingpart.name)</faplisbuildingpart>
+      <faplisfloor>db_field(location.floor_key-faplisfloor.name)</faplisfloor>
+      <faplisroom>db_field(call.location_key-location.room_key-faplisroom.name)</faplisroom>
+      <faplisbaxis>db_field(location.baxis_key-faplisbaxis.name)</faplisbaxis>
+      <fapliszaxis>db_field(call.location_key-location.zaxis_key-fapliszaxis.name)</fapliszaxis>
+      <description>db_field(call.location_key-location.description)</description>
+      <note>db_field(call.location_key-location.note)</note>
+      <orientation>db_field(call.location_key-location.orientation)</orientation>
+    </location>
+    <category>
+      <longname>db_field(call.categorycall-category.longname)</longname>
+      <name>db_field(call.categorycall-category.name)</name>
+    </category>
+    <process>
+      <processname>db_field(call.process_key-process.processname)</processname>
+    </process>
+    <taskobject>
+      <external_id>db_field(task.object_key-taskobject.external_id)</external_id>
+      <vendor>db_field(task.object_key-taskobject.vendor)</vendor>
+      <name>db_field(task.object_key-taskobject.name)</name>
+      <objaccountingcode>db_field(taskobject.accountingcode_key-objaccountingcode.code)</objaccountingcode>
+    </taskobject>
+    <object>
+      <external_id>db_field(call.object_key-object.external_id)</external_id>
+      <vendor>db_field(call.object_key-object.vendor)</vendor>
+      <name>db_field(call.object_key-object.name)</name>
+      <objaccountingcode>db_field(object.accountingcode_key-objaccountingcode.code)</objaccountingcode>
+    </object>
+    <agent>
+      <fullname>db_field(call.agentcall-agent.fullname)</fullname>
+    </agent>
+    <task>
+      <pkey>db_field(task.pkey)</pkey>
+      <taskno>db_field(task.taskno)</taskno>
+      <auftragstext>db_field(task.description)</auftragstext>
+      <calltask>db_field(task.calltask)</calltask>
+      <summary>db_field(task.summary)</summary>
+      <sequence>db_field(task.sequence)</sequence>
+      <daterequested>db_field(task.daterequested)</daterequested>
+      <dateowned>db_field(task.dateowned)</dateowned>
+      <priority>db_field(task.priority)</priority>
+      <taskstatus>db_field(task.taskstatus)</taskstatus>
+      <escstatus>db_field(task.escstatus)</escstatus>
+      <cclist>db_field(task.cclist)</cclist>
+      <taskstart>db_field(task.taskstart)</taskstart>
+      <taskdone>db_field(task.taskdone)</taskdone>
+      <no_resolver>db_field(task.no_resolver)</no_resolver>
+      <description>db_field(task.description)</description>
+      <datemodified>db_field(task.datemodified)</datemodified>
+      <workable>db_field(task.workable)</workable>
+      <accountdate>db_field(task.accountdate)</accountdate>
+      <timedocumentation>db_field(task.timedocumentation)</timedocumentation>
+      <smcerrorcode_key>db_field(task.smcerrorcode_key)</smcerrorcode_key>
+      <tasktype_key>db_field(task.tasktype_key)</tasktype_key>
+      <feedback>db_field(task.feedback)</feedback>
+      <pm_order>db_field(task.pm_order)</pm_order>
+      <change_user>db_field(task.change_user)</change_user>
+      <totaltimespent>db_field(task.totaltimespent)</totaltimespent>
+      <ext_system_key>db_field(task.ext_system_key)</ext_system_key>
+      <datedocumented>db_field(task.datedocumented)</datedocumented>
+      <dateresolved>db_field(task.dateresolved)</dateresolved>
+      <transmitted>db_field(task.transmitted)</transmitted>
+      <resolved_extsystem>db_field(task.resolved_extsystem)</resolved_extsystem>
+      <create_user>db_field(task.create_user)</create_user>
+      <resolved_user>db_field(task.resolved_user)</resolved_user>
+      <action>db_field(task.action)</action>
+      <workgrouptask>db_field(task.workgrouptask)</workgrouptask>
+      <totaltimespent_m>db_field(task.totaltimespent_m)</totaltimespent_m>
+      <totaltimespent_h>db_field(task.totaltimespent_h)</totaltimespent_h>
+      <timedoc_m>db_field(task.timedoc_m)</timedoc_m>
+      <timedoc_h>db_field(task.timedoc_h)</timedoc_h>
+      <extsystem_id>db_field(task.extsystem_id)</extsystem_id>
+      <estimateddone>db_field(task.estimateddone)</estimateddone>
+      <estimatedstart>db_field(task.estimatedstart)</estimatedstart>
+      <object_key>db_field(task.object_key)</object_key>
+      <dateclosed>db_field(task.dateclosed)</dateclosed>
+      <datecanceld>db_field(task.datecanceld)</datecanceld>
+      <groundplotrequired>db_field(task.groundplotrequired)</groundplotrequired>
+      <amount>db_field(task.amount)</amount>
+    </task>
+    <taskworkgroup>
+      <name>db_field(task.workgrouptask-taskworkgroup.name)</name>
+      <fax>db_field(task.workgrouptask-taskworkgroup.fax)</fax>
+      <email>db_field(task.workgrouptask-taskworkgroup.email)</email>
+      <phone>db_field(task.workgrouptask-taskworkgroup.phone)</phone>
+    </taskworkgroup>
+    <ext_system>
+      <name>db_field(task.ext_system_key-ext_system.name)</name>
+    </ext_system>
+    <tasktype>
+      <taskcode>db_field(task.tasktype_key)</taskcode>
+      <description>db_field(task.tasktype_key-tasktype.description)</description>
+    </tasktype>
+  </data>
+</doc>
+
+
+
+
+
+

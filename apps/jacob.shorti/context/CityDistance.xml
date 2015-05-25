@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_CityDistance" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="fromCountry"/>
+            <parameter name="fromName"/>
+            <parameter name="fromPlz"/>
+            <parameter name="toCountry"/>
+            <parameter name="toName"/>
+            <parameter name="toPlz"/>
+            <parameter name="distanz"/>
+        </responseItem>
+		<nodelist>
+			<node name="start">
+				<forward toNode="ZipZip">
+					<question pattern="abstand\s+zwischen\s+([0-9]{5,5})\s+u[nd.]*\s+([0-9]{5,5})(?:\\?)?"    	defaultAnswer=""/>
+					<question pattern="abstand\s+zwischen\s+([0-9]{5,5})\s+([0-9]{5,5})(?:\\?)?"    		defaultAnswer=""/>
+					<question pattern="abstand\s+der\s+städte\s+([0-9]{5,5})\s+([0-9]{5,5})(?:\\?)?"    	defaultAnswer=""/>
+				</forward>
+			</node>
+
+			<node name="ZipZip">
+				<forward toNode="start">
+					<question pattern="danke"    defaultAnswer="Gern geschehen."/>
+					<question pattern="super"    defaultAnswer="Ich weiss."/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

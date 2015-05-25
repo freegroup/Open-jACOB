@@ -1,0 +1,11 @@
+*.class
+apps/jacob.audittracker/classes
+apps/jacob.audittracker/bin
+apps/jacob.jan/bin
+apps/jacob.qualitymaster/bin
+eclipse/de.tif.jacob.designer/bin
+eclipse/de.tif.jacob.rule/bin
+apps/jacob.digisim/bin
+apps/jacob.ppt_composer/bin
+apps/jacob.dylan/bin
+apps/jacob.rss/bin

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_StockExchange" package="de.shorti.context.basis" >
+        <responseItem>
+            <parameter name="wkn"/>
+            <parameter name="longName"/>
+            <parameter name="currentQuote"/>
+            <parameter name="yearDiffPercentage"/>
+            <parameter name="yearDiffAbsolute"/>
+            <parameter name="weekDiffPercentage"/>
+            <parameter name="dayDiffAbsolute"/>
+            <parameter name="quoteDate"/>
+            <parameter name="quoteTime"/>
+            <parameter name="dayDiffPercentage"/>
+            <parameter name="weekDiffAbsolute"/>
+            <parameter name="stockExchange"/>
+            <parameter name="errorStatus"/>
+        </responseItem>
+
+		<nodelist>
+			<node name="start">
+				<forward toNode="number">
+					<question pattern="(?:wkn)((?:[\s:.;,/|]+\\d+)+)[\s?!]*"                    defaultAnswer="Kein Ahnung"/>
+					<question pattern="(?:(?:(?:der)|(?:die))\s+)?(?:aktienkurse?)\s*(?:der\s*)?((?:[\s:.;,/|]+\\d+)+)[\s?!]*" defaultAnswer="Kein Ahnung"/>
+					<question pattern="(?:(?:(?:der)|(?:die))\s+)?(?:aktienkurse?)\s*(?:von\s*)?((?:[\s:.;,/|]+\\d+)+)[\s?!]*" defaultAnswer="Kein Ahnung"/>
+					<question pattern="(?:(?:(?:der)|(?:die))\s+)?(?:kurse?)\s*(?:der\s*)?((?:[\s:.;,/|]+\\d+)+)[\s?!]*"       defaultAnswer="Kein Ahnung"/>
+					<question pattern="(?:(?:(?:der)|(?:die))\s+)?(?:kurse?)\s*(?:von\s*)?((?:[\s:.;,/|]+\\d+)+)[\s?!]*"       defaultAnswer="Kein Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="number">
+				<forward toNode="start">
+					<question pattern="danke"   	defaultAnswer="War mir ein Vergnügen!!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

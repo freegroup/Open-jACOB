@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta name="description" content="You can easily remove some devices from the virtual machine configuration using the Virtual Machine Configuration dialog." />
+
+<meta name="description" content="Add various types of new devices to your virtual machine's configuration." />
+
+<title> Hinzufügen und Entfernen von Geräten </title>
+<meta name="Keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23580.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="30894.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675122.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h3 class="heading3">Hinzufügen und Entfernen von Geräten</h3>
+<p class="bodytext">Das Hinzufügen neuer Geräte zu einer virtuellen Maschine ist einfacher als das Verbinden neuer Geräte mit einem realen Computer. Auch das Entfernen und Trennen von Geräten ist einfach. Die folgenden virtuellen Geräte können zur Konfiguration hinzugefügt und aus der Konfiguration entfernt werden:</p>
+<ul class="listbullet"><li class="listbullet">Virtuelle Festplattenlaufwerke</li><li class="listbullet">CD/DVD-ROM-Laufwerk</li><li class="listbullet">Diskettenlaufwerk</li><li class="listbullet">Netzwerkadapter</li><li class="listbullet">Serielle Ports</li><li class="listbullet">Druckerport</li><li class="listbullet">Soundgeräte</li><li class="listbullet">USB-Controller</li></ul><p class="bodytext">Alle oben genannten Geräte können nur dann zu der entsprechenden virtuellen Maschine hinzugefügt werden, wenn sie angehalten wurde.</p>
+<p class="note">          <strong class="buttons">Hinweis</strong>: Um alle virtuellen Geräte mit einem realen Gerät verbinden zu können, müssen Sie über Systemrechte für den Zugriff auf das reale Gerät verfügen. Andernfalls wird das reale Gerät nicht in der Liste der verfügbaren Geräte angezeigt. Dies ist auch dann der Fall, wenn es auf Ihrem Computer installiert ist.</p>
+<p class="subheading">Ein neues Gerät zu einer virtuellen Maschine hinzufügen</p>
+<ol class="listnumber"><li class="listnumber">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine </strong> und dann <strong class="specialbold">Konfigurieren</strong>, um das Fenster Konfiguration der virtuellen Maschine zu öffnen.</li><li class="listnumber">Zum Ändern der Hardware-Einstellungen klicken Sie im Fenster <strong class="specialbold">Konfiguration von virtuellen Maschine</strong> oben auf die Schaltfläche <strong class="specialbold">Hardware</strong>.</li><li class="listnumber">Klicken Sie im unteren Teil des Fensters <strong class="specialbold">Konfiguration der virtuellen Maschine</strong> auf die Schaltfläche <strong class="specialbold">Hinzufügen</strong><img src="21857.gif" alt="PlusButton" height="25" width="25" vspace="0" hspace="0" align="bottom" border="0" /> und wählen Sie das Gerät aus, das zu Ihrer virtuellen Maschine hinzugefügt werden soll.<p class="listnote">          <strong class="buttons">Hinweis:</strong> Die Schaltfläche <strong class="specialbold">Hinzufügen</strong> ist deaktiviert, wenn die virtuelle Maschine ausgeführt wird. Sie müssen die virtuelle Maschine ausschalten, bevor Sie diese Schaltfläche verwenden können.</p>
+<p class="listcontinue">          <img src="pd_add_hardware_menu.gif" alt="PD5.0 - Menü Neues Hardware-Gerät" height="154" width="192" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+</li><li class="listnumber">Jedes Gerät (außer einer Festplatte) kann mit der typischen Gerätekonfiguration sofort hinzugefügt und verwendet werden.<p class="listcontinue">Falls Sie eine Festplatte angegeben haben, müssen Sie genauere Angaben machen:</p>
+<ul class="listbullet2"><li class="listbullet2">Den Festplattentyp: ein neues Image oder ein existierendes Image.</li><li class="listbullet2">Den Ort der Festplatte. Geben Sie den Pfad auf Ihrem Mac zum existierenden Image an oder den Pfad und den Namen für die neue Imagedatei. Standardmäßig speichert Parallels Desktop die neue Imagedatei in dem <a id="h27161" class="jumptemplate" title="VM-Technologie – Grundlagen" href="23430.htm" target="_self">PVM-Bündel der virtuellen Maschine</a>.</li><li class="listbullet2">Die Festplattengröße für die neue Imagedatei der Festplatte.</li><li class="listbullet2">Für die neue Imagedatei der Festplatte, können Sie eines der folgende Formate auswählen: <em class="emphasis">Expandierend</em> oder <em class="emphasis">Einfach</em>. Standardmäßig hat die Festplatte das Format <em class="emphasis">Einfach</em>. Um eine <em class="emphasis">Expandierende</em> Festplatte zu erstellen, wählen Sie die Option <strong class="specialbold">Expandierende Festplatte</strong>. Wenn Sie die virtuelle Festplatte aufteilen möchten, wählen Sie die Option <strong class="specialbold">Festplatten-Image in 2 GB-Dateien aufteilen</strong>. Weitere Informationen zu Festplattenformaten finden Sie unter <strong class="specialbold"><a id="h27600" class="jumptemplate" title="Unterstützung für virtuelle und reale Festplatten" href="23580.htm" target="_self">Unterstützung für virtuelle und reale Festplatten</a></strong>.</li></ul><p class="listcontinue">          <img src="pd_add_harddisk_options.gif" alt="Hardware hinzufügen - Fügt BootCamp Festplatten hinzu" height="227" width="323" vspace="0" hspace="0" align="bottom" border="0" />        </p>
+<p class="listcontinue">Klicken Sie auf <strong class="specialbold">OK</strong>, um die Festplatte hinzuzufügen. Wenn Sie eine neue virtuelle Festplatte zur Konfiguration der virtuellen Maschine hinzugefügt haben, ist sie im Betriebssystem, das auf der virtuellen Maschine installiert ist, solange unsichtbar, bis Sie sie initialisieren. Weitere Informationen finden Sie unter <strong class="specialbold"><a id="h27774" class="jumptemplate" title="Neu hinzugefügte Festplatte initialisieren" href="27773.htm" target="_self">Neu hinzugefügte Festplatte initialisieren</a></strong>.</p>
+</li></ol><p class="bodytext">Nachdem das neue Gerät hinzugefügt wurde, können Sie die Geräteeigenschaften wie gewohnt verwalten und das Gerät verwenden.</p>
+<p class="subheading">Geräte aus der Konfiguration der virtuellen Maschine entfernen</p>
+<ol class="listnumber"><li class="listnumber">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine </strong> und dann <strong class="specialbold">Konfigurieren</strong>, um das Fenster Konfiguration der virtuellen Maschine zu öffnen.</li><li class="listnumber">Zum Ändern der Hardware-Einstellungen klicken Sie im Fenster <strong class="specialbold">Konfiguration von virtuellen Maschine</strong> oben auf die Schaltfläche <strong class="specialbold">Hardware</strong>.</li><li class="listnumber">Wählen Sie das Gerät, das Sie entfernen möchten, und klicken Sie auf die Schaltfläche <strong class="specialbold">Entfernen</strong>  im unteren Bereich des Fensters Konfiguration der virtuellen Maschine.</li></ol><p class="note">          <strong class="buttons">Hinweis:</strong> Wenn Sie aus Versehen auf die Schaltfläche <strong class="specialbold">Entfernen</strong><img src="21774.gif" alt="Schaltfläche Minus" height="16" width="16" vspace="0" hspace="0" align="bottom" border="0" /> klicken, bestätigen Sie im Fenster Konfiguration der virtuellen Maschine auf <strong class="specialbold">Abbrechen</strong>. Sobald Sie auf <strong class="specialbold">OK</strong> klicken, wird das Gerät entfernt.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+30297" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

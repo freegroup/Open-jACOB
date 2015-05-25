@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_Calendar" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="deleteAllToday">
+					<question pattern="alle termine heute löschen"   defaultAnswer="Kein Ahnung"/>
+				</forward>
+				<forward toNode="displayAllToday">
+					<question pattern="termine heute?"               defaultAnswer="Kein Ahnung"/>
+					<question pattern="termine um [-0-9.:,]*"        defaultAnswer="Kein Ahnung"/>
+				</forward>
+			</node>
+
+			<node name="addToday">
+				<forward toNode="start">
+					<question pattern="super[!]*"                    defaultAnswer="Gern geschehen."/>
+					<question pattern="danke[!]*"                    defaultAnswer="Bitte, gern geschehen!"/>
+				</forward>
+			</node>
+
+			<node name="displayAllToday">
+				<forward toNode="start">
+					<question pattern="super[!]*"                    defaultAnswer="Gern geschehen."/>
+					<question pattern="danke[!]*"                    defaultAnswer="Bitte, gern geschehen!"/>
+				</forward>
+			</node>
+
+			<node name="deleteAllToday">
+				<forward toNode="start">
+					<question pattern="super[!]*"                    defaultAnswer="Gern geschehen."/>
+					<question pattern="danke[!]*"                    defaultAnswer="Bitte, gern geschehen!"/>
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

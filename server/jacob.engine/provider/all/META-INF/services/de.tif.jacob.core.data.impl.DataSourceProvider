@@ -1,0 +1,7 @@
+de.tif.jacob.core.data.impl.sql.HSQLDataSourceProvider
+de.tif.jacob.core.data.impl.sql.MsSQLServerDataSourceProvider
+de.tif.jacob.core.data.impl.sql.MySQLDataSourceProvider
+de.tif.jacob.core.data.impl.sql.OracleDataSourceProvider
+de.tif.jacob.core.data.impl.sql.PostgreSQLDataSourceProvider
+de.tif.jacob.core.data.impl.ldap.LdapDataSourceProvider
+de.tif.jacob.core.data.impl.index.LuceneDataSourceProvider

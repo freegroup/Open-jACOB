@@ -1,0 +1,738 @@
+
+
+
+
+        
+	
+	
+        
+        
+	
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Bug ID: 4784692 (process) Process.waitFor does not release resources</title>
+
+
+
+
+
+
+
+<meta name="category" content="java">
+<meta name="subcategory" content="classes_lang">
+<meta name="synopsis" content="(process) Process.waitFor does not release resources">
+<meta name="state" content="closed">
+<meta name="submit_date" content="26-NOV-2002">
+<meta name="type" content="bug">
+<meta name="reported_against" content="1.3,mantis">
+<meta name="date" content="2004-06-18">
+<meta name="DESCRIPTION" content="java:classes_lang, (process) Process.waitFor does not release resources,State: Closed, will not be fixed,Reported: 26-NOV-2002,Release Reported Against: 1.3,mantis" >
+
+<link rel="stylesheet" href="/css/default_developer.css">
+
+</head>
+<!--stopindex-->
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" rightmargin="0" bgcolor="#ffffff">
+<a name="top"></a>
+<!-- BEGIN VNV1 MASTHEAD COMPONENT, thinner variation for content pages -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25" class="topnav">
+<form name="formsearch" action="http://developer.sun.com/dispatcher.jsp" method="post" accept-charset="utf-8">
+<input type="hidden" name="charset" value="utf-8" />
+<tr>
+<td><a href="#mast"><img src="/im/a.gif" width="10" height="1" border="0" alt="Skip Masthead Links" /></a></td>
+<td><a href="http://developers.sun.com">developers.sun.com</a></td>
+<td width="100%">&nbsp;</td> 
+<td nowrap="nowrap"><span class="rightarrowblue">&raquo;</span>&nbsp;<a href="http://developers.sun.com/dispatcher.jsp?uid=6910020">search tips</a>&nbsp;&nbsp;|&nbsp;&nbsp;<b>Search:</b>&nbsp;</td>
+<td><input name="qt" class="medium" size="7" value="" /></td>
+<td>&nbsp;</td>
+<td class="selectcell"><select class="globalsearch" name="uid">
+<option value="6910018" selected>in Developers' Site</option>
+<option value="6910019">in Sun.com</option>
+</select></td>
+<td>&nbsp;</td>
+<td valign="middle" align="left"><input type="submit" border="0" class="buttonred" value="&nbsp;&raquo;&nbsp;" onmouseover="this.style.color='#fbe249';" onmouseout="this.style.color='#FFF';" /></td>
+<td><img src="/im/a.gif" width="10" height="1" alt=" " /></td>
+</tr></form>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td><img src="/im/a.gif" width="10" height="1" border="0" alt=" " /></td>
+<td valign="top" class="grey3"><a href="http://java.sun.com"><img src="/im/logo_java_grey.gif" width="180" height="53" border="0" alt=" " /></a></td>
+<td><img src="/im/a.gif" width="10" height="1" border="0" alt=" " /></td>
+<td class="sunblue" valign="top" nowrap="nowrap"><div class="pad6"><a href="http://developers.sun.com"><img src="/im/masthead_the_source.gif" width="262" height="25" border="0" alt="The Source for Developers" /></a><br />
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910022"><img src="/im/masthead_sdn_site.gif" width="169" height="15" border="0" alt="A Sun Developer Network Site" /></a></div></td>
+<td class="sunblue"><img src="/im/a.gif" width="10" height="1" border="0" alt=" " /></td>
+<td class="sunblue"><div class="pad6"><a href="http://developers.sun.com/dispatcher.jsp?uid=6910023"><img src="/im/masthead_prod_and_tech.gif" width="158" height="15" border="0" alt="Products and Technologies" /></a><br /><a href="http://developers.sun.com/dispatcher.jsp?uid=6910024"><img src="/im/masthead_tech_topics.gif" width="105" height="15" border="0" alt="Technical Topics" /></a></div><img src="/im/a.gif" width="196" height="1" border="0" alt=" " /></td>
+<td class="sunblue" width="100%" valign="top" align="right"><div class="pad10"><a href="http://www.sun.com"><img src="/im/logo_sun.gif" width="72" height="33" border="0" alt="Sun Microsystems" /></a></div></td>
+<td><a name="mast"></a><a href="#skip2content"><img src="/im/a.gif" width="10" height="1" border="0" alt=" " /></a></td></tr>
+</table>
+</td></tr>
+</table>
+<span class="sp5">&nbsp;</span><br />
+<!-- END VNV1 MASTHEAD COMPONENT, thinner variation for content pages -->
+
+<!-- BEGIN BREADCRUMB -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tbody><tr>
+<td>      
+<div class="breadcrumb">
+<a href="http://developers.sun.com/index.html">Developers Home</a> &gt; <a href="http://developers.sun.com/prodtech/index.html">Products &amp; Technologies</a> &gt; <a href="http://java.sun.com/index.html">Java Technology</a> &gt; <a href="http://java.sun.com/community/index.html">Community</a> &gt; <a href="/bugdatabase/">Bug Database</a> &gt;
+
+</div>
+</td>
+<td align="right" nowrap="nowrap">
+<div class="breadcrumb">
+<a href="http://developers.sun.com/user_registration/index.html">Profile and Registration</a> | 
+<a href="http://developers.sun.com/user_registration/whyregister.html">Why Register?</a>
+</div>
+</td>
+</tr>
+<tr><td colspan="2"><img src="/im/a.gif" width="770" height="1" border="0" alt=" "></td></tr>
+</tbody></table>
+<span class="sp5">&nbsp;</span>
+<br>        
+<!-- END BREADCRUMB -->
+<!-- BEGIN PAGETITLE -->
+<div class="pagetitle2">Bug Database</div>
+<div class="pagetitle">Bug Detail</div>
+<!-- END PAGETITLE -->
+<!-- BEGIN WRAPPER TABLE, 2 COLUMN, LEFT/MAIN -->
+<table border="0" cellpadding="10" cellspacing="0" width="100%">
+<tbody><tr><td valign="top">
+
+<!-- BEGIN LEFT COLUMN COMPONENTS -->
+
+
+
+
+
+
+
+<div class="dkgrey"><strong>Quick Lists</strong></div>
+
+<table border="0" cellpadding="0" cellspacing="0" class="vatop">
+  <tr>
+    <td class="hyphen">-&nbsp;</td>
+
+    <td><a href="/bugdatabase/top25_bugs.do">Top 25 Bugs</a> </td>
+  </tr>
+  <tr>
+    <td class="hyphen">-&nbsp;</td>
+    <td><a href="/bugdatabase/top25_rfes.do">Top 25 RFE's</a></td>
+  </tr>
+  <tr>
+
+    <td width="15" class="hyphen">-&nbsp;</td>
+    <td><a href="/bugdatabase/recently_closed.do">Recently Closed Bugs</a></td>
+  </tr>
+</table>
+
+<div class="pad3x0" style="padding-top:0px;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" class="grey4">
+    <tr>
+      <td><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td>
+
+    </tr>
+  </table>
+</div>
+
+<table bgcolor="#ffffff" align="left" width="100%" border="0" cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td class="smaller">
+        <a href="http://developer.java.sun.com/jsp_utils/PrintPage.jsp" target="popup_name" onclick="openPopup('','popup_name',655,500,'no',1,0,1,0,0,0); return true;"><img src="/im/ic_print.gif" width="14" height="12" alt="Printable Page" border="0"></a>
+        <a href="http://developer.java.sun.com/jsp_utils/PrintPage.jsp" target="popup_name" style="text-decoration: none; font-size: 13px" onclick="openPopup('','popup_name',655,500,'no',1,0,1,0,0,0); return true;">Printable Page</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br clear="all">
+
+<div class="pad3x0" style="padding-top:0px;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" class="grey4">
+    <tr>
+
+      <td><img src="/im/a.gif" width="1" height="2" border="0" alt=" "></td>
+    </tr>
+  </table>
+</div>
+
+
+<br clear="all">
+
+<!-- Start of BugList Tag -->
+<table border="0" cellpadding="1" cellspacing="0" class="dkgrey1" width="100%">
+<tbody>
+<tr><td>
+<table border="0" cellpadding="4" cellspacing="0" width="100%" class="white1">
+<tbody>
+<tr><td>
+<div class="pad4x9">
+<table border="0" cellspacing="2" cellpadding="2">
+<tbody>
+<tr><td><img src="images/binocs.gif">&nbsp;&nbsp;<b>Bug Watch List:</b></td></tr>
+<form name="bugaddform" action="/bugdatabase/addBugWatch.do" method="post">
+<tr><td>Add this Bug to your Watch List.&nbsp;<input type="hidden" name="bug_id" value="4784692"></td></tr>
+<tr><td><input type="Submit" value="Add"></td></tr>
+</form>
+<tr><td>No Bugs present in your BugWatch List.</td></tr>
+</tbody>
+</table></div>
+</td></tr>
+<tr><td>
+<div class="pad4x9">
+<table border="0" cellspacing="2" cellpadding="2">
+<tbody>
+<tr><td><b>Bug Votes:</b></td></tr>
+<tr><td>This bug is Closed.You cannot Vote for it.</td></tr>
+<tr><td>You can Vote on <font color="#ff0000">3</font> more bugs</td></tr>
+</tbody>
+</table></div>
+</td></tr>
+</tbody>
+</table>
+</td></tr></tbody></table>
+<!-- End of BugList Tag -->
+
+
+
+
+<!-- END LEFT COLUMN COMPONENTS -->
+
+</td><td width="100%" valign="top">
+<!-- BEGIN CENTER COLUMN COMPONENTS -->
+
+<!--startindex-->
+
+<!-- ============ -->
+<!-- MAIN CONTENT -->
+<!-- ============ -->
+
+<a name="skip2content"></a>
+
+<!--Start Content-->
+
+
+
+
+
+
+
+
+
+ 
+<table border="0" cellpadding="0" cellspacing="0" align="TOP">
+<tr>
+<td valign="top" align="left">
+<table cellpadding="2" cellspacing="0" border="0">
+			<tbody>
+			  <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Bug I</b></font><strong>D:</strong> 
+			    </td>
+                            <td align="left">
+                            <font face="">4784692</font>
+                            </td>
+                         </tr>
+			  <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Votes</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="" color="#ff0000">1</font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Synopsis</b></font>  
+			    </td>
+                            <td align="left">
+                            <font face="" >(process) Process.waitFor does not release resources</font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Category</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="" >java:classes_lang</font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5" nowrap>
+                            <font face=""><b>Reported Against</b></font>  
+			    </td>
+                            <td align="left">
+                            <font face="">
+                                  
+                                    1.3
+                                
+                                    , mantis
+                                
+                            </font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Release Fixed</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="">
+                                
+                            </font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>State</b></font> 
+			    </td>
+                            <td align="left">
+                            
+                            
+                            <font face="" color="#ff0000">Closed, will not be fixed</font>
+                            
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Related Bugs</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="">
+                                
+                                
+                                    <a href="/bugdatabase/view_bug.do?bug_id=4637504">4637504</a>
+                                
+                                , 
+                                    <a href="/bugdatabase/view_bug.do?bug_id=4781460">4781460</a>
+                                
+                                , 
+                                    <a href="/bugdatabase/view_bug.do?bug_id=4801027">4801027</a>
+                                
+                            </font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" class="grey5">
+                            <font face=""><b>Submit Date</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="" >26-NOV-2002</font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" valign="top" class="grey5">
+                            <font face=""><b>Description</b></font>  
+			    </td>
+                            <td align="left">
+                            <font face="" ><pre width='100'>
+
+
+
+
+
+Alexey Gibadullin,  xxxxx@xxxxx 
+
+While working on the bug
+
+    4637504 (process) REGRESSION: java.lang.Process does not clean up file 
+resources
+    
+I have extended Test.java from the bugreport to Test2.java
+
+public class Test2 {
+    public static void main(String argv[]) {
+        int threads = Integer.parseInt(argv[0]);
+        int processes = Integer.parseInt(argv[1]);        
+        
+        for (int i = 0; i &lt; threads; i++)
+            (new MyThread(i, processes)).start();
+    }
+}
+
+class MyThread extends Thread {
+    private int number;
+    private int processes;    
+    
+    MyThread(int n, int p) {
+        number = n;
+        processes = p;
+    }
+
+    public void run() {
+        for (int i = 0; i &lt; processes; i++) {
+            try {
+                Runtime runtime = Runtime.getRuntime();
+                Process process = runtime.exec(&quot;echo &quot; + i);
+                process.waitFor();
+            } catch (Exception e) {
+                System.out.println(&quot;Thread &quot; + number + &quot; got &quot; + e);
+                e.printStackTrace(System.out);
+                return;
+            }
+            System.out.println(&quot;Thread &quot; + number + &quot;. Process &quot; + i);
+        }
+    }
+}
+
+Test2 reveals that the bug #4637504 still present in Mantis-b07, if processes
+are executed from a thread (4637504 was integrated into hopper).
+
+% uname -a
+SunOS novo152 5.8 Generic_108528-16 sun4u sparc SUNW,Ultra-5_10
+
+% ../jdk1.4.2-b07/solaris-sparc/bin/java Test2 1 400
+Thread 0. Process 0
+Thread 0. Process 1
+Thread 0. Process 2
+...
+Thread 0. Process 334
+Thread 0. Process 335
+Thread 0. Process 336
+Thread 0. Process 337
+Thread 0 got java.io.IOException: Too many open files
+java.io.IOException: Too many open files
+        at java.lang.UNIXProcess.forkAndExec(Native Method)
+        at java.lang.UNIXProcess.&lt;init&gt;(UNIXProcess.java:54)
+        at java.lang.Runtime.execInternal(Native Method)
+        at java.lang.Runtime.exec(Runtime.java:566)
+        at java.lang.Runtime.exec(Runtime.java:428)
+        at java.lang.Runtime.exec(Runtime.java:364)
+        at java.lang.Runtime.exec(Runtime.java:326)
+        at MyThread.run(Test2.java:24)
+        
+You may also increase number of threads. java.io.IOException is also thrown, 
+but it needs less number of processes:
+
+% ../jdk1.4.2-b07/solaris-sparcv9/bin/java -d64 -server Test2 3 200
+Thread 0. Process 0
+Thread 1. Process 0
+Thread 2. Process 0
+Thread 0. Process 1
+Thread 1. Process 1
+Thread 2. Process 1
+Thread 2. Process 2
+Thread 0. Process 2
+...
+Thread 0. Process 108
+Thread 1. Process 107
+Thread 2. Process 110
+Thread 0. Process 109
+Thread 1. Process 108
+Thread 2. Process 111
+Thread 2. Process 112
+Thread 0. Process 110
+Thread 1. Process 109
+Thread 2. Process 113
+Thread 0. Process 111
+Thread 1. Process 110
+Thread 0 got java.io.IOException: Too many open files
+java.io.IOException: Too many open files
+        at java.lang.UNIXProcess.forkAndExec(Native Method)
+        at java.lang.UNIXProcess.&lt;init&gt;(UNIXProcess.java:54)
+        at java.lang.Runtime.execInternal(Native Method)
+        at java.lang.Runtime.exec(Runtime.java:566)
+        at java.lang.Runtime.exec(Runtime.java:428)
+        at java.lang.Runtime.exec(Runtime.java:364)
+        at java.lang.Runtime.exec(Runtime.java:326)
+        at MyThread.run(Test2.java:24)
+Thread 1 got java.io.IOException: Too many open files
+java.io.IOException: Too many open files
+        at java.lang.UNIXProcess.forkAndExec(Native Method)
+        at java.lang.UNIXProcess.&lt;init&gt;(UNIXProcess.java:54)
+        at java.lang.Runtime.execInternal(Native Method)
+        at java.lang.Runtime.exec(Runtime.java:566)
+        at java.lang.Runtime.exec(Runtime.java:428)
+        at java.lang.Runtime.exec(Runtime.java:364)
+        at java.lang.Runtime.exec(Runtime.java:326)
+        at MyThread.run(Test2.java:24)
+Thread 2. Process 114
+Thread 2 got java.io.IOException: Too many open files
+java.io.IOException: Too many open files
+        at java.lang.UNIXProcess.forkAndExec(Native Method)
+        at java.lang.UNIXProcess.&lt;init&gt;(UNIXProcess.java:54)
+        at java.lang.Runtime.execInternal(Native Method)
+        at java.lang.Runtime.exec(Runtime.java:566)
+        at java.lang.Runtime.exec(Runtime.java:428)
+        at java.lang.Runtime.exec(Runtime.java:364)
+        at java.lang.Runtime.exec(Runtime.java:326)
+        at MyThread.run(Test2.java:24)
+
+The test fails on Solsparc and Solsparcv9 (5.8) and passes 
+on Windows2000, Linux Red Hat 7.2, Solx86 (5.8), Solsparc and Solsparcv9 (5.9).
+
+======================================================================
+
+
+
+
+
+Alexey Gibadullin,  xxxxx@xxxxx 
+
+If I add
+
+    process.destroy();                
+    
+after
+
+    process.waitFor();
+    
+the test passes fine even on Solsparc 5.8. However, the spec for
+java.lang.Process says:
+
+    public abstract int waitFor() throws InterruptedException
+    
+    causes the current thread to wait, if necessary, until the process
+    represented by this Process object has terminated. This method returns
+    immediately if the subprocess has already terminated. If the subprocess 
+    has not yet terminated, the calling thread will be blocked until the
+    subprocess exits. 
+    
+    
+    public abstract void destroy()
+    
+    Kills the subprocess. The subprocess represented by this Process object 
+    is forcibly terminated. 
+    
+Therefore, if the subprocess exits and waitFor() returns the exit value, 
+there is no need to call destroy(), since destroy() does nothing but killing
+the subprocess.
+
+
+
+======================================================================
+
+
+
+
+JCK tests execution fails due to this bug. If JDK1.4.1 (b-21) or
+JDK1.4.2 (b-10) is used to run JavaTest harness then a lot of JCK tests
+fail in multiJVM mode with &quot;java.io.IOException: Too many open files&quot;.
+
+This bug can be observed in case of one thread. 
+To do this execute following test:
+------------- test.java ----------------------
+public class test {
+    public static void main(String argv[]) {
+        int i = 0;
+        try {
+            for(i = 0; i &lt; 100000; i++) {
+                Process p =  Runtime.getRuntime().exec(&quot;ls&quot;);
+            }
+        } catch (java.io.IOException e) {
+            System.out.println(&quot;Iteration: &quot; + i + &quot;  Exception: &quot; + e);
+        }
+    }
+}
+------------- log ----------------------------
+$javac test.java
+$
+$java -version
+java version &quot;1.4.2-beta&quot;
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.4.2-beta-b10)
+Java HotSpot(TM) Client VM (build 1.4.2-beta-b10, mixed mode)
+$
+$uname -a
+SunOS novo49 5.8 Generic_108528-15 sun4u sparc SUNW,Ultra-2
+$
+$java -Xfuture test
+Iteration: 338  Exception: java.io.IOException: Too many open files
+----------------------------------------------
+
+
+
+
+======================================================================</pre></font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" valign="top" class="grey5">
+                            <font face=""><b>Work Around</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="" ><pre width='100'>None</pre></font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" valign="top" class="grey5">
+                            <font face=""><b>Evaluation</b></font> 
+			    </td>
+                            <td align="left">
+                            <font face="" ><pre width='100'>Will not fix.  The current behavior dates back to the rewrite of the Process
+code back in 1.2/1.3 which removed the dangerous buffering of all subprocess
+output.  In order to release all resources, user code must either invoke
+Process.destroy or manually close the three subprocess streams.
+
+I&#39;ve submitted 4801027 to request clarification of the Process spec on this
+point.
+
+--  xxxxx@xxxxx  2003/1/9
+</pre></font>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align="right" valign="top" class="grey5">
+                            <font face=""><b>Comments</b></font> 
+			    </td>
+                            <td align="left">
+                                <form name="commentForm" method="post" action="/bugdatabase/addComment.do">
+                                <input type="hidden" name="bugId" value="4784692">
+                                <input type="hidden" name="userName" value="FreeGroup">
+                                <textarea name="comments" cols="60" rows="4"></textarea> &nbsp;&nbsp;<br>
+                                <input type='CHECKBOX' name='include_email'>&nbsp;&nbsp;Include a link with my name &amp; email&nbsp;&nbsp;&nbsp;<br>
+                                <input type="submit" value="Submit">
+                                </form>
+                                <br>
+                                
+                                    <font size="-1" color="#009900">
+                                    Submitted On&nbsp;18-DEC-2002
+                                    </font><br>
+                                    
+                                    <strong>
+                                    <a href='mailto:rganesan@myrealbox.com'>rganesan</a>                                    
+                                    </strong>
+                                    
+                                    
+                                    <pre width='100'>The related bug fix says that all the streams are closed on
+destroy(). The
+same needs to happen when you call waitFor() or exitValue()
+because
+the process is no longer running after a successful call.
+This bug definitely does not exist in JDK 1.3.1.</pre>                                     
+                                <br><br>
+                               
+                                    <font size="-1" color="#009900">
+                                    Submitted On&nbsp;24-FEB-2003
+                                    </font><br>
+                                    
+                                    <strong>
+                                    <a href='mailto:rganesan@myrealbox.com'>rganesan</a>                                    
+                                    </strong>
+                                    
+                                    
+                                    <pre width='100'>FWIW, I don&#39;t agree with this resolution. When waitFor() or
+exitValue() returns successfully, the process has already
+terminated - there is no buffering issue. As mentioned in my
+earliser comment, JDK 1.3.1 does
+not have this bug.</pre>                                     
+                                <br><br>
+                               
+                                    <font size="-1" color="#009900">
+                                    Submitted On&nbsp;24-JUN-2004
+                                    </font><br>
+                                    
+                                    
+                                    <strong>
+                                    brozow                                    
+                                    </strong>
+                                    
+                                    <pre width='100'>Even though you can be sure that the process has terminated with a call to waitFor and exitValue, this does not imply that the JVM has closed the fileDescriptors is has open to received the output generated by the process.  This is the reason that we get Too Many Open Files exceptions.
+
+destroy() ensures those file descriptors get closed.
+</pre>                                     
+                                <br><br>
+                               
+                                    <font size="-1" color="#009900">
+                                    Submitted On&nbsp;26-JUL-2004
+                                    </font><br>
+                                    
+                                    
+                                    <strong>
+                                    hong.le                                    
+                                    </strong>
+                                    
+                                    <pre width='100'>I got this error from using ColdFusion MX on Windows2003 version.  Wonder if you have tested with this Windows2003 o/s?  </pre>                                     
+                                <br><br>
+                               
+                                    <font size="-1" color="#009900">
+                                    Submitted On&nbsp;16-SEP-2004
+                                    </font><br>
+                                    
+                                    
+                                    <strong>
+                                    syates                                    
+                                    </strong>
+                                    
+                                    <pre width='100'>Just ran into this myself, in 1.4.2.  Why not make it clear in the Javadoc for Process that destroy must be called even after waitFor returns?  That didn&#39;t seem obvious to me.</pre>                                     
+                                <br><br>
+                               
+                            </td>
+                         </tr>
+        </tbody></table>
+	</td>
+</tr>
+<tr>
+
+	<td height="20"><br></td>
+</tr>
+
+</table>
+
+
+
+
+<!--End Content-->
+
+<!-- =================== -->
+<!-- END OF MAIN CONTENT -->
+<!-- =================== -->
+
+<!--stopindex-->
+
+<!-- END RIGHT COLUMN COMPONENTS -->
+<br /><img src="/im/a.gif" width="170" height="1" border="0" alt=" " /></td></tr>
+<tr><td rowspan="2" valign="bottom"><img src="/im/a.gif" width="170" height="1" border="0" alt=" " /><br />
+<!--  BEGIN CELL FOR OPTIONAL MASTHEAD CAPTION -->
+<!--  END CELL FOR OPTIONAL MASTHEAD CAPTION --></td></tr>
+<!-- END SPACER ROW -->
+</table>
+<!-- END WRAPPER TABLE, 3 COLUMN, LEFT/MAIN/RIGHT -->
+<!-- BEGIN VNV5 FOOTER  -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td colspan="4" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small_sdn.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="100%" valign="top"><img src="/im/a.gif" width="350" height="1" border="0" alt=" " /><br />
+<div class="footer">
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910015">Company Info</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910010">About This Site</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910011">Press</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/contact/index.jsp">Contact Us</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910014">Employment</a><br />
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910012">How to Buy</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910009">Licensing</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910013">Terms of Use</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910016">Privacy</a> &nbsp;|&nbsp;
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910017">Trademarks</a>
+<br /><span class="sp10">&nbsp;</span><br />
+<br /><span class="sp10">&nbsp;</span><br />
+Copyright 1994-2004 Sun Microsystems, Inc.
+</div></td>
+<td><img src="/im/a.gif" width="40" height="1" border="0" alt=" " /></td>
+<td valign="top"><div class="footer"><b><a href="http://developers.sun.com/dispatcher.jsp?uid=6910010">A Sun Developer Network Site</a></b></div>
+<div class="footer">
+<img src="/im/a.gif" width="170" height="1" border="0" alt=" " /><br />
+Unless otherwise licensed, code in all technical manuals herein (including articles, FAQs, samples) is provided under this <a href="http://developers.sun.com/dispatcher.jsp?uid=6910008">License</a>.
+<br /><span class="sp5">&nbsp;</span><br />
+<a href="http://developers.sun.com/dispatcher.jsp?uid=6910006"><img src="/im/button_xml.gif" width="36" height="14" align="top" border="0" alt="XML" /></a>&nbsp;<a href="http://developers.sun.com/dispatcher.jsp?uid=6910007">Content Feeds</a>
+</div></td></tr>
+<tr><td colspan="4" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>
+</table>
+</td></tr>
+</table>
+<!-- END VNV5 FOOTER -->
+</body></html>
+
+
+

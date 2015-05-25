@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>prl_client_app</string>
+	<key>CFBundleGetInfoString</key>
+	<string>5.0.9376.600278, Copyright 2005-2010 Parallels Holdings, Ltd. and its affiliates</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.parallels.starter</string>
+	<key>CFBundleInfoDictonaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Parallels Starter</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.0</string>
+	<key>CFBundleSignature</key>
+	<string>pstr</string>
+	<key>CFBundleVersion</key>
+	<string>9376.600278</string>
+	<key>CFMajorVersion</key>
+	<integer>5</integer>
+	<key>CFMinorVersion</key>
+	<integer>0</integer>
+	<key>NSAppleScriptEnabled</key>
+	<string>Yes</string>
+	<key>LSUIElement</key>
+	<string>1</string>
+	<key>LSBackgroundOnly</key>
+	<string>1</string>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>DYLD_LIBRARY_PATH</key>
+		<string>/Library/Parallels/Parallels Service.app/Contents/MacOS</string>
+	</dict>
+</dict>
+</plist>

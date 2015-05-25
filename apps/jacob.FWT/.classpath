@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="build/activation.jar"/>
+	<classpathentry kind="lib" path="build/birt-oda.jar"/>
+	<classpathentry kind="lib" path="build/chart-engine.jar"/>
+	<classpathentry kind="lib" path="build/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="build/core.jar"/>
+	<classpathentry kind="lib" path="build/dte.jar"/>
+	<classpathentry kind="lib" path="build/engine.jar"/>
+	<classpathentry kind="lib" path="build/flute.jar"/>
+	<classpathentry kind="lib" path="build/imap.jar"/>
+	<classpathentry kind="lib" path="build/jacobBase.jar"/>
+	<classpathentry kind="lib" path="build/mail.jar"/>
+	<classpathentry kind="lib" path="build/mailapi.jar"/>
+	<classpathentry kind="lib" path="build/oda.jar"/>
+	<classpathentry kind="lib" path="build/odaconsumer-helper.jar"/>
+	<classpathentry kind="lib" path="build/pop3.jar"/>
+	<classpathentry kind="lib" path="build/sac.jar"/>
+	<classpathentry kind="lib" path="build/smtp.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta name="description" content="Use Snapshot Manager to create or delete snapshots and to revert to a specific snapshot." />
+
+<title> Snapshots verwalten </title>
+<meta name="Keywords" content="Snapshot-Manager, Snapshots	verwalten" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<link rel="stylesheet" type="text/css" href="2007.css"/>
+</head>
+<body bgcolor="white" text="#000000" link="#003399" alink="#008000" vlink="#003399" style="padding:0; margin:0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr>
+<td style="padding:20px; height:100%" height="100%" valign="top"><table class="relatedtopics aboveheading" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width= "18">
+<p class="bodytext"><a href="23355.htm" target="_self"><img src="19998.png" alt="Vorherige Seite" height="23" width="60" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "18">
+<p class="bodytext"><a href="22183.htm" target="_self"><img src="19997.png" alt="Nächste Seite" height="23" width="49" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+<td width= "48">
+<p class="bodytext"><a href="toc29675156.htm" target="TOC"><img src="19999.png" alt="Seite im Inhaltsverzeichnis suchen" height="23" width="99" vspace="0" hspace="0" align="bottom" border="0" /></a></p></td>
+</tr>
+</table>
+<h2 class="heading2">Snapshots verwalten</h2>
+<p class="bodytext">Benutzen Sie den Snapshot-Manager, um zu einem bestimmten Snapshot zurückzukehren oder die Snapshots zu verwalten. So wird der Snapshot-Manager geöffnet:</p>
+<ul class="listbullet"><li class="listbullet">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">Snapshot-Manager</strong> oder</li><li class="listbullet">klicken Sie in der Symbolleiste des Fensters der Virtuelle Maschine in die Taste <strong class="specialbold">Snapshot-Manager</strong> <img src="27249.gif" alt="Snapshot-Manager" height="39" width="44" vspace="0" hspace="0" align="bottom" border="0" />.<p class="listnote"><strong class="buttons">Hinweis:</strong> Passen Sie die Symbolleiste an, um diese Taste zur Symbolleiste hinzuzufügen. Weitere Informationen dazu finden Sie im Abschnitt <strong class="specialbold"><a id="h27566" class="jumptemplate" title="Anpassen der Symbolleiste" href="27255.htm" target="_self">Anpassen der Symbolleiste</a></strong>.</p>
+</li></ul><p class="bodytext">Mit dem Snapshot-Manager haben Sie folgende Möglichkeiten:</p>
+<ul class="listbullet"><li class="listbullet">Neue Snapshots erstellen und nicht benutzte Snapshots löschen</li><li class="listbullet">Snapshot-Baumstruktur einer bestimmten Virtuelle Maschine einblenden</li><li class="listbullet">Snapshot auswählen und zu diesem Zustand zurückkehren</li></ul><p class="bodytext"><img src="pd_snapshot_manager.gif" alt="Snapshot-Manager" height="430" width="500" vspace="0" hspace="0" align="bottom" border="0" /></p>
+<p class="bodytext">Das Fenster <strong class="specialbold">Virtuelle Maschine Snapshots</strong> besteht aus folgenden Bereichen:</p>
+<ul class="listbullet"><li class="listbullet">Baumstruktur der Snapshots</li><li class="listbullet">Verwaltungsbereich für Snapshots</li></ul><p class="subheading">Baumstruktur der Snapshots</p>
+<p class="bodytext">Snapshot-Symbole werden als Screenshots des Gastbetriebssystemfensters angezeigt, wenn die Virtuelle Maschine beim Erstellen des Snapshots ausgeführt wurde.</p>
+<p class="bodytext">Das linke Symbol mit der Markierung verkörpert die<em class="emphasis"> Wurzel </em>der Snapshot-Baumstruktur bzw. den Ausgangszustand der als Referenzpunkt verwendeten Virtuelle Maschine. Das Wurzel-Symbol kann nicht gelöscht werden. Das Wurzelsymbol wird angezeigt, wenn mindestens ein Snapshot vorliegt. Wenn Sie einen Snapshot löschen möchten, der anderen Snapshots übergeordnet ist, können Sie wählen, ob nur dieser Snapshot oder der Snapshot mit allen untergeordneten Snapshots gelöscht werden.</p>
+<p class="bodytext">Alle Snapshots der Baumstruktur stellen Nachfolger des <em class="emphasis">Wurzel</em>-Zustands der Virtuelle Maschine dar. Der erste Snapshot weist &quot;Unterschiede&quot; gegenüber dem Wurzelzustand auf. Der zweite, darauf folgende Snapshot enthält die &quot;Unterschiede&quot; im Vergleich zum ersten Snapshot. Bei Bedarf können Sie zu einem früheren Snapshot zurückkehren und die Arbeit damit fortsetzen. Wenn Sie dann einen neuen Snapshot erstellen, wird für diese Snapshots ein neuer Zweig angelegt.</p>
+<p class="bodytext">Das Symbol, das dem aktuellen Zustand der Virtuelle Maschine entspricht, ist mit einer roten Flagge gekennzeichnet.</p>
+<p class="bodytext">Bewegen Sie den Mauszeiger auf ein Objekt, um eine kurze Beschreibung einzublenden.</p>
+<p class="subheading">Verwaltungsbereich für Snapshots</p>
+<p class="bodytext">Der Verwaltungsbereich für Snapshots enthält die Tasten zum Verwalten der Snapshots.</p>
+<ul class="listbullet"><li class="listbullet">Taste <strong class="specialbold">Neu</strong>. Klicken Sie in diese Taste, um einen neuen Snapshot des aktuellen Zustands der Virtuelle Maschine zu erstellen.</li><li class="listbullet">Taste <strong class="specialbold">Gehe zu</strong>.  Wählen Sie in der Baumstruktur der Snapshots den Snapshot aus, zu dem Sie wechseln möchten und klicken Sie in diese Taste, um vom aktuellen Zustand der Virtuelle Maschine zu dem in diesem Snapshot gesicherten Zustand zu wechseln.<p class="listnote"><strong class="buttons">Hinweis:</strong> Bevor Sie zu einem bestimmten Snapshot wechseln, sollten Sie überlegen, wie Sie mit dem aktuellen Zustand der Virtuelle Maschine verfahren. Dieser wird in der Standardeinstellung nämlich nicht gesichert. Erstellen Sie einen neuen Snapshot, um die seit dem letzten Snapshot erfolgten Änderungen beizubehalten.</p>
+</li><li class="listbullet">Taste <strong class="specialbold">Löschen</strong>. Wählen Sie den zu löschenden Snapshot aus und klicken Sie in diese Taste. Wenn Sie einen Snapshot zwischen zwei anderen Snapshots löschen, werden die darin enthaltenen Informationen mit den Informationen des folgenden Snapshots zusammengeführt.<p class="listnote"><strong class="buttons">Hinweis</strong>: Das <em class="emphasis">Wurzel</em>-Symbol kann nicht gelöscht werden. Es verschwindet erst, wenn alle Snapshots der Baumstruktur gelöscht wurden.</p>
+</li></ul><p class="bodytext">Snapshots lassen sich auch verwalten, indem Sie in der Baumstruktur mit rechts hineinklicken:</p>
+<ul class="listbullet"><li class="listbullet">Wenn Sie mit der rechten Maustaste in das Symbol klicken, das den aktuellen Zustand der Virtuelle Maschine verkörpert, können Sie für diesen Zustand einen neuen Snapshot erstellen.</li><li class="listbullet">Wenn Sie mit der rechten Maustaste in einen anderen zwischengelagerten Snapshot klicken, können Sie über die entsprechende Option zu diesem Snapshot wechseln, nur diesen Snapshot löschen oder den Snapshot mit allen folgenden Snapshots löschen.</li></ul><p class="subheading">Zu einem bestimmten Snapshot gehen</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop und öffnen Sie eine virtuelle Maschine.</li><li class="listnumber">Öffnen Sie den Snapshot-Manager über eine der folgenden Optionen:<ul class="listbullet2"><li class="listbullet2">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">Snapshot-Manager</strong> oder</li><li class="listbullet2">klicken Sie in der Symbolleiste des Hauptfensters der Virtuelle Maschine in das Symbol<strong class="specialbold"> Snapshot-Manager</strong>.</li></ul></li><li class="listnumber">Wählen Sie im Fenster <strong class="specialbold">Virtuelle Maschine Snapshots</strong> den gewünschten Snapshot aus und klicken Sie in die Taste <strong class="specialbold">Gehe zu</strong>. Sie können auch mit der rechten Maustaste in den Snapshot klicken und im Kontextmenü den Befehl <strong class="specialbold">Gehe zu Snapshot</strong> wählen oder einfach in den Snapshot doppelklicken.<p class="listnote"><strong class="buttons">Hinweis:</strong> Wenn Sie nach der Aktualisierung von Parallels Desktop zu einem vor der Aktualisierung erstellten Snapshots zurückkehren möchten, wird die Meldung angezeigt, dass ein Update der Parallels Tools verfügbar ist. Es wird empfohlen, diese Updates zur effizienten Nutzung der virtuellen Maschine zu installieren.</p>
+</li><li class="listnumber">Wenn Sie von einem nicht gesicherten Zustand der Virtuelle Maschine zu einem Snapshot zurückkehren möchten, wird eine entsprechende Meldung eingeblendet. Klicken Sie in <strong class="specialbold">Ja</strong>, wenn Sie fortfahren möchten, ohne den Zustand zu sichern. Klicken Sie in <strong class="specialbold">Nein</strong>, wenn Sie den Zustand sichern und anschließend zum gewünschten Snapshot zurückkehren möchten.</li></ol><p class="bodytext">Wenn Sie zum vorherigen Snapshot zurückkehren möchten, der im selben Snapshot-Zweig erstellt wurde, verwenden Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> oder in der Symbolleiste des Hauptfensters der Virtuelle Maschine die Option <strong class="specialbold">Zurück zu Snapshot</strong>. Wenn Sie wissen möchten, zu welchem Snapshot Sie zurückkehren, können Sie im <a id="h27346" class="jumptemplate" title="Snapshots verwalten" href="22262.htm" target="_self">Snapshot-Manager</a> jederzeit die Snapshot-Baumstruktur einblenden.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Wenn Sie von einem nicht gesicherten Zustand der Virtuelle Maschine zum vorherigen Snapshot zurückkehren möchten, wird eine entsprechende Meldung eingeblendet. Klicken Sie in <strong class="specialbold">Ja</strong>, wenn Sie fortfahren möchten, ohne den Zustand zu sichern. Klicken Sie in <strong class="specialbold">Nein</strong>, wenn Sie den Zustand sichern und anschließend zum Snapshot zurückkehren möchten.</p>
+<p class="bodytext">Nach der Rückkehr zu einem Snapshot sollten Sie die Parallels Tools in der Virtuelle Maschine aktualisieren.</p>
+<p class="subheading">Snapshot löschen</p>
+<ol class="listnumber"><li class="listnumber">Starten Sie Parallels Desktop und wählen Sie eine virtuelle Maschine.</li><li class="listnumber">Öffnen Sie den Snapshot-Manager über eine der folgenden Optionen:<ul class="listbullet2"><li class="listbullet2">Wählen Sie im Menü <strong class="specialbold">Virtuelle Maschine</strong> die Option <strong class="specialbold">Snapshot-Manager</strong> oder</li><li class="listbullet2">klicken Sie in der Symbolleiste des Fensters der Virtuelle Maschine in die Taste <strong class="specialbold">Snapshot-Manager</strong>.</li></ul></li><li class="listnumber">Wählen Sie den zu löschenden Snapshot und klicken Sie in die Taste <strong class="specialbold">Löschen</strong>, wenn nur dieser Snapshot gelöscht werden soll. Wenn auch alle folgenden Snapshots gelöscht werden sollen, klicken Sie mit der rechten Maustaste in den Snapshot und wählen die Option <strong class="specialbold">Snapshot mit untergeordneten Elementen löschen</strong>.<p class="listcontinue">Wenn Sie einen zwischengelagerten Snapshot löschen, werden die darin enthaltenen Informationen mit den Informationen des folgenden Snapshots zusammengeführt.</p>
+</li></ol><p class="note"><strong class="buttons">Hinweis:</strong> Das Wurzelsymbol kann nicht gelöscht werden. Es wird automatisch gelöscht, sobald Sie alle anderen Snapshots löschen.</p>
+<p class="subheading">Snapshots zusammenführen</p>
+<p class="bodytext">Das Zusammenführen erfolgt automatisch, wenn Sie mit Ausnahme des letzten Snapshots im Zweig einen beliebigen Snapshot löschen. Wenn Sie einen zwischengelagerten Snapshot löschen, werden die darin enthaltenen Informationen mit dem nächsten Snapshot desselben Zweigs zusammengeführt.</p>
+<p class="bodytext">Wenn Sie einen Snapshot löschen, der zwei Zweigen angehört, werden die Informationen mit dem jeweils nächsten Snapshot beider Zweige zusammengeführt.</p>
+<p class="note"><strong class="buttons">Hinweis:</strong> Wenn Sie den Snapshot löschen, der auf das Wurzelsymbol folgt und zwei Zweigen angehört, beginnen die Zweige direkt mit dem Symbol des Ausgangszustands.</p>
+<p class="bodytext">Die Snapshots werden ebenfalls automatisch zusammengeführt, wenn Sie die Kapazität Ihrer virtuellen Festplatte mit Parallels Image Tool verwalten. Vor der Durchführung von Änderungen an der virtuellen Festplatte werden alle Snapshots mit Ausnahme des letzten Snapshots von Parallels Image Tool gelöscht und zusammengeführt. Im Gegensatz zur Zusammenführung von Snapshots im Snapshot-Manager werden die Ergebnisse des Zusammenführens mit Parallels Image Tool in der Snapshot-Baumstruktur nicht dargestellt und die Symbole bereits gelöschter Snapshots sind in der Baumstruktur weiterhin vorhanden.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td height="16">
+<table class="topFrameTable" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<td class="nav" nowrap="nowrap"><a href="#" onClick="parent.BODY.scrollTo(0,0);"><img src="btn_uplevel_bg.gif" width="16" height="16" border="0" align="absmiddle"/>Nach oben</a></td>
+	<td class="nav" nowrap="nowrap" align="right"><a href="http://www.parallels.com/de/support/usersdoc/?problemSubject=Feedback+on+Help+Page+22262" target="_blank"><img src="nav_mail.gif" border="0" align="absmiddle"/> Feedback</a></td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+</body>
+</html>
+

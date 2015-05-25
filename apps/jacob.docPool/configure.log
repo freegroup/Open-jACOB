@@ -1,0 +1,29 @@
+WARNING: Can not modify NULL/NOT_NULL of column create_date of table folder
+
+WARNING: Can not modify NULL/NOT_NULL of column name of table folder
+
+WARNING: Can not modify NULL/NOT_NULL of column change_date of table folder
+
+WARNING: Can not modify NULL/NOT_NULL of column favorite_index of table bo
+
+WARNING: Can not modify NULL/NOT_NULL of column field of table history_entry
+
+WARNING: Can not modify NULL/NOT_NULL of column history_key of table history_entry
+
+WARNING: Can not modify NULL/NOT_NULL of column field_label of table history_entry
+
+WARNING: Can not modify NULL/NOT_NULL of column content of table document
+
+WARNING: Can not modify type and NULL/NOT_NULL of column document_size_text of table document
+
+WARNING: Can not modify NULL/NOT_NULL of column document_size_byte of table document
+
+WARNING: Can not modify NULL/NOT_NULL of column bo_key of table bookmark
+
+WARNING: Can not modify NULL/NOT_NULL of column bookmark_account_key of table bookmark
+
+WARNING: Can not modify NULL/NOT_NULL of column name of table recyclebin
+
+WARNING: Can not modify NULL/NOT_NULL of column type of table recyclebin
+
+reconfigure database done.

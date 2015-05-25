@@ -1,0 +1,466 @@
+'NAME = "WebBrowser_GetDocument"
+'TYPE = 1
+'TEMPLATE = "Function WebBrowser_GetDocument(iApp As Application, iWebBrowser As Object) As Object"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_GetDocument
+'Purpose:	Returns the Document Object from a WebBrowser Object
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function WebBrowser_GetDocument(iApp As Application, iWebBrowser As Object) As Object
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+ 	While iWebBrowser.Busy
+ 		Sleep 100
+ 	Wend
+
+ 	Set WebBrowser_GetDocument = iWebBrowser.Document
+
+	Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_GetDocument error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_GetControl"
+'TYPE = 1
+'TEMPLATE = "Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_GetControl
+'Purpose:	Returns an Element Object from a WebBrowser Object given a name
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetDocument(iApp As Application, iWebBrowser As Object) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+Dim iDocument As Object
+Dim iElement As Object
+Dim sCompareName As String
+Dim nCtr As Integer
+
+	On Error Resume Next
+   '-------------------------------------------------
+	Set iDocument = WebBrowser_GetDocument(iApp, iWebBrowser)
+	If iDocument Is Nothing Then
+		Set WebBrowser_GetControl = Nothing
+		Exit Function
+	End If
+
+	For nCtr = iDocument.All.Length - 1 To 0 Step - 1
+		sCompareName = iDocument.All.Item(nCtr).Name
+
+		If UCase(sCompareName) = UCase(sName) Then
+			Set iElement = iDocument.All.Item(nCtr)
+			Exit For
+		End If
+	Next nCtr
+
+'	Set iElement = iDocument.All.Item(CStr(sName))
+
+    On Error GoTo ERROR_HANDLER
+
+	If iElement Is Nothing Then
+		Set WebBrowser_GetControl = Nothing
+	Else
+		Set WebBrowser_GetControl = iElement
+	End If	
+
+	Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_GetControl error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_ClearSelectControl"
+'TYPE = 1
+'TEMPLATE = "Sub WebBrowser_ClearSelectControl(iApp As Application, iWebBrowser As Object, sName As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_ClearSelectControl
+'Purpose:	Given a name of a Select Control and a WebBrowser, will clear the
+'			Select Control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub WebBrowser_ClearSelectControl(iApp As Application, iWebBrowser As Object, sName As String)
+Dim iElement As Object
+Dim nLength As Integer
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+
+    Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then Exit Sub
+
+    nLength = iElement.length
+
+    While nLength > 0
+        nLength = nLength - 1
+        iElement.Remove nLength
+    Wend
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_ClearSelectControl error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_AddSelectValue"
+'TYPE = 1
+'TEMPLATE = "Sub WebBrowser_AddSelectValue(iApp As Application, iWebBrowser As Object, sName As String, sText As String, sValue As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_AddSelectValue
+'Purpose:	Given a name of a Select Control, Text, Value and a WebBrowser, 
+'			will add a new selection in a Select Control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub WebBrowser_AddSelectValue(iApp As Application, iWebBrowser As Object, sName As String, _
+								sText As String, sValue As String)
+Dim iDocument As Object
+Dim iElement As Object
+Dim iOption As Object
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+	Set iDocument = WebBrowser_GetDocument(iApp, iWebBrowser)
+	If iDocument Is Nothing Then Exit Sub
+
+    Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then Exit Sub
+
+  	Set iOption = iDocument.CreateElement("OPTION")
+
+  	iOption.Text = sText
+  	iOption.Value = sValue
+  
+  	iElement.Add iOption
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_AddSelectValue error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_RemoveSelectValue"
+'TYPE = 1
+'TEMPLATE = "Sub WebBrowser_RemoveSelectValue(iApp As Application, iWebBrowser As Object, sName As String, nIndex As Integer)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_RemoveSelectValue
+'Purpose:	Given a name of a Select Control, Index and a WebBrowser, 
+'			will remove a selection in a Select Control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub WebBrowser_RemoveSelectValue(iApp As Application, iWebBrowser As Object, sName As String, _
+									nIndex As Integer)
+Dim iElement As Object
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+	Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then Exit Sub
+
+	iElement.Remove nIndex
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_RemoveSelectValue error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_GetControlValue"
+'TYPE = 1
+'TEMPLATE = "Function WebBrowser_GetControlValue(iApp As Application, iWebBrowser As Object, sName As String) As String"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_GetControlValue
+'Purpose:	Given a name of a control and a WebBrowser will return the value
+'			in that control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Function WebBrowser_GetControlValue(iApp As Application, iWebBrowser As Object, sName As String) As String
+Dim iElement As Object
+
+	On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+	Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then
+		WebBrowser_GetControlValue = ""
+		
+		Exit Function
+	End If
+
+	WebBrowser_GetControlValue = iElement.Value
+
+	Exit Function
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_GetControlValue error " & CStr(Err) & ": " & Error$
+
+End Function
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_SetControlValue"
+'TYPE = 1
+'TEMPLATE = "Sub WebBrowser_SetControlValue(iApp As Application, iWebBrowser As Object, sName As String, sValue As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_SetControlValue
+'Purpose:	Given a name of a control, a value, and a WebBrowser, will set the
+'			value in the control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub WebBrowser_SetControlValue(iApp As Application, iWebBrowser As Object, sName As String, sValue As String)
+Dim iElement As Object
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+	Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then Exit Sub
+
+	If Not iElement.Disabled And Not iElement.Style.Visibility = "hidden" Then _
+		iElement.Focus
+
+	iElement.Value = sValue
+
+	If Not iElement.Disabled And Not iElement.Style.Visibility = "hidden" Then _
+		iElement.Blur
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_SetControlValue error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "WebBrowser_ClickControl"
+'TYPE = 1
+'TEMPLATE = "Sub WebBrowser_ClickControl(iApp As Application, iWebBrowser As Object, sName As String)"
+'TEXT = [[
+'*****************************************************************************
+'Script:	WebBrowser_ClickControl
+'Purpose:	Given a name of a control and a WebBrowser, will invoke the Click
+'			method on the control
+'Copyright:	Quintus Corporation, 1999
+'*****************************************************************************
+'---------------------------------------------------------------------------
+' Global Constants, Types, and Variables for this QScript
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' QScript API Declarations
+'---------------------------------------------------------------------------
+Declare Function WebBrowser_GetControl(iApp As Application, iWebBrowser As Object, sName As String) As Object
+
+'---------------------------------------------------------------------------
+' Internal Subs & Functions
+'---------------------------------------------------------------------------
+
+'---------------------------------------------------------------------------
+' Main
+'---------------------------------------------------------------------------
+Sub WebBrowser_ClickControl(iApp As Application, iWebBrowser As Object, sName As String)
+Dim iElement As Object
+
+    On Error GoTo ERROR_HANDLER
+   '-------------------------------------------------
+	Set iElement = WebBrowser_GetControl(iApp, iWebBrowser, sName)
+	If iElement Is Nothing Then Exit Sub
+
+	iElement.Click
+
+	Exit Sub
+
+ERROR_HANDLER:
+    iApp.UserMsg "WebBrowser_ClickControl error " & CStr(Err) & ": " & Error$
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+']]

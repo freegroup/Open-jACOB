@@ -1,0 +1,81 @@
+package de.shorti.dragdrop.examples.demo1;
+
+
+
+import java.awt.Container;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.Icon;
+
+public abstract class AppAction extends AbstractAction
+{
+
+    public Demo1 getApp()
+    {
+        return (Demo1)m_app;
+    }
+
+    public Demo1View getView()
+    {
+        return getApp().getCurrentView();
+    }
+
+    public AppAction(String s, Container container)
+    {
+        super(s);
+        init(container);
+    }
+
+    public AppAction(String s, Icon icon, Container container)
+    {
+        super(s, icon);
+        init(container);
+    }
+
+    private final void init(Container container)
+    {
+        m_app = container;
+        m_allActions.add(this);
+    }
+
+    public String toString()
+    {
+        return (String)getValue("Name");
+    }
+
+    public boolean canAct()
+    {
+        return getView() != null;
+    }
+
+    public void updateEnabled()
+    {
+        setEnabled(canAct());
+    }
+
+    public void free()
+    {
+        m_allActions.removeElement(this);
+        m_app = null;
+    }
+
+    public static void updateAllActions()
+    {
+        for(int i = 0; i < m_allActions.size(); i++)
+        {
+            AppAction appaction = (AppAction)m_allActions.elementAt(i);
+            appaction.updateEnabled();
+        }
+
+    }
+
+    public static Vector allActions()
+    {
+        return m_allActions;
+    }
+
+    private Container m_app;
+    private static Vector m_allActions = new Vector();
+
+}

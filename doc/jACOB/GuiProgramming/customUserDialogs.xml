@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+  <chapter>
+    <title>FormDialog</title>
+
+    <section>
+      <title>Introduction</title>
+
+      <para>The jACOB FormDialog framework helps you lay out and implement elegant
+      dialogs consistently and quickly. It aims to make simple things easy and
+      the hard stuff possible, the good design easy and the bad
+      difficult.</para>
+
+      <para>This document introduces the FormsDialog framework for jACOB,
+      presents design goals, explains how these have been addressed, aquaints
+      you with the Forms layout model and API.</para>
+
+      <para>Forms focuses on form-oriented panels much like the 'Segment'
+      panel. Nevertheless, it is a general purpose layout system that can be
+      used for the vast majority of rectangular layouts.</para>
+    </section>
+
+    <section>
+      <title>How Forms addresses the design goal?</title>
+
+      <para>A Forms framework follow five principles</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Use a grid for a single layout.</para>
+        </listitem>
+
+        <listitem>
+          <para>Separate concers.</para>
+        </listitem>
+
+        <listitem>
+          <para>Provide a powerful layout specification language.</para>
+        </listitem>
+
+        <listitem>
+          <para>Allow string representations to shorten layout code.</para>
+        </listitem>
+
+        <listitem>
+          <para>Provide developer guidance on top of the layout
+          manager.</para>
+        </listitem>
+      </orderedlist>
+
+      <section>
+        <title>Grid systems</title>
+
+        <para>Grid systems are a powerful, flexible ans simple means to lay
+        out elements. Professional designers use a grid to find, balance,
+        construct and reuse good design in artwork and everyday media. And we
+        found that many user interface developers use grids implicitly to lay
+        out or align components. This works well with paper and pencil and to
+        a lesser extendt with today's visual builders. The latter often stifle
+        creativity more than they assist in finding and constructing good
+        design.</para>
+      </section>
+
+      <section>
+        <title>Layout manager</title>
+
+        <para>Layout manager often combine many features in a single class:
+        specify a layout, fill a panel with components and set component
+        bounds. On the other hand most layout systems lack support for
+        frequently used layouts and provide no means to reuse common
+        design.</para>
+      </section>
+
+      <section>
+        <title>Form layout</title>
+
+        <para>With the FormLayout you describe a layout
+        <abbrev>before</abbrev> you fill apanel and before the layout manager
+        sets the component bounds. You can specify the form's grid in an
+        expression language so that readers can infer a panel's layout from
+        your code quickly and modify it easily. A single specification can be
+        applied to many components; for example, you can specify that all
+        labels in a column are right aligned.</para>
+      </section>
+
+      <section>
+        <title>String representation</title>
+
+        <para>To further imporve the code readybility we allow to specify the
+        grid in a human readable and concise language using string
+        representations. This way even complex layouts can be expressed in a
+        few lines of code.</para>
+      </section>
+
+      <section>
+        <title>Form</title>
+
+        <para>Forms provides abstraction on the top of the layout manager that
+        lead to consistent UIs and assist you in style guide compliance. They
+        help you to traverse the grid and seed it in components.</para>
+      </section>
+    </section>
+
+    <section><title>A simple Example</title>
+  	  <section><title>Preface</title> 
+	      <para>Let's jump into a example that demonstrate basic FormLayout
+	        features. We're going to learn the details step by step in the following
+	      sections and will learn to write more complex layouts with less
+	      code.</para>
+		 <para>FormLayout is a powerful, flexible and precise layout manager that
+	      aligns components vertically and horizontally in a dynamic rectangular
+	      grid of cells, with each component occupying in one or
+	      <emphasis>more</emphasis> cell. To define a form layout you specify the
+	      form's <emphasis>columns, rows</emphasis>. Everyhing that applies to
+	      columns applies to rows too - just with a different orrientation.
+	      FormLayout uses the same API, algorithms and implementation for column
+	      and rows.</para>	      
+	  </section>
+	  <section><title>Requirements</title> 
+	  	<blockquote>
+	  		<attribution>The Boss</attribution>
+	  		<para>"We need a panel to edit person data with fields for
+	  		       firstname and surename".
+	  		 </para>
+	  	</blockquote>
+	  </section>
+	  <section>
+	  <title>Finding the Layout</title>
+	  	<para>A visual designer produces a design draft and hands it over to the developer</para>
+	      <para><figure id="user.dialog.tutorial01">
+	          <title>The draft of the panel</title>
+	          <screenshot><mediaobject> <imageobject> <imagedata 
+	          fileref="GuiProgramming/customUserDialogs_draft.png" scalefit="0"
+	          width="8cm"></imagedata> </imageobject> </mediaobject></screenshot>
+	        </figure>
+	      </para>
+	  	<blockquote>
+	  		<attribution>The Designer</attribution>
+	  		<para>"..in mind: Follow the customer Style Guide!"
+	  		 </para>
+	  	</blockquote>
+	  </section>
+	  <section>
+	  <title>Finding the Grid</title>
+	  	<para>After the accurate definition of the requirements you can start to develop the dialog. 
+	  	Identifies the columns and rows in the form with the border and the spacing between the objects. 
+	  	Ignore the button bar. The buttonbar will be insert from the FormDialog framework.</para>
+	      <para><figure id="user.dialog.tutorial02">
+	          <title>The grid of the panel</title>
+	          <screenshot><mediaobject><imageobject> <imagedata 
+	          fileref="GuiProgramming/customUserDialogs_grid.png" scalefit="0"
+	          width="8cm"></imagedata> </imageobject> </mediaobject></screenshot>
+	        </figure>
+	      </para>
+	  </section>
+	  <section>
+	  <title>The GUI Implementation</title>
+	
+	      <figure>
+	        <title>The java code for the panel</title>
+	
+	        <programlistingco>
+	        <areaspec>
+	      		<area id="form.layout.init"          coords='1' />
+	      		<area id="form.layout.columns"       coords='2' />
+	      		<area id="form.layout.rows"          coords='3' />
+	      		<area id="form.layout.create"        coords='7' />
+	      		<area id="form.layout.seedLabel"     coords='9' />
+	      		<area id="form.layout.seedTextField" coords='10' />
+	      		<area id="form.layout.show"          coords='14' />
+	        </areaspec>
+	        <programlisting linenumbering="numbered">FormLayout layout = new FormLayout(
+             "10dlu,p, 10dlu,300dlu,10dlu",          // 5 columns
+             "50dlu, p,2dlu,p,50dlu");               // 5 rows
+
+CellConstraints c=new CellConstraints();
+
+IFormDialog dialog=context.createFormDialog("Titel",layout,new Callback());
+
+dialog.addLabel("Vorname:",c.xy(1,1));
+dialog.addTextField("firstname","wert",c.xy(3,1));
+
+dialog.addLabel("Nachname:",c.xy(1,3));
+dialog.addTextField("lastname","wert",c.xy(3,3));
+dialog.show();</programlisting>
+		 <calloutlist>
+		 	<callout arearefs="form.layout.init">
+		 		<para>We construct a FormLayout and specify the columns and rows using a string 
+		 		representation</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.columns">
+		 		<para>Defining the columns of the FormLayout where <emphasis>p</emphasis> or <emphasis>pref</emphasis> for 
+		 		'prefered size', and <emphasis>dlu</emphasis> for 'dialog units' that scales with 
+		 		the font.</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.rows">
+		 		<para>Defining the rows of the FormLayout.</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.create">
+		 		<para>Create the form layout dialog with the defined layout and a <emphasis>callback</emphasis> object 
+		 		for the user interaction.</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.seedLabel">
+		 		<para>Insert a label in the form dialog with a given CellConstraint. The constrains defines
+		 		the behavior and the position of the object. In this case we place the object in column=1 and row=1.
+		 		Be in mind that the rows and columns begins with the index 0.</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.seedTextField">
+		 		<para>Insert an Input field with the property name <emphasis>firstname</emphasis> and the default value
+		 		<emphasis>wert</emphasis> in the form. We place the object at column=3 and row=1. At the right hand side of the label.</para>
+		 	</callout>
+		 	<callout arearefs="form.layout.show">
+		 		<para>Tells the framework that the dialog is ready and can be display to the user.</para>
+		 	</callout>
+		 </calloutlist>
+		 </programlistingco>
+	      </figure>
+	      <para><figure id="user.dialog.tutorial03">
+	          <title>The panel in debug modus</title>
+	          <screenshot><mediaobject> <imageobject> <imagedata 
+	          fileref="GuiProgramming/customUserDialogs_debug.png" scalefit="0"
+	          width="8cm"></imagedata> </imageobject> </mediaobject></screenshot>
+	        </figure>
+	      </para>
+		  <para>You can enable the debug modus during the development of the panel with:
+		  <programlisting>dialog.setDebug(true);</programlisting>It helps you to check your layout contrainst.
+		  </para>
+	      <para><figure id="user.dialog.tutorial04">
+	          <title>The ready to run panel</title>
+	          <screenshot><mediaobject> <imageobject> <imagedata 
+	          fileref="GuiProgramming/customUserDialogs.png" scalefit="0"
+	          width="8cm"></imagedata> </imageobject> </mediaobject></screenshot>
+	        </figure>
+	      </para>
+	  </section>
+	  <section>
+	  <title>The callback Implementation</title>
+		<para>The callback object is a tribute to the client/server architecture of jACOB or other C/S applications.
+		It is not possible to wait on the server for next user interaction. In this case we must implement a callback mechanism
+		to handle the user interaction. The callback object will be called if the user clicks on the [ok] or [cancel] button on the next 
+		request cycle(<footnote><para>There is no warranty that the callback object will be called. Nothing happens if 
+       	the user closed the	dialog with <keycombo><keycap>Alt</keycap><keycap>F4</keycap></keycombo></para></footnote>).
+		</para>	
+        <programlistingco>
+	        <areaspec>
+	      		<area id="form.callback.class" coords='1' />
+	      		<area id="form.callback.first" coords='8' />
+	      		<area id="form.callback.last"  coords='9' />
+	        </areaspec>
+	        <programlisting linenumbering="numbered">class Callback implements IFormDialogCallback
+{
+  public void onCancel(IClientContext context)
+  {
+  }
+  public void onOk(IClientContext context, Properties props)
+  {
+    String firstname = props.getProperty("firstname");
+    String lastname  = props.getProperty("lastname");
+  
+    System.out.println("Te user name is :"+firstname+" "+lastname);
+  }
+}</programlisting>
+		 <calloutlist>
+		 	<callout arearefs="form.callback.class">
+		 		<para>The class must implement the interface <emphasis>de.tif.etr.screen.dialogs.form.IFormDialogCallback</emphasis></para>
+		 	</callout>
+		 	<callout arearefs="form.callback.first">
+		 		<para>Retrieve the <emphasis>firstname</emphasis> from the property set. Be in mind that you have insert a TextField in the dialog
+		 		with this name!</para>
+		 	</callout>
+		 	<callout arearefs="form.callback.last">
+		 		<para>Retrieve the <emphasis>lastname</emphasis> from the property set.</para>
+		 	</callout>
+		 </calloutlist>
+		 </programlistingco>
+     </section>		
+	 <section>
+	 <title>The FormDialog within a ButtonHandler</title>
+      <para>This illustrates the handling of a user interaction. The user press a button and the custom dialog will shown and proceed.</para>
+	        <programlisting>package jacob.event.screen.f_qualitymaster.request;
+
+import java.util.Properties;
+import de.tif.etr.core.data.DataTable;
+import de.tif.etr.screen.*;
+import de.tif.etr.screen.dialogs.form.CellConstraints;
+import de.tif.etr.screen.dialogs.form.*;
+import de.tif.etr.screen.event.*;
+
+/**
+ * My first FormDialog which will be triggerd from a generic button
+ */
+public class RequestNew extends IButtonEventHandler
+{
+  // The callback class for the user dialog(!!) interaction
+  class Callback implements IFormDialogCallback
+  {
+    public void onCancel(IClientContext context) {}
+    
+    public void onOk(IClientContext context, Properties props)
+    {
+      String firstname = props.getProperty("firstname");
+      String lastname  = props.getProperty("lastname");
+      
+      System.out.println("The user name is :"+firstname+" "+lastname);
+    }
+
+}
+  /* Will be called if the user press the corresponding button
+   * in the jACOB Form( not the dialog!!)
+   */
+  public void onAction(IClientContext context, IActionEmitter emitter)
+  {
+	FormLayout layout = new FormLayout(
+	    "10dlu,p, 10dlu,300dlu,10dlu",          // 5 columns
+    	"50dlu, p,2dlu,p,50dlu");               // 5 rows
+	
+	CellConstraints c=new CellConstraints();
+	
+	IFormDialog dialog=context.createFormDialog("Titel",layout,new Callback());
+	
+	dialog.addLabel("Vorname:",c.xy(1,1));
+	dialog.addTextField("firstname","wert",c.xy(3,1));
+
+	dialog.addLabel("Nachname:",c.xy(1,3));
+	dialog.addTextField("lastname","wert",c.xy(3,3));
+	dialog.setDebug(true);
+	dialog.show();
+  }
+
+  /* Will be called if the state of the button group has been changed.
+   */
+  public void onGroupStatusChanged(IClientContext context, int status, IGuiElement emitter) throws Exception
+  {
+  }
+}</programlisting>
+	</section>
+	
+    </section>
+  </chapter>

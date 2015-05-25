@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<modus type="outbound" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Daten\java\jacob.missioncontrol\documents\CTI\daksCTI.xsd">
+	<datasection type="outbound">
+		<SP_RET_CODE>0</SP_RET_CODE>
+	</datasection>
+	<errorsection>
+		<ERROR_TEXT>NO_ERROR</ERROR_TEXT>
+	</errorsection>
+</modus>

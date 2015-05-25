@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="jacob-application" default="all" basedir=".">
+<property file="build.properties" />
+
+<tstamp><format property="build.time" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+
+<!-- =================================================================== -->
+<!--  Configuration                                                      -->
+<!-- =================================================================== -->
+<property environment="env"/>
+<property name="buildlib.dir"        value="./lib"/>
+<property name="dist.dir"            value="./dist"/>
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+
+
+<!-- =================================================================== -->
+<!-- Classpath                                                           -->
+<!-- =================================================================== -->
+<path id="compile.classpath">
+   <fileset dir="${buildlib.dir}">
+   	<include name="*.jar"/>
+   </fileset>
+</path>
+
+<!-- =================================================================== -->
+<!-- GENERATE THE CASTOR CLASSES WITH THE XSD Schema Definition          -->
+<!-- =================================================================== -->
+<taskdef name="XSDCompiler" classname="org.exolab.castor.tools.XSDCompiler" >
+<classpath>
+   <fileset dir="./lib">
+   	<include name="*.jar"/>
+   </fileset>
+</classpath>	
+</taskdef>
+
+<!-- =================================================================== -->
+<!-- ALL                                                                 -->
+<!-- =================================================================== -->
+<target name="all"  depends="jacapp"  description="create the project">
+</target>
+
+<target name="castor" depends="" description="create the access classes for the TaskSynchronizer and filescan">
+    <delete quiet="true" dir="./java/jacob/rss"/>
+    <XSDCompiler 
+        package="jacob.rss"
+        schema="./castor/rss20.xsd"
+        force="true"
+        destDir="./java">
+    </XSDCompiler>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- jACAPP                                                               -->
+<!-- =================================================================== -->
+<target name="jacapp" depends="compile" description="create the .jacapp file for the jACOB-Application server"  >
+
+	<mkdir dir="${dist.dir}/"/>
+	<jar compress="true"  destfile="${dist.dir}/${app.name}-${app.version}.jacapp" >
+		<fileset dir="./classes">
+			<exclude name="applications/${app.name}/**/*.java"/>
+		</fileset>
+		<manifest>
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Machine" value="${env.COMPUTERNAME}"/>
+			<attribute name="Built-Time" value="${build.time}"/>
+			<attribute name="jACOB-Application-Version" value="${app.version}"/>
+			<attribute name="jACOB-Application-Name"    value="${app.name}"/>
+		</manifest>
+   </jar>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- CLEAN                                                               -->
+<!-- =================================================================== -->
+<target name="clean" description="Delete old build and dist directories">
+    <delete quiet="true" dir="./classes"/>
+    <delete quiet="true" dir="./dist"/>
+</target>
+
+
+<!-- =================================================================== -->
+<!-- Compile                                                             -->
+<!-- =================================================================== -->
+<target name="compile" depends="clean, castor" description="Compile Java sources">
+
+	<filter token="VERSION"     value="${app.version}"/>
+	<filter token="APPLICATION" value="${app.name}"/>
+	<copy file="./java/jacob/common/AppLogger.template" toFile="./java/jacob/common/AppLogger.java" filtering="true" overwrite="true">
+	</copy>
+
+	<mkdir dir="./classes"/>
+	<!-- Compile Java classes as necessary -->
+	<javac srcdir="java" debug="on" destdir="./classes" >
+       <classpath refid="compile.classpath" />
+	</javac>
+
+	<!-- move the images to the class directory for the jar -->
+    <copy todir="./classes">
+		<fileset dir="./java">
+      		<include name="**"/>
+		</fileset>
+    </copy>
+
+	<!-- move the jad-file to the required position -->
+	<copy file="./application.jad" toFile="./classes/jacob/config/application.jad" overwrite="true">
+	</copy>
+</target>
+</project>
+

@@ -1,0 +1,61 @@
+//
+// 
+//  
+// Source File Name:   Demo1Palette.java
+
+package de.shorti.dragdrop.examples.demo1;
+
+import de.shorti.dragdrop;
+
+
+
+import de.shorti.dragdrop.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import javax.swing.JComponent;
+import javax.swing.border.TitledBorder;
+
+// Referenced classes of package de.shorti.dragdrop.examples.demo1:
+//            Demo1
+
+public class Demo1Palette extends FREEGridView
+{
+
+    public Demo1Palette()
+    {
+        setBorder(new TitledBorder("Palette"));
+        setGridHeight(50);
+        setHorizontalScrollBar(null);
+    }
+
+    public void init(Demo1 demo1)
+    {
+        getDocument().setModifiable(false);
+        int i = 0;
+        Dimension dimension = new Dimension(30, 30);
+        for(de.shorti.dragdrop.FREEListPosition listposition = getDocument().getFirstObjectPos(); listposition != null;)
+        {
+            FREEObject object = getDocument().getObjectAtPos(listposition);
+            listposition = getDocument().getNextObjectPosAtTop(listposition);
+            object.setResizable(false);
+            object.setSize(dimension);
+            object.setTopLeft(new Point(0, i));
+            i += getGridHeight();
+        }
+
+    }
+
+    public Dimension getPreferredSize()
+    {
+        return new Dimension(70, 500);
+    }
+
+    public Dimension getMinimumSize()
+    {
+        return new Dimension(50, 100);
+    }
+
+    public void autoscroll(Point point)
+    {
+    }
+}

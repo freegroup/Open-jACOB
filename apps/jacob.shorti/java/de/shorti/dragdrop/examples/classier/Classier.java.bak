@@ -1,0 +1,331 @@
+//
+// 
+//  
+// Source File Name:   Classier.java
+
+package de.shorti.dragdrop.examples.classier;
+
+import de.shorti.dragdrop;
+
+
+
+import de.shorti.dragdrop.*;
+import de.shorti.dragdrop.examples.TextNode;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.PrintStream;
+import java.util.EventObject;
+import java.util.HashMap;
+import javax.swing.*;
+
+// Referenced classes of package de.shorti.dragdrop.examples.classier:
+//            ClassNode
+
+public class Classier extends JApplet
+    implements Runnable
+{
+
+    public Classier()
+    {
+        m_horizSeparation = 40;
+        m_vertSeparation = 4;
+        m_extendsPen = FREEPen.black;
+        m_implementsPen = FREEPen.make(1, 1, Color.black);
+        m_nap = new HashMap();
+        m_view = new FREEView();
+        m_doc = m_view.getDocument();
+        m_view.setInternalMouseActions(2);
+        m_view.addKeyListener(new KeyAdapter() {
+
+            public void keyPressed(KeyEvent keyevent)
+            {
+                int i = keyevent.getKeyCode();
+                if(i == 127)
+                {
+                    FREESelection selection = m_view.getSelection();
+                    for(de.shorti.dragdrop.FREEListPosition listposition = selection.getFirstObjectPos(); listposition != null;)
+                    {
+                        FREEObject object = selection.getObjectAtPos(listposition);
+                        listposition = selection.getNextObjectPos(listposition);
+                        if(object instanceof ClassNode)
+                        {
+                            ClassNode classnode = (ClassNode)object;
+                            Object obj = classnode.getObject();
+                            if(obj != null)
+                                m_nap.remove(obj);
+                        }
+                    }
+
+                    m_view.deleteSelection();
+                } else
+                if(keyevent.isControlDown() && i == 81)
+                    System.exit(0);
+                else
+                if(keyevent.isControlDown() && i == 80)
+                    m_view.print();
+            }
+
+        });
+        m_view.addViewListener(new FREEViewListener() {
+
+            public void viewChanged(FREEViewEvent viewevent)
+            {
+                switch(viewevent.getHint())
+                {
+                case 11: // '\013'
+                    FREEObject object = viewevent.getFREEObject();
+                    object = object.getTopLevelObject();
+                    if(object instanceof ClassNode)
+                    {
+                        ClassNode classnode = (ClassNode)object;
+                        classnode.toggleInfo();
+                        m_view.getSelection().clearSelection();
+                    }
+                    break;
+                }
+            }
+
+        });
+        Container container = getContentPane();
+        container.setLayout(new BorderLayout());
+        container.add(m_view, "Center");
+        container.validate();
+    }
+
+    public void init()
+    {
+        initNodes();
+        JOptionPane.showMessageDialog(this, "Double click a class to see its public and protected methods.\nDouble click again to hide the information.", "View Class Methods", 1);
+    }
+
+    public void start()
+    {
+        (new Thread(this)).start();
+    }
+
+    public void run()
+    {
+        m_view.initializeDragDropHandling();
+    }
+
+    public static void main(String args[])
+    {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            final JFrame mainFrame = new JFrame();
+            mainFrame.addWindowListener(new WindowAdapter() {
+
+                public void windowClosing(WindowEvent windowevent)
+                {
+                    Object obj = windowevent.getSource();
+                    if(obj == mainFrame)
+                        System.exit(0);
+                }
+
+            });
+            mainFrame.setTitle("FREE Class Hierarchy Viewer");
+            mainFrame.setSize(800, 600);
+            Classier classier = new Classier();
+            Container container = mainFrame.getContentPane();
+            container.setLayout(new BorderLayout());
+            container.add("Center", classier);
+            container.validate();
+            mainFrame.setVisible(true);
+            classier.init();
+            classier.start();
+        }
+        catch(Throwable throwable)
+        {
+            System.err.println(throwable);
+            throwable.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public void initNodes()
+    {
+        m_view.setDefaultCursor(Cursor.getPredefinedCursor(3));
+        m_doc.setSuspendUpdates(true);
+        addClassNode("de.shorti.dragdrop.FREE3DNoteRect");
+        addClassNode("de.shorti.dragdrop.FREE3DRect");
+        addClassNode("de.shorti.dragdrop.FREEArea");
+        addClassNode("de.shorti.dragdrop.FREEBrush");
+        addClassNode("de.shorti.dragdrop.FREEButton");
+        addClassNode("de.shorti.dragdrop.FREEControl");
+        addClassNode("de.shorti.dragdrop.FREECopyMap");
+        addClassNode("de.shorti.dragdrop.FREEDocument");
+        addClassNode("de.shorti.dragdrop.FREEDocumentEvent");
+        addClassNode("de.shorti.dragdrop.FREEDrawable");
+        addClassNode("de.shorti.dragdrop.FREEEllipse");
+        addClassNode("de.shorti.dragdrop.FREEGlobal");
+        addClassNode("de.shorti.dragdrop.FREEGridView");
+        addClassNode("de.shorti.dragdrop.FREEHandle");
+        addClassNode("de.shorti.dragdrop.FREEImage");
+        addClassNode("de.shorti.dragdrop.FREELabeledLink");
+        addClassNode("de.shorti.dragdrop.FREELayer");
+        addClassNode("de.shorti.dragdrop.FREELink");
+        addClassNode("de.shorti.dragdrop.FREELinkLabel");
+        addClassNode("de.shorti.dragdrop.FREEListPosition");
+        addClassNode("de.shorti.dragdrop.FREEObject");
+        addClassNode("de.shorti.dragdrop.FREEPen");
+        addClassNode("de.shorti.dragdrop.FREEPolygon");
+        addClassNode("de.shorti.dragdrop.FREEPort");
+        addClassNode("de.shorti.dragdrop.FREERectangle");
+        addClassNode("de.shorti.dragdrop.FREERoundRect");
+        addClassNode("de.shorti.dragdrop.FREEScrollBar");
+        addClassNode("de.shorti.dragdrop.FREESelection");
+        addClassNode("de.shorti.dragdrop.FREEStroke");
+        addClassNode("de.shorti.dragdrop.FREEText");
+        addClassNode("de.shorti.dragdrop.FREETextEdit");
+        addClassNode("de.shorti.dragdrop.FREEView");
+        addClassNode("de.shorti.dragdrop.FREEViewEvent");
+        layoutNodes();
+        m_doc.setSuspendUpdates(false);
+        m_view.setDefaultCursor(null);
+    }
+
+    public ClassNode addClassNode(String s)
+    {
+        Class class1 = null;
+        try
+        {
+            class1 = Class.forName(s);
+        }
+        catch(Exception exception)
+        {
+            JOptionPane.showMessageDialog(this, "Unable to find the Class for " + s, "Class not found", 1);
+        }
+        return addClassNode(class1);
+    }
+
+    public ClassNode addClassNode(Class class1)
+    {
+        if(class1 == null)
+            return null;
+        ClassNode classnode = findNode(class1);
+        if(classnode != null)
+        {
+            return classnode;
+        } else
+        {
+            ClassNode classnode1 = getNode(class1);
+            addSuperClass(class1, classnode1);
+            addInterfaces(class1, classnode1);
+            return classnode1;
+        }
+    }
+
+    public void addSuperClass(Class class1, ClassNode classnode)
+    {
+        Class class2 = class1.getSuperclass();
+        if(class2 != null)
+        {
+            ClassNode classnode1 = addClassNode(class2);
+            if(classnode1 != null)
+            {
+                FREELink link = new FREELink(classnode1.getOutPort(), classnode.getInPort());
+                link.setSelectable(false);
+                link.setResizable(false);
+                link.setPen(m_extendsPen);
+                m_doc.addObjectAtHead(link);
+            }
+        }
+    }
+
+    public void addInterfaces(Class class1, ClassNode classnode)
+    {
+        Class aclass[] = class1.getInterfaces();
+        for(int i = 0; i < aclass.length; i++)
+        {
+            Class class2 = aclass[i];
+            ClassNode classnode1 = addClassNode(class2);
+            if(classnode1 != null)
+            {
+                FREELink link = new FREELink(classnode1.getOutPort(), classnode.getInPort());
+                link.setSelectable(false);
+                link.setResizable(false);
+                link.setPen(m_implementsPen);
+                m_doc.addObjectAtHead(link);
+            }
+        }
+
+    }
+
+    public void layoutNodes()
+    {
+        byte byte0 = 10;
+        int i = 10;
+        ClassNode classnode = addClassNode("java.lang.Object");
+        int j = layoutTree(classnode, byte0, i);
+        i = j + classnode.getHeight() + m_vertSeparation;
+        for(de.shorti.dragdrop.FREEListPosition listposition = m_doc.getFirstObjectPos(); listposition != null;)
+        {
+            FREEObject object = m_doc.getObjectAtPos(listposition);
+            listposition = m_doc.getNextObjectPosAtTop(listposition);
+            if(object instanceof ClassNode)
+            {
+                ClassNode classnode1 = (ClassNode)object;
+                Class class1 = (Class)classnode1.getObject();
+                if(class1.isInterface() && classnode1.getInPort().hasNoLinks())
+                {
+                    int k = layoutTree(classnode1, byte0, i);
+                    i = k + classnode1.getHeight() + m_vertSeparation;
+                }
+            }
+        }
+
+    }
+
+    public int layoutTree(ClassNode classnode, int i, int j)
+    {
+        int k = j;
+        int l = j;
+        FREEPort port = classnode.getOutPort();
+        for(de.shorti.dragdrop.FREEListPosition listposition = port.getFirstLinkPos(); listposition != null;)
+        {
+            FREELink link = port.getLinkAtPos(listposition);
+            listposition = port.getNextLinkPos(listposition);
+            FREEPort port1 = link.getOtherPort(port);
+            ClassNode classnode1 = (ClassNode)port1.getParent();
+            if(classnode1.getTop() <= 0)
+            {
+                l = layoutTree(classnode1, i + classnode.getWidth() + m_horizSeparation, j);
+                j = l + classnode.getHeight() + m_vertSeparation;
+            }
+        }
+
+        classnode.setTopLeft(i, (k + l) / 2);
+        return l;
+    }
+
+    public ClassNode findNode(Object obj)
+    {
+        Object obj1 = m_nap.get(obj);
+        if(obj1 instanceof ClassNode)
+            return (ClassNode)obj1;
+        else
+            return null;
+    }
+
+    public ClassNode getNode(Object obj)
+    {
+        ClassNode classnode = findNode(obj);
+        if(classnode == null)
+        {
+            classnode = new ClassNode(obj.toString());
+            classnode.setObject(obj);
+            m_doc.addObjectAtTail(classnode);
+            m_nap.put(obj, classnode);
+        }
+        return classnode;
+    }
+
+    protected int m_horizSeparation;
+    protected int m_vertSeparation;
+    protected FREEPen m_extendsPen;
+    protected FREEPen m_implementsPen;
+    protected FREEView m_view;
+    protected FREEDocument m_doc;
+    protected HashMap m_nap;
+}

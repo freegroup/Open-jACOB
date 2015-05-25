@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/Strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Workflow Editor</title>
+        <!-- common, all times required, imports -->
+	<SCRIPT src="wz_jsgraphics.js"></SCRIPT>
+	<SCRIPT src="events.js"></SCRIPT>
+	<SCRIPT src="debug.js"></SCRIPT>
+	<SCRIPT src="color.js"></SCRIPT>
+	<SCRIPT src="point.js"></SCRIPT>
+	<SCRIPT src="dragdrop.js"></SCRIPT>
+	<SCRIPT src="border.js"></SCRIPT>
+	<SCRIPT src="line_border.js"></SCRIPT>
+	<SCRIPT src="figure.js"></SCRIPT>
+	<SCRIPT src="label.js"></SCRIPT>
+	<SCRIPT src="oval.js"></SCRIPT>
+	<SCRIPT src="circle.js"></SCRIPT>
+	<SCRIPT src="window.js"></SCRIPT>
+	<SCRIPT src="tool_palette.js"></SCRIPT>
+	<SCRIPT src="rectangle.js"></SCRIPT>
+	<SCRIPT src="node.js"></SCRIPT>
+	<SCRIPT src="image.js"></SCRIPT>
+	<SCRIPT src="port.js"></SCRIPT>
+	<SCRIPT src="input_port.js"></SCRIPT>
+	<SCRIPT src="output_port.js"></SCRIPT>
+	<SCRIPT src="line.js"></SCRIPT>
+	<SCRIPT src="connection.js"></SCRIPT>
+	<SCRIPT src="annotation.js"></SCRIPT>
+	<SCRIPT src="resize_handle.js"></SCRIPT>
+	<SCRIPT src="line_start_resize_handle.js"></SCRIPT>
+	<SCRIPT src="line_end_resize_handle.js"></SCRIPT>
+	<SCRIPT src="canvas.js"></SCRIPT>
+	<SCRIPT src="workflow.js"></SCRIPT>
+	<SCRIPT src="tool_generic.js"></SCRIPT>
+	<SCRIPT src="dialog.js"></SCRIPT>
+	<SCRIPT src="input_dialog.js"></SCRIPT>
+	<SCRIPT src="property_dialog.js"></SCRIPT>
+
+        <!-- workflow specific imports -->
+	<SCRIPT src="workflow/WorkflowSerializer.js"></SCRIPT>
+	<SCRIPT src="workflow/decision_boolean.js"></SCRIPT>
+	<SCRIPT src="workflow/Start.js"></SCRIPT>
+	<SCRIPT src="workflow/BusinessObject.js"></SCRIPT>
+	<SCRIPT src="workflow/UserExceptionBO.js"></SCRIPT>
+	<SCRIPT src="workflow/NOP.js"></SCRIPT>
+	<SCRIPT src="workflow/Email.js"></SCRIPT>
+	<SCRIPT src="workflow/EmailDialog.js"></SCRIPT>
+	<SCRIPT src="workflow/show_message.js"></SCRIPT>
+	<SCRIPT src="workflow/tool_decision.js"></SCRIPT>
+	<SCRIPT src="workflow/tool_decision_boolean.js"></SCRIPT>
+	<SCRIPT src="workflow/ToolNOP.js"></SCRIPT>
+	<SCRIPT src="workflow/ToolUserExceptionBO.js"></SCRIPT>
+	<SCRIPT src="workflow/ToolSave.js"></SCRIPT>
+	<SCRIPT src="workflow/ToolEmail.js"></SCRIPT>
+	<SCRIPT src="workflow/ToolBusinessObject.js"></SCRIPT>
+	<SCRIPT src="workflow/tool_show_message.js"></SCRIPT>
+	<SCRIPT src="workflow/tool_annotation.js"></SCRIPT>
+
+	<SCRIPT src="workflow/workflow_palette.js"></SCRIPT>
+</head>
+<body onselectstart="return false;" style="margin:0px;padding:0px;" onkeydown="">
+<div id="paintarea" style="position:absolute;left:0px;top:0px;width:3000px;height:3000px" ></div>
+<script>
+  var workflow  = new Workflow("paintarea");
+
+  // Add the Tool Window to the screen
+  //
+  var w = new WorkflowPalette();
+
+  workflow.setToolWindow(w);
+
+
+
+
+/* Create the used objects */
+var objectMap = new Object();
+var object = null;
+object = new Start();
+object.setProperty("businessClass","unused");
+object.setProperty("methodName","unused");
+object.setProperty("tag","businessObjectMethod");
+object.setProperty("ruleId","start");
+objectMap['start'] = object;
+object = new DecisionBoolean();
+object.setProperty("tag","decision");
+object.setProperty("decisionClass","jacob.rule.decision.TableField");
+object.setProperty("methodName","isEquals");
+object.setProperty("signature","(QString;QString;)Z");
+object.setProperty("ruleId","decb6a:1083df1020e:-8000");
+objectMap['decb6a:1083df1020e:-8000'] = object;
+object = new UserExceptionBO();
+object.setProperty("businessClass","de.tif.jacob.ruleengine.bo.UserExceptionBO");
+object.setProperty("methodName","send");
+object.setProperty("parameter_0","Tester and Owner of a ticker must be a different Person.");
+object.setProperty("ruleId","decb6a:1083df1020e:-7ffe");
+objectMap['decb6a:1083df1020e:-7ffe'] = object;
+object = new DecisionBoolean();
+object.setProperty("tag","decision");
+object.setProperty("decisionClass","jacob.rule.decision.TableField");
+object.setProperty("methodName","hasChanged");
+object.setProperty("signature","(QString;)Z");
+object.setProperty("ruleId","decb6a:1083df1020e:-7ffd");
+objectMap['decb6a:1083df1020e:-7ffd'] = object;
+object = new Email();
+object.setProperty("businessClass","de.tif.jacob.ruleengine.bo.Email");
+object.setProperty("methodName","send");
+object.setProperty("ruleId","decb6a:1083df1020e:-7ffb");
+objectMap['decb6a:1083df1020e:-7ffb'] = object;
+object = new NOP();
+object.setProperty("businessClass","de.tif.jacob.ruleengine.bo.NOP");
+object.setProperty("methodName","nop");
+object.setProperty("ruleId","decb6a:1083df1020e:-7ff9");
+objectMap['decb6a:1083df1020e:-7ff9'] = object;
+object = new DecisionBoolean();
+object.setProperty("tag","decision");
+object.setProperty("decisionClass","jacob.rule.decision.TableField");
+object.setProperty("methodName","hasChanged");
+object.setProperty("signature","(QString;)Z");
+object.setProperty("ruleId","5d50c4:1083dfc7684:-8000");
+objectMap['5d50c4:1083dfc7684:-8000'] = object;
+
+
+/* Add the objects to the workflow */
+workflow.addFigure(objectMap['start'],110,205);
+workflow.addFigure(objectMap['decb6a:1083df1020e:-8000'],200,200);
+workflow.addFigure(objectMap['decb6a:1083df1020e:-7ffe'],425,200);
+workflow.addFigure(objectMap['decb6a:1083df1020e:-7ffd'],325,400);
+workflow.addFigure(objectMap['decb6a:1083df1020e:-7ffb'],425,400);
+workflow.addFigure(objectMap['decb6a:1083df1020e:-7ff9'],625,450);
+workflow.addFigure(objectMap['5d50c4:1083dfc7684:-8000'],775,450);
+
+
+/* Create the connections between this objects */
+var connection = null;
+connection = new Connection();
+connection.setSource(objectMap['start'].getOutputPort());
+connection.setTarget(objectMap['decb6a:1083df1020e:-8000'].getInputPort());
+workflow.addFigure(connection);
+connection = new Connection();
+connection.setSource(objectMap['decb6a:1083df1020e:-8000'].getFalsePort());
+connection.setTarget(objectMap['decb6a:1083df1020e:-7ffd'].getInputPort());
+workflow.addFigure(connection);
+connection = new Connection();
+connection.setSource(objectMap['decb6a:1083df1020e:-8000'].getTruePort());
+connection.setTarget(objectMap['decb6a:1083df1020e:-7ffe'].getInputPort());
+workflow.addFigure(connection);
+connection = new Connection();
+connection.setSource(objectMap['decb6a:1083df1020e:-7ffd'].getFalsePort());
+connection.setTarget(objectMap['decb6a:1083df1020e:-7ff9'].getInputPort());
+workflow.addFigure(connection);
+connection = new Connection();
+connection.setSource(objectMap['decb6a:1083df1020e:-7ffd'].getTruePort());
+connection.setTarget(objectMap['decb6a:1083df1020e:-7ffb'].getInputPort());
+workflow.addFigure(connection);
+
+
+
+</script>
+</body>
+</html>

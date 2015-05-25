@@ -1,0 +1,33 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: wmitop - Win32 Release--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Erstellen der temporären Datei  "c:\tmp\RSP126.tmp" mit Inhalten
+[
+/nologo /ML /W4 /Zi /O1 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /FAs /Fa"release/" /Fp"release/wmitop.pch" /Yu"stdafx.h" /Fo"release/" /Fd"release/" /FD /GF /c 
+"J:\jacob.top\wmitop.cpp"
+]
+Creating command line "cl.exe @c:\tmp\RSP126.tmp" 
+Erstellen der temporären Datei  "c:\tmp\RSP127.tmp" mit Inhalten
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"release/top.pdb" /map:"release/top.map" /debug /machine:I386 /out:"release/top.exe" /opt:ref /opt:nowin98 /release 
+.\release\stdafx.obj
+.\release\wmitop.obj
+]
+Erstellen der Befehlzeile "link.exe @c:\tmp\RSP127.tmp"
+<h3>Ausgabefenster</h3>
+Kompilierung läuft...
+wmitop.cpp
+Linker-Vorgang läuft...
+
+
+
+<h3>Ergebnisse</h3>
+top.exe - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>

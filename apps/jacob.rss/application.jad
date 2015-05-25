@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Jacob xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" engineVersion="2.0" defaultApplication="rss" xsi:type="Jacob">
+  <DataSources>
+    <DataSource name="rss">
+      <Desc>Fill description of datasource.</Desc>
+    </DataSource>
+  </DataSources>
+  <Tables>
+    <Table name="channel" datasource="rss" dbName="channel">
+      <Field name="pkey" dbName="pkey" required="true" readonly="true" history="false" label="PKey">
+        <Long autoincrement="true"/>
+      </Field>
+      <Field name="version" dbName="version" required="false" readonly="false" history="false" label="Version">
+        <Double>
+          <Default>2.0</Default>
+        </Double>
+      </Field>
+      <Field name="title" dbName="title" required="true" readonly="false" history="false" label="Title">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="link" dbName="link" required="false" readonly="false" history="false" label="Link">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="description" dbName="description" required="false" readonly="false" history="false" label="Description">
+        <LongText/>
+      </Field>
+      <Field name="language" dbName="language" required="false" readonly="false" history="false" label="Language">
+        <Enumeration>
+          <Default>en_EN</Default>
+          <Value>en_EN</Value>
+        </Enumeration>
+      </Field>
+      <Field name="copyright" dbName="copyright" required="false" readonly="false" history="false" label="Copyright">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="managingEditor" dbName="managingEditor" required="false" readonly="false" history="false" label="ManagingEditor">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="webMaster" dbName="webMaster" required="false" readonly="false" history="false" label="WebMaster">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="pubDate" dbName="pubDate" required="false" readonly="false" history="false" label="PubDate">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field name="lastBuildDate" dbName="lastBuildDate" required="false" readonly="false" history="false" label="LastBuildDate">
+        <Timestamp resolution="secbase"/>
+      </Field>
+      <Field name="category" dbName="category" required="false" readonly="false" history="false" label="Category">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="generator" dbName="generator" required="true" readonly="true" history="false" label="Generator">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound">
+          <Default>jACOB</Default>
+        </Text>
+      </Field>
+      <Field name="docs" dbName="docs" required="false" readonly="false" history="false" label="Docs">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+      <Field name="ttl" dbName="ttl" required="false" readonly="false" history="false" label="Ttl">
+        <Long autoincrement="false"/>
+      </Field>
+      <Field name="rating" dbName="rating" required="false" readonly="false" history="false" label="Rating">
+        <Text maxLength="40" caseSensitive="false" searchMode="unbound"/>
+      </Field>
+    </Table>
+    <Table name="cloud" datasource="rss" dbName="cloud">
+      <Field name="pkey" dbName="pkey" required="true" readonly="true" history="false" label="PKey">
+        <Long autoincrement="true"/>
+      </Field>
+    </Table>
+    <Table name="item" datasource="rss" dbName="item">
+      <Field name="pkey" dbName="pkey" required="true" readonly="true" history="false" label="PKey">
+        <Long autoincrement="true"/>
+      </Field>
+      <PrimaryKey name="primaryKey">
+        <Field>pkey</Field>
+      </PrimaryKey>
+    </Table>
+  </Tables>
+  <TableAliases>
+    <TableAlias name="channel" table="channel"/>
+    <TableAlias name="cloud" table="cloud"/>
+    <TableAlias name="item" table="item"/>
+  </TableAliases>
+  <Browsers>
+    <Browser name="channelBrowser" alias="channel" type="inform">
+      <Field name="browserPkey" label="PKey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser name="cloudBrowser" alias="cloud" type="inform">
+      <Field name="browserPkey" label="PKey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+    <Browser name="itemBrowser" alias="item" type="inform">
+      <Field name="browserPkey" label="PKey" visible="true">
+        <TableField tableField="pkey"/>
+      </Field>
+    </Browser>
+  </Browsers>
+  <Relations/>
+  <Relationsets>
+    <Relationset name="channel">
+      <Property>
+        <Name>channel.x</Name>
+        <Value>116</Value>
+      </Property>
+      <Property>
+        <Name>channel.y</Name>
+        <Value>196</Value>
+      </Property>
+      <Property>
+        <Name>channel.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>channel.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>cloud.x</Name>
+        <Value>379</Value>
+      </Property>
+      <Property>
+        <Name>cloud.y</Name>
+        <Value>277</Value>
+      </Property>
+      <Property>
+        <Name>cloud.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>cloud.height</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>item.x</Name>
+        <Value>403</Value>
+      </Property>
+      <Property>
+        <Name>item.y</Name>
+        <Value>69</Value>
+      </Property>
+      <Property>
+        <Name>item.width</Name>
+        <Value>-1</Value>
+      </Property>
+      <Property>
+        <Name>item.height</Name>
+        <Value>-1</Value>
+      </Property>
+    </Relationset>
+  </Relationsets>
+  <Forms/>
+  <Domains/>
+  <Applications>
+    <Application name="rss" title="rss Application" eventHandlerLookupMethod="reference"/>
+  </Applications>
+  <ExternalModules/>
+</Jacob>

@@ -1,0 +1,804 @@
+'NAME = "AttachmentAdd"
+'TYPE = 0
+'TEMPLATE = "Sub AttachmentAdd()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       AttachmentAdd
+'Purpose:      Search for a file first when the button "New" is pressed
+'              then create a new record and put the file into the binary
+'              field of the new record and the mane of the file (without path)
+'              into the (readonly) field "filename".
+'              Remark: GUI, WinDOS
+'Copyright:    Quartess GmbH, 1998
+'*****************************************************************************
+
+Sub AttachmentAdd()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim iCallTable As DBTable
+Dim iTaskTable As DBTable
+Dim iGroup As SGroup
+Dim sFileName As String
+Dim nIndex As Integer
+
+	On Error GoTo attachmentadd_error_handler
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iGroup = iApp.ContextGroup
+	Set iTable = iApp.ContextTable
+	If iGroup.Mode <> MODE_CLEAR Then
+		iGroup.Clear
+	End If
+	Set iCallTable = iNetwork.GetTable("call")
+	If iCallTable.RecordCount <> 1 Then
+		iApp.UserMsg "Selektieren Sie bitte erst eine Meldung oder Auftrag"
+		Exit Sub
+	End If
+	sFileName = OpenFileName$( "Attachment" )
+	If sFileName = "" Then
+		Exit Sub
+	End If
+	iGroup.NewRec
+	Set iRecord = iGroup.GetCurrentRecord
+	MsgOpen "Uploading file to the Database",0,True,False
+	iRecord.SetLTValueFromFile "document", sFileName
+	Msg.Close
+
+	nIndex = InStr( sFileName, "\" )
+	While nIndex > 0
+		sFileName = Mid$( sFileName, nIndex + 1 )
+		nIndex = InStr( sFileName, "\" )
+	Wend
+	iGroup.SetValue "attachmentDatecreated", iTable.DBNow
+	iRecord.SetValue "filename", sFileName
+	iGroup.SetValue "attachmentFilename", sFileName
+	iGroup.SetValue "attachmentCallattachment", iCallTable.GetRecord(0).GetKeyValue()
+	If iNetwork.HasTable("task") Then
+		Set iTaskTable = iNetwork.GetTable("task")
+		If iTaskTable.RecordCount=1 Then
+			iGroup.SetValue "attachmentTask_key", iTaskTable.GetRecord(0).GetKeyValue()
+		End If
+	End If
+	Exit Sub
+
+attachmentadd_error_handler:
+	' Err = 18: "User interrupt"
+	If Err <> 18 Then
+		iApp.UserMsg "AttachmentAdd error" & CStr(Err) & ": " & Error$
+	End If
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AttachmentView"
+'TYPE = 0
+'TEMPLATE = "Sub AttachmentView()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       AttachmentView
+'Purpose:      Gets the file from the binary field and saves it to file
+'              in the temporary directory. Then says the command line
+'              interpreter to open the file. The file extension must be
+'              known by the system (M$-Excel must be installed if we want
+'              to open *.xls files).
+'              Remark: GUI, WinDOS
+'Copyright:    Quartess GmbH, 1998
+'*****************************************************************************
+
+Sub AttachmentView()
+
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim iRecord As DBRecord
+Dim sFileName As String
+Dim sDirectory As String
+Dim sFullFileName As String
+Dim nPID As Long
+Dim i As Integer
+Dim ch As Integer
+
+	On Error GoTo attachmentview_error_handler
+	Set iApp = GetApp
+	Set iGroup = iApp.ContextGroup
+	If iGroup.Mode = MODE_FILLED Then
+		Set iRecord = iGroup.GetCurrentRecord
+	Else
+		Set iRecord = Nothing
+	End If
+	If iRecord Is Nothing Then
+		iApp.UserMsg "nicht möglich - kein Attachment selektiert"
+		Exit Sub
+	End If
+
+	If iRecord.GetValue( "fileswapped" ) = "1" Then
+		iApp.UserMsg "nicht möglich - Attachment ausgelagert"
+		Exit Sub
+	End If
+
+	sFileName = iRecord.GetValue( "filename" )
+	If sFileName = "" Then
+		iApp.UserMsg "nicht möglich - kein Dateiname im Datensatz vorhanden"
+		Exit Sub
+	End If
+
+	' remove all special characters from the file name
+	For i = 1 To Len( sFileName )
+		ch = Asc( Mid$( sFileName, i, 1 ) )
+		If ( ch = 24 ) _
+		Or ( ( 36 <= ch ) And ( ch <= 44 ) ) _
+		Or ( ch = 47 ) _
+		Or ( ( 58 <= ch ) And ( ch <= 63 ) ) Then
+			Mid$( sFileName, i, 1 ) = "_"
+		End If
+	Next i
+
+	' which is the "/tmp" directory ("/var/tmp" ? ;-{)
+	sDirectory = Environ$( "TEMP" )
+	If sDirectory = "" Then
+		sDirectory = Environ( "TMP" )
+	End If
+	If sDirectory = "" Then
+		sDirectory = "C:"
+	End If
+	If Right$( sDirectory, 1 ) <> "\" Then
+		sDirectory = sDirectory & "\"
+	End If
+
+	sFullFileName = sDirectory & sFileName
+	If FileExists( sFullFileName ) Then
+		Kill sFullFileName
+	End If
+
+	Msg.Open  "Downloading file from the Database",0,True,False
+	' to be fixed when switching to 3.3.2
+	sFileName = iRecord.GetLTValueToFile( "document", sFileName )
+
+	' BEGIN   workaround 3.3.1:
+'	Dim sGotFile As String
+'	sGotFile = iRecord.GetLTValueToFile( "document" )
+'	If sGotFile = "" Then
+'		sFileName = ""
+'	Else
+'		If sGotFile <> sFileName Then
+'			Name sGotFile As sFileName
+'			If FileExists( sGotFile ) Then
+'				Kill sGotFile
+'			End If
+'		End If
+'	End If
+	' END    workaround
+	Msg.Close
+
+	If sFileName = "" Then
+		iApp.UserMsg "nicht möglich - keine Datei in der Datenbank vorhanden"
+		Exit Sub
+	End If
+	If UCase$(Right$( sFileName,4))= ".XML"	Then
+        iApp.SetURL sFileName
+        iApp.ShowHTMLBrowser
+	Else
+		nPID = shell( Environ$( "COMSPEC" ) & " /c """ & sFileName & """", ebHide )
+	End If
+	Exit Sub
+
+attachmentview_error_handler:
+	' Err = 18: "User interrupt"
+	If Err <> 18 Then
+		iApp.UserMsg "AttachmentView error" & CStr(Err) & ": " & Error$
+	End If
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "StoreAttachments"
+'TYPE = 0
+'TEMPLATE = "Sub StoreAttachments()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       StoreAttachments
+'Purpose:      Gets the binary attachments ans saves them in
+'              the specified path. The binary attachments are
+'              being zeroed after the file has been retrieved and
+'              the record's flag is being set
+'              Remark: GUI, WinDOS
+'Copyright:    Quartess GmbH, 1999
+'*****************************************************************************
+' global constant - an Administrator
+Const sCQAdmin = "CQ_ADMIN"
+
+' global variables
+Dim sPkeyFrom As String
+Dim sPkeyTo As String
+Dim sDstDir As String
+
+Dim nAttr As Integer
+Function StoreAttachments_Fkt( ControlName$, Action%, SuppValue% )
+	Select Case Action%
+		Case 2 'something clicked
+			If ControlName$ = "OK" Then
+				sPkeyFrom = DlgText$( "PkeyFrom" )
+				sPkeyTo = DlgText$( "PkeyTo" )
+				sDstDir = DlgText$( "SavePath" )
+				If sPkeyFrom = "" Or sPkeyTo = "" Or sDstDir = "" Then
+					MsgBox "Attachmentbereich und Auslagerungspfad müssen angegeben werden", ebSystemModal
+					StoreAttachments_Fkt = 1 ' do not close the dialog
+				End If
+				If Right$( sDstDir, 1 ) <> "\" Then sDstDir = sDstDir & "\"
+				' try to check if the directory exists
+				On Error GoTo storeattachments_fkt_error_handler
+				ChDir sDstDir & "."
+				If sDstDir = "" Then
+					MsgBox "Das Verzeichnis """ & DlgText$( "SavePath" ) & _
+							""" scheint nicht zu existieren", ebSystemModal
+					StoreAttachments_Fkt = 1 ' do not close the dialog
+				End If
+			ElseIf ControlName$ = "Clear" Then
+				DlgText "PkeyFrom", ""
+				DlgText "PkeyTo", ""
+				DlgText "SavePath", ""
+				StoreAttachments_Fkt = 1 ' do not close the dialog
+			End If
+	End Select
+	Exit Function
+storeattachments_fkt_error_handler:
+	If Err = 53 Or Err = 57 Or Err = 76 Then
+		sDstDir = ""
+		Resume Next
+	End If
+	MsgBox "Dialog error " & CStr(Err) & ": " & Error$, ebSystemModal
+End Function
+
+Begin Dialog StoreAttachments ,, 272, 56, "Auslagerungsparameter", .StoreAttachments_Fkt,, 2
+	OKButton 227, 4, 40, 14
+	CancelButton 227, 19, 40, 14
+	PushButton   183,  4, 44, 14, "Clear", .Clear
+	Text    12,  6,  64,  8, "Attachment-ID von:", .LabelPkeyFrom
+	TextBox 80,  4,  44, 12, .PkeyFrom
+	Text    60, 22,  12,  8, "bis:", .LabelPkeyTo
+	TextBox 80, 20,  44, 12, .PkeyTo
+	Text    12, 38,  60,  8, "Auslagerungspfad:", .LabelSavePath
+	TextBox 80, 36, 184, 12, .SavePath
+End Dialog
+
+Const sCRLF = Chr$( 13 ) & Chr$( 10 )
+Const sHeader = "Auslagern der Attachments                     " & sCRLF & _
+				"Aktuelle Attachment-ID: "
+
+Sub StoreAttachments()
+Dim dDialog As StoreAttachments
+Dim iApp As Application
+Dim sUserRoles As String
+Dim iNetwork As DBNetwork
+Dim iTable As DBTable
+Dim nRecs As Long
+Dim iRecord As DBRecord
+Dim sPkey As String
+Dim bAbort As Boolean
+Dim sDstFile As String
+Dim sTmpFile As String
+Dim sEmptyFile As String
+
+	On Error GoTo storeattachments_error_handler
+
+	Set iApp = GetApp()
+
+	sUserRoles = "," & iApp.GetUserGroups & ","
+	If InStr( sUserRoles, "," & sCQAdmin & "," ) < 1 Then
+		MsgBox "Sie haben nicht das Recht die Funktion auszuführen !", ebSystemModal
+		Exit Sub
+	End If
+
+	If MsgBox( "Sie müssen VOR dem Lauf die maximale Anzahl der Datensätze auf Systemmaximum setzen", ebOKCancel + ebDefaultButton2 + ebSystemModal ) = ebCancel Then
+		Exit Sub
+	End If
+
+	If Dialog( dDialog ) = 0 Then
+		Exit Sub
+	End If
+
+	Msg.Open "Suche der Datensätze", 0, False, False
+
+	Set iNetwork = iApp.ContextNetwork
+	Set iTable = iNetwork.GetTable( "attachmentadd" )
+
+	iTable.QBESetValue iTable.KeyName, sPkeyFrom & ".." & sPkeyTo
+	iTable.QBESetValue "fileswapped", "0"
+	iTable.Search
+	nRecs = iTable.RecordCount
+
+	Msg.Close
+
+	If nRecs <= 0 Then
+		MsgBox "Keine Datensätze gefunden", ebSystemModal
+	Else
+		' which is the "/tmp" directory ("/var/tmp" ? ;-{)
+		sEmptyFile = Environ$( "TEMP" )
+		If sEmptyFile = "" Then sEmptyFile = Environ$( "TMP" )
+		If sEmptyFile = "" Then sEmptyFile = "C:\TEMP"
+		If Right$( sEmptyFile, 1 ) <> "\" Then sEmptyFile = sEmptyFile & "\"
+		sEmptyFile = sEmptyFile & "!!!_delete_this_empty_file_!!!.txt"
+		Open sEmptyFile For Output As #1
+		Close #1
+
+		bAbort = False
+
+		Msg.Open sHeader, 0, True, True
+		For i = 1 To nRecs
+			Set iRecord = iTable.GetRecord( i - 1 )
+			sPkey = iRecord.GetKeyValue
+			Msg.Text = sHeader & sPkey
+			Msg.Thermometer = CInt( 100.0 * ( i - 0.66 ) / nRecs )
+			sDstFile = iRecord.GetValue( "filename" )
+			sDstFile = sDstDir & sPkey & "_" & sDstFile
+			sTmpFile = iRecord.GetLTValueToFile( "document", "document.bin" )
+			If sTmpFile <> "" Then
+				If FileExists( sDstFile ) Then Kill sDstFile ' overwrite (while testing)
+				FileCopy sTmpFile, sDstFile
+				If FileExists( sTmpFile ) Then Kill sTmpFile ' do not leave trash
+			Else
+				FileCopy sEmptyFile, sDstFile
+			End If
+			Msg.Thermometer = CInt( 100.0 * ( i - 0.33 ) / nRecs )
+			iRecord.SetValue "filename", sDstFile
+			iRecord.SetValue "fileswapped", "1"
+			iRecord.SetLTValueFromFile "document", sEmptyFile
+			iTable.Commit ' for each record - because of ROLLBACK segments
+			Msg.Thermometer = CInt( 100.0 * i / nRecs )
+			Sleep 1 ' to check if cancel pressed
+			If bAbort Then i = nRecs
+		Next i
+		If bAbort Then
+			MsgBox "Abbruch der Operation", ebSystemModal
+		Else
+			Sleep 500 ' 0.5 second to be able to see "100%"
+		End If
+	End If
+
+exit_sub:
+	On Error Resume Next
+	Msg.Close
+	If sEmptyFile <> "" Then
+		If FileExists( sEmptyFile ) Then Kill sEmptyFile
+	End If
+	Set iRecord = Nothing
+	Set iTable = Nothing
+	Set iNetwork = Nothing
+	Exit Sub
+
+storeattachments_error_handler:
+	If Err = 18 Then ' user requested "cancel operation"
+		bAbort = True
+		Resume
+	End If
+	MsgBox "StoreAttachments error " & CStr(Err) & ": " & Error$, ebSystemModal
+	GoTo exit_sub
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "TestScript"
+'TYPE = 0
+'TEMPLATE = "Sub TestScript()"
+'TEXT = [[
+Sub TestScript()
+	 MsgBox "Test"
+ End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AutoAttachmentAdd"
+'TYPE = 0
+'TEMPLATE = "Sub AutoAttachmentAdd()"
+'TEXT = [[
+Sub AutoAttachmentAdd()
+
+Dim iApp As Application
+Dim iNetwork As DBNetwork
+Dim iGroup As SGroup
+Dim iAttachmentForm As SForm
+Dim iAttachmentTbl As DBTable
+Dim iAttachmentRec As DBRecord
+Dim sFileName As String
+Dim sFullFileName As String
+Dim sPkey As String
+Dim nIndex As Integer
+Dim nResponse As Integer
+Dim sDstPath As String
+Dim sDstFile As String
+Dim sDescription As String
+Dim bAttachExists As Boolean
+Dim iDesinationRec As DBRecord
+
+On Error GoTo attachmentadd_error_handler
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iGroup = iApp.ContextGroup
+    Set iAttachmentTbl = iNetwork.GetTable( "attachmentadd" )
+	If Not ( iGroup.Mode = 2 Or iGroup.Mode =3 Or iGroup.Mode=5 ) Then	'MODE_UPDATE,MODE_NEW,MODE_FILLED
+		iApp.UserMsg "Wählen Sie erst einen Datensatz aus."
+		GoTo Exit_Sub
+	End If
+'	If iGroup.Mode = 5 Then iGroup.Change	 'go into Update Mode
+
+	sFileName = OpenFileName$( "Attachment" )
+	If sFileName = "" Then
+		GoTo Exit_Sub
+	End If
+	sDescription = ""
+	Do
+		sDescription = AskBox$( "Geben Sie eine kurze Beschreibung an.                ",,"Attachment")
+	Loop Until sDescription <> ""
+	'Create Attachment Record
+	Set iAttachmentRec = iAttachmentTbl.AddRecord
+	SPkey = iGroup.GetValue( iGroup.GUIName("pkey" ))
+	Select Case iGroup.TableName
+	   Case "task"
+			iAttachmentRec.SetValue "task_key", SPkey
+			iAttachmentRec.SetValue "callattachment", iGroup.GetValue("taskCall")
+	   Case "call"
+			iAttachmentRec.SetValue "callattachment", SPkey
+	End Select
+	
+	MsgOpen "Uploading file to the Database",0,True,False
+	iAttachmentRec.SetLTValueFromFile "document", sFileName
+	iAttachmentRec.SetValue "docdescr", sDescription
+	nIndex = InStr( sFileName, "\" )
+	While nIndex > 0
+		sFileName = Mid$( sFileName, nIndex + 1 )
+		nIndex = InStr( sFileName, "\" )
+	Wend
+	iAttachmentRec.SetValue "datecreated", iAttachmentTbl.DBNow
+	iAttachmentRec.SetValue "filename", sFileName
+	iAttachmentRec.SetValue "docname", sFileName
+	iAttachmentTbl.Commit
+	Msg.Close
+   	iGroup.SetValue "hasattachment", "1" , True
+	Exit Sub
+
+    ' set the attachemt counter
+   '	iGroup.Update
+GoTo exit_Sub
+
+
+attachmentadd_error_handler:
+	Msg.Close
+    iApp.UserMsg "AttachmentAdd error " & CStr(Err) & ": " & Error$
+
+Exit_Sub:
+ Msg.Close
+ Set iAttachmentTbl = Nothing
+ Set iAttachmentRec = Nothing
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AttachmentSearch"
+'TYPE = 0
+'TEMPLATE = "Sub AttachmentSearch()"
+'TEXT = [[
+'*****************************************************************************
+' File:         AttachmentSearch
+' Purpose:      Search for Attachment assigned to a call or task
+' Copyright:    Tarragon Software, 2003
+' *****************************************************************************
+Sub AttachmentSearch()
+
+Dim iApp As Application
+Dim iTable As DBTable
+Dim iContextTable As DBTable
+Dim iForm As SForm
+Dim sRelationset As String
+Dim sSearchStr As String
+
+    On Error GoTo error_handler
+    Set iApp = GetApp()
+
+	Set iNetwork = iApp.ContextNetwork
+	Set iContextTable = iApp.ContextTable
+ 
+	Select Case iApp.ContextControlName
+		Case "attachmentCallSearch"
+			sSearchTable ="call" 
+			sSearchField = "callattachment"
+			sSearchLabel = "Meldung"
+		Case "attachmentTaskSearch" 
+			sSearchTable ="task" 
+			sSearchField = "task_key"
+			sSearchLabel = "Auftrag"
+
+	End Select
+	Set iTable = iNetwork.GetTAble(sSearchTable)
+	If 	iTable.Recordcount <> 1 Then
+		sID = AskBox$(sSearchLabel & "snummer:",,sSearchLabel & "snummer eingeben")
+	Else 
+		sID = iTAble.GetRecord(0).GetKeyValue  
+	End If 
+	iContextTable.Clear
+	iContextTable.QBEClear
+
+    iContextTable.QBESetValue sSearchField, sID
+
+    iApp.ContextBrowser.Search "cqlocal" , 2	 ' QW_DCO_FILL_BOTH
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    iTable.QBEClear
+    iContextTable.QBEClear
+    Exit Sub
+
+error_handler:
+'!!: iApp.UserMsg
+    iApp.UserMsg "AttachmentSearch error " & CStr(Err) & ": " & Error$
+
+    ' Clear the QBE Data for iTable and ContextTable before exiting
+    If Not iTable Is Nothing Then
+        iTable.QBEClear
+    End If
+    If Not iContextTable Is Nothing Then
+        iContextTable.QBEClear
+    End If
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "AttachmentChangeUpdate"
+'TYPE = 0
+'TEMPLATE = "Function AttachmentChangeUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+'Script:       AttachmentChangeUpdate
+'Purpose:      Update an Attachment
+'Copyright:    Tarragon Software 2003
+'*****************************************************************************
+
+Function AttachmentChangeUpdate() As Boolean
+Dim iApp As Application
+Dim iGroup As SGroup
+Dim sFileName As String
+Dim nIndex As Integer
+Dim iTable As DBTable
+Dim iRecord As DBRecord
+	On Error GoTo error_handler
+
+	Set iApp = GetApp
+	Set iNetwork = iApp.ContextNetwork
+	Set iGroup = iApp.ContextGroup
+	Set iTable = iApp.ContextTable
+
+	If iGroup.Mode = MODE_FILLED Then 
+		nAnswer = iApp.UserResponseMsg( "Möchten Sie die Datei aktualisieren" ,ebYesNo+ebQuestion,"Anhang aktualisieren" )
+
+		If nAnswer = ebNo Then GoTo Exit_Function 
+   		sFileName = OpenFileName$( "Zu aktualisierende Datei:" )
+		If sFileName = "" Then
+			 AttachmentChangeUpdate = False
+			Exit Function
+		End If
+	   iGroup.Change
+	    Set iRecord	= iApp.ContextRecord
+		MsgOpen "Uploading der Datei",0,True,False
+   		iRecord.SetLTValueFromFile "document", sFileName
+		Msg.Close
+
+   		nIndex = InStr( sFileName, "\" )
+   		While nIndex > 0
+			sFileName = Mid$( sFileName, nIndex + 1 )
+		  	nIndex = InStr( sFileName, "\" )
+   		Wend
+   		iRecord.SetValue "filename", sFileName
+		iGroup.SetValue "attachmentFilename", sFileName
+	End If
+	iGroup.SetValue "attachmentDatecreated", Now()
+
+Exit_Function:	
+	 AttachmentChangeUpdate = True
+Exit Function
+error_handler:
+	' Err = 18: "User interrupt"
+	If Err <> 18 Then
+		iApp.UserMsg "AttachmentChangeUpdate error" & CStr(Err) & ": " & Error$
+	End If
+	AttachmentChangeUpdate = False
+	
+ End Function
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "SaveMessage"
+'TYPE = 2
+'TEMPLATE = "Function SaveMessage( iNetwork As DBNetwork, sTo As String, sSubject As String, sMsg As String, sStylesheet As String, sTable As String, sKey As String) As Boolean"
+'TEXT = [[
+Function SaveMessage( iNetwork As DBNetwork,  sTo As String, sSubject As String, sMsg As String, sStylesheet As String, sTable As String, sKey As String) As Boolean
+Dim iDocTbl As DBTable
+Dim iDocRec As DBRecord
+Dim iYANRec As DBRecord
+Dim iYANTbl As DBTable
+Dim sFileName As String
+
+On Error GoTo SaveMessage_errorhandler
+    Set iYANTbl = iNetwork.GetTable("yan_task")
+	iYANTbl.QBEClear
+	iYANTbl.Clear
+	' prepare copy in Atachment
+	sFind = "original_to url="""
+	nPos =InStr(sMsg,sFind)
+	IF nPos >17 Then
+		sMsg = left$(sMsg,nPos+16) & sTo & Mid$(sMsg,(nPos+17))
+	End If
+    Set iYANRec = iYANTbl.AddRecord
+    iYANRec.SetValue "xsl_stylesheet", sStylesheet
+    iYANRec.SetValue "datecreated", iYANTbl.DBNow
+	iYANRec.SetValue "address", sTo
+	iYANRec.SetValue "xmltext", sMsg
+    iYANTbl.Commit
+    SaveMessage = True
+	Set  iYANTbl = Nothing
+	Set iYANRec = Nothing
+	Exit Function
+' nicht mehr in Attachment speichern
+    Set iDocTbl = iNetwork.GetTable("attachment")
+	iDocTbl.QBEClear
+	iDocTbl.Clear
+	sFileName =sTo	& " at " & iDocTbl.DBNow & ".xml"
+    Set iDocRec = iDocTbl.AddRecord
+    iDocRec.SetValue "filename", sFileName
+    iDocRec.SetValue "docdescr", sSubject
+	iDocRec.SetValue "docname", sTo
+	iDocRec.SetValue "document", sMsg
+	Select Case sTable
+		Case "call"
+			iDocRec.SetValue "callattachment", sKey
+		Case "task"
+			iDocRec.SetValue "task_key", sKey
+	End Select
+   	iDocRec.SetValue "datecreated", iDocTbl.DBNow
+    iDocTbl.Commit
+
+
+    SaveMessage = True
+
+	Exit Function
+
+SaveMessage_errorhandler:
+    SaveMessage = False
+	If Err <> 18 Then
+		Msgbox "SaveMessage error" & CStr(Err) & ": " & Error$
+	End If
+	Set  iYANTbl = Nothing
+	Set iYANRec = Nothing
+
+End Function
+
+
+
+
+
+
+
+
+
+
+
+']]

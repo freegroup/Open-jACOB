@@ -1,0 +1,1362 @@
+'NAME = "Filescan"
+'TYPE = 0
+'TEMPLATE = "Sub Filescan()"
+'TEXT = [[
+'*****************************************************************************
+'Script:       RuleServer: Filescan
+'Author:       Mike Döring
+'Purpose:      import Calls from a ftp-interface to caretaker ( Wartenanbindung)
+'Copyright:    Tarragon, 2003
+'*****************************************************************************
+Declare Function SetAppProfileValue(iNetwork As DBNetwork, sFieldname as String, sValue As String) As Boolean
+
+'Option Explicit
+' global DCO data declaration
+Public bCalledFromRuleServer As Boolean ' Check ist Script called from Client or Ruleserver		
+Dim iApp As Application
+Dim iNet As DBNetwork
+Dim iCallTbl As DBTable
+Dim iTaskTbl As DBTable
+Dim iEdvintaskTbl As DBTable
+Dim iCallRec As DBRecord
+Dim iTaskRec As DBRecord
+Dim iCallBrowser As DBBrowser
+Dim iObjectTbl As DBTable
+Dim iObjectRec As DBRecord
+Dim iLocationTbl As DBTable
+Dim iExtSystemTbl As DBTable
+Dim iWorkgroupTbl As DBTable
+Dim iEdvinTaskRec As DBRecord
+
+Dim sLogFile As String
+Dim nLogLevel As Integer
+Dim sInfo As String
+Dim sName As String 
+
+' Extensions
+Dim sDataDirectory As String
+Dim sDataExtension As String
+Dim sDoneExtension As String
+Dim sFailExtension As String
+Dim sWorkExtension As String
+Dim sFileExtension As String
+
+' administrator's info
+Dim bAdminEmailOnErrors As Boolean
+Dim bAdminEmailOnUserID As Boolean
+Dim bAdminEmailOnNoData As Boolean
+Dim bAdminEmailOnNewRec As Boolean
+Dim sAdminEmailSubject As String
+Dim sAdminEmailAddr As String
+Dim sAdminFullName As String
+' Default Values
+Dim sDefaultAgentkey As String
+Dim sDefaultCustomerKey As String
+Dim sDefaultAKkey As String
+Dim sDefaultCategory As String
+
+Dim sErrorMsg As String
+
+Type WarteData
+		event  As String
+		ObjectID As String
+		Instance As String
+		MaintenanceGroup As String			
+		TimeStamp As String
+		MessageText As String
+		Activity As String
+End Type
+Dim iWarteRec As WarteData
+
+
+'************************************************************************-
+
+' KONSTANTEN
+Const IniFile = "RuleServer"
+
+'************************************************************************-
+'Sub CleanTable( iTable As Object)
+'************************************************************************-
+Sub CleanTable(iTable As DBTable)
+ '	If Not (iTable is Nothing) Then
+		iTable.QBEClear
+		iTable.Clear
+  '	End If
+End Sub
+
+'************************************************************************-
+'Sub cleanUp()
+'************************************************************************-
+Sub cleanUp()
+	CleanTable( iObjectTbl )
+	CleanTable( iCallTbl )
+	CleanTable( iLocationTbl)
+	CleanTable( iExtSystemTbl)
+	CleanTable( iWorkgroupTbl)
+End Sub
+
+'************************************************************************-
+'Sub WriteLog( nLevel As Integer, sMessage As String )
+'************************************************************************-
+Sub WriteLog( nLevel As Integer, sMessage As String )
+Dim sDate As String
+Dim nChanel As Integer
+
+	'On Error Resume Next
+	If ( nLevel > nLogLevel ) Then Exit Sub
+	If ( Len( sLogfile ) = 0 ) Then Exit Sub 
+	sDate = CStr( Date() + Time() )
+	nChanel = FreeFile()
+	Open sLogFile For Append Lock Write As nChanel
+	Print # nChanel, "[" & sDate & "] - " & sMessage
+ '	Print # nChanel, "[" & sDate & "] - Free Memory : " & BAsic.FreeMemory 
+	Close nChanel
+End Sub
+
+'************************************************************************-
+
+Sub SendEmail( sAddr As String, sSubject As String, sBody As String )
+Dim nNumber As Integer
+Dim sMsg As String
+	On Error GoTo sendemail_error_handler
+	
+	sMsg = "Email could not be send (To:""" & sAddr & """, Subject: """ & sSubject & """)"
+	If Len(sSubject) > 160 Then
+			sSubject = Left$(sSubject,160)
+	End If
+	If Not( iApp.SendMail( sAddr, sSubject, "", sBody ) ) Then GoTo sendemail_error_handler
+
+	Exit Sub
+sendemail_error_handler:
+	On Error Resume Next
+	WriteLog 0, sMsg
+End Sub
+
+'************************************************************************-
+
+Sub SendAdminEmail( sBody As String )
+	On Error Resume Next ' just to be sure no errors can stop me now
+	
+	SendEmail sAdminEmailAddr, sAdminEmailSubject, sBody
+End Sub
+
+'************************************************************************-
+
+Sub LogError( sOrigin As String, nNumber As Integer )
+Dim sMsg As String
+	On Error GoTo logerror_error_handler
+	If nNumber > 0 Then 
+		sMsg = " Error " & CStr( nNumber ) & ": " & Error$( nNumber )
+	Else
+	  sMsg = ""
+	End If
+	WriteLog 0, sOrigin & sMsg
+	If bAdminEmailOnErrors Then SendAdminEmail sMsg
+logerror_error_handler:
+	Exit Sub
+End Sub
+
+'************************************************************************-
+'Function ConvertDate( sDateValue) As Date
+'************************************************************************-
+Function ConvertDate( sDateValue As String) As Date
+Dim sDummy As String
+Dim n As Integer
+	On Error GoTo Error_handler
+	' Die Zeiten haben leider die Form:	2003-04-02T12:28:44
+	' Also das T muss raus
+	n= Instr(sDateValue,"T")	
+	If Instr(sDateValue,"T") >0  Then
+		sDummy = Left$(sDateValue,n-1) & " " & Right$(sDateValue,Len(sDateValue)-n )
+	End If
+	ConvertDate = CDATE( sDummy )
+	Exit Function
+Error_handler:
+    ConvertDate= Now()
+    WriteLog 1, "WARNING - ConvertDate(" & sDateValue & ") ist	fehlgeschlagen"
+
+End Function
+
+
+'************************************************************************-
+'Function CreateLink(sForeignFieldname As String, sTableName As String, sKeyname As String, sKeyValue As String) As Boolean
+'************************************************************************-
+Function CreateLink(iRec as DBRecord, sForeignFieldname As String, sTableName As String, sKeyname As String, sKeyValue As String) As Boolean
+Dim iTable As DBTable
+On Error GoTo error_handler
+	Set iTable = iNet.GetTable(sTableName)
+	iTable.Clear
+	iTable.QBEClear
+	iTable.QBESetValue sKeyname, "=" & sKeyVAlue
+'	iTable.QBESetValue sKeyname,  sKeyValue
+	iTable.Search
+	If iTable.RecordCount = 1 Then
+		iRec.SetValue sForeignFieldname,	sKeyValue
+		CreateLink = True
+	Else
+		CreateLink = False
+	End If
+	Set iTable = Nothing
+	Exit Function
+error_handler:
+	On Error Resume Next
+	Set iTable = Nothing
+	LogError "CreateLink zu " & sTableName & " mit Key : " & sKeyVAlue & " fehlgeschlagen", Err.Number
+	CreateLink = False
+End Function
+
+
+'************************************************************************-
+'Function ParseXML(sXML As String)  As Boolean
+'************************************************************************-
+Function ParseXML(sXML As String)  As Boolean
+Dim parser As Object
+Dim doc As Object
+Dim bRef As Boolean
+Dim NodeList As Object
+Dim PrimaryNodeList As Object
+Dim Node As Object
+Dim Element As Object
+Dim i As Integer
+
+On Error GoTo Error_Handler
+	WriteLog 3, "Start XML parse von " & sName 	
+
+Set parser = GetObject( "", "QXMLParse.QXMLParser" )
+bRef = parser.parseString(sXML)	 
+
+Set doc = parser.Document
+Set NodeList = doc.getElementsByTagName("Body")
+sErrorMsg = "Parse XML Fehler Tag <Body> ist nicht gefunden worden"
+If NodeList.Length = 0 Then GoTo Error_Handler
+
+sErrorMsg = "Parse XML Fehler Tag <Job> ist nicht gefunden worden"
+Set PrimaryNodeList = NodeList.Item(0).CXMLElement.getElementsByTagName("Job")
+If PrimaryNodeList.Length = 0 Then GoTo Error_Handler
+' Get Values
+   iWarteRec.event = PrimaryNodeList.Item(0).CXMLElement.GetAttribute("event")	   ' welches Event?
+
+    sErrorMsg = "Parse XML Fehler Tag <ObjectID> ist nicht gefunden worden"
+    Set NodeList = PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("ObjectID")
+	If NodeList.Length = 0 Then GoTo Error_Handler	  'ObjectID ist Pflicht!
+	iWarteRec.ObjectID = NodeList.Item(0).FirstChild.NodeValue
+
+    sErrorMsg = "Parse XML Fehler Tag <Instance> ist nicht gefunden worden"	
+	Set NodeList =  PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("Instance")
+	If NodeList.Length = 0 Then GoTo Error_Handler	  'EDVIN Instance ist Pflicht!
+	iWarteRec.Instance = NodeList.Item(0).FirstChild.NodeValue
+
+    sErrorMsg = "Parse XML Fehler Tag <MaintenanceGroup> ist nicht gefunden worden"	
+	Set NodeList =  PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("MaintenanceGroup")
+	If NodeList.Length = 0 Then GoTo Error_Handler	  'AK ist Pflicht!
+	iWarteRec.MaintenanceGroup = NodeList.Item(0).FirstChild.NodeValue
+
+    sErrorMsg = "Parse XML Fehler Tag <TimeStamp> ist nicht gefunden worden"	
+	Set NodeList =  PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("TimeStamp")
+	If NodeList.Length = 0 Then GoTo Error_Handler	  'TimeStamp ist Pflicht!
+	iWarteRec.TimeStamp = NodeList.Item(0).FirstChild.NodeValue
+
+    sErrorMsg = "Parse XML Fehler"	
+	Set NodeList =  PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("MessageText")
+	If NodeList.Length <> 0 Then
+		iWarteRec.MessageText = NodeList.Item(0).FirstChild.NodeValue
+	Else
+		iWarteRec.MessageText = ""
+	End If
+	Set NodeList =  PrimaryNodeList.Item(0).CXMLElement.getElementsByTagName("Activity")
+	If NodeList.Length <> 0 Then
+		iWarteRec.Activity = NodeList.Item(0).FirstChild.NodeValue
+	Else
+		iWarteRec.Activity = ""
+	End If
+	WriteLog 3, "XML parse von " & sName & " war erfolgreich"	
+
+Set Element = Nothing
+Set NodeList = Nothing
+Set PrimaryNodeList = Nothing
+Set Node = Nothing
+Set doc = Nothing
+Set parser = Nothing
+ParseXML = True
+	Exit Function
+
+Error_Handler:
+	iWarteRec.event = ""
+	iWarteRec.ObjectID = ""
+	iWarteRec.Instance = ""
+	iWarteRec.MaintenanceGroup= ""			
+	iWarteRec.TimeStamp = ""
+	iWarteRec.MessageText = ""
+	iWarteRec.Activity = ""
+
+Set Element = Nothing
+Set NodeList = Nothing
+Set Node = Nothing
+Set doc = Nothing
+Set parser = Nothing
+ParseXML = False
+
+End Function
+
+'************************************************************************-
+'Function GetInstanceKey() As String
+'************************************************************************-
+Function GetInstanceKey(sInstance As String) As String
+On Error GoTo Error_handler	
+	If sInstance = "" Then
+		GetInstanceKey = "NULL"
+        WriteLog 1, "ERROR - Keine Instance  ist gefunden da Instance leer ist"
+		Exit Function
+	End If 
+	iExtSystemTbl.Clear
+	iExtSystemTbl.QBEClear
+	iExtSystemTbl.QBESetValue "name", "=" & sInstance 
+	iExtSystemTbl.QBESetValue "systemstatus", "aktiv"
+	iExtSystemTbl.Search
+	If iExtSystemTbl.RecordCount = 1 Then
+	   GetInstanceKey =iExtSystemTbl.GetRecord(0).GetValue("pkey")
+        WriteLog 3, "Instance gefunden"
+	Else
+	   GetInstanceKey = "NULL"
+        WriteLog 3, "ERROR - Keine Instance  ist gefunden"
+
+	End If 	
+Exit Function
+Error_handler:
+	   GetInstanceKey = "NULL"
+
+End Function
+
+'************************************************************************-
+'Function GetNewLocationKey() As String
+'************************************************************************-
+Function GetNewLocationKey() As String
+Dim sObjLocationKey As String
+Dim iLocationRec As DBRecord
+Dim iNewLocationRec As DBRecord
+
+On Error GoTo Error_handler
+	If iObjectRec Is  Nothing Then
+       WriteLog 1, "WARNING - Kein Object zur Erzeugung eines Ortes vorhanden"
+	   GoTo Create_Empty_Location
+	End If
+	sObjLocationKey = iObjectRec.GetValue("location_key")
+	If sObjLocationKey = "" Or sObjLocationKey ="NULL" Then
+       WriteLog 1, "WARNING - Kein Ort am Object zur Erzeugung eines neuen Ortes vorhanden"
+	   GoTo Create_Empty_Location
+	End If
+	iLocationTbl.Clear
+	iLocationTbl.QBEClear
+	iLocationTbl.QBESetValue "pkey", sObjLocationKey
+	iLocationTBL.Search
+	If iLocationTbl.RecordCount = 1 Then
+	  Set iLocationRec =iLocationTbl.GetRecord(0)
+	Else
+       WriteLog 1, "WARNING - Kein Ort am Object zur Erzeugung eines neuen Ortes vorhanden"
+	   GoTo Create_Empty_Location
+	End If
+    WriteLog 3, "Lege Ort an"
+	Set iNewLocationRec = iLocationTbl.AddRecord
+
+	iNewLocationRec.SetValue "baxis_key", iLocationRec.GetValue("baxis_key")
+	iNewLocationRec.SetValue "building_key", iLocationRec.GetValue("building_key")
+	iNewLocationRec.SetValue "buildingpart_key", iLocationRec.GetValue("buildingpart_key")
+	iNewLocationRec.SetValue "buildpartobj_key", iLocationRec.GetValue("buildpartobj_key")
+	iNewLocationRec.SetValue "description", iLocationRec.GetValue("description")
+	iNewLocationRec.SetValue "floor_key", iLocationRec.GetValue("floor_key")
+	iNewLocationRec.SetValue "gdsbaxis_key", iLocationRec.GetValue("gdsbaxis_key")
+	iNewLocationRec.SetValue "gdszaxis_key", iLocationRec.GetValue("gdszaxis_key")
+	iNewLocationRec.SetValue "note", iLocationRec.GetValue("note")
+	iNewLocationRec.SetValue "plane_key", iLocationRec.GetValue("plane_key")
+	iNewLocationRec.SetValue "room_key", iLocationRec.GetValue("room_key")
+	iNewLocationRec.SetValue "site_key", iLocationRec.GetValue("site_key")
+	iNewLocationRec.SetValue "sitepart_key", iLocationRec.GetValue("sitepart_key")
+	iNewLocationRec.SetValue "zaxis_key", iLocationRec.GetValue("zaxis_key")
+	iNewLocationRec.SetValue "orientation", iLocationRec.GetValue("orientation")
+    WriteLog 3, "Versuche Commit auf location"
+	iLocationTbl.commit
+	GetNewLocationKey = iNewLocationRec.GetValue("pkey")
+    WriteLog 3, "Ort mit Key= " & iNewLocationRec.GetValue("pkey") & " angelegt"
+	
+	Set iLocationRec = Nothing
+	Set iNewLocationRec = Nothing
+	
+Exit Function
+Create_Empty_Location: 
+	Set iNewLocationRec = iLocationTbl.AddRecord
+	iNewLocationRec.SetValue "note", "Keine Ortsbeschreibung vorhanden"
+	iNewLocationRec.SetValue "description", "Keine Ortsbeschreibung vorhanden"
+	iLocationTbl.commit
+	GetNewLocationKey = iNewLocationRec.GetValue("pkey")
+	Set iNewLocationRec = Nothing
+	
+Exit Function 
+Error_handler:
+	   GetNewLocationKey = "NULL"
+       WriteLog 1, "ERROR - Keinen Ort erzeugt"
+   		Set iLocationRec = Nothing
+	Set iNewLocationRec = Nothing
+
+End Function
+
+'-------------------------------------------------------------------
+Function GetAK( sLocationKey As String) As Boolean
+Dim iLocationContractTable As DBTable
+Dim  iWorkgroupTable As DBTable
+Dim ihwgTable As DBTable
+Dim iRoutingBrowser As DBBrowser
+Dim iWorkgroupBrowser As DBBrowser
+Dim iRoutingTable As DBTable
+Dim iRoutingRecord As DBRecord
+Dim iCategoryTable As DBTable
+Dim sCurrentCategoryKey As String
+Dim sSite_key As String
+Dim sSitepart_key As String
+Dim sBuilding_key As String
+Dim sBuildingpart_key As String
+Dim iLocationRec As DBRecord
+Dim sContract As String
+Dim sErrorMsg As String
+Dim bSuccessfull As Boolean
+Dim bFirstTime As Boolean
+Dim bFinish As Boolean
+Dim sWorkgroupkey As String
+
+
+On Error GoTo Error_handler
+' erst mal schauen ob HWG einen eindeutigen AK hat.
+    Set iWorkgroupTable = iNet.GetTable("categoryworkgroup")
+	Set ihwgTable =  iNet.GetTable("taskworkgroup")
+	iWorkgroupTable.Clear
+	iWorkgroupTable.QBEClear
+	ihwgTable.Clear
+	ihwgTable.QBEClear
+	ihwgTable.QBESetValue "groupstatus", "gültig"
+	ihwgTable.QBESetValue "hwg_name", "=" & iEdvintaskRec.GetValue("auft_ih_gruppe")
+	
+	Set iWorkgroupBrowser = iNet.GetBrowser("categoryworkgroupBrowser")
+	
+	iWorkgroupBrowser.Search "r_akhwg"
+	
+	If 	 iWorkgroupBrowser.Recordcount=1 Then
+		WriteLog 3, "eindeutigen Ak des HWGs gefunden"
+		sWorkgroupkey =	iWorkgroupBrowser.GetTableRecord(0,iWorkgroupTable).GetValue("pkey")
+		If Not CreateLink(iCallRec,"workgroupcall" , "callworkgroup", "pkey",  sWorkgroupkey) Then
+	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für AK fehlgeschlagen"
+				GoTo  Error_handler
+		End If
+		goto Exit_Function
+
+	End If
+
+
+	' normales Routing ...
+	iLocationTbl.Clear
+	iLocationTbl.QBEClear
+	iLocationTbl.QBESetValue "pkey", sLocationKey
+	iLocationTBL.Search
+	If iLocationTbl.RecordCount = 1 Then
+	  Set iLocationRec = iLocationTbl.GetRecord(0)
+	Else
+       WriteLog 1, "WARNING - Kein Ort für AK Suche vorhanden"
+	   GoTo Error_handler	
+	End If
+    WriteLog 3, "Suche Vertrag"
+
+	sSite_key = iLocationRec.GetValue("site_key")
+	If sSite_key = "" Then sSite_key = "NULL"
+	sSitepart_key = iLocationRec.GetValue("sitepart_key")
+	If sSitepart_key = "" Then sSitepart_key = "NULL"
+	sBuilding_key = iLocationRec.GetValue("building_key")
+	If sBuilding_key = "" Then sBuilding_key = "NULL"
+	sBuildingpart_key = iLocationRec.GetValue("buildingpart_key")
+	If sBuildingpart_key = "" Then sBuildingpart_key = "NULL"
+
+	Set iLocationContractTable = iNet.GetTable("locationcontract")
+	'Suche nach site, sitepart,building, buildingpart
+	iLocationContractTable.Clear
+	iLocationContractTable.QBEClear
+	iLocationContractTable.QBESetValue "site_key", sSite_key
+	iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+	iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+	iLocationContractTable.QBESetValue "buildingpart_key", sBuildingpart_key
+	iLocationContractTable.Search
+
+	If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart,building
+		iLocationContractTable.Clear
+		iLocationContractTable.QBEClear
+		iLocationContractTable.QBESetValue "site_key", sSite_key
+		iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+		iLocationContractTable.QBESetValue "building_key",	sBuilding_key
+		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		iLocationContractTable.Search
+
+   		If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site, sitepart
+			iLocationContractTable.Clear
+ 			iLocationContractTable.QBEClear
+  			iLocationContractTable.QBESetValue "site_key", sSite_key
+			iLocationContractTable.QBESetValue "sitepart_key", sSitepart_key
+  			iLocationContractTable.QBESetValue "building_key",	"NULL"
+   			iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+			iLocationContractTable.Search
+
+   			If iLocationContractTable.RecordCount <> 1  Then  'Suche nach site
+		 		iLocationContractTable.Clear
+ 		 		iLocationContractTable.QBEClear
+  		  		iLocationContractTable.QBESetValue "site_key", sSite_key
+		  		iLocationContractTable.QBESetValue "sitepart_key", "NULL"
+  		   		iLocationContractTable.QBESetValue "building_key",	"NULL"
+   		  		iLocationContractTable.QBESetValue "buildingpart_key", "NULL"
+		   		iLocationContractTable.Search
+   			End If
+		End If
+	End If
+
+	If iLocationContractTable.RecordCount = 1  Then
+		sContract = iLocationContractTable.getRecord(0).GetValue("contract_key")
+	Else
+	 	sErrorMsg = "kein Vertrag gefunden"
+		goto Error_handler
+	End If
+'  Suchen des Routingsatzes
+	
+	bSuccessfull = False
+	bFinish = False
+	sCurrentCategoryKey = iEdvintaskRec.GetValue("auft_gew_id")
+ 
+	bFirstTime = True
+	Set iRoutingTable = iNet.GetTable("categoryprocess")
+
+	Set iCategoryTable = iNet.GetTable("category")
+	Set iRoutingBrowser = iNet.GetBrowser("categoryprocessBrowser")
+	Do
+		iRoutingBrowser.Clear
+		iWorkgroupTable.Clear
+		iWorkgroupTable.QBEClear
+		ihwgTable.Clear
+		ihwgTable.QBEClear
+		ihwgTable.QBESetValue "groupstatus", "gültig"
+		ihwgTable.QBESetValue "hwg_name", "=" & iEdvintaskRec.GetValue("auft_ih_gruppe")
+		iRoutingTable.Clear
+ 		iRoutingTable.QBEClear
+  		iRoutingTable.QBESetValue "category_key", sCurrentCategoryKey
+		iRoutingTable.QBESetValue "process_key", iEdvintaskRec.GetValue("auft_activity")
+		iRoutingTable.QBESetValue "contract_key", sContract
+		iRoutingBrowser.Search 	"r_routing"
+		If iRoutingBrowser.RecordCount > 0 Then
+			Set iRoutingRecord  = iRoutingBrowser.GetRecord(0)
+		   	bSuccessfull= True
+	   	End If
+		
+		If Not bSuccessfull Then
+			sCurrentCategoryKey = iCategoryTable.GetValueWhere("parentcategory_key","pkey",sCurrentCategoryKey)
+			If (sCurrentCategoryKey = "" Or sCurrentCategoryKey ="NULL") Then	'Ebene 1 des Gewerkebaums erreicht
+					bFinish = True ' Nichts gefunden :-(
+			End If
+		End If 
+	Loop Until bSuccessfull Or bFinish
+
+	If bSuccessfull Then
+		 If Not CreateLink(iCallRec,"workgroupcall" , "callworkgroup", "pkey", iRoutingRecord.GetValue("workgroup_key") ) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für AK fehlgeschlagen"
+				GoTo  Error_handler
+		End If
+		iCallRec.SetValue "routinginfo", iRoutingRecord.GetValue("routinginfo")
+	Else 
+		  		sErrorMsg = "ERROR - Keinen AK gefunden"
+				GoTo  Error_handler
+	End If
+WriteLog 3, "AK gefunden erfolgreich verbunden key: "  &  iRoutingRecord.GetValue("workgroup_key")
+
+Exit_Function:
+	Set iRoutingRecord = Nothing
+    Set iLocationContractTable = Nothing
+    Set iWorkgroupTable = Nothing
+	Set ihwgTable =  Nothing
+	Set iRoutingBrowser = Nothing
+	Set iRoutingTable = Nothing
+	Set iCategoryTable = Nothing
+	Set iWorkgroupBrowser = Nothing
+    GetAk = True
+
+Exit Function
+Error_handler:
+    WriteLog 1, "ERROR AK Suche - "	 & sErrorMsg
+    Set iLocationContractTable = Nothing
+    GetAk = False
+	Set iRoutingRecord = Nothing
+    Set iLocationContractTable = Nothing
+    Set iWorkgroupTable = Nothing
+	Set ihwgTable =  Nothing
+	Set iRoutingBrowser = Nothing
+	Set iWorkgroupBrowser = Nothing
+	Set iRoutingTable = Nothing
+	Set iCategoryTable = Nothing
+    End Function
+
+'************************************************************************-
+'Function GetNewEDVINLocationKey() As String
+'************************************************************************-
+Function GetNewEDVINLocationKey() As String
+Dim iNewLocationRec As DBRecord
+
+On Error GoTo Error_handler
+    WriteLog 3, "Lege Ort an"
+	Set iNewLocationRec = iLocationTbl.AddRecord
+
+	iNewLocationRec.SetValue "building_key", iEdvinTaskRec.GetValue("faplisbuilding")
+	iNewLocationRec.SetValue "buildingpart_key", iEdvinTaskRec.GetValue("faplisbuildingpart")
+	iNewLocationRec.SetValue "floor_key", iEdvinTaskRec.GetValue("faplisfloor")
+	iNewLocationRec.SetValue "note", iEdvinTaskRec.GetValue("auft_ort")
+	iNewLocationRec.SetValue "plane_key", iEdvinTaskRec.GetValue("faplisplane")
+	iNewLocationRec.SetValue "site_key", iEdvinTaskRec.GetValue("faplissite")
+	iNewLocationRec.SetValue "sitepart_key", iEdvinTaskRec.GetValue("faplissitepart")
+    WriteLog 3, "Versuche Commit auf location"
+	iLocationTbl.commit
+	GetNewEDVINLocationKey = iNewLocationRec.GetValue("pkey")
+    WriteLog 3, "Ort mit Key= " & iNewLocationRec.GetValue("pkey") & " angelegt"
+	
+	Set iLocationRec = Nothing
+	Set iNewLocationRec = Nothing
+	
+Exit Function
+Create_Empty_Location: 
+	Set iNewLocationRec = iLocationTbl.AddRecord
+	iNewLocationRec.SetValue "note", "Keine Ortsbeschreibung vorhanden"
+	iNewLocationRec.SetValue "description", "Keine Ortsbeschreibung vorhanden"
+	iLocationTbl.commit
+	GetNewEDVINLocationKey = iNewLocationRec.GetValue("pkey")
+	Set iNewLocationRec = Nothing
+	
+Exit Function 
+Error_handler:
+	   GetNewEDVINLocationKey = "NULL"
+       WriteLog 1, "ERROR - Keinen Ort erzeugt"
+   		Set iLocationRec = Nothing
+	Set iNewLocationRec = Nothing
+
+End Function
+
+'************************************************************************-
+'Function GetWorkgroupKey() As String
+'************************************************************************-
+Function GetWorkgroupKey() As String
+On Error GoTo Error_handler
+	If iWarteRec.MaintenanceGroup = "" Then
+		GetWorkgroupKey = "NULL"
+        WriteLog 1, "ERROR - Keinen AK  gefunden"
+		Exit Function
+	End If 
+	iWorkgroupTbl.Clear
+	iWorkgroupTbl.QBEClear
+	iWorkgroupTbl.QBESetValue "name", iWarteRec.MaintenanceGroup
+	iWorkgroupTbl.QBESetValue "groupstatus", "gültig"
+	iWorkgroupTbl.Search
+	If iWorkgroupTbl.RecordCount = 1 Then
+	   GetWorkgroupKey =iWorkgroupTbl.GetRecord(0).GetValue("pkey")
+       WriteLog 3, "AK  gefunden"
+	Else
+	   GetWorkgroupKey = "NULL"
+       WriteLog 1, "ERROR - Keinen AK  gefunden"
+	End If 	
+Exit Function
+Error_handler:
+	   GetWorkgroupKey = "NULL"
+
+End Function
+
+'************************************************************************-
+'Function GetCallObject() As Boolean
+'************************************************************************-
+Function GetCallObject(sObjectID As String, sInstance As String) As Boolean
+On Error GoTo Error_handler
+
+	If 	sObjectID = "" Or sInstance = "" Then
+        WriteLog 1, "ERROR - ObjectID oder Instance  ist Leer"
+		GetCallObject = False
+		Exit Function
+	End If
+		
+	iObjectTbl.Clear
+	iObjectTbl.QBEClear
+    iObjectTbl.QBESetValue "external_id", "=" & sObjectID 
+   	iObjectTbl.QBESetValue "ext_system_key", GetInstanceKey(sInstance )
+	iObjectTbl.Search
+	If iObjectTbl.RecordCount = 1 Then
+	    Set iObjectRec = iObjectTbl.GetRecord(0)
+        WriteLog 3, "Object gefunden"
+		GetCallObject = True
+	Else
+	   Set iObjectRec = Nothing
+       WriteLog 1, "WARNING - Object nicht gefunden"
+	   GetCallObject = False
+	End If 	
+
+Exit Function
+
+Error_handler:
+	GetCallObject = False
+	Set iObjectRec = Nothing
+       WriteLog 1, "WARNING - Object nicht gefunden"
+
+End Function
+
+'************************************************************************-
+'Function FindOpenCalls() As Integer
+'************************************************************************-
+Function FindOpenCalls() As Integer
+Dim nRecs As Integer
+
+On Error GoTo Error_handler
+	sErrorMsg = "ERROR - Suche nach offenen Meldungen fehlgeschlagen"
+    WriteLog 3, "Object mit ID " & iWarteRec.ObjectID  & " wird gesucht"
+	If Not GetCallObject(iWarteRec.ObjectID,iWarteRec.Instance) Then
+		sErrorMsg = "Objekt nicht gefunden"
+		GoTo  Error_handler
+	End If
+    WriteLog 3, "alte offene Meldungen suchen"
+	iCallTbl.SetWhere ""
+	iCallTbl.Clear
+	iCallTbl.QBEClear
+	iCallTbl.QBESetValue "object_key", "=" & iObjectRec.GetValue("pkey")
+	iCallTbl.QBESetValue "agentcall", "=" & sDefaultAgentkey
+	iCallTbl.QBESetValue "employeecall", "=" & sDefaultCustomerKey
+	iCallTbl.QBESetValue "workgroupcall", "=" & GetWorkgroupKey
+	iCallTbl.QBESetValue "callstatus", "AK zugewiesen|Angenommen"
+	iCallBrowser.Search	 "r_call", 2,True,false
+	' Alle schließen
+	nRecs = iCallBrowser.RecordCount 
+   	WriteLog 3, nRecs & " offene Meldungen für object_key =" & iObjectRec.GetValue("pkey") & " gefunden"		
+	FindOpenCalls = nRecs
+Exit Function
+Error_handler:
+FindOpenCalls = -1
+
+End Function
+
+'************************************************************************-
+'Function CloseCall() As Boolean
+'************************************************************************-
+Function CloseCall() As Boolean
+Dim i As Integer
+Dim sCallKey As String
+Dim nRecs As Integer
+
+On Error GoTo Error_handler
+	Do
+		nRecs  = FindOpenCalls()
+		If nRecs >0	 Then
+			sErrorMsg = "Meldungsrecord konnte nicht selektiert werden"
+			Set iCallRec = 	iCallBrowser.GetTableRecord( 0, iCallTbl)
+			sCallKey = iCallRec.GetValue("pkey")
+	    	WriteLog 3, " Meldung " & sCallKey & " wird geschlossen"
+			If iCallRec.GetValue("callstatus") = "AK zugewiesen" Then
+				iCallRec.SetValue  "callstatus", "Angenommen"
+				iCallRec.SetValue  "dateowned", "now"
+				sErrorMsg = "Meldung " &  sCallKey & " konnte nicht angenommen werden"
+				iCallTbl.Commit
+	      		WriteLog 3, " Meldung " & sCallKey & " wurde Angenommen"
+			End If
+
+			If iCallRec.GetValue("callstatus") = "Angenommen" Then
+				iCallRec.SetLTValue "problemtext", "Meldung wurde von der Warte um " & iWarteRec.TimeStamp & " fertig gemeldet." & Basic.Eoln$
+				iCallRec.SetValue  "callstatus", "Fertig gemeldet"
+				iCallRec.SetValue "dateresolved", ConvertDate(iWarteRec.TimeStamp)
+				sErrorMsg = "Meldung " &  sCallKey & " konnte nicht Fertig gemeldet werden"
+				iCallTbl.Commit
+	      		WriteLog 3, " Meldung " & sCallKey & " wurde Fertig gemeldet"
+			End If
+
+			If iCallRec.GetValue("callstatus") = "Fertig gemeldet" Then
+				iCallRec.SetValue  "callstatus", "Dokumentiert"
+				sErrorMsg = "Meldung " &  sCallKey & " konnte nicht Dokumentiert werden"
+				iCallTbl.Commit
+	      		WriteLog 3, " Meldung " & sCallKey & " wurde Dokumentiert"
+			End If
+		End If
+	  If nRecs = -1 Then	 Goto Error_handler			' findopenCalls return Error
+	Loop Until nRecs = 0
+	CloseCall = True
+
+Exit Function
+Error_handler:
+	sErrorMsg = "ERROR - " & sErrorMsg
+CloseCall = False
+
+End Function
+
+'************************************************************************-
+'Function CreateCall() As Boolean
+'************************************************************************-
+Function CreateCall() As Boolean
+Dim sGroupKey As String
+Dim sCategoryKey As String
+Dim sLocationKey As String
+Dim sPersonName As String
+Dim sPhone As String
+Dim sMessage As String
+Dim iAffectedPersonRec As DBRecord
+
+On Error GoTo Error_handler
+    WriteLog 3, "Object mit ID " & iWarteRec.ObjectID  & " wird gesucht"
+	If Not GetCallObject(iWarteRec.ObjectID,iWarteRec.Instance) Then
+		sErrorMsg = "ERROR - Objekt nicht gefunden"
+		GoTo  Error_handler
+	End If
+	sCategoryKey = iObjectRec.GetValue("objectcategory_key")
+	If sCategoryKey ="" Or sCategoryKey ="NULL" Then
+        WriteLog 1, "WARNING - Kein Werk am Object vorhanden. Nehme Default"		
+		sCategoryKey =sDefaultCategory
+	End If
+	sGroupKey = GetWorkgroupKey 
+	If sGroupKey= "NULL" Then  sGroupKey=  sDefaultAKkey
+
+    WriteLog 3, "alte offene Meldungen suchen"
+	If FindOpenCalls > 0 Then 
+	 If Not CloseCall() Then
+  		sErrorMsg = "ERROR - schließen von offenen Meldungen ist fehlgeschlagen"
+		GoTo  Error_handler
+	 End If
+	End If
+    WriteLog 3, "Störungsort ermitteln"
+	sLocationKey = GetNewLocationKey()
+	sErrorMsg = "ERROR - CallRecord ertstellen fehlgeschlagen"
+    WriteLog 3, "Meldung anlegen"
+	iCallTbl.SetWhere ""
+	iCallTbl.Clear
+	
+	 Set iCallRec = iCallTbl.AddRecord
+	 If Not (CreateLink(iCallRec,"process_key" , "process", "pkey", iWarteRec.Activity ) And	_
+	         CreateLink(iCallRec,"workgroupcall" , "callworkgroup", "pkey", sGroupKey )) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für Tätigkeit oder AK ist fehlgeschlagen"
+				GoTo  Error_handler
+	End If
+	 If Not (CreateLink(iCallRec,"employeecall" , "customerint", "pkey", sDefaultCustomerKey ) And	_
+	         CreateLink(iCallRec,"agentcall" , "agent", "pkey", sDefaultAgentkey )) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für Agenten oder Kunde ist fehlgeschlagen"
+				GoTo  Error_handler
+	End If
+
+	If sLocationKey = "NULL" Then
+		 WriteLog 1, "WARNING - Es gibt keinen Ortsdatensatz"
+		 iLocationTbl.Clear
+		 iCallRec.SetValue "location_key",	 sLocationKey
+	Else
+	     If Not CreateLink(iCallRec,"location_key" , "location", "pkey", sLocationKey )	Then
+		  		sErrorMsg = "ERROR - Erstellen der DB Links zum Ort ist fehlgeschlagen"
+				GoTo  Error_handler
+		End If
+	End If
+    If Not CreateLink(iCallRec,"object_key" , "object", "pkey", iObjectRec.GetValue("pkey") )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum Object ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+    If Not CreateLink(iCallRec,"categorycall" , "category", "pkey", sCategoryKey )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum Gewerk ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+    If Not CreateLink(iCallRec,"affectedperson_key" , "affectedperson", "pkey", sDefaultCustomerKey )	Then
+	  		WriteLog 1, "WARNING -  Erstellen der DB Links zur Betroffenen Person ist fehlgeschlagen"
+	Else 
+		 Set iAffectedPersonRec = iCallRec.GetLinkedRecord("affectedperson")
+		 sPhone=  iAffectedPersonRec.GetValue("phonecorr")
+		 sPersonName=  iAffectedPersonRec.GetValue("fullname")
+		 iCallRec.SetValue "affectedperson",  sPersonName & " Tel: " & sPhone
+		 Set iAffectedPersonRec = Nothing
+	End If
+	If Len(iWarteRec.MessageText)>240 Then 
+		iCallRec.SetValue "problem",left$(iWarteRec.MessageText,240)
+		sMessage =  iWarteRec.MessageText & Basic.Eoln$
+	Else
+		sMessage = ""
+		iCallRec.SetValue "problem",iWarteRec.MessageText
+	End If
+	'iCallRec.SetValue "callstatus", "AK zugewiesen" ' warum nicht automatisch?
+	iCallRec.SetValue "datereported", ConvertDate(iWarteRec.TimeStamp)
+	iCallRec.SetValue "datecallconnected", ConvertDate(iWarteRec.TimeStamp)
+	iCallRec.SetLTValue "problemtext", sMessage  & "Objekt  wurde um " & iWarteRec.TimeStamp & " von der Warte als gestört gemeldet." & Basic.Eoln$
+	sErrorMsg = "ERROR - Meldung speichern fehlgeschlagen"
+	bCalledFromRuleServer = True
+	iCallTbl.Commit
+    WriteLog 3, "Meldung mit Nummer " & iCallRec.GetValue("pkey") & " angelegt"
+CreateCall = True
+Exit Function
+Error_handler:
+CreateCall = False
+
+End Function
+
+
+'************************************************************************-
+'Sub ProcessFile
+'************************************************************************-
+Sub ProcessFile
+Dim sDataFile As String
+Dim sWorkFile As String
+Dim sDoneFile As String
+Dim sFailFile As String
+Dim sMsg As String
+Dim n As Integer
+Dim nFileLen As Integer
+Dim nChanel As Integer
+Dim bOk As Boolean
+Dim sXML As String
+
+	On Error GoTo processfile_error_handler
+
+	WriteLog 3, "PROZEDUR Processfile"
+	WriteLog 3, "-"
+
+	WriteLog 2, "File """ & sName & """ in progress"
+	sDataFile = sDataDirectory & sName & sDataExtension
+	sWorkFile = sDataDirectory & sName & sWorkExtension
+	sDoneFile = sDataDirectory & sName & sDoneExtension
+	sFailFile = sDataDirectory & sName & sFailExtension
+
+	sErrorMsg ="ERROR - Öffnen von " & sDataFile & " fehlgeschlagen"
+	
+	Name sDataFile As sWorkFile		' Datei umbenennen
+	nChanel = FreeFile()
+	Open sWorkFile For Input  As nChanel
+	 nFileLen = FileLen( sWorkFile )
+	    sXML = Input$( nFileLen, nChanel )
+	Close nChanel
+
+   If Not ParseXML(sXML) Then GoTo processfile_error_handler
+
+' Do something
+  WriteLog 3, "File """ & sName & """ ist vom Typ " & iWarteRec.event
+
+   Select Case 	iWarteRec.event
+	  Case "come"
+            If Not CreateCall() Then GoTo processfile_error_handler 
+	  Case "gone"
+			If Not CloseCall() Then GoTo processfile_error_handler
+	  Case Else
+            WriteLog 1, "File """ & sName & """  ist vom umbekannten Typ: " & iWarteRec.event
+		    GoTo processfile_error_handler
+   End Select
+
+	On Error GoTo processfile_exit_sub
+	WriteLog 3, sWorkFile & " wird auf " & sDoneFile & " umbenannt"
+ 	Name sWorkFile As sDoneFile
+	GoTo processfile_exit_sub
+	Exit Sub ' not really needed
+
+processfile_error_handler:
+	'On Error Resume Next
+	Close nChanel
+	If Err.Number = 55 Then Exit Sub ' Error 55: File already open
+	LogError sErrorMsg, Err.Number
+
+processfile_error_exit:
+	On Error Resume Next
+	SendEmail sAdminEmailAddr, "Fehler bei Filescan", _
+		"Die automatische Bearbeitung von Meldungen ist fehlgeschlagen. Bitte überprüfen Sie das Imputformular *.fail " & _
+		"und bearbeiten die Meldung von Hand."
+
+	' we will try to rename the files to *.fail
+processfile_exit_sub:
+	On Error GoTo final_error_handler
+	If FileExists( sDataFile ) Then	Name sDataFile As sFailFile
+	If FileExists( sWorkFile ) Then Name sWorkFile As sFailFile
+	If FileExists( sFailFile ) Then WriteLog 1, "ERROR- """ & sName & """ failed"
+	WriteLog 3, "File """ & sName & """ processed"
+
+	Exit Sub
+final_error_handler:
+	LogError "ProcessFile Umbennen der Datei ist nicht möglich", Err.Number
+	Resume Next
+End Sub
+
+'************************************************************************-
+'Function GetIniInfo( sSection, sItem, sDefault ) As String
+'************************************************************************-
+Function GetIniInfo( sSection, sItem, sDefault ) As String
+Dim sRet As String
+	On Error GoTo getiniinfo_error_handler
+	sRet = ReadIni$( sSection, sItem, IniFile )
+	If sRet <> "" Then
+		GetIniInfo = sRet
+	Else
+		GetIniInfo = sDefault
+	End If
+	Exit Function
+getiniinfo_error_handler:
+	GetIniInfo = sDefault
+End Function
+
+'************************************************************************-
+'Function CBool( sStr As String ) As Boolean
+'************************************************************************-
+Function CBool( sStr As String ) As Boolean
+	On Error GoTo cbool_error_handler
+	If UCase$( sStr ) = "TRUE" _
+	Or UCase$( sStr ) = "WAHR" Then
+		CBool = True
+		Exit Function
+	End If
+cbool_error_handler:
+	CBool = False
+End Function
+
+'************************************************************************-
+'Sub ProcessFiles() 
+'************************************************************************-
+Sub ProcessFiles() 
+Dim bResult As Boolean
+Dim sDataFiles() As String
+Dim i As Integer
+Dim sMsg As String
+
+	On Error GoTo filescan_error_handler
+	bCalledFromRuleServer = True
+	Set iApp = GetApp ' LogError uses SendEmail, SendEmail uses iApp
+	sErrorMsg = "Error in ProcessFiles"
+	iWarteRec.event = ""
+	iWarteRec.ObjectID = ""
+	iWarteRec.Instance = ""
+	iWarteRec.MaintenanceGroup= ""			
+	iWarteRec.TimeStamp = ""
+	iWarteRec.MessageText = ""
+	iWarteRec.Activity = ""
+	bResult = True
+	nLogLevel = CInt( ReadIni$( "filescan", "LogLevel", "RuleServer" ) )
+	sLogFile = ReadIni$( "filescan", "LogFile", "RuleServer" )
+	sDataDirectory = GetIniInfo( "filescan", "DataDirectory", "" )
+	sDataExtension = GetIniInfo( "filescan", "DataExtension", "xml" )
+	sDoneExtension = GetIniInfo( "filescan", "DoneExtension", "done" )
+	sFailExtension = GetIniInfo( "filescan", "FailExtension", "fail" )
+	sWorkExtension = GetIniInfo( "filescan", "WorkExtension", "work" )
+	sAdminFullName = GetIniInfo( "filescan", "sAdminFullName", "Andreas Schwandt" )
+	sAdminEmailAddr = GetIniInfo( "filescan", "AdminEmailAddr", "andreas.schwandt@daimlerchrysler.com" )
+	bAdminEmailOnErrors = CBool( GetIniInfo( "filescan", "AdminEmailOnErrors", "True" ) )
+	bAdminEmailOnUserID = CBool( GetIniInfo( "filescan", "AdminEmailOnUserID", "False" ) )
+	bAdminEmailOnNoData = CBool( GetIniInfo( "filescan", "AdminEmailOnNoData", "False" ) )
+	bAdminEmailOnNewRec = CBool( GetIniInfo( "filescan", "AdminEmailOnNewRec", "False" ) )
+	sAdminEmailSubject = GetIniInfo( "filescan", "AdminEmailSubject", "Call creating via filescan" )
+	sDefaultAgentkey = GetIniInfo( "filescan", "CallAgent", "" )
+	sDefaultCustomerKey = GetIniInfo( "filescan", "Customer", "" )
+	sDefaultAKkey = GetIniInfo( "filescan", "DefaultAK", "" )
+	sDefaultCategory = GetIniInfo( "filescan", "DefaultGewerk", "" )
+
+	If sDataDirectory = "" Then
+		sErrorMsg = "Missing entry ""DataDirectory"" in section ""[filescan]"" in """ & IniFile & ".ini"""
+		WriteLog 0, sErrorMsg
+		If bAdminEmailOnErrors Then SendAdminEmail sMsg
+		GoTo filescan_exit_sub
+	End If
+
+	If Right$( sDataDirectory, 1 ) <> "\" Then sDataDirectory = sDataDirectory & "\"
+	If Left$( sDataExtension, 1 ) <> "." Then sDataExtension = "." & sDataExtension
+	If Left$( sDoneExtension, 1 ) <> "." Then sDoneExtension = "." & sDoneExtension
+	If Left$( sFailExtension, 1 ) <> "." Then sFailExtension = "." & sFailExtension
+	If Left$( sWorkExtension, 1 ) <> "." Then sWorkExtension = "." & sWorkExtension
+
+
+	Set iNet = iApp.CreateNetwork( "f_call_manage", "f_call_manage" )
+
+	Set iObjectTbl = iNet.GetTable("object")
+	Set iExtSystemTbl = iNet.GetTable("ext_system")
+	Set iCallTbl = iNet.GetTable("call")
+	Set iCallBrowser = iNet.GetBrowser("callBrowser")
+	Set iWorkgroupTbl = iNet.GetTable("callworkgroup")
+	Set iLocationTbl = iNet.GetTable("location")
+
+	FileList sDataFiles, sDataDirectory & "*"  & sDataExtension	
+	If ( ArrayDims( sDataFiles ) = 0 ) Then
+		WriteLog 2, "No data files found exit"
+		GoTo filescan_exit_sub
+	End If
+
+	For i = LBound( sDataFiles ) To UBound( sDataFiles )
+		sName = FileParse$( sDataFiles( i ), 4 )
+ 		cleanUp
+		Set iCallRec = Nothing
+		Set iObjectRec = Nothing
+		bCalledFromRuleServer = True
+		ProcessFile
+	Next i
+
+
+filescan_exit_sub:
+	WriteLog 3, "Lösche erfolgreich bearbeitete Dateien"
+
+On Error Resume Next
+kill sDataDirectory & "*" & sDoneExtension
+    If Not SetAppProfileValue(iNet,"last_filescan","now") Then WriteLog 1, "Unable to write Timestamp"
+
+	
+
+
+	Exit Sub
+
+filescan_error_handler:
+  	'On Error Resume Next
+	LogError sErrorMsg, Err.Number
+	GoTo filescan_exit_sub
+End Sub
+'************************************************************************-
+'Sub Edvintask() 
+'************************************************************************-
+
+Function Edvintask() As Boolean
+Dim  sErrorMsg As String
+Dim sPersonName As String
+Dim sPhone As String
+Dim sMessage As String
+Dim iAffectedPersonRec As DBRecord
+Dim sHWGKey AS String
+Dim iTable As DBTable
+Dim sObjectkey As String
+Dim sCallKey As String
+
+	On Error GoTo Error_handler
+' Objekt finden
+
+  If Not GetCallObject(iEdvinTaskRec.GetValue("auft_ext_obj_id"), iEdvinTaskRec.GetValue("auft_melder")) Then
+	 sErrorMsg = " Abbruch das kein Objekt gefunden"
+	 goto Error_handler
+  End If
+sObjectkey =  iObjectRec.GetValue("pkey")
+Set iObjectRec = Nothing
+'Meldung anlegen
+	sErrorMsg = "ERROR - CallRecord ertstellen fehlgeschlagen"
+    WriteLog 3, "Meldung anlegen"
+	iCallTbl.SetWhere ""
+	iCallTbl.Clear
+		
+	 Set iCallRec = iCallTbl.AddRecord
+   'Ort setzen
+
+	 iCallRec.SetValue "location_key", GetNewEDVINLocationKey()
+
+'Tätigkeit setzen
+	 If Not CreateLink(iCallRec,"process_key" , "process", "pkey", iEdvinTaskRec.GetValue("auft_activity") ) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für Tätigkeit fehlgeschlagen"
+				GoTo  Error_handler
+	End If
+' Melder und Agent setzen
+	 If Not (CreateLink(iCallRec,"employeecall" , "customerint", "pkey", sDefaultCustomerKey ) And	_
+	         CreateLink(iCallRec,"agentcall" , "agent", "pkey", sDefaultAgentkey )) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für Agenten oder Kunde ist fehlgeschlagen"
+				GoTo  Error_handler
+	End If
+
+' Objekt
+    If Not CreateLink(iCallRec,"object_key" , "object", "pkey", sObjectkey )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum Object ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+'Gewerk
+    If Not CreateLink(iCallRec,"categorycall" , "category", "pkey", iEdvinTaskRec.GetValue("auft_gew_id") )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum Gewerk ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If 
+  'AK setzen
+	 If Not GetAK(iCallRec.GetValue("location_key")) Then	
+		  		sErrorMsg = "ERROR - Erstellen der DB Links für AK fehlgeschlagen"
+				GoTo  Error_handler
+	End If
+
+'betroffene Person
+    If Not CreateLink(iCallRec,"affectedperson_key" , "affectedperson", "pkey", sDefaultCustomerKey )	Then
+	  		WriteLog 1, "WARNING -  Erstellen der DB Links zur Betroffenen Person ist fehlgeschlagen"
+	Else 
+		 Set iAffectedPersonRec = iCallRec.GetLinkedRecord("affectedperson")
+		 sPhone =  iAffectedPersonRec.GetValue("phonecorr")
+		 sPersonName =  iAffectedPersonRec.GetValue("fullname")
+		 iCallRec.SetValue "affectedperson",  sPersonName & " Tel: " & sPhone
+		 Set iAffectedPersonRec = Nothing
+	End If
+	WriteLog 3, "betroffene Person erfolgreich gesetzt"
+
+	If Len(iEdvinTaskRec.GetValue("auft_bez"))>240 Then 
+		iCallRec.SetValue "problem",left$(iEdvinTaskRec.GetValue("auft_bez"),240)
+	Else
+		iCallRec.SetValue "problem", iEdvinTaskRec.GetValue("auft_bez")
+	End If
+	If iEdvinTaskRec.GetValue("auft_bez") = "" Then iCallRec.SetValue "problem", "EDVIN Auftrag"
+	iCallRec.SetValue "callstatus", "Angenommen" ' weil ein Auftrag angelegt werden soll
+	iCallRec.SetValue "datereported", iEdvinTaskRec.GetValue("auft_stoerbeginn")
+	iCallRec.SetValue "dateassigned", "now"
+	iCallRec.SetValue "dateowned", "now"
+	iCallRec.SetValue "datecallconnected", iEdvinTaskRec.GetValue("auft_stoerbeginn")
+	sErrorMsg = "ERROR - Meldung speichern fehlgeschlagen"
+	bCalledFromRuleServer = True
+
+	iCallTbl.Commit
+    WriteLog 3, "Meldung mit Nummer " & iCallRec.GetValue("pkey") & " angelegt"
+
+	sCallKey = iCallRec.GetValue("pkey")
+	Set iCallRec = Nothing
+
+'   ein neuer Auftrag anlegen
+	sErrorMsg = "ERROR - TaskRecord ertstellen fehlgeschlagen"
+    WriteLog 3, "Auftrag anlegen"
+	Set iTable = iNet.GetTable("taskworkgroup")
+	iTable.Clear
+	iTable.QBEClear
+	iTable.QBESetValue "hwg_name","=" & iEdvinTaskRec.GetValue("auft_ih_gruppe") 
+	iTable.QBESetValue "wrkgrptype","HWG"
+	iTable.QBESetValue "groupstatus","gültig"
+	iTable.Search
+	If iTable.RecordCount = 1 Then
+	   sHWGKey = iTable.GetRecord(0).GetValue("pkey")
+	   Set iTable = Nothing	
+	Else
+	   Set iTable = Nothing
+	   sErrorMsg = "HWG nicht gefunden"
+	   GoTo  Error_handler
+	End If
+	
+	Set iTaskTbl = iNet.GetTable("task")
+	iTaskTbl.Clear
+	Set iTaskRec = iTaskTbl.AddRecord()
+
+    If Not CreateLink(iTaskRec,"object_key" , "taskobject", "pkey", sObjectkey )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum TaskObject ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+    If Not CreateLink(iTaskRec,"workgrouptask" , "taskworkgroup", "pkey", sHWGKey )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zur HWG ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+    If Not CreateLink(iTaskRec,"ext_system_key" , "ext_system", "pkey", GetInstanceKey(iEdvinTaskRec.GetValue("auft_melder")) )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zum externen System ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+    If Not CreateLink(iTaskRec,"tasktype_key" , "tasktype", "taskcode", iEdvinTaskRec.GetValue("auft_auftragsart") )	Then
+	  		sErrorMsg = "ERROR - Erstellen der DB Links zur Auftragsart ist fehlgeschlagen"
+			GoTo  Error_handler
+	End If
+	sErrorMsg = "ERROR - Auftragsinformationen speichern fehlgeschlagen"
+	iTaskREc.SetValue "calltask", sCallkey
+	iTaskRec.SetValue "taskstart", iEdvinTaskRec.GetValue("auft_stoerbeginn")
+	iTaskRec.SetValue "extsystem_subid", iEdvinTaskRec.GetValue("auft_auftrag_nr")
+	iTaskRec.SetValue "extsystem_id", iEdvinTaskRec.GetValue("auft_kopf_nr")
+	If 	iEdvinTaskRec.GetValue("auft_bez") <> "" Then
+		iTaskRec.SetValue "summary", iEdvinTaskRec.GetValue("auft_bez")
+	Else
+		iTaskRec.SetValue "summary", "EDVIN Auftrag"
+	End If
+	iTaskRec.SetValue "taskstatus","Neu"
+	sErrorMsg = "ERROR - Auftrag speichern fehlgeschlagen"
+	iTaskTbl.Commit
+    WriteLog 3, "Auftrag mit Nummer " & iTaskRec.GetValue("taskno") & " und pkey = " & iTaskRec.GetValue("pkey") & " angelegt"
+'   ein neuer Auftrag anlegen
+
+	 Set iTaskRec = Nothing
+	 Set ITaskTbl = Nothing
+	 Edvintask = True
+
+	Exit Function
+Error_handler:
+	LogError sErrorMsg, Err.Number
+	 Edvintask =False
+	 Set iTaskRec = Nothing
+	 Set ITaskTbl = Nothing
+
+End Function
+
+'************************************************************************-
+'Sub ProcessDB() 
+'************************************************************************-
+Sub ProcessDB() 
+Dim bResult As Boolean
+Dim sDataFiles() As String
+Dim i As Integer
+Dim nRecs As Integer
+Dim sMsg As String
+
+	On Error GoTo filescan_error_handler
+	WriteLog 3, "Start processDB"
+	bCalledFromRuleServer = True
+	sErrorMsg = "Error in ProcessDB"
+	Set iEdvinTaskTbl = iNet.GetTable("edvintask")
+	iEdvinTaskTbl.Clear
+	iEdvinTaskTbl.QBESetValue "error_state" , "Nein"
+	iEdvinTaskTbl.Search
+	nRecs = iEdvinTaskTbl.Recordcount
+	If nRecs = 0 Then
+		WriteLog 3, "No Edvintasks found"
+		Exit Sub
+	End If
+	for i = 1 to  nRecs
+		Set iEdvinTaskRec = iEdvinTaskTbl.GetRecord(nRecs-i)
+		If Edvintask() Then
+		  WriteLog 3, "Edvintask deleted"
+		   iEdvinTaskRec.Delete
+		Else
+		   iEdvinTaskRec.SetValue "error_state", "Ja"
+		   writeLog 0, "In Edvintask mit pkey = " & iEdvinTaskRec.GetValue("pkey") & " ist ein Fehler aufgetreten"		
+		End If
+		iEdvinTaskTbl.Commit
+	Next i
+
+	Exit Sub
+
+filescan_error_handler:
+  	'On Error Resume Next
+	LogError sErrorMsg, Err.Number
+End Sub
+'************************************************************************-
+
+Sub Filescan()
+	WriteLog 3, "PROZEDUR Filescan"
+	WriteLog 3, "Script Started"
+
+	ProcessFiles
+    ProcessDB
+
+
+	WriteLog 3, "Script Terminated"
+	' clean up
+	Set iCallRec = Nothing
+	Set iTaskRec = Nothing
+	Set iObjectRec = Nothing
+	Set iObjectTbl = Nothing
+	Set iCallTbl = Nothing
+	Set iTaskTbl = Nothing
+	Set iEdvintaskRec = Nothing
+	Set iEdvintaskTbl = Nothing
+	Set iLocationTbl = Nothing
+	Set iCallBrowser = Nothing
+	Set iExtSystemTbl = Nothing
+	Set iWorkgroupTbl = Nothing
+	Set iNet = Nothing
+	Set iApp = Nothing
+	
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

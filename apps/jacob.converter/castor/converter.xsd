@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="columnCount">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="columnModelNames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" />
+        <xs:element ref="increment" />
+        <xs:element ref="size" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="columns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" />
+        <xs:element ref="increment" />
+        <xs:element ref="size" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="connections">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" />
+        <xs:element ref="increment" />
+        <xs:element ref="size" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="data">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="element" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="Array" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="defaultValue">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="boolean" />
+            <xs:enumeration value="int" />
+            <xs:enumeration value="string" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="element">
+    <xs:complexType mixed="true">
+      <xs:choice>
+        <xs:element ref="columnCount" />
+        <xs:element ref="columns" />
+        <xs:element ref="connections" />
+        <xs:element ref="firstDataRow" />
+        <xs:element ref="id" />
+        <xs:element ref="createIfNotExists" />
+        <xs:element ref="name" />
+        <xs:element ref="pos" />
+        <xs:element ref="providerType" />
+        <xs:element ref="sourceField" />
+        <xs:element ref="sourceTableId" />
+        <xs:element ref="targetField" />
+        <xs:element ref="targetTableId" />
+        <xs:element ref="typeModel" />
+        <xs:element ref="uniqueKey" />
+        <xs:element ref="uniqueKeyColumns" />
+        <xs:element ref="transferMode" />
+      </xs:choice>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="draw2d.ColumnConnectionModel" />
+            <xs:enumeration value="draw2d.ColumnModel" />
+            <xs:enumeration value="draw2d.ExcelSheetModel" />
+            <xs:enumeration value="draw2d.TableModel" />
+            <xs:enumeration value="string" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="firstDataRow">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="fixedLength">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="boolean" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="id">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="createIfNotExists">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="increment">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="int" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="length">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="int" />
+            <xs:enumeration value="string" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="model">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id" />
+        <xs:element ref="recordSourceModels" />
+        <xs:element ref="name" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="name">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="pos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="x" />
+        <xs:element ref="y" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="providerType">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="recordSourceModels">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" />
+        <xs:element ref="increment" />
+        <xs:element ref="size" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="size">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="int" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sourceField">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sourceTableId">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="targetField">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="transferMode">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="targetTableId">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" fixed="string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="typeModel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id" />
+        <xs:element ref="name" />
+        <xs:element ref="defaultValue" minOccurs="0" />
+        <xs:element ref="length" minOccurs="0" />
+        <xs:element ref="fixedLength" minOccurs="0" />
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="draw2d.ColumnTypeModelBoolean" />
+            <xs:enumeration value="draw2d.ColumnTypeModelLong" />
+            <xs:enumeration value="draw2d.ColumnTypeModelRelevanceIndicator" />
+            <xs:enumeration value="draw2d.ColumnTypeModelText" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="uniqueKey">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id" />
+        <xs:element ref="name" />
+        <xs:element ref="columnModelNames" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="uniqueKeyColumns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" />
+        <xs:element ref="increment" />
+        <xs:element ref="size" />
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="x">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="y">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,525 @@
+CREATE USER SA PASSWORD "" ADMIN
+/*C1*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C2*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+SET AUTOCOMMIT TRUE
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C3*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+SET AUTOCOMMIT TRUE
+CREATE TABLE jacob_document (\u000d\u000a  columnname VARCHAR(30) NULL,\u000d\u000a  docsize BIGINT NOT NULL,\u000d\u000a  docname VARCHAR(255) NOT NULL,\u000d\u000a  tablename VARCHAR(30) NULL,\u000d\u000a  doccontent LONGVARBINARY NULL,\u000d\u000a  id CHAR(36) NOT NULL,\u000d\u000a  CONSTRAINT PK_JACOB_DOCUMENT PRIMARY KEY (id))
+CREATE INDEX IDX_JACOB_DOCUMENTNAME ON jacob_document (docname)
+REVOKE ALL ON jacob_document TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON jacob_document TO PUBLIC
+CREATE TABLE jacob_ids (\u000d\u000a  nextid BIGINT NOT NULL,\u000d\u000a  tablename VARCHAR(250) NOT NULL,\u000d\u000a  CONSTRAINT PK_JACOB_IDS PRIMARY KEY (tablename))
+REVOKE ALL ON jacob_ids TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON jacob_ids TO PUBLIC
+CREATE TABLE jacob_locks (\u000d\u000a  created TIMESTAMP NOT NULL,\u000d\u000a  userid VARCHAR(50) NOT NULL,\u000d\u000a  keyvalue VARCHAR(255) NOT NULL,\u000d\u000a  username VARCHAR(255) NULL,\u000d\u000a  tablename VARCHAR(30) NOT NULL,\u000d\u000a  nodename VARCHAR(255) NOT NULL,\u000d\u000a  CONSTRAINT PK_JACOB_LOCKS PRIMARY KEY (tablename,keyvalue))
+CREATE INDEX IDX_JACOB_LOCKS_NODENAME ON jacob_locks (nodename)
+REVOKE ALL ON jacob_locks TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON jacob_locks TO PUBLIC
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C4*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+SET AUTOCOMMIT TRUE
+CREATE TABLE yan_attachment (\u000d\u000a  message_key INTEGER NOT NULL,\u000d\u000a  attachnbr INTEGER NOT NULL,\u000d\u000a  document CHAR(36) NOT NULL,\u000d\u000a  mimetype VARCHAR(40) NULL,\u000d\u000a  CONSTRAINT PK2_YAN_ATTACHMENT_PRIMARYKEY PRIMARY KEY (message_key,attachnbr))
+REVOKE ALL ON yan_attachment TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON yan_attachment TO PUBLIC
+CREATE TABLE datasource (\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  jndiName VARCHAR(80) NULL,\u000d\u000a  location VARCHAR(9) NOT NULL,\u000d\u000a  rdbType VARCHAR(10) NOT NULL,\u000d\u000a  connectString VARCHAR(200) NULL,\u000d\u000a  configurePool VARCHAR(3) NULL,\u000d\u000a  jdbcDriverClass VARCHAR(80) NULL,\u000d\u000a  userName VARCHAR(80) NULL,\u000d\u000a  password VARCHAR(20) NULL,\u000d\u000a  maxActiveCons INTEGER NULL,\u000d\u000a  maxIdleCons INTEGER NULL,\u000d\u000a  maxConnectionWait INTEGER NULL,\u000d\u000a  validationQuery VARCHAR(80) NULL,\u000d\u000a  adjustment VARCHAR(7) DEFAULT 'jACOB' NOT NULL,\u000d\u000a  CONSTRAINT PK1_DATASOURCE_PRIM PRIMARY KEY (name))
+REVOKE ALL ON datasource TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON datasource TO PUBLIC
+CREATE TABLE userproperty (\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  "value" VARCHAR(512) NULL,\u000d\u000a  userid VARCHAR(50) NOT NULL,\u000d\u000a  applicationname VARCHAR(40) NOT NULL,\u000d\u000a  CONSTRAINT PK1_USERPROPERTY_PRIM PRIMARY KEY (applicationname,userid,name))
+REVOKE ALL ON userproperty TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON userproperty TO PUBLIC
+CREATE TABLE memory_history (\u000d\u000a  systemtime TIMESTAMP NOT NULL,\u000d\u000a  free_kb INTEGER NOT NULL,\u000d\u000a  total_kb INTEGER NOT NULL,\u000d\u000a  max_kb INTEGER NOT NULL,\u000d\u000a  before_free_kb INTEGER NULL,\u000d\u000a  before_total_kb INTEGER NULL,\u000d\u000a  gc_duration INTEGER NULL,\u000d\u000a  user_sessions INTEGER NOT NULL,\u000d\u000a  pkey INTEGER NOT NULL,\u000d\u000a  nodename VARCHAR(255) NOT NULL,\u000d\u000a  free_percentage DECIMAL(38,2) NOT NULL,\u000d\u000a  CONSTRAINT PK1_MEMORY_HISTORY_PKEY PRIMARY KEY (pkey))
+REVOKE ALL ON memory_history TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON memory_history TO PUBLIC
+CREATE TABLE clusterconfig (\u000d\u000a  configname VARCHAR(20) NOT NULL,\u000d\u000a  clustergroup LONGVARCHAR NOT NULL,\u000d\u000a  globalgroup LONGVARCHAR NOT NULL,\u000d\u000a  clustername VARCHAR(40) NOT NULL,\u000d\u000a  CONSTRAINT PK1_CLUSTERCONFIG_PRIM PRIMARY KEY (configname))
+REVOKE ALL ON clusterconfig TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON clusterconfig TO PUBLIC
+CREATE TABLE report (\u000d\u000a  id INTEGER NOT NULL,\u000d\u000a  applicationname VARCHAR(40) NOT NULL,\u000d\u000a  definition LONGVARCHAR NOT NULL,\u000d\u000a  accessmode VARCHAR(7) NOT NULL,\u000d\u000a  ownerid VARCHAR(50) NULL,\u000d\u000a  applicationversion DECIMAL(38,2) NOT NULL,\u000d\u000a  name VARCHAR(80) NOT NULL,\u000d\u000a  scheduled VARCHAR(5) NOT NULL,\u000d\u000a  lastUsage TIMESTAMP NULL,\u000d\u000a  CONSTRAINT PK1_REPORT_PKEY PRIMARY KEY (id))
+CREATE INDEX IK2_REPORT_APPLICATIONOWNER ON report (applicationname,ownerid,name)
+REVOKE ALL ON report TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON report TO PUBLIC
+CREATE TABLE enginetaskstatus (\u000d\u000a  taskstatus VARCHAR(10) NOT NULL,\u000d\u000a  applicationname VARCHAR(40) NOT NULL,\u000d\u000a  taskname VARCHAR(128) NOT NULL,\u000d\u000a  CONSTRAINT PK1_ENGINETASKSTATUS_PRIM PRIMARY KEY (applicationname,taskname))
+REVOKE ALL ON enginetaskstatus TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON enginetaskstatus TO PUBLIC
+CREATE TABLE alertaddressee (\u000d\u000a  alertid INTEGER NOT NULL,\u000d\u000a  addressee VARCHAR(200) NOT NULL,\u000d\u000a  addresseetype VARCHAR(4) NOT NULL,\u000d\u000a  CONSTRAINT PK1_ALERTADDRESSEE_PRIM PRIMARY KEY (alertid,addressee,addresseetype))
+CREATE INDEX IK3_ALERTADDRESSEE_ADDRESSEEAD ON alertaddressee (addressee,addresseetype)
+REVOKE ALL ON alertaddressee TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON alertaddressee TO PUBLIC
+CREATE TABLE alertuserstatus (\u000d\u000a  alertid INTEGER NOT NULL,\u000d\u000a  userid VARCHAR(50) NOT NULL,\u000d\u000a  userstatus VARCHAR(7) NOT NULL,\u000d\u000a  CONSTRAINT PK1_ALERTUSERSTATUS_PRIM PRIMARY KEY (alertid,userid))
+CREATE INDEX IK2_ALERTUSERSTATUS_USERID ON alertuserstatus (userid)
+REVOKE ALL ON alertuserstatus TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON alertuserstatus TO PUBLIC
+CREATE TABLE process_info (\u000d\u000a  pkey INTEGER NOT NULL,\u000d\u000a  processname VARCHAR(255) NOT NULL,\u000d\u000a  pid INTEGER NOT NULL,\u000d\u000a  usertime DECIMAL(38,2) NOT NULL,\u000d\u000a  kerneltime DECIMAL(38,2) NOT NULL,\u000d\u000a  owner VARCHAR(200) NOT NULL,\u000d\u000a  processhistory_key INTEGER NOT NULL,\u000d\u000a  totaltime DECIMAL(38,2) NOT NULL,\u000d\u000a  CONSTRAINT PK1_PROCESS_INFO_PKEY PRIMARY KEY (pkey))
+REVOKE ALL ON process_info TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON process_info TO PUBLIC
+CREATE TABLE yan_queue (\u000d\u000a  sender VARCHAR(200) NULL,\u000d\u000a  senderAddr VARCHAR(200) NULL,\u000d\u000a  message LONGVARCHAR NOT NULL,\u000d\u000a  state VARCHAR(5) DEFAULT 'New' NOT NULL,\u000d\u000a  errorMessage VARCHAR(500) NULL,\u000d\u000a  sourceApp VARCHAR(40) NOT NULL,\u000d\u000a  pkey INTEGER NOT NULL,\u000d\u000a  url VARCHAR(255) NOT NULL,\u000d\u000a  created TIMESTAMP NOT NULL,\u000d\u000a  errorAt TIMESTAMP NULL,\u000d\u000a  tries INTEGER DEFAULT 0 NOT NULL,\u000d\u000a  CONSTRAINT PK1_YAN_QUEUE_PKEY PRIMARY KEY (pkey))
+CREATE INDEX IK2_YAN_QUEUE_URL_STATE_IDX ON yan_queue (state,url)
+REVOKE ALL ON yan_queue TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON yan_queue TO PUBLIC
+CREATE TABLE process_history (\u000d\u000a  pkey INTEGER NOT NULL,\u000d\u000a  systemtime TIMESTAMP NOT NULL,\u000d\u000a  usertime DECIMAL(38,2) NOT NULL,\u000d\u000a  kerneltime DECIMAL(38,2) NOT NULL,\u000d\u000a  totaltime DECIMAL(38,2) NOT NULL,\u000d\u000a  nodename VARCHAR(255) NOT NULL,\u000d\u000a  CONSTRAINT PK1_PROCESS_HISTORY_PKEY PRIMARY KEY (pkey))
+REVOKE ALL ON process_history TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON process_history TO PUBLIC
+CREATE TABLE loggingconfig (\u000d\u000a  pkey BIGINT NOT NULL,\u000d\u000a  name VARCHAR(80) NOT NULL,\u000d\u000a  type VARCHAR(5) DEFAULT 'jdk14' NOT NULL,\u000d\u000a  status VARCHAR(8) DEFAULT 'inactive' NOT NULL,\u000d\u000a  properties LONGVARCHAR NOT NULL,\u000d\u000a  CONSTRAINT PK1_LOGGINGCONFIG_PRIMARYKEY PRIMARY KEY (pkey))
+REVOKE ALL ON loggingconfig TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON loggingconfig TO PUBLIC
+CREATE TABLE japplversion (\u000d\u000a  jversion VARCHAR(20) NOT NULL,\u000d\u000a  buildby VARCHAR(20) NULL,\u000d\u000a  builddatetime TIMESTAMP NULL,\u000d\u000a  installedsince TIMESTAMP NOT NULL,\u000d\u000a  buildmachine VARCHAR(40) NULL,\u000d\u000a  jstatus VARCHAR(10) DEFAULT 'inactive' NOT NULL,\u000d\u000a  content LONGVARBINARY NOT NULL,\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  contentsize INTEGER NOT NULL,\u000d\u000a  history LONGVARCHAR NULL,\u000d\u000a  installseqnbr INTEGER NOT NULL,\u000d\u000a  CONSTRAINT PK1_JAPPLVERSION_PRIM PRIMARY KEY (name,jversion),\u000d\u000a  CONSTRAINT UK3_JAPPLVERSION_SEQNBR UNIQUE (installseqnbr))
+REVOKE ALL ON japplversion TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON japplversion TO PUBLIC
+CREATE TABLE administrator (\u000d\u000a  loginId VARCHAR(20) NOT NULL,\u000d\u000a  id INTEGER NOT NULL,\u000d\u000a  passwdhash VARCHAR(40) NULL,\u000d\u000a  fullname VARCHAR(40) NULL,\u000d\u000a  email VARCHAR(80) NULL,\u000d\u000a  CONSTRAINT PK1_ADMINISTRATOR_PRIM PRIMARY KEY (id),\u000d\u000a  CONSTRAINT UK2_ADMINISTRATOR_LOGINIDIDX UNIQUE (loginId))
+REVOKE ALL ON administrator TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON administrator TO PUBLIC
+CREATE TABLE alert (\u000d\u000a  id INTEGER NOT NULL,\u000d\u000a  sourceapplication VARCHAR(40) NOT NULL,\u000d\u000a  created TIMESTAMP NOT NULL,\u000d\u000a  message VARCHAR(255) NOT NULL,\u000d\u000a  severity VARCHAR(6) DEFAULT 'normal' NOT NULL,\u000d\u000a  sender VARCHAR(200) NOT NULL,\u000d\u000a  url VARCHAR(255) NULL,\u000d\u000a  CONSTRAINT PK1_ALERT_PKEY PRIMARY KEY (id))
+CREATE INDEX IK2_ALERT_SENDER ON alert (sender)
+REVOKE ALL ON alert TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON alert TO PUBLIC
+CREATE TABLE sql_history (\u000d\u000a  pkey INTEGER NOT NULL,\u000d\u000a  statement LONGVARCHAR NOT NULL,\u000d\u000a  start_time TIMESTAMP NOT NULL,\u000d\u000a  end_time TIMESTAMP NOT NULL,\u000d\u000a  duration_ms INTEGER NOT NULL,\u000d\u000a  application VARCHAR(100) NOT NULL,\u000d\u000a  datasource VARCHAR(40) NULL,\u000d\u000a  CONSTRAINT PK2_SQL_HISTORY_PKEY PRIMARY KEY (pkey))
+CREATE INDEX IK1_SQL_HISTORY_DURATIONIDX ON sql_history (duration_ms)
+REVOKE ALL ON sql_history TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON sql_history TO PUBLIC
+CREATE TABLE japroperty (\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  applicationname VARCHAR(40) NOT NULL,\u000d\u000a  "value" VARCHAR(512) NULL,\u000d\u000a  changed TIMESTAMP NOT NULL,\u000d\u000a  changedBy VARCHAR(40) NOT NULL,\u000d\u000a  history LONGVARCHAR NULL,\u000d\u000a  CONSTRAINT PK1_JAPROPERTY_PRIM PRIMARY KEY (name,applicationname))
+REVOKE ALL ON japroperty TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON japroperty TO PUBLIC
+CREATE TABLE jproperty (\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  "value" VARCHAR(512) NULL,\u000d\u000a  description VARCHAR(512) NULL,\u000d\u000a  changed TIMESTAMP NULL,\u000d\u000a  changedBy VARCHAR(40) NULL,\u000d\u000a  history LONGVARCHAR NULL,\u000d\u000a  CONSTRAINT PK1_JPROPERTY_PRIM PRIMARY KEY (name))
+REVOKE ALL ON jproperty TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON jproperty TO PUBLIC
+CREATE TABLE japplication (\u000d\u000a  name VARCHAR(40) NOT NULL,\u000d\u000a  licensekey LONGVARCHAR NULL,\u000d\u000a  CONSTRAINT PK1_JAPPLICATION_PRIM PRIMARY KEY (name))
+REVOKE ALL ON japplication TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON japplication TO PUBLIC
+CREATE TABLE useddatasource (\u000d\u000a  applicationname VARCHAR(40) NOT NULL,\u000d\u000a  applicationversion VARCHAR(20) NOT NULL,\u000d\u000a  datasourcename VARCHAR(40) NOT NULL,\u000d\u000a  CONSTRAINT PK1_USEDDATASOURCE_PRIM PRIMARY KEY (applicationname,applicationversion,datasourcename))
+REVOKE ALL ON useddatasource TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON useddatasource TO PUBLIC
+CREATE TABLE clusterserverurl (\u000d\u000a  serverurl VARCHAR(255) NOT NULL,\u000d\u000a  nodename VARCHAR(255) NOT NULL,\u000d\u000a  CONSTRAINT PK1_CLUSTERSERVERURL_PRIM PRIMARY KEY (nodename))
+REVOKE ALL ON clusterserverurl TO PUBLIC
+GRANT SELECT, UPDATE, INSERT, DELETE ON clusterserverurl TO PUBLIC
+ALTER TABLE yan_attachment ADD CONSTRAINT FK1_YAN_ATTACHMENT_JAN_QUEUE_F FOREIGN KEY (message_key) REFERENCES yan_queue (pkey)
+ALTER TABLE userproperty ADD CONSTRAINT FK2_USERPROPERTY_APPLICATION_F FOREIGN KEY (applicationname) REFERENCES japplication (name)
+ALTER TABLE report ADD CONSTRAINT FK3_REPORT_APPLICATION_FKEY FOREIGN KEY (applicationname) REFERENCES japplication (name)
+ALTER TABLE alertaddressee ADD CONSTRAINT FK2_ALERTADDRESSEE_ALERT_FKEY FOREIGN KEY (alertid) REFERENCES alert (id)
+ALTER TABLE alertuserstatus ADD CONSTRAINT FK3_ALERTUSERSTATUS_ALERT_FKEY FOREIGN KEY (alertid) REFERENCES alert (id)
+ALTER TABLE process_info ADD CONSTRAINT FK2_PROCESS_INFO_PROCESS_HISTO FOREIGN KEY (processhistory_key) REFERENCES process_history (pkey)
+ALTER TABLE yan_queue ADD CONSTRAINT FK3_YAN_QUEUE_SOURCEAPP_FKEY FOREIGN KEY (sourceApp) REFERENCES japplication (name)
+ALTER TABLE japplversion ADD CONSTRAINT FK2_JAPPLVERSION_JAPPLICATION_ FOREIGN KEY (name) REFERENCES japplication (name)
+ALTER TABLE alert ADD CONSTRAINT FK3_ALERT_APPLICATION_FKEY FOREIGN KEY (sourceapplication) REFERENCES japplication (name)
+ALTER TABLE japroperty ADD CONSTRAINT FK2_JAPROPERTY_JPROPERTY_FKEY FOREIGN KEY (name) REFERENCES jproperty (name)
+ALTER TABLE japroperty ADD CONSTRAINT FK3_JAPROPERTY_APPLICATION_FKE FOREIGN KEY (applicationname) REFERENCES japplication (name)
+ALTER TABLE useddatasource ADD CONSTRAINT FK2_USEDDATASOURCE_JAPPLVERSIO FOREIGN KEY (applicationname,applicationversion) REFERENCES japplversion (name,jversion)
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C5*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C6*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C7*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+INSERT INTO JAPPLICATION VALUES('admin',NULL)
+COMMIT
+DISCONNECT
+/*C8*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C9*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+INSERT INTO JPROPERTY VALUES('ui.toolbar.createReport','true','Visibility of the toolbar button [Create Report]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.createReport\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Create Report]\u000a')
+INSERT INTO JPROPERTY VALUES('alert://','true','Set to [true] if the installation has a messaging channel for ALERT. Set to [false] if the YAN doesn''t support the ALERT channel.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               alert://\u000a  Value:                                              true\u000a  Description:                                        Set to [true] if the installation has a messaging channel for ALERT. Set to [false] if the YAN doesn''t support the ALERT channel.\u000a')
+INSERT INTO JPROPERTY VALUES('admin.memory.watch.threshold','40','Threshold value in percentage. Free percentage below this threshold will be reported in the jACOB performance database.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               admin.memory.watch.threshold\u000a  Value:                                              40\u000a  Description:                                        Threshold value in percentage. Free percentage below this threshold will be reported in the jACOB performance database.\u000a')
+INSERT INTO JPROPERTY VALUES('interval.check.dialog','60','Time interval in seconds to check dialog windows expiration of the validity.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.check.dialog\u000a  Value:                                              60\u000a  Description:                                        Time interval in seconds to check dialog windows expiration of the validity.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.clearAll','true','Visibility of the toolbar button [clear All]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.clearAll\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [clear All]\u000a')
+INSERT INTO JPROPERTY VALUES('sql.history.threshold','1000','Max execution time (in milli seconds) to write an SQL statement to the performance history. If the execution duration longer than the name threshold the SQL command will be stored in the performance DB.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               sql.history.threshold\u000a  Value:                                              1000\u000a  Description:                                        Max execution time (in milli seconds) to write an SQL statement to the performance history. If the execution duration longer than the name threshold the SQL command will be stored in the performance DB.\u000a')
+INSERT INTO JPROPERTY VALUES('report.max.records','10000','Maximum number of records retrieved for reports','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               report.max.records\u000a  Value:                                              10000\u000a  Description:                                        Maximum number of records retrieved for reports\u000a')
+INSERT INTO JPROPERTY VALUES('application.default',NULL,'Default application which should be preselected on login','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               application.default\u000a  Description:                                        Default application which should be preselected on login\u000a')
+INSERT INTO JPROPERTY VALUES('shortcut.foreignfield','113','The shortcut for fast search on the foreign Field. 113=F2, 117=F6...','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               shortcut.foreignfield\u000a  Value:                                              113\u000a  Description:                                        The shortcut for fast search on the foreign Field. 113=F2, 117=F6...\u000a')
+INSERT INTO JPROPERTY VALUES('gui.navigation','outlook','The type of the main navigation/menu.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               gui.navigation\u000a  Value:                                              outlook\u000a  Description:                                        The type of the main navigation/menu.\u000a')
+INSERT INTO JPROPERTY VALUES('gui.ffbrowser.inline','false','Set to true if you want an inline foreignField browser. Set to [false] if you want a a popup window.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               gui.ffbrowser.inline\u000a  Value:                                              false\u000a  Description:                                        Set to true if you want an inline foreignField browser. Set to [false] if you want a a popup window.\u000a')
+INSERT INTO JPROPERTY VALUES('interval.keepalive.dialog','10','Time in seconds for the keep alive interval of a dialog window.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.keepalive.dialog\u000a  Value:                                              10\u000a  Description:                                        Time in seconds for the keep alive interval of a dialog window.\u000a')
+INSERT INTO JPROPERTY VALUES('country.default',NULL,'Default country to be used, e.g. US, GB, DE or FR','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               country.default\u000a  Description:                                        Default country to be used, e.g. US, GB, DE or FR\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.themeSelect','true','Visibility of the toolbar button [Themes]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.themeSelect\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Themes]\u000a')
+INSERT INTO JPROPERTY VALUES('email://','true','Set to [true] if the installation has a messaging channel for eMAIl. Set to [false] if the YAN doesn''t support the eMAIL channel.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               email://\u000a  Value:                                              true\u000a  Description:                                        Set to [true] if the installation has a messaging channel for eMAIl. Set to [false] if the YAN doesn''t support the eMAIL channel.\u000a')
+INSERT INTO JPROPERTY VALUES('admin.memory.watch.gc','off','Call garbage collector when inspecting memory usage [on/off]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               admin.memory.watch.gc\u000a  Value:                                              off\u000a  Description:                                        Call garbage collector when inspecting memory usage [on/off]\u000a')
+INSERT INTO JPROPERTY VALUES('browser.system.max.records','1000','System maximum of records displayed in browsers','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               browser.system.max.records\u000a  Value:                                              1000\u000a  Description:                                        System maximum of records displayed in browsers\u000a')
+INSERT INTO JPROPERTY VALUES('admin.top.threshold','25','Threshold value in percentage. CPU usage over this threshold will be reported in the jACOB performance database.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               admin.top.threshold\u000a  Value:                                              25\u000a  Description:                                        Threshold value in percentage. CPU usage over this threshold will be reported in the jACOB performance database.\u000a')
+INSERT INTO JPROPERTY VALUES('interval.timeout.dialog','200','The timeout interval in seconds for the application invalidation. The application must send a keep alive in this timeperiod','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.timeout.dialog\u000a  Value:                                              200\u000a  Description:                                        The timeout interval in seconds for the application invalidation. The application must send a keep alive in this timeperiod\u000a')
+INSERT INTO JPROPERTY VALUES('user.theme.default','default','Default user theme to be used','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               user.theme.default\u000a  Value:                                              default\u000a  Description:                                        Default user theme to be used\u000a')
+INSERT INTO JPROPERTY VALUES('htmlemail://','true','Set to [true] if the installation has a messaging channel for eMAIl. Set to [false] if the YAN doesn''t support the eMAIL channel.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               htmlemail://\u000a  Value:                                              true\u000a  Description:                                        Set to [true] if the installation has a messaging channel for eMAIl. Set to [false] if the YAN doesn''t support the eMAIL channel.\u000a')
+INSERT INTO JPROPERTY VALUES('admin.memory.watch.interval','300','Interval in seconds. jACOB inspects the memory usage in this interval.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               admin.memory.watch.interval\u000a  Value:                                              300\u000a  Description:                                        Interval in seconds. jACOB inspects the memory usage in this interval.\u000a')
+INSERT INTO JPROPERTY VALUES('interval.check.application','60','Time interval in seconds to check application (browser) expiration of the validity.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.check.application\u000a  Value:                                              60\u000a  Description:                                        Time interval in seconds to check application (browser) expiration of the validity.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.exit','true','Visibility of the toolbar button [exit]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.exit\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [exit]\u000a')
+INSERT INTO JPROPERTY VALUES('gui.divider.pos','200','Position of the diver between the search browser and content.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               gui.divider.pos\u000a  Value:                                              200\u000a  Description:                                        Position of the diver between the search browser and content.\u000a')
+INSERT INTO JPROPERTY VALUES('language.default',NULL,'Default language to be used, e.g. en, de or fr','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               language.default\u000a  Description:                                        Default language to be used, e.g. en, de or fr\u000a')
+INSERT INTO JPROPERTY VALUES('sms://','true','Set to [true] if the installation has a messaging channel for SMS. Set to [false] if the YAN doesn''t support the SMS channel.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               sms://\u000a  Value:                                              true\u000a  Description:                                        Set to [true] if the installation has a messaging channel for SMS. Set to [false] if the YAN doesn''t support the SMS channel.\u000a')
+INSERT INTO JPROPERTY VALUES('gui.debug','false','Enable/disable [true/false] tooltips for input elements. This is useful during the application development.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               gui.debug\u000a  Value:                                              false\u000a  Description:                                        Enable/disable [true/false] tooltips for input elements. This is useful during the application development.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.clearForm','true','Visibility of the toolbar button [Clear Form]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.clearForm\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Clear Form]\u000a')
+INSERT INTO JPROPERTY VALUES('cluster.balancer','off','Set to [on] to enable load balancer. Set to [off] to switch off.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               cluster.balancer\u000a  Value:                                              off\u000a  Description:                                        Set to [on] to enable load balancer. Set to [off] to switch off.\u000a')
+INSERT INTO JPROPERTY VALUES('admin.top.interval','120','Interval in seconds. jACOB inspects the CPU usage in this interval.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               admin.top.interval\u000a  Value:                                              120\u000a  Description:                                        Interval in seconds. jACOB inspects the CPU usage in this interval.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.messaging','true','Visibility of the toolbar button [Messaging]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.messaging\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Messaging]\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.newWindow','true','Visibility of the toolbar button [New Window]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.newWindow\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [New Window]\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.clearFocus','true','Visibility of the toolbar button [Clear Focus]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.clearFocus\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Clear Focus]\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.alert','true','Visibility of the toolbar button [Alert]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.alert\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Alert]\u000a')
+INSERT INTO JPROPERTY VALUES('cluster.balancer.strategy',NULL,'The strategy for the load balancer.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               cluster.balancer.strategy\u000a  Description:                                        The strategy for the load balancer.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.pretty','true','Visibility of the toolbar button [Pretty print]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.pretty\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Pretty print]\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.userPassword','true','Visibility of the toolbar button [Password]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.userPassword\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Password]\u000a')
+INSERT INTO JPROPERTY VALUES('gui.window.prefix','jACOB ::','The prefix in the window title of each dialog or main window.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               gui.window.prefix\u000a  Value:                                              jACOB ::\u000a  Description:                                        The prefix in the window title of each dialog or main window.\u000a')
+INSERT INTO JPROPERTY VALUES('interval.check.alert','60','Time interval in seconds to check alert messages.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.check.alert\u000a  Value:                                              60\u000a  Description:                                        Time interval in seconds to check alert messages.\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.showSql','true','Visibility of the toolbar button [Show SQL]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.showSql\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Show SQL]\u000a')
+INSERT INTO JPROPERTY VALUES('interval.timeout.application','200','The timeout interval in seconds for the application invalidation. The application must send a keep alive in this timeperiod','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.timeout.application\u000a  Value:                                              200\u000a  Description:                                        The timeout interval in seconds for the application invalidation. The application must send a keep alive in this timeperiod\u000a')
+INSERT INTO JPROPERTY VALUES('rightfax://','true','Set to [true] if the installation has a messaging channel for FAX. Set to [false] if the YAN doesn''t support the FAX channel.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               rightfax://\u000a  Value:                                              true\u000a  Description:                                        Set to [true] if the installation has a messaging channel for FAX. Set to [false] if the YAN doesn''t support the FAX channel.\u000a')
+INSERT INTO JPROPERTY VALUES('browser.common.max.records','100','Common maximum of records displayed in browsers','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               browser.common.max.records\u000a  Value:                                              100\u000a  Description:                                        Common maximum of records displayed in browsers\u000a')
+INSERT INTO JPROPERTY VALUES('dataaccessor.scope','domain','The scope of a DataAccessor. Valid values [application, domain, form].','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               dataaccessor.scope\u000a  Value:                                              domain\u000a  Description:                                        The scope of a DataAccessor. Valid values [application, domain, form].\u000a')
+INSERT INTO JPROPERTY VALUES('ui.toolbar.showReports','true','Visibility of the toolbar button [Show Report]','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               ui.toolbar.showReports\u000a  Value:                                              true\u000a  Description:                                        Visibility of the toolbar button [Show Report]\u000a')
+INSERT INTO JPROPERTY VALUES('interval.keepalive.application','10','Time in seconds for the keep alive interval of the application window.','2006-12-22 11:12:00.0','systemuser','\u000a###### systemuser: 22.12.2006 11:12:08 Uhr CET\u000a  Name:                                               interval.keepalive.application\u000a  Value:                                              10\u000a  Description:                                        Time in seconds for the keep alive interval of the application window.\u000a')
+COMMIT
+DISCONNECT
+/*C10*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C11*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C12*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C13*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C14*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C15*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C16*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C17*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C18*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C19*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C20*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C21*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C22*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C23*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C24*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C25*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C26*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C27*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C28*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C29*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C30*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C31*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C32*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C33*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C34*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C35*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C36*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C37*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C38*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C39*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C40*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C41*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C42*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C43*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C44*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C45*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C46*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C47*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C48*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C49*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C50*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C51*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C52*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C53*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C54*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C55*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C56*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C57*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C58*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C59*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C60*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C61*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C62*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C63*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C64*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C65*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C66*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C67*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C68*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C69*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C70*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C71*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C72*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C73*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C74*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C75*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C76*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C77*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C78*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C79*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C80*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C81*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C82*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C83*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C84*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C85*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C86*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C87*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C88*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C89*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C90*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C91*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C92*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C93*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C94*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C95*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C96*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C97*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C98*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C99*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C100*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C101*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C102*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C103*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C104*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C105*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C106*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+INSERT INTO JACOB_IDS VALUES(2,'administrator')
+COMMIT
+DISCONNECT
+/*C107*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+INSERT INTO ADMINISTRATOR VALUES('admin',1,NULL,'default jACOB administrator',NULL)
+COMMIT
+DISCONNECT
+/*C108*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C109*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C110*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C111*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C112*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C113*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C114*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C115*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C116*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C117*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C118*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C119*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C120*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C121*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C122*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT
+/*C123*/CONNECT USER SA
+SET AUTOCOMMIT FALSE
+DISCONNECT

@@ -1,0 +1,259 @@
+'NAME = "CallActionUpdate"
+'TYPE = 0
+'TEMPLATE = "Function CallActionUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         CallActionUpdate
+' Purpose:      Consistency checking rules before updating an action record
+' Copyright:    Quintus Corporation, 1997
+' *****************************************************************************
+Function CallActionUpdate() As Boolean
+
+Dim iApp As Application
+Dim iRec As DBRecord
+Dim sMethod As String
+Dim sRecipient As String
+Dim sSubject As String
+Dim sConfirmation As String
+Dim sAddr As String
+Dim sGrpKey As String
+Dim sTarget As String
+Dim sCategoryKey As String
+Dim sStatusEvent As String
+
+    Set iApp = GetApp
+    Set iRec = iApp.ContextRecord()
+
+    sMethod = iRec.GetValue("method")
+    sRecipient = iRec.GetValue("recipient")
+    sSubject = iRec.GetValue("subject")
+    sGrpKey = iRec.GetValue("groupaction")
+    sTarget = iRec.GetValue("targettable")
+	sCategoryKey = iRec.GetValue( "categoryaction" )
+	sStatusEvent =  iRec.GetValue( "statusevent" )
+
+    CheckSubject sSubject
+    Select Case sRecipient
+'!!: "Customer" -> "Kunde"
+    Case "Kunde"
+'    Case "Customer"
+        If sMethod = "" Then
+            iApp.UserMsg "Versenden an Kunden benötigt eine Benachrichtigungsmethode"
+            CallActionUpdate = False
+            Exit Function
+        End If
+'!!: "Agent" -> "Mitarbeiter"
+    Case "Mitarbeiter"
+'    Case "Agent"
+        If sMethod = "" Then
+'!!: iApp.UserMsg
+'            iApp.UserMsg "Sending to Agent requires a notification method"
+            iApp.UserMsg "Versenden an Mitarbeiter benötigt eine Benachrichtigungsmethode"
+            CallActionUpdate = False
+            Exit Function
+        End If
+'!!: "Owner" -> "Bearbeiter"
+    Case "Arbeitsgruppe" ,"NM Meisterei"
+'    Case "Owner"
+        If sMethod <> "" Then
+'!!: iApp.UserMsg
+'            iApp.UserMsg "Sending to Owner requires a notification method"
+            iApp.UserMsg "Versenden an '" & sRecipient & "' benötigt keine Benachrichtigungsmethode." & Basic.Eoln$ & _
+			"Es wird die Methode der Arbeitsgruppe benutzt."
+            CallActionUpdate = False
+            Exit Function
+        End If
+'!!: "CC List" -> "CC Liste"
+    Case "CC Liste"
+'    Case "CC List"
+        If Not (sMethod = "Email") Then
+'!!: iApp.UserMsg
+'            iApp.UserMsg "Only Email is available to the CC List"
+            iApp.UserMsg "Bei CC Liste ist lediglich Email verfügbar"
+            CallActionUpdate = False
+            Exit Function
+        End If
+
+'  Änderung von Mike Doering
+	Case "folgende Adresse"
+       If sMethod = "" Then
+          iApp.UserMsg "Versenden an 'folgende Adresse' benötigt eine Benachrichtigungsmethode"
+          CallActionUpdate = False
+          Exit Function
+       End If
+       sAddr= iRec.GetValue("notificationaddr")
+	   If sAddr="" Then
+       	  iApp.UserMsg "Bei 'folgende Adresse' wird eine Adresse benötigt."
+          CallActionUpdate = False
+          Exit Function
+	   End If
+
+    End Select
+
+
+    CallActionUpdate = True
+End Function
+'----------------------------------------------------------------
+Sub CheckSubject(sString As String)
+' Given a string, locate field name references (in angle brackets)
+' and replace them with the field value.  The literal "<" char is 
+' represented by "<<".
+Dim nPos1 As Integer
+Dim nPos2 As Integer
+Dim sLAngle As String
+Dim sResult As String
+Dim sValue As String
+Dim sFieldName As String
+
+    sLAngle = "<"
+
+    ' If there's no angle bracket, then get out
+    nPos1 = InStr(sString, sLAngle)
+    If nPos1 = 0 Then
+        Exit Sub
+    End If
+
+    Do	
+        sResult = sResult & Left$(sString, nPos1-1)
+        nPos1 = nPos1 + 1
+        ' check for double << character
+        If Mid$(sString, nPos1, 1) = sLAngle Then
+            sString = Mid$(sString, nPos1+1)
+        Else
+            ' Find the closing bracket
+            nPos2 = InStr(sString, ">")
+            If nPos2 = 0 Then
+'!!: Err.Raise
+                Err.Raise 100, "CheckSubject", _
+                     "Missing right angle bracket: " & sString
+            End If
+            sFieldName = Mid$(sString, nPos1, nPos2 - nPos1)
+            sString = Mid$(sString, nPos2+1)
+        End If
+
+        ' Look for the next field (if one)
+        nPos1 = InStr(sString, "<")        
+    Loop Until nPos1 = 0
+
+
+End Sub
+'----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]
+'NAME = "CallEscalationUpdate"
+'TYPE = 0
+'TEMPLATE = "Function CallEscalationUpdate() As Boolean"
+'TEXT = [[
+'*****************************************************************************
+' File:         CallEscalationUpdate
+' Purpose:      Consistency checking rules before updating an escalation record
+' Copyright:    Quartess, 1999
+' *****************************************************************************
+Function CallEscalationUpdate() As Boolean
+Dim iApp As Application
+Dim iRec As DBRecord
+Dim sTarget As String
+Dim sGrpKey As String
+Dim sCategoryKey As String
+Dim sSoftwareKey As String
+Dim sType As String
+' by Jacek Margos
+Dim sImpact As String
+Dim sBase As String
+Dim sPast As String
+
+	On Error GoTo callescalationupdate_error_handler
+
+	Set iApp = GetApp()
+	Set iRec = iApp.ContextRecord
+	sTarget = iRec.GetValue( "targettable" )
+	sGrpKey = iRec.GetValue( "groupescalation" )
+	sCategoryKey = iRec.GetValue( "categoryescalation" )
+	sType = iRec.GetValue( "type" )
+	sBase = iRec.GetValue( "basetime" )
+	sPast = iRec.GetValue( "past" )
+	If sTarget <> "Meldung" Then
+		If Not((sGrpKey = "-1") Or (sGrpKey = "") Or (sGrpKey = "NULL")) Then
+            iApp.UserMsg "Gruppe ist zulässig nur für Eskalation der Meldungenn"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+		If Not((sCategoryKey = "-1" ) Or (sCategoryKey="") Or (sCategoryKey="NULL")) Then
+            iApp.UserMsg "Gewerk ist zulässig nur für Eskalation der Meldungenn"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+		If sType = "Warten" Then
+            iApp.UserMsg "Typ ""Warten"" ist zulässig nur für Eskalation der Meldungenn"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+		If sBase <> "Gemeldet" Then
+            iApp.UserMsg "Zeitpunkt ""Planzeit"" ist zulässig nur für Eskalation der Meldungenn"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+		If sPast <> "1" Then
+            iApp.UserMsg "Das Auslassen der Vergangenheit ist zulässig nur für Eskalation der Meldungenn"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+		If Not( sType = "nicht fertig gemeldet" Or sType ="nicht zugewiesen") Then
+            iApp.UserMsg "Für Aufträge sind nur Erskalationstypen ' nicht hertig gemeldet' und ' nicht zugewiesen' erlaubt"
+			CallEscalationUpdate = False
+			Exit Function
+		End If
+	End If
+	CallEscalationUpdate = True
+	Exit Function
+
+callescalationupdate_error_handler:
+	iApp.UserMsg "CallEscalationUpdate error " & CStr(Err) & ": " & Error$
+	CallEscalationUpdate = False
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+']]

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<modus type="inbound">
+	<datasection type="inbound">
+		<SWITCH>PBX_CUHD</SWITCH>
+		<EXTENSION>5113</EXTENSION>
+		<STATUS>1</STATUS>
+		<CREATE_DATE>1</CREATE_DATE>
+		<OTHERPARTY>1</OTHERPARTY>
+		<CONNECTED_DATE>1</CONNECTED_DATE>
+	</datasection>
+	<errorsection>
+		<ERROR_TEXT>NO_ERROR</ERROR_TEXT>
+	</errorsection>
+</modus>

@@ -1,0 +1,588 @@
+/*
+     This file is part of jACOB
+     Copyright (C) 2005-2009 Tarragon GmbH
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; version 2 of the License.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License     
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+     USA
+*/
+
+import java.util.*;
+import de.tif.qes.report.element.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+	
+parser code  {: 
+	static private final transient Log logger = LogFactory.getLog(QWRParser.class);
+
+	static public final transient String RCS_ID = "$Id: qwr.cup,v 1.2 2009-12-07 03:36:09 sonntag Exp $";
+	static public final transient String RCS_REV = "$Revision: 1.2 $";
+  
+	private String errorMessage(String message, Object info)
+	{
+		StringBuffer m = new StringBuffer("Error ");
+
+		if (info instanceof java_cup.runtime.Symbol)
+			m.append("(").append(info.toString()).append(")");
+
+		m.append(": ").append(message);
+
+		return m.toString();
+	}
+
+	public void report_error(String message, Object info)
+	{
+		logger.error(errorMessage(message, info));
+	}
+
+	public void report_fatal_error(String message, Object info)
+	{
+		logger.fatal(errorMessage(message, info));
+		throw new RuntimeException("Syntax error");
+	}
+:};
+
+action code  {: 
+	private QWRDefinition qwrDefinition = new QWRDefinition();  
+:};
+
+terminal ANCHOR;
+terminal ASCENDING;
+terminal ASCII;
+terminal CENTER;
+terminal COLOR;
+terminal COLUMNNAME;
+terminal CONSTRAINT;
+terminal DATABASE;
+terminal DEFINE;
+terminal DESCENDING;
+terminal DESCRIPTION;
+terminal DESTINATION;
+terminal EPILOGUE;
+terminal FIELD;
+terminal FIELDSET;
+terminal FILE;
+terminal FONT;
+terminal FONTINFO;
+terminal FOOTER;
+terminal FOR;
+terminal FUNCTION;
+terminal GROUPED;
+terminal HEADER;
+terminal HEIGHT;
+terminal HIDDEN;
+terminal HTML;
+terminal JUSTIFICATION;
+terminal KEY;
+terminal LABEL;
+terminal LEFT;
+terminal LINEBREAK;
+terminal NONKEY;
+terminal ON;
+terminal OUTPUTFORMAT;
+terminal PAGE;
+terminal PRINTER;
+terminal PROLOGUE;
+terminal RECORD;
+terminal RELATION;
+terminal REPORT;
+terminal RIGHT;
+terminal SCREEN;
+terminal SET;
+terminal SORT;
+terminal SPACE_BEFORE;
+terminal SPACING;
+terminal STRUCTURED;
+terminal SUBSTRING;
+terminal TABLE;
+terminal TABULAR;
+terminal TRUNCATION_MARK;
+terminal TYPE;
+terminal USING;
+terminal VALUE_OF;
+terminal VERSION;
+terminal WIDTH;
+
+terminal LBRACE, RBRACE;
+terminal LPAREN, RPAREN;
+terminal SEMICOLON;
+terminal COMMA;
+
+terminal java.lang.Integer     INTEGER_LITERAL;
+terminal java.lang.Double      FLOATING_POINT_LITERAL;
+terminal java.lang.String      STRING_LITERAL;
+terminal java.lang.String      MULTILINE_STRING_LITERAL;
+terminal java.lang.String      IDENTIFIER; // name
+
+non terminal QWRDefinition		qwr_definition;
+non terminal 				version_declaration;
+non terminal String			report_description, report_description_opt;
+non terminal 				report_declaration;
+non terminal 				report_type;
+non terminal 				report_destination;
+non terminal QWROutputFormat		report_outputformat;
+non terminal 				report_define;
+non terminal 				report_defines, report_defines_opt;
+non terminal QWRCaption			report_prologue;
+non terminal QWRCaption			report_epilogue;
+non terminal QWRCaption			report_page_header;
+non terminal QWRCaption			report_page_footer;
+non terminal QWRCaption			report_record_header;
+non terminal QWRCaption			report_record_footer;
+non terminal QWRFont			report_font;
+non terminal String			report_color, report_color_opt;
+non terminal QWRCaption			report_header, report_header_opt;
+non terminal QWRCaption			report_footer, report_footer_opt;
+non terminal QWRField			report_field;
+non terminal String			report_field_columnname, report_field_columnname_opt;
+non terminal QWRFont			report_field_font_opt;
+non terminal QWRFieldSortorder		report_field_sortorder, report_field_sortorder_opt;
+non terminal Boolean			report_field_hidden_opt;
+non terminal QWRFieldJustification	report_field_justification;
+non terminal Boolean			report_field_linebreak_opt;
+non terminal 				report_field_type;
+non terminal 				report_field_fieldset, report_field_fieldset_opt;
+non terminal QWRFieldGrouping		report_field_grouped, report_field_grouped_opt;
+non terminal QWRFieldFunction		report_field_function, report_field_function_opt;
+non terminal QWRConstraint		report_constraint;
+non terminal QWRConstraintType		report_constraint_type;
+non terminal 				fontinfo_declaration;
+non terminal 				fontinfo_fonts;
+non terminal 				fontinfo_font;
+
+start with qwr_definition;
+
+
+/* ------------------- */
+/* General declaration */
+/* ------------------- */
+
+qwr_definition ::= version_declaration
+                   report_description_opt:desc
+                   report_declaration
+                   fontinfo_declaration
+{:
+	this.qwrDefinition.setDescription(desc);
+	RESULT = this.qwrDefinition;
+:} 
+;
+
+version_declaration ::=
+		VERSION STRING_LITERAL:version
+	;
+
+report_description_opt ::=
+	|	report_description:desc
+{:
+	RESULT = desc;
+:} 
+	;
+
+report_description ::=
+		DESCRIPTION STRING_LITERAL:desc
+{:
+	RESULT = desc;
+:} 
+	;
+
+/* ------------------ */
+/* Report declaration */
+/* ------------------ */
+
+report_declaration ::=
+		DEFINE REPORT STRING_LITERAL:name TYPE report_type
+		FOR STRING_LITERAL:module_domain_name WIDTH INTEGER_LITERAL:width HEIGHT INTEGER_LITERAL:height SPACING INTEGER_LITERAL:spacing
+		DESTINATION report_destination 
+		USING RELATION SET STRING_LITERAL:relationset_name
+		USING ANCHOR TABLE STRING_LITERAL:table_name
+		OUTPUTFORMAT report_outputformat:outputformat
+		LBRACE
+			report_defines_opt
+		RBRACE
+{:
+	this.qwrDefinition.setName(name);
+	this.qwrDefinition.setDomainName(module_domain_name);
+	this.qwrDefinition.setRelationsetName(relationset_name);
+	this.qwrDefinition.setAnchorTableName(table_name);
+	this.qwrDefinition.setWidth(width);
+	this.qwrDefinition.setHeight(height);
+	this.qwrDefinition.setSpacing(spacing);
+	this.qwrDefinition.setOutputFormat(outputformat);
+:} 
+	;
+
+report_type ::=
+		TABULAR
+	|	STRUCTURED
+	;
+
+report_destination ::=
+		SCREEN
+	|	PRINTER STRING_LITERAL:printer_name
+	|	FILE STRING_LITERAL:printer_name
+	;
+
+report_outputformat ::=
+				// empty = ASCII?
+{:
+	RESULT = new QWRAsciiOutputFormat();
+:}	
+	|	ASCII
+{:
+	RESULT = new QWRAsciiOutputFormat();
+:}	
+	|	HTML
+{:
+	RESULT = new QWRHtmlOutputFormat();
+:}	
+	;
+
+report_defines_opt ::= report_defines | ;
+
+report_defines ::= 
+		report_define
+	|	report_defines report_define
+	;
+
+report_define ::=
+		report_prologue:prologue
+{:
+	this.qwrDefinition.setPrologue(prologue);
+:}	
+	|	report_epilogue:epilogue
+{:
+	this.qwrDefinition.setEpilogue(epilogue);
+:}	
+	|	report_page_header:header
+{:
+	this.qwrDefinition.setPageHeader(header);
+:}	
+	|	report_page_footer:footer
+{:
+	this.qwrDefinition.setPageFooter(footer);
+:}	
+	|	report_record_header:header
+{:
+	this.qwrDefinition.setRecordHeader(header);
+:}	
+	|	report_record_footer:footer
+{:
+	this.qwrDefinition.setRecordFooter(footer);
+:}	
+	|	report_field:field
+{:
+	this.qwrDefinition.addField(field);
+:}	
+	|	report_constraint:constraint
+{:
+	this.qwrDefinition.addConstraint(constraint);
+:}	
+	;
+
+report_prologue ::=
+		DEFINE PROLOGUE STRING_LITERAL:prologue
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(prologue, font);
+:}	
+	;
+
+report_epilogue ::=
+		DEFINE EPILOGUE STRING_LITERAL:epilogue
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(epilogue, font);
+:}	
+	;
+
+report_page_header ::=
+		DEFINE PAGE HEADER STRING_LITERAL:page_header
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(page_header, font);
+:}	
+	;
+
+report_page_footer ::=
+		DEFINE PAGE FOOTER STRING_LITERAL:page_footer
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(page_footer, font);
+:}	
+	;
+
+report_record_header ::=
+		DEFINE RECORD HEADER STRING_LITERAL:record_header
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(record_header, font);
+:}	
+	;
+
+report_record_footer ::=
+		DEFINE RECORD FOOTER STRING_LITERAL:record_footer
+			report_font:font
+			SEMICOLON
+{:
+	RESULT = new QWRCaption(record_footer, font);
+:}	
+	;
+
+report_font ::= 
+		report_color_opt:color
+		FONT STRING_LITERAL:font_name STRING_LITERAL:font_str1 INTEGER_LITERAL:size
+{:
+	RESULT = new QWRFont(font_name, font_str1, size, color);
+:} 
+	;
+	
+report_color_opt ::=
+	|	report_color:color
+{:
+	RESULT = color;
+:} 
+	;
+
+report_color ::= 
+		COLOR STRING_LITERAL:color
+{:
+	RESULT = color;
+:} 
+	;
+	
+report_header_opt ::=
+	|	report_header:header
+{:
+	RESULT = header;
+:} 
+	;
+
+report_header ::= 
+		HEADER STRING_LITERAL:header
+		report_font:font
+{:
+	RESULT = new QWRCaption(header, font);
+:}	
+	;
+	
+report_footer_opt ::=
+	|	report_footer:footer
+{:
+	RESULT = footer;
+:} 
+	;
+
+report_footer ::= 
+		FOOTER STRING_LITERAL:footer
+		report_font:font
+{:
+	RESULT = new QWRCaption(footer, font);
+:}	
+	;
+	
+/* ------------------------ */
+/* Report field declaration */
+/* ------------------------ */
+
+report_field ::= 
+		DEFINE FIELD FOR STRING_LITERAL:field_name
+		report_field_columnname_opt:column_name
+		report_field_font_opt:font
+		LABEL STRING_LITERAL:label WIDTH INTEGER_LITERAL:label_width SPACE_BEFORE INTEGER_LITERAL:label_space_before
+		VALUE_OF
+		report_field_sortorder_opt:sortorder
+		report_field_hidden_opt:hidden
+		report_field_justification:justification
+		TRUNCATION_MARK STRING_LITERAL:truncation_mark
+		report_field_linebreak_opt:linebreak
+		TYPE report_field_type
+		report_field_fieldset_opt
+		report_field_grouped_opt:grouping
+		report_field_function_opt:function
+		SEMICOLON
+{:
+	RESULT = new QWRField(field_name, column_name, font, label, label_width, label_space_before, sortorder, 
+	                      hidden.booleanValue(), justification, truncation_mark, linebreak.booleanValue(),
+	                      grouping, function);
+:} 
+	;
+
+report_field_columnname_opt ::=
+	|	report_field_columnname:columnname
+{:
+	RESULT = columnname;
+:} 
+	;
+
+report_field_columnname ::= 
+		COLUMNNAME IDENTIFIER:columnname
+{:
+	RESULT = columnname;
+:} 
+	;
+
+report_field_font_opt ::=
+	|	report_font:font
+{:
+	RESULT = font;
+:} 
+	;
+
+report_field_sortorder_opt ::=
+	|	report_field_sortorder:sortorder
+{:
+	RESULT = sortorder;
+:} 
+	;
+
+report_field_sortorder ::= 
+		SORT ASCENDING INTEGER_LITERAL:sort_nbr
+{:
+	RESULT = new QWRAscFieldSortorder(sort_nbr.intValue());
+:} 
+	|	SORT DESCENDING INTEGER_LITERAL:sort_nbr
+{:
+	RESULT = new QWRDescFieldSortorder(sort_nbr.intValue());
+:} 
+	;
+
+report_field_hidden_opt ::= 
+		HIDDEN
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	|
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	;
+
+report_field_justification ::= 
+		JUSTIFICATION LEFT
+{:
+	RESULT = QWRFieldJustification.LEFT;
+:} 
+	|	JUSTIFICATION CENTER
+{:
+	RESULT = QWRFieldJustification.CENTER;
+:} 
+	|	JUSTIFICATION RIGHT
+{:
+	RESULT = QWRFieldJustification.RIGHT;
+:} 
+	;
+
+report_field_type ::=
+		DATABASE
+	|	FIELDSET
+	;
+
+report_field_linebreak_opt ::=
+		LINEBREAK
+{:
+	RESULT = Boolean.TRUE;
+:} 
+	|
+{:
+	RESULT = Boolean.FALSE;
+:} 
+	;
+
+report_field_fieldset_opt ::= report_field_fieldset | ; /* not together with report_field_grouped? */
+
+report_field_fieldset ::= 
+		FIELDSET ANCHOR STRING_LITERAL:anchor_field
+		FIELDSET LABEL STRING_LITERAL:label
+	;
+	
+report_field_grouped_opt ::=
+	|	report_field_grouped:grouping
+{:
+	RESULT = grouping;
+:} 
+	;
+
+report_field_grouped ::= 
+		GROUPED INTEGER_LITERAL:grouped_nbr
+			report_header_opt:header
+			report_footer_opt:footer
+{:
+	RESULT = new QWRFieldGrouping(grouped_nbr.intValue(), header, footer);
+:} 
+	;
+	
+report_field_function_opt ::=
+	|	report_field_function:function
+{:
+	RESULT = function;
+:} 
+	;
+
+report_field_function ::= 
+		FUNCTION SUBSTRING LPAREN INTEGER_LITERAL:arg1 COMMA INTEGER_LITERAL:arg2 RPAREN
+{:
+	RESULT = new QWRFieldSubstringFunction(arg1.intValue(), arg2.intValue());
+:} 
+	;
+	
+/* ----------------------------- */
+/* Report constraint declaration */
+/* ----------------------------- */
+
+report_constraint ::= 
+		DEFINE CONSTRAINT ON STRING_LITERAL:field_name
+			STRING_LITERAL:field_constraint
+			TYPE report_constraint_type:type
+		SEMICOLON
+{:
+	RESULT = new QWRConstraint(field_name, field_constraint, type);
+:} 
+	;
+
+report_constraint_type ::=
+		NONKEY
+{:
+	RESULT = QWRConstraintType.NOKEY;
+:} 
+	|	KEY
+{:
+	RESULT = QWRConstraintType.KEY;
+:} 
+	;
+	
+/* -------------------- */
+/* Fontinfo declaration */
+/* -------------------- */
+
+fontinfo_declaration ::=
+		FONTINFO
+		LBRACE
+			fontinfo_fonts
+		RBRACE
+	;
+
+fontinfo_fonts ::= 
+		fontinfo_font
+	|	fontinfo_fonts fontinfo_font
+	;
+
+fontinfo_font ::= 
+		STRING_LITERAL:font_name INTEGER_LITERAL:num1 INTEGER_LITERAL:num2
+	;
+	

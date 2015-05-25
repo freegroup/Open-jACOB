@@ -1,0 +1,44 @@
+body
+{
+font-family:verdana;
+background-color:rgb(12,12,12);
+}
+
+.login_panel
+{
+background:transparent url(login-bkg-tile.png) no-repeat scroll left top;
+color:#FFFFFF;
+width:390px;
+padding-top:200px;
+text-align:left;	
+}
+
+.footer
+{
+background:transparent url(login-bkg-bottom.png) no-repeat scroll bottom;
+}
+
+input {
+font-size:1.2em;
+margin-top:3px;
+margin-left:30px;
+}
+
+label
+{
+margin-left:30px;
+}
+
+.submit
+{
+text-align:right;
+margin-right:30px;
+}
+
+.header
+{
+color:#CDCDD8;
+font-size:22pt;
+margin-top:100px;
+text-align:center;
+}

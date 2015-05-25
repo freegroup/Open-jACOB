@@ -1,0 +1,3 @@
+de.tif.jacob.core.data.impl.sql.HSQLDataSourceProvider
+de.tif.jacob.core.data.impl.sql.OracleDataSourceProvider
+de.tif.jacob.core.data.impl.index.LuceneDataSourceProvider

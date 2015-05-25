@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ContextList>
+	<Context name="_TelefonNummer" package="de.shorti.context.basis" >
+		<nodelist>
+			<node name="start">
+				<forward toNode="start">
+					<question pattern="telefonnummer[?!]*"  defaultAnswer="Bitte Name, Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="telefon[?!]*"        defaultAnswer="Bitte Name, Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+				</forward>
+				<forward toNode="location">
+					<question pattern="telefonnummer\s+von\s+(\w+)\s+(\w+)"  defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="telefonnummer\s+(\w+)\s+(\w+)"         defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="telefon\s+von\s+(\w+)\s+(\w+)"        defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="telefon\s+(\w+)\s+(\w+)"               defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="tel\\.\s+von\s+(\w+)\s+(\w+)"         defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+					<question pattern="tel\\.\s+(\w+)\s+(\w+)"                defaultAnswer="Bitte noch Straße und Ort zusenden damit ich eine Telefonnummer suchen kann."/>
+				</forward>
+			</node>
+
+			<node name="location">
+				<forward toNode="start">
+					<question pattern="(\w+)\s+(\w+)"  defaultAnswer="" />
+				</forward>
+			</node>
+		</nodelist>
+	</Context>
+</ContextList>

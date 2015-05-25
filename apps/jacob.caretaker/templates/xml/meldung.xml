@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="db_field(doc_template.xsl_stylesheet)"?>
+<doc>
+  <control>
+     <original_to url=""/>
+     <copies>
+      <copy onSuccess ="true">
+ 		<to url="tts:/attachment?callattachment=db_field(call.pkey)"/>
+ 		<stylesheet url="db_field(doc_template.xsl_stylesheet)"/>
+      </copy>
+     </copies>
+    </control>
+   <data>
+   	<general>
+   	<date>db_field(*Date)</date>
+   	<time>db_field(*Time)</time>	
+   	</general>
+	<wrkgporg>
+	  <department>db_field(callworkgroup.organization_key-wrkgporg.department)</department>
+	  <name>db_field(callworkgroup.organization_key-wrkgporg.name)</name>
+	</wrkgporg>
+	<callworkgroup>
+	 <name>db_field(call.workgroupcall-callworkgroup.name)</name>
+	 <fax>db_field(call.workgroupcall-callworkgroup.fax)</fax>
+	 <email>db_field(call.workgroupcall-callworkgroup.email)</email>
+	 <phone>db_field(call.workgroupcall-callworkgroup.phone)</phone>
+	</callworkgroup>
+	<customerint>
+	  <fullname>db_field(call.employeecall-customerint.fullname)</fullname>
+	  <lastnamecorr>db_field(call.employeecall-customerint.lastnamecorr)</lastnamecorr>
+	  <firstnamecorr>db_field(call.employeecall-customerint.firstnamecorr)</firstnamecorr>
+	  <phonecorr>db_field(call.employeecall-customerint.phonecorr)</phonecorr>
+	  <faxcorr>db_field(call.employeecall-customerint.faxcorr)</faxcorr>
+	  <emailcorr>db_field(call.employeecall-customerint.emailcorr)</emailcorr>
+	  <sitecorr>db_field(call.employeecall-customerint.emplsite_keycorr)</sitecorr>
+	  <sitepartcorr>db_field(call.employeecall-customerint.sitepartcorr)</sitepartcorr>
+	  <department>db_field(call.employeecall-customerint.department)</department>
+	  <accountingcodecorr>db_field(call.employeecall-customerint.accountingcodecorr)</accountingcodecorr>
+	  <hpccorr>db_field(call.employeecall-customerint.hpccorr)</hpccorr>
+	  <orgexternal>db_field(call.employeecall-customerint.orgexternal_key-orgexternal.name)</orgexternal>
+	</customerint>
+	<call>
+		<pkey>db_field(call.pkey)</pkey>
+		<mastercall_key>db_field(call.mastercall_key)</mastercall_key>
+		<agentcall>db_field(call.agentcall)</agentcall>
+		<employeecall>db_field(call.employeecall)</employeecall>
+		<categorycall>db_field(call.categorycall)</categorycall>
+		<workgroupcall>db_field(call.workgroupcall)</workgroupcall>
+		<callstatus>db_field(call.callstatus)</callstatus>
+		<escstatus>db_field(call.escstatus)</escstatus>
+		<origin>db_field(call.origin)</origin>
+		<phonetime>db_field(call.phonetime)</phonetime>
+		<priority>db_field(call.priority)</priority>
+		<problem>db_field(call.problem)</problem>
+		<datereported>db_field(call.datereported)</datereported>
+		<dateassigned>db_field(call.dateassigned)</dateassigned>
+		<dateresolved>db_field(call.dateresolved)</dateresolved>
+		<datemodified>db_field(call.datemodified)</datemodified>
+		<modifiedby>db_field(call.modifiedby)</modifiedby>
+		<cclist>db_field(call.cclist)</cclist>
+		<callbackmethod>db_field(call.callbackmethod)</callbackmethod>
+		<problemtext>db_field(call.problemtext)</problemtext>
+		<history>db_field(call.history)</history>
+		<opentaskcount>db_field(call.opentaskcount)</opentaskcount>
+		<closedtaskcount>db_field(call.closedtaskcount)</closedtaskcount>
+		<process_key>db_field(call.process_key)</process_key>
+		<ksl>db_field(call.ksl)</ksl>
+		<sl>db_field(call.sl)</sl>
+		<autoclosed>db_field(call.autoclosed)</autoclosed>
+		<location_key>db_field(call.location_key)</location_key>
+		<object_key>db_field(call.object_key)</object_key>
+		<accountingcode_key>db_field(call.accountingcode_key)</accountingcode_key>
+		<coordinationtime>db_field(call.coordinationtime)</coordinationtime>
+		<datecallconnected>db_field(call.datecallconnected)</datecallconnected>
+		<dateowned>db_field(call.dateowned)</dateowned>
+		<datefirstcontact>db_field(call.datefirstcontact)</datefirstcontact>
+		<cti_phone>db_field(call.cti_phone)</cti_phone>
+		<affectedperson>db_field(call.affectedperson)</affectedperson>
+		<datedocumented>db_field(call.datedocumented)</datedocumented>
+		<dateclosed>db_field(call.dateclosed)</dateclosed>
+		<totaltaskdoc>db_field(call.totaltaskdoc)</totaltaskdoc>
+		<totaltasktimespent>db_field(call.totaltasktimespent)</totaltasktimespent>
+		<sd_time>db_field(call.sd_time)</sd_time>
+		<datecallbackreq>db_field(call.datecallbackreq)</datecallbackreq>
+		<defaultcontract>db_field(call.defaultcontract)</defaultcontract>
+		<closedby_sd>db_field(call.closedby_sd)</closedby_sd>
+		<forwardbyphone>db_field(call.forwardbyphone)</forwardbyphone>
+		<action>db_field(call.action)</action>
+		<sl_overdue>db_field(call.sl_overdue)</sl_overdue>
+		<date_sl_overdue>db_field(call.date_sl_overdue)</date_sl_overdue>
+		<grade>db_field(call.grade)</grade>
+		<gradestatement>db_field(call.gradestatement)</gradestatement>
+		<coordinationtime_m>db_field(call.coordinationtime_m)</coordinationtime_m>
+		<coordinationtime_h>db_field(call.coordinationtime_h)</coordinationtime_h>
+		<estimatedstart>db_field(call.estimatedstart)</estimatedstart>
+		<estimateddone>db_field(call.estimateddone)</estimateddone>
+		<affectedperson_key>db_field(call.affectedperson_key)</affectedperson_key>
+		<totaltaskamount>db_field(call.totaltaskamount)</totaltaskamount>
+		<accountingcodetext>db_field(call.accountingcodetext)</accountingcodetext>
+		<personal_vote>db_field(call.personal_vote)</personal_vote>
+	</call>
+
+	<location>
+	  <faplissite>db_field(call.location_key-location.site_key-faplissite.name)</faplissite>
+	  <faplissitepart>db_field(location.sitepart_key-faplissitepart.name)</faplissitepart>
+	  <faplisbuilding>db_field(location.building_key-faplisbuilding.shortname)</faplisbuilding>
+	  <faplisbuildingpart>db_field(location.buildingpart_key-faplisbuildingpart.name)</faplisbuildingpart>
+	  <faplisfloor>db_field(location.floor_key-faplisfloor.name)</faplisfloor>
+	  <faplisroom>db_field(call.location_key-location.room_key-faplisroom.name)</faplisroom>
+	  <faplisbaxis>db_field(location.baxis_key-faplisbaxis.name)</faplisbaxis>
+	  <fapliszaxis>db_field(call.location_key-location.zaxis_key-fapliszaxis.name)</fapliszaxis>
+	  <note>db_field(call.location_key-location.note)</note>
+	  <description>db_field(call.location_key-location.description)</description>
+	  <orientation>db_field(call.location_key-location.orientation)</orientation>
+	</location>
+	<category> 
+	  <longname>db_field(call.categorycall-category.longname)</longname>
+	  <name>db_field(call.categorycall-category.longname)</name>
+	</category>
+	<object>
+	  <external_id>db_field(call.object_key-object.external_id)</external_id>
+	  <vendor>db_field(call.object_key-object.vendor)</vendor>
+	  <name>db_field(call.object_key-object.name)</name>
+	  <objaccountingcode>db_field(object.accountingcode_key-objaccountingcode.code)</objaccountingcode>
+	</object>
+	<agent>
+	 <fullname>db_field(call.agentcall-agent.fullname)</fullname>
+	 <department>db_field(call.agentcall-agent.department)</department>
+	</agent>
+ </data>
+</doc>
+
+
+
+
+
+
+
